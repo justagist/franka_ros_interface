@@ -1,0 +1,3 @@
+ - builder: epydoc
+   name: Franka SDK Python API
+   config: epydoc.config
