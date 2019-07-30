@@ -1,11 +1,12 @@
-
+import sys
 import rospy
 import socket
 
 def _log_networking_error():
-        print ("Failed to connect to the ROS parameter server!\n"
-               "Please check to make sure your ROS networking is "
-               "properly configured:\n")
+    print ("Failed to connect to the ROS parameter server!\n"
+           "Please check to make sure your ROS networking is "
+           "properly configured:\n")
+    sys.exit()
 
 class RobotParams(object):
     """
@@ -30,7 +31,7 @@ class RobotParams(object):
 
         return robot_ip
 
-    def get_joint_names(self, limb_name = None):
+    def get_joint_names(self):
         """
         Return the names of the joints for the specified
         limb from ROS parameter.
@@ -42,10 +43,9 @@ class RobotParams(object):
         joint_names = list()
         try:
             joint_names = rospy.get_param(
-                            "/franka_control/joint_names".format(limb_name))
+                            "/franka_control/joint_names")
         except KeyError:
-            rospy.logerr(("RobotParam:get_joint_names cannot detect joint_names for"
-                          " arm \"{0}\"").format(limb_name))
+            rospy.logerr(("RobotParam:get_joint_names cannot detect joint_names for arm"))
         except (socket.error, socket.gaierror):
             _log_networking_error()
         return joint_names
