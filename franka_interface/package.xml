@@ -3,7 +3,7 @@
   <name>franka_interface</name>
   <version>0.0.1</version>
   <description>
-    Python interface classes for control of
+    ROS/Python interface classes for control of
     Franka Panda robot through franka-ros and libfranka.
   </description>
 
