@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <name>franka_rospy_sdk</name>
+  <version>0.0.1</version>
+  <description>
+    franka_rospy_sdk metapackage containing all of the SDK packages
+    for Franka Panda robots using libfranka and franka-ros.
+  </description>
+
+  <maintainer email="sxs1412@bham.ac.uk">
+    Saif Sidhik
+  </maintainer>
+  <license>TODO</license>
+  <author>Saif Sidhik</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>franka_interface</run_depend>
+  
+  <export>
+    <metapackage/>
+  </export>
+
+</package>
