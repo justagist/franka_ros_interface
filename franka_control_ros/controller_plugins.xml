@@ -1,0 +1,16 @@
+<library path="lib/libfranka_control_ros">
+  <class name="franka_control_ros/CartesianImpedanceController"
+         type="franka_control_ros::CartesianImpedanceController"
+         base_class_type="controller_interface::ControllerBase">
+    <description>
+      Some text to describe what your controller is doing
+    </description>
+  </class>
+    <class name="franka_control_ros/JointPositionController"
+         type="franka_control_ros::JointPositionController"
+         base_class_type="controller_interface::ControllerBase">
+    <description>
+      Controller for commanding absolute joint positions of the Franka arm
+    </description>
+  </class>
+</library>
