@@ -26,11 +26,14 @@ class JointPositionController : public controller_interface::MultiInterfaceContr
   std::vector<hardware_interface::JointHandle> position_joint_handles_;
   std::array<double, 7> initial_pos_{};
   std::array<double, 7> prev_pos_{};
+  std::array<double, 7> pos_d_target_{};
+  std::array<double, 7> pos_d_;
 
   // joint_cmd subscriber
   ros::Subscriber desired_joints_subscriber_;
 
-  std::array<double, 7> pos_d_;
+  double filter_params_{0.005};
+
 
   void jointPosCmdCallback(const sensor_msgs::JointStateConstPtr& msg);
 };

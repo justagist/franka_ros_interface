@@ -53,18 +53,18 @@ void JointPositionController::starting(const ros::Time& /* time */) {
   }
   pos_d_ = initial_pos_;
   prev_pos_ = initial_pos_;
+  pos_d_target_ = initial_pos_;
 }
 
-void JointPositionController::update(const ros::Time& /*time*/,
+void JointPositionController::update(const ros::Time& time,
                                             const ros::Duration& period) {
   for (size_t i = 0; i < 7; ++i) {
     position_joint_handles_[i].setCommand(pos_d_[i]);
   }
   for (size_t i = 0; i < 7; ++i) {
     prev_pos_[i] = position_joint_handles_[i].getPosition();
+    pos_d_[i] = filter_params_ * pos_d_target_[i] + (1.0 - filter_params_) * pos_d_[i];
   }
-
-
 }
 
 void JointPositionController::jointPosCmdCallback(const sensor_msgs::JointStateConstPtr& msg) {
@@ -73,10 +73,11 @@ void JointPositionController::jointPosCmdCallback(const sensor_msgs::JointStateC
       ROS_ERROR_STREAM(
           "JointPositionController: Published Commands are not of size 7");
       pos_d_ = prev_pos_;
+      pos_d_target_ = prev_pos_;
     }
     else {
-      std::copy_n(msg->position.begin(), 7, pos_d_.begin());
-      std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
+      std::copy_n(msg->position.begin(), 7, pos_d_target_.begin());
+      // std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
     }
 }
 
