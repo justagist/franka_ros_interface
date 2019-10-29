@@ -43,6 +43,15 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
       return false;
     }
   }
+  dynamic_reconfigure_joint_controller_params_node_ =
+      ros::NodeHandle("dynamic_reconfigure_joint_controller_params_node");
+
+  dynamic_server_joint_controller_params_ = std::make_unique<
+      dynamic_reconfigure::Server<franka_ros_controllers::jointControllerParamsConfig>>(
+      dynamic_reconfigure_joint_controller_params_node_);
+
+  dynamic_server_joint_controller_params_->setCallback(
+      boost::bind(&PositionJointPositionController::jointControllerParamCallback, this, _1, _2));
 
   return true;
 }
@@ -61,10 +70,16 @@ void PositionJointPositionController::update(const ros::Time& time,
   for (size_t i = 0; i < 7; ++i) {
     position_joint_handles_[i].setCommand(pos_d_[i]);
   }
+  double filter_val = filter_joint_pos_ * filter_factor_;
   for (size_t i = 0; i < 7; ++i) {
     prev_pos_[i] = position_joint_handles_[i].getPosition();
-    pos_d_[i] = filter_params_ * pos_d_target_[i] + (1.0 - filter_params_) * pos_d_[i];
+    pos_d_[i] = filter_val * pos_d_target_[i] + (1.0 - filter_val) * pos_d_[i];
   }
+
+  // update parameters changed online either through dynamic reconfigure or through the interactive
+  // target by filtering
+  filter_joint_pos_ = param_change_filter_ * target_filter_joint_pos_ + (1.0 - param_change_filter_) * filter_joint_pos_;
+
 }
 
 void PositionJointPositionController::jointPosCmdCallback(const sensor_msgs::JointStateConstPtr& msg) {
@@ -79,6 +94,11 @@ void PositionJointPositionController::jointPosCmdCallback(const sensor_msgs::Joi
       std::copy_n(msg->position.begin(), 7, pos_d_target_.begin());
       // std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
     }
+}
+
+void PositionJointPositionController::jointControllerParamCallback(franka_ros_controllers::jointControllerParamsConfig& config,
+                               uint32_t level){
+  target_filter_joint_pos_ = config.position_joint_delta_filter;
 }
 
 }  // namespace franka_ros_controllers

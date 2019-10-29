@@ -5,8 +5,12 @@
 #include <string>
 #include <vector>
 
+#include <dynamic_reconfigure/server.h>
+#include <franka_ros_controllers/jointControllerParamsConfig.h>
+
 #include <sensor_msgs/JointState.h>
 #include <controller_interface/multi_interface_controller.h>
+
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/robot_hw.h>
 #include <ros/node_handle.h>
@@ -32,9 +36,18 @@ class PositionJointPositionController : public controller_interface::MultiInterf
   // joint_cmd subscriber
   ros::Subscriber desired_joints_subscriber_;
 
-  double filter_params_{0.005};
+  double filter_joint_pos_{0.3};
+  double target_filter_joint_pos_{0.3};
+  double filter_factor_{0.01};
 
+  double param_change_filter_{0.005};
 
+  // Dynamic reconfigure
+  std::unique_ptr< dynamic_reconfigure::Server<franka_ros_controllers::jointControllerParamsConfig> > dynamic_server_joint_controller_params_;
+  ros::NodeHandle dynamic_reconfigure_joint_controller_params_node_;
+
+  void jointControllerParamCallback(franka_ros_controllers::jointControllerParamsConfig& config,
+                               uint32_t level);
   void jointPosCmdCallback(const sensor_msgs::JointStateConstPtr& msg);
 };
 
