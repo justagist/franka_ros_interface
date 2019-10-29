@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(franka_control_ros)
+project(franka_ros_controllers)
 
 set(CMAKE_BUILD_TYPE Release)
 
@@ -33,14 +33,9 @@ find_package(Franka 0.5.0 REQUIRED)
 #   cfg/desired_mass_param.cfg
 # )
 
-generate_dynamic_reconfigure_options(
-  cfg/compliance_param.cfg
-  cfg/desired_mass_param.cfg
-)
-
 
 catkin_package(
-  LIBRARIES franka_control_ros
+  LIBRARIES franka_ros_controllers
   CATKIN_DEPENDS
     controller_interface
     dynamic_reconfigure
@@ -54,33 +49,33 @@ catkin_package(
   DEPENDS Franka
 )
 
-add_library(franka_control_ros
-  src/cartesian_impedance_controller.cpp
-  src/joint_position_controller.cpp
+add_library(franka_ros_controllers
+  src/effort_joint_impedance_controller.cpp
+  src/position_joint_position_controller.cpp
 )
 
-add_dependencies(franka_control_ros
+add_dependencies(franka_ros_controllers
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
-  ${PROJECT_NAME}_gencfg
+  # ${PROJECT_NAME}_gencfg
 )
 
-target_link_libraries(franka_control_ros PUBLIC
+target_link_libraries(franka_ros_controllers PUBLIC
   ${Franka_LIBRARIES}
   ${catkin_LIBRARIES}
 )
 
-target_include_directories(franka_control_ros SYSTEM PUBLIC
+target_include_directories(franka_ros_controllers SYSTEM PUBLIC
   ${Franka_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
-target_include_directories(franka_control_ros PUBLIC
+target_include_directories(franka_ros_controllers PUBLIC
   include
 )
 
 ## Installation
-install(TARGETS franka_control_ros
+install(TARGETS franka_ros_controllers
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -94,10 +89,10 @@ install(DIRECTORY config
 install(FILES controller_plugins.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
-catkin_install_python(
-  PROGRAMS scripts/interactive_marker.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+# catkin_install_python(
+#   PROGRAMS scripts/interactive_marker.py
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 # ## Tools
 # include(${CMAKE_CURRENT_LIST_DIR}/../cmake/ClangTools.cmake OPTIONAL
@@ -109,9 +104,9 @@ catkin_install_python(
 #     ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
 #     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
 #   )
-#   add_format_target(franka_control_ros FILES ${SOURCES} ${HEADERS})
-#   add_tidy_target(franka_control_ros
+#   add_format_target(franka_ros_controllers FILES ${SOURCES} ${HEADERS})
+#   add_tidy_target(franka_ros_controllers
 #     FILES ${SOURCES}
-#     DEPENDS franka_control_ros
+#     DEPENDS franka_ros_controllers
 #   )
 # endif()

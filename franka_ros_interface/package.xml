@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package>
-  <name>franka_rospy_sdk</name>
+  <name>franka_ros_interface</name>
   <version>0.0.1</version>
   <description>
-    franka_rospy_sdk metapackage containing all of the SDK packages
+    franka_ros_interface metapackage containing all of the SDK packages
     for Franka Panda robots using libfranka and franka-ros.
   </description>
 

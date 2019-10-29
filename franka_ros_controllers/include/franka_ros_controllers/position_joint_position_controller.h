@@ -12,9 +12,9 @@
 #include <ros/node_handle.h>
 #include <ros/time.h>
 
-namespace franka_control_ros {
+namespace franka_ros_controllers {
 
-class JointPositionController : public controller_interface::MultiInterfaceController<
+class PositionJointPositionController : public controller_interface::MultiInterfaceController<
                                            hardware_interface::PositionJointInterface> {
  public:
   bool init(hardware_interface::RobotHW* robot_hardware, ros::NodeHandle& node_handle) override;
@@ -38,4 +38,4 @@ class JointPositionController : public controller_interface::MultiInterfaceContr
   void jointPosCmdCallback(const sensor_msgs::JointStateConstPtr& msg);
 };
 
-}  // namespace franka_control_ros
+}  // namespace franka_ros_controllers

@@ -1,4 +1,4 @@
-#include <franka_control_ros/joint_position_controller.h>
+#include <franka_ros_controllers/position_joint_position_controller.h>
 
 #include <cmath>
 
@@ -9,27 +9,27 @@
 #include <ros/ros.h>
 
 
-namespace franka_control_ros {
+namespace franka_ros_controllers {
 
-bool JointPositionController::init(hardware_interface::RobotHW* robot_hardware,
+bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_hardware,
                                           ros::NodeHandle& node_handle) {
 
   desired_joints_subscriber_ = node_handle.subscribe(
-      "/franka_control_ros/joint_position_commands", 20, &JointPositionController::jointPosCmdCallback, this,
+      "/franka_ros_controllers/joint_commands", 20, &PositionJointPositionController::jointPosCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
   position_joint_interface_ = robot_hardware->get<hardware_interface::PositionJointInterface>();
   if (position_joint_interface_ == nullptr) {
     ROS_ERROR(
-        "JointPositionController: Error getting position joint interface from hardware!");
+        "PositionJointPositionController: Error getting position joint interface from hardware!");
     return false;
   }
   std::vector<std::string> joint_names;
   if (!node_handle.getParam("joint_names", joint_names)) {
-    ROS_ERROR("JointPositionController: Could not parse joint names");
+    ROS_ERROR("PositionJointPositionController: Could not parse joint names");
   }
   if (joint_names.size() != 7) {
-    ROS_ERROR_STREAM("JointPositionController: Wrong number of joint names, got "
+    ROS_ERROR_STREAM("PositionJointPositionController: Wrong number of joint names, got "
                      << joint_names.size() << " instead of 7 names!");
     return false;
   }
@@ -39,7 +39,7 @@ bool JointPositionController::init(hardware_interface::RobotHW* robot_hardware,
       position_joint_handles_[i] = position_joint_interface_->getHandle(joint_names[i]);
     } catch (const hardware_interface::HardwareInterfaceException& e) {
       ROS_ERROR_STREAM(
-          "JointPositionController: Exception getting joint handles: " << e.what());
+          "PositionJointPositionController: Exception getting joint handles: " << e.what());
       return false;
     }
   }
@@ -47,7 +47,7 @@ bool JointPositionController::init(hardware_interface::RobotHW* robot_hardware,
   return true;
 }
 
-void JointPositionController::starting(const ros::Time& /* time */) {
+void PositionJointPositionController::starting(const ros::Time& /* time */) {
   for (size_t i = 0; i < 7; ++i) {
     initial_pos_[i] = position_joint_handles_[i].getPosition();
   }
@@ -56,7 +56,7 @@ void JointPositionController::starting(const ros::Time& /* time */) {
   pos_d_target_ = initial_pos_;
 }
 
-void JointPositionController::update(const ros::Time& time,
+void PositionJointPositionController::update(const ros::Time& time,
                                             const ros::Duration& period) {
   for (size_t i = 0; i < 7; ++i) {
     position_joint_handles_[i].setCommand(pos_d_[i]);
@@ -67,11 +67,11 @@ void JointPositionController::update(const ros::Time& time,
   }
 }
 
-void JointPositionController::jointPosCmdCallback(const sensor_msgs::JointStateConstPtr& msg) {
+void PositionJointPositionController::jointPosCmdCallback(const sensor_msgs::JointStateConstPtr& msg) {
 
     if (msg->position.size() != 7) {
       ROS_ERROR_STREAM(
-          "JointPositionController: Published Commands are not of size 7");
+          "PositionJointPositionController: Published Commands are not of size 7");
       pos_d_ = prev_pos_;
       pos_d_target_ = prev_pos_;
     }
@@ -81,7 +81,7 @@ void JointPositionController::jointPosCmdCallback(const sensor_msgs::JointStateC
     }
 }
 
-}  // namespace franka_control_ros
+}  // namespace franka_ros_controllers
 
-PLUGINLIB_EXPORT_CLASS(franka_control_ros::JointPositionController,
+PLUGINLIB_EXPORT_CLASS(franka_ros_controllers::PositionJointPositionController,
                        controller_interface::ControllerBase)
