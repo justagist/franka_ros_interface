@@ -1,2 +1,3 @@
 from .robot_params import RobotParams
-from .arm import Arm
+from .arm import FrankaArm
+from .gripper import Gripper
