@@ -269,6 +269,15 @@ void CustomFrankaStateController::publishFrankaState(const ros::Time& time) {
     static_assert(
         sizeof(robot_state_.cartesian_collision) == sizeof(robot_state_.cartesian_contact),
         "Robot state Cartesian members do not have same size");
+    static_assert(
+        sizeof(robot_state_.cartesian_collision) == sizeof(robot_state_.O_dP_EE_c),
+        "Robot state Cartesian members do not have same size");
+    static_assert(
+        sizeof(robot_state_.cartesian_collision) == sizeof(robot_state_.O_dP_EE_d),
+        "Robot state Cartesian members do not have same size");
+    static_assert(
+        sizeof(robot_state_.cartesian_collision) == sizeof(robot_state_.O_ddP_EE_c),
+        "Robot state Cartesian members do not have same size");
     for (size_t i = 0; i < robot_state_.cartesian_collision.size(); i++) {
       publisher_franka_state_.msg_.cartesian_collision[i] = robot_state_.cartesian_collision[i];
       publisher_franka_state_.msg_.cartesian_contact[i] = robot_state_.cartesian_contact[i];
@@ -288,10 +297,6 @@ void CustomFrankaStateController::publishFrankaState(const ros::Time& time) {
                   "Robot state joint members do not have same size");
     static_assert(sizeof(robot_state_.q) == sizeof(robot_state_.tau_J_d),
                   "Robot state joint members do not have same size");
-    static_assert(sizeof(robot_state_.q) == sizeof(robot_state_.theta),
-                  "Robot state joint members do not have same size");
-    static_assert(sizeof(robot_state_.q) == sizeof(robot_state_.dtheta),
-                  "Robot state joint members do not have same size");
     static_assert(sizeof(robot_state_.q) == sizeof(robot_state_.joint_collision),
                   "Robot state joint members do not have same size");
     static_assert(sizeof(robot_state_.q) == sizeof(robot_state_.joint_contact),
@@ -303,8 +308,6 @@ void CustomFrankaStateController::publishFrankaState(const ros::Time& time) {
       publisher_franka_state_.msg_.dq_d[i] = robot_state_.dq_d[i];
       publisher_franka_state_.msg_.dtau_J[i] = robot_state_.dtau_J[i];
       publisher_franka_state_.msg_.tau_J_d[i] = robot_state_.tau_J_d[i];
-      publisher_franka_state_.msg_.theta[i] = robot_state_.theta[i];
-      publisher_franka_state_.msg_.dtheta[i] = robot_state_.dtheta[i];
       publisher_franka_state_.msg_.joint_collision[i] = robot_state_.joint_collision[i];
       publisher_franka_state_.msg_.joint_contact[i] = robot_state_.joint_contact[i];
       publisher_franka_state_.msg_.tau_ext_hat_filtered[i] = robot_state_.tau_ext_hat_filtered[i];
@@ -443,11 +446,12 @@ void CustomFrankaStateController::publishTipState(const ros::Time& time) {
   if (publisher_tip_state_.trylock()) {
     for (size_t i = 0; i < robot_state_.O_T_EE.size(); i++) {
       publisher_tip_state_.msg_.O_T_EE[i] = robot_state_.O_T_EE[i];
+    }
+    for (size_t i = 0; i < robot_state_.O_dP_EE_c.size(); i++) {
       publisher_tip_state_.msg_.O_dP_EE_c[i] = robot_state_.O_dP_EE_c[i];
       publisher_tip_state_.msg_.O_dP_EE_d[i] = robot_state_.O_dP_EE_d[i];
       publisher_tip_state_.msg_.O_ddP_EE_c[i] = robot_state_.O_ddP_EE_c[i];
     }
-
     publisher_tip_state_.msg_.O_F_ext_hat_K.header.frame_id = arm_id_ + "_link0";
     publisher_tip_state_.msg_.O_F_ext_hat_K.header.stamp = time;
     publisher_tip_state_.msg_.O_F_ext_hat_K.wrench.force.x = robot_state_.O_F_ext_hat_K[0];

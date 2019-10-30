@@ -177,15 +177,48 @@ class Arm(object):
                                        [ jac[4], jac[10], jac[16], jac[22], jac[28], jac[34], jac[40] ],
                                        [ jac[5], jac[11], jac[17], jac[23], jac[29], jac[35], jac[41] ] ] )
 
+        # print msg.O_T_EE_d
+
 
     def _on_endpoint_state(self, msg):
 
-        cart_pose_trans_mat = msg.O_T_EE
+        cart_pose_trans_mat = np.asarray( [ [msg.O_T_EE[0],msg.O_T_EE[4],msg.O_T_EE[8],msg.O_T_EE[12] ],
+                                            [msg.O_T_EE[1],msg.O_T_EE[5],msg.O_T_EE[9],msg.O_T_EE[13] ],
+                                            [msg.O_T_EE[2],msg.O_T_EE[6],msg.O_T_EE[10],msg.O_T_EE[14] ],
+                                            [msg.O_T_EE[3],msg.O_T_EE[7],msg.O_T_EE[11],msg.O_T_EE[15] ] ])
+
         self._cartesian_pose = {
-            'position': self.Point(cart_pose_trans_mat[12], cart_pose_trans_mat[13], cart_pose_trans_mat[14]),
-            'orientation': quaternion.from_rotation_matrix(np.asarray([[cart_pose_trans_mat[0],cart_pose_trans_mat[4],cart_pose_trans_mat[8]],
-                                                                      [cart_pose_trans_mat[1],cart_pose_trans_mat[5],cart_pose_trans_mat[9]],
-                                                                      [cart_pose_trans_mat[2],cart_pose_trans_mat[6],cart_pose_trans_mat[10]]]))}
+            'position': cart_pose_trans_mat[:3,3],
+            'orientation': quaternion.from_rotation_matrix(cart_pose_trans_mat[:3,:3]) }
+
+
+        self._cartesian_velocity = {
+                'linear': np.asarray([msg.O_dP_EE_d[0], msg.O_dP_EE_d[1], msg.O_dP_EE_d[2]]),
+                'angular': np.asarray([msg.O_dP_EE_d[3], msg.O_dP_EE_d[4], msg.O_dP_EE_d[5]]) }
+        #     'linear': self.Point(
+        #         msg.twist.linear.x,
+        #         msg.twist.linear.y,
+        #         msg.twist.linear.z,
+        #     ),
+        #     'angular': self.Point(
+        #         msg.twist.angular.x,
+        #         msg.twist.angular.y,
+        #         msg.twist.angular.z,
+        #     ),
+        # }
+        # # _wrench = {'force': (x, y, z), 'torque': (x, y, z)}
+        # self._cartesian_effort = {
+        #     'force': self.Point(
+        #         msg.wrench.force.x,
+        #         msg.wrench.force.y,
+        #         msg.wrench.force.z,
+        #     ),
+        #     'torque': self.Point(
+        #         msg.wrench.torque.x,
+        #         msg.wrench.torque.y,
+        #         msg.wrench.torque.z,
+        #     ),
+        # }
 
 
     def _on_gripper_states(self, msg):
