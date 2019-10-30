@@ -20,8 +20,6 @@ class Gripper(object):
 
         ns = '/'+self.name +'/'
 
-        print "this", ns
-
         self._joint_positions = dict()
         self._joint_names = gripper_joint_names
         self._joint_velocity = dict()

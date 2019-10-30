@@ -13,7 +13,7 @@ import franka_interface
 from robot_params import RobotParams
 
 
-class FrankaArm(object):
+class Arm(object):
 
     """ 
     Interface Class for an arm of Franka Panda robot
@@ -47,7 +47,7 @@ class FrankaArm(object):
         joint_names = params.get_joint_names()
         if not joint_names:
             rospy.logerr("Cannot detect joint names for arm on this "
-                         "robot. Exiting FrankaArm.init().")
+                         "robot. Exiting Arm.init().")
                          
             return   
 
@@ -134,7 +134,7 @@ class FrankaArm(object):
         rospy.sleep(2.)
 
     def _configure_gripper(self, gripper_joint_names):
-        
+
         self._gripper = franka_interface.Gripper(gripper_joint_names = gripper_joint_names)
         if not self._gripper.exists:
             self._gripper = None
@@ -287,7 +287,7 @@ class FrankaArm(object):
 
 if __name__ == '__main__':
     rospy.init_node('test')
-    r = FrankaArm()
+    r = Arm()
 
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
