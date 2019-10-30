@@ -12,24 +12,25 @@
     <arg name="robot_ip" value="$(env FRANKA_ROBOT_IP)" />
   </include>
 
-   <node name="franka_control" pkg="franka_control" type="franka_control_node" output="screen" required="true">
+  <node name="franka_control" pkg="franka_control" type="franka_control_node" output="screen" required="true">
     <rosparam command="load" file="$(find franka_control)/config/franka_control_node.yaml" />
     <param name="robot_ip" value="$(env FRANKA_ROBOT_IP)" />
+    <param name="publish_frequency" value="$(arg rate)"/>
   </node>
 
-  <!-- <rosparam command="load" file="$(find franka_control)/config/default_controllers.yaml" /> -->
-  <node name="state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="franka_state_controller"/>
+  <rosparam command="load" file="$(find franka_interface)/config/basic_controllers.yaml" />
+  <node name="state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="custom_franka_state_controller"/>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
     <param name="publish_frequency" value="$(arg rate)"/>
   </node>
   <node name="joint_state_publisher" type="joint_state_publisher" pkg="joint_state_publisher" output="screen">
-    <rosparam if="$(arg load_gripper)" param="source_list">[franka_state_controller/joint_states, franka_gripper/joint_states] </rosparam>
-    <rosparam unless="$(arg load_gripper)" param="source_list">[franka_state_controller/joint_states] </rosparam>
+    <rosparam if="$(arg load_gripper)" param="source_list">[custom_franka_state_controller/joint_states, franka_gripper/joint_states] </rosparam>
+    <rosparam unless="$(arg load_gripper)" param="source_list">[custom_franka_state_controller/joint_states] </rosparam>
     <param name="rate" value="$(arg rate)"/>
   </node>
   <node name="joint_state_desired_publisher" type="joint_state_publisher" pkg="joint_state_publisher" output="screen">
-    <rosparam if="$(arg load_gripper)" param="source_list">[franka_state_controller/joint_states_desired, franka_gripper/joint_states] </rosparam>
-    <rosparam unless="$(arg load_gripper)" param="source_list">[franka_state_controller/joint_states_desired] </rosparam>
+    <rosparam if="$(arg load_gripper)" param="source_list">[custom_franka_state_controller/joint_states_desired, franka_gripper/joint_states] </rosparam>
+    <rosparam unless="$(arg load_gripper)" param="source_list">[custom_franka_state_controller/joint_states_desired] </rosparam>
     <param name="rate" value="$(arg rate)"/>
     <remap from="/joint_states" to="/joint_states_desired" />
   </node>
@@ -37,8 +38,8 @@
   <!--  -->
 
   <!-- <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller"/> -->
-  <!-- <node name="joint_position_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_position_controller"/> -->
-  <node name="joint_position_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_impedance_controller"/>
+  <node name="joint_position_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_position_controller"/>
+  <!-- <node name="joint_position_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_impedance_controller"/> -->
 <!--   <include file="$(find panda_moveit_config)/launch/move_group.launch">
     <arg name="load_gripper" value="$(arg load_gripper)" />
   </include> -->
