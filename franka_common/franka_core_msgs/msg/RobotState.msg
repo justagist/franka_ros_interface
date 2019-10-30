@@ -8,8 +8,6 @@ float64[6] cartesian_contact
 
 float64[7] q_d
 float64[7] dq_d
-float64[7] theta # motor angle
-float64[7] dtheta
 # float64[7] tau_J
 float64[7] dtau_J # torque derivative
 float64[7] tau_J_d # desired joint torque
