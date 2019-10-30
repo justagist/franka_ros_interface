@@ -37,14 +37,14 @@ float64 m_total
 
 float64[7] gravity 
 float64[7] coriolis 
-float64[49] mass_matrix # mass matrix of end-effector wrt base frame
+float64[49] mass_matrix # mass matrix of end-effector wrt base frame # Vectorized 7x7, column-major
 
-float64[42] O_Jac_EE # zero jacobian of end-effector frame 
+float64[42] O_Jac_EE # zero jacobian of end-effector frame. Vectorized 6x7 Jacobian, column-major
 
-# float64[16] O_T_EE # ----- in tip state
-float64[16] O_T_EE_d # Last desired end effector pose of motion generation in base frame.
-float64[16] F_T_EE # End effector frame pose in flange frame
-# float64[16] EE_T_K # Stiffness frame pose in end effector frame
+# float64[16] O_T_EE # ----- in tip state # Vectorized 4x4, column-major
+float64[16] O_T_EE_d # Last desired end effector pose of motion generation in base frame.  # Vectorized 4x4, column-major
+float64[16] F_T_EE # End effector frame pose in flange frame # Vectorized 4x4, column-major
+# float64[16] EE_T_K # Stiffness frame pose in end effector frame # Vectorized 4x4, column-major
 float64 time
 
 uint8 ROBOT_MODE_OTHER=0

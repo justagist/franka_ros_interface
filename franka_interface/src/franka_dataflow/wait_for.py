@@ -40,6 +40,7 @@ def wait_for(test, timeout=1.0, raise_on_error=True, rate=100,
         elif (not notimeout) and (rospy.get_time() >= end_time):
             if raise_on_error:
                 raise OSError(errno.ETIMEDOUT, timeout_msg)
+            rospy.loginfo(timeout_msg)
             return False
         if callable(body):
             body()

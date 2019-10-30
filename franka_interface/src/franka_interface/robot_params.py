@@ -50,6 +50,19 @@ class RobotParams(object):
             _log_networking_error()
         return joint_names
 
+    def get_gripper_joint_names(self):
+
+        joint_names = list()
+        try:
+            joint_names = rospy.get_param(
+                            "/franka_gripper/joint_names")
+        except KeyError:
+            rospy.loginfo(("RobotParam:get_gripper_joint_names cannot detect joint_names for gripper. Gripper not connected to robot."))
+            return None
+        except (socket.error, socket.gaierror):
+            _log_networking_error()
+        return joint_names
+
     def get_robot_name(self):
         """
         Return the name of class of robot from ROS parameter.
