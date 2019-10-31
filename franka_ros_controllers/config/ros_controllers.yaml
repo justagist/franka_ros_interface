@@ -1,4 +1,4 @@
-joint_position_controller:
+position_joint_position_controller:
     type: franka_ros_controllers/PositionJointPositionController
     joint_names:
         - panda_joint1
@@ -36,7 +36,7 @@ joint_position_controller:
 #     panda_joint7:
 #       goal: 0.05
 
-joint_impedance_controller:
+effort_joint_impedance_controller:
     type: franka_ros_controllers/EffortJointImpedanceController
     arm_id: panda
     joint_names:
