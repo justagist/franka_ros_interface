@@ -8,7 +8,7 @@
 #include <dynamic_reconfigure/server.h>
 #include <franka_ros_controllers/jointControllerParamsConfig.h>
 
-#include <sensor_msgs/JointState.h>
+#include <franka_core_msgs/JointCommand.h>
 #include <controller_interface/multi_interface_controller.h>
 
 #include <hardware_interface/joint_command_interface.h>
@@ -48,7 +48,7 @@ class PositionJointPositionController : public controller_interface::MultiInterf
 
   void jointControllerParamCallback(franka_ros_controllers::jointControllerParamsConfig& config,
                                uint32_t level);
-  void jointPosCmdCallback(const sensor_msgs::JointStateConstPtr& msg);
+  void jointPosCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg);
 };
 
 }  // namespace franka_ros_controllers

@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <sensor_msgs/JointState.h>
+#include <franka_core_msgs/JointCommand.h>
 
 #include <controller_interface/multi_interface_controller.h>
 #include <hardware_interface/joint_command_interface.h>
@@ -58,7 +58,7 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   std::array<double, 7> last_tau_d_{};
 
   ros::Subscriber desired_joints_subscriber_;
-  void jointCmdCallback(const sensor_msgs::JointStateConstPtr& msg);
+  void jointCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg);
 };
 
 }  // namespace franka_example_controllers

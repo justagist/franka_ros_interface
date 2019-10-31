@@ -164,8 +164,9 @@ std::array<double, 7> EffortJointImpedanceController::saturateTorqueRate(
   return tau_d_saturated;
 }
 
-void EffortJointImpedanceController::jointCmdCallback(const sensor_msgs::JointStateConstPtr& msg) {
+void EffortJointImpedanceController::jointCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg) {
 
+  if (msg->mode == franka_core_msgs::JointCommand::TORQUE_MODE){
     if (msg->position.size() != 7) {
       ROS_ERROR_STREAM(
           "EffortJointImpedanceController: Published Commands are not of size 7");
@@ -177,6 +178,8 @@ void EffortJointImpedanceController::jointCmdCallback(const sensor_msgs::JointSt
       std::copy_n(msg->velocity.begin(), 7, dq_d_.begin()); // if velocity is not there, the controller fails!!
       // std::cout << "Desired Joint Pos: " << pos_d_target_[0] << "  " << pos_d_target_[2] << std::endl;
     }
+  }
+  else ROS_ERROR_STREAM("EffortJointImpedanceController: Published Command msg are not it JointCommand::TORQUE_MODE! Dropping message");
 }
 
 }  // namespace franka_ros_controllers

@@ -82,18 +82,21 @@ void PositionJointPositionController::update(const ros::Time& time,
 
 }
 
-void PositionJointPositionController::jointPosCmdCallback(const sensor_msgs::JointStateConstPtr& msg) {
+void PositionJointPositionController::jointPosCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg) {
 
-    if (msg->position.size() != 7) {
-      ROS_ERROR_STREAM(
-          "PositionJointPositionController: Published Commands are not of size 7");
-      pos_d_ = prev_pos_;
-      pos_d_target_ = prev_pos_;
+    if (msg->mode == franka_core_msgs::JointCommand::POSITION_MODE){
+      if (msg->position.size() != 7) {
+        ROS_ERROR_STREAM(
+            "PositionJointPositionController: Published Commands are not of size 7");
+        pos_d_ = prev_pos_;
+        pos_d_target_ = prev_pos_;
+      }
+      else {
+        std::copy_n(msg->position.begin(), 7, pos_d_target_.begin());
+        // std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
+      }
     }
-    else {
-      std::copy_n(msg->position.begin(), 7, pos_d_target_.begin());
-      // std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
-    }
+    else ROS_ERROR_STREAM("PositionJointPositionController: Published Command msg are not it JointCommand::POSITION_MODE! Dropping message");
 }
 
 void PositionJointPositionController::jointControllerParamCallback(franka_ros_controllers::jointControllerParamsConfig& config,

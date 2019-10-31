@@ -1,5 +1,6 @@
 import rospy
 from sensor_msgs.msg import JointState
+from franka_core_msgs.msg import JointCommand
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -28,10 +29,10 @@ if __name__ == '__main__':
     
 
     rospy.init_node("test_node")
-    pub = rospy.Publisher('/franka_ros_controllers/joint_commands',JointState, queue_size = 1, tcp_nodelay = True)
+    pub = rospy.Publisher('/franka_ros_controllers/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
     rospy.Subscriber('/joint_states', JointState, callback)
     
-    rate = rospy.Rate(100)
+    rate = rospy.Rate(500)
     upd = 0.002
 
     delta = upd
@@ -74,7 +75,8 @@ if __name__ == '__main__':
         #     delta = upd
 
 
-        pubmsg = JointState()
+        pubmsg = JointCommand()
+        pubmsg.mode = pubmsg.TORQUE_MODE
         pubmsg.position = vals
         pubmsg.velocity = vels
         # pubmsg.position[6] = pubmsg.position[6] + delta
