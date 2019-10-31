@@ -1,3 +1,7 @@
+# Modified from: Rethink Robotics Intera SDK
+# Modified by: Saif Sidhik <sxs1412@bham.ac.uk>
+# Modified for: franka_ros_interface
+#
 # Copyright (c) 2013-2018, Rethink Robotics Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

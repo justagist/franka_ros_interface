@@ -1,3 +1,18 @@
+# 
+# Modified from: Rethink Robotics Intera SDK
+# Modified by: Saif Sidhik <sxs1412@bham.ac.uk>
+# Modified for: franka_ros_interface
+# 
+# @package: franka_interface
+# @metapackage: franka_ros_interface 
+# @author: Saif Sidhik <sxs1412@bham.ac.uk>
+#
+# @info: 
+#   Inteface Class for Franka robot arm.
+#
+#   Todo: send control commands (position, velocity, torque), get cartesian velocity, finish getting robot state
+#
+
 import rospy
 import numpy as np
 import quaternion

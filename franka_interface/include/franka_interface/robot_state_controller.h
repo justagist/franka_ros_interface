@@ -24,7 +24,7 @@
 namespace franka_interface {
 
 /**
- * Controller to publish the robot state as ROS topics.
+ * Custom controller to publish the robot state as ROS topics.
  */
 class CustomFrankaStateController
     : public controller_interface::MultiInterfaceController<franka_hw::FrankaStateInterface,

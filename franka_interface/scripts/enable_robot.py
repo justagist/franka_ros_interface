@@ -1,4 +1,26 @@
 #! /usr/bin/env python
+
+# 
+# Modified from: Rethink Robotics Intera SDK
+# Modified by: Saif Sidhik <sxs1412@bham.ac.uk>
+# Modified for: franka_ros_interface
+# 
+# @package: franka_interface
+# @metapackage: franka_ros_interface 
+# @author: Saif Sidhik <sxs1412@bham.ac.uk>
+#
+# @info: 
+#   Utility script for enabling, disabling and checking status of robot.
+#     Usage:
+#         enable_robot.py <arg>
+#
+#     @Args:
+#         <arg> :  -s (--state) / -e (--enable) / -d (--disable) / -r (--reset) / -S (--stop) 
+#
+#     Not implemented: Disabling robot.
+#     Todo: Change reset request to service request instead of publishing message to topic.
+#
+
 import argparse
 import os
 import sys
@@ -32,7 +54,6 @@ def main():
         parser.exit(0, "No action defined\n")
 
     rs = franka_interface.RobotEnable()
-    # print args.actions
     try:
         for act in args.actions:
             if act == 'state':
