@@ -1,3 +1,13 @@
+# @package: franka_interface
+# @metapackage: franka_ros_interface 
+# @author: Saif Sidhik <sxs1412@bham.ac.uk>
+#
+# @info: 
+#       Wrapper class for controlling and monitoring robot state.
+#
+#   Todo: fix reset request to use service call instead of publishing on topic, set up stopping, redefine status class.
+#
+
 
 import rospy
 from threading import Lock

@@ -1,3 +1,12 @@
+# @package: franka_interface
+# @metapackage: franka_ros_interface 
+# @author: Saif Sidhik <sxs1412@bham.ac.uk>
+#
+# @info: 
+#   Inteface Class for Franka gripper.
+#
+#   Todo: send control commands (close, open, move to position)
+#
 
 import rospy
 import franka_dataflow
