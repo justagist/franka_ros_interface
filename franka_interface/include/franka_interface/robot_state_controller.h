@@ -20,6 +20,7 @@
 #include <realtime_tools/realtime_publisher.h>
 #include <sensor_msgs/JointState.h>
 #include <tf2_msgs/TFMessage.h>
+#include <Eigen/Dense>
 
 namespace franka_interface {
 
