@@ -13,11 +13,13 @@
 #   Todo: send control commands (position, velocity, torque), get cartesian velocity, finish getting robot state
 #
 
+import enum
 import rospy
-import numpy as np
 import quaternion
+import numpy as np
 from copy import deepcopy
 import collections, warnings
+from rospy_message_converter import message_converter
 
 from franka_core_msgs.msg import JointCommand
 from franka_core_msgs.msg import RobotState, TipState
@@ -27,14 +29,29 @@ import franka_dataflow
 import franka_interface
 from robot_params import RobotParams
 
-
-class Arm(object):
+class ArmInterface(object):
 
     """ 
     Interface Class for an arm of Franka Panda robot
     """
+
     # Containers
-    Point = collections.namedtuple('Point', ['x', 'y', 'z'])
+    @enum.unique
+    class RobotMode(enum.IntEnum):
+        """
+            Enum class for specifying and retrieving the current robot mode.
+        """
+        # ----- access using parameters name or value
+        # ----- eg. RobotMode(0).name & RobotMode(0).value
+        # ----- or  RobotMode['ROBOT_MODE_OTHER'].name & RobotMode['ROBOT_MODE_OTHER'].value
+
+        ROBOT_MODE_OTHER                        = 0
+        ROBOT_MODE_IDLE                         = 1
+        ROBOT_MODE_MOVE                         = 2
+        ROBOT_MODE_GUIDING                      = 3
+        ROBOT_MODE_REFLEX                       = 4
+        ROBOT_MODE_USER_STOPPED                 = 5
+        ROBOT_MODE_AUTOMATIC_ERROR_RECOVERY     = 6
 
     def __init__(self, synchronous_pub=False):
         """
@@ -74,10 +91,14 @@ class Arm(object):
         self._cartesian_pose = dict()
         self._cartesian_velocity = dict()
         self._cartesian_effort = dict()
+        self._stiffness_frame_effort = dict()
         self._errors = dict()
         self._collision_state = False
         self._tip_states = None
         self._jacobian = None
+        self._cartesian_contact = None
+
+        self._robot_mode = False
 
         ns = self.name+'/'
 
@@ -108,13 +129,13 @@ class Arm(object):
             queue_size=1,
             tcp_nodelay=True)
 
-        gripper_state_topic = '/franka_gripper/joint_states'
-        _joint_state_sub = rospy.Subscriber(
-            gripper_state_topic,
-            JointState,
-            self._on_gripper_states,
-            queue_size=1,
-            tcp_nodelay=True)
+        # gripper_state_topic = '/franka_gripper/joint_states'
+        # _joint_state_sub = rospy.Subscriber(
+        #     gripper_state_topic,
+        #     JointState,
+        #     self._on_gripper_states,
+        #     queue_size=1,
+        #     tcp_nodelay=True)
 
         _cartesian_state_sub = rospy.Subscriber(
             '/custom_franka_state_controller/tip_state',
@@ -150,11 +171,10 @@ class Arm(object):
 
     def _configure_gripper(self, gripper_joint_names):
 
-        self._gripper = franka_interface.Gripper(gripper_joint_names = gripper_joint_names)
+        self._gripper = franka_interface.GripperInterface(gripper_joint_names = gripper_joint_names)
         if not self._gripper.exists:
             self._gripper = None
             return
-
 
     def get_gripper(self):
         return self._gripper
@@ -181,35 +201,84 @@ class Arm(object):
                 self._joint_velocity[name] = msg.velocity[idx]
                 self._joint_effort[name] = msg.effort[idx]
 
-
     def _on_robot_state(self, msg):
 
-        jac = msg.O_Jac_EE
-        self._jacobian = np.asarray( [ [ jac[0], jac[6],  jac[12], jac[18], jac[24], jac[30], jac[36] ],
-                                       [ jac[1], jac[7],  jac[13], jac[19], jac[25], jac[31], jac[37] ],
-                                       [ jac[2], jac[8],  jac[14], jac[20], jac[26], jac[32], jac[38] ],
-                                       [ jac[3], jac[9],  jac[15], jac[21], jac[27], jac[33], jac[39] ],
-                                       [ jac[4], jac[10], jac[16], jac[22], jac[28], jac[34], jac[40] ],
-                                       [ jac[5], jac[11], jac[17], jac[23], jac[29], jac[35], jac[41] ] ] )
+        self._robot_mode = self.RobotMode(msg.robot_mode)
 
-        # print msg.O_T_EE_d
+        self._robot_mode_ok = (self._robot_mode.value != self.RobotMode.ROBOT_MODE_REFLEX) and (self._robot_mode.value != self.RobotMode.ROBOT_MODE_USER_STOPPED)
+
+        jac = msg.O_Jac_EE
+        self._jacobian = np.asarray(msg.O_Jac_EE).reshape(6,7,order = 'F')
+
+        self._cartesian_velocity = {
+                'linear': np.asarray([msg.O_dP_EE[0], msg.O_dP_EE[1], msg.O_dP_EE[2]]),
+                'angular': np.asarray([msg.O_dP_EE[3], msg.O_dP_EE[4], msg.O_dP_EE[5]]) }
+
+        self._cartesian_contact = msg.cartesian_contact
+        self._cartesian_collision = msg.cartesian_collision
+
+        self._joint_contact = msg.joint_contact
+        self._joint_collision = msg.joint_collision
+
+        self._flange_to_ee_trans_mat = msg.F_T_EE
+
+        self.q_d = msg.q_d
+        self.dq_d = msg.dq_d
+
+        self._errors = message_converter.convert_ros_message_to_dictionary(msg.current_errors)
+
+
+    def get_current_EE_frame_transformation(self, as_mat = False):
+        return self._flange_to_ee_trans_mat if not as_mat else np.asarray(self._flange_to_ee_trans_mat).reshape(4,4,order='F')
+
+    def get_robot_status(self):
+        """
+        Return dict with all robot status information.
+
+        @rtype: dict
+        @return: ['robot_mode' (RobotMode object), 'robot_status' (bool), 'errors' (dict() of errors and their truth value), 'error_in_curr_status' (bool)]
+        """
+        return {'robot_mode': self._robot_mode, 'robot_status': self._robot_mode_ok, 'errors': self._errors, 'error_in_current_state' : self.error_in_current_state()}
+
+    def in_safe_state(self):
+        """
+        Return True if the specified limb is in safe state (no collision, reflex, errors etc.).
+
+        @rtype: bool
+        @return: True if the arm is in safe state, False otherwise.
+        """
+        return self._robot_mode_ok and not self.error_in_current_state()
+
+    def error_in_current_state(self):
+        """
+        Return True if the specified limb has experienced an error.
+
+        @rtype: bool
+        @return: True if the arm has error, False otherwise.
+        """
+        return not all([e == False for e in self._errors.values()])
+
+    def what_error(self):
+        """
+        Return list of error messages if there is error in robot state
+
+        @rtype: [str]
+        @return: list of names of current errors in robot state
+        """
+        return [e for e in self._errors if self._errors[e] == True] if self.error_in_current_state() else None
 
 
     def _on_endpoint_state(self, msg):
 
-        cart_pose_trans_mat = np.asarray( [ [msg.O_T_EE[0],msg.O_T_EE[4],msg.O_T_EE[8],msg.O_T_EE[12] ],
-                                            [msg.O_T_EE[1],msg.O_T_EE[5],msg.O_T_EE[9],msg.O_T_EE[13] ],
-                                            [msg.O_T_EE[2],msg.O_T_EE[6],msg.O_T_EE[10],msg.O_T_EE[14] ],
-                                            [msg.O_T_EE[3],msg.O_T_EE[7],msg.O_T_EE[11],msg.O_T_EE[15] ] ])
+        cart_pose_trans_mat = np.asarray(msg.O_T_EE).reshape(4,4,order='F')
 
         self._cartesian_pose = {
             'position': cart_pose_trans_mat[:3,3],
             'orientation': quaternion.from_rotation_matrix(cart_pose_trans_mat[:3,:3]) }
 
 
-        self._cartesian_velocity = {
-                'linear': np.asarray([msg.O_dP_EE_d[0], msg.O_dP_EE_d[1], msg.O_dP_EE_d[2]]),
-                'angular': np.asarray([msg.O_dP_EE_d[3], msg.O_dP_EE_d[4], msg.O_dP_EE_d[5]]) }
+
+        
         #     'linear': self.Point(
         #         msg.twist.linear.x,
         #         msg.twist.linear.y,
@@ -222,27 +291,34 @@ class Arm(object):
         #     ),
         # }
         # # _wrench = {'force': (x, y, z), 'torque': (x, y, z)}
-        # self._cartesian_effort = {
-        #     'force': self.Point(
-        #         msg.wrench.force.x,
-        #         msg.wrench.force.y,
-        #         msg.wrench.force.z,
-        #     ),
-        #     'torque': self.Point(
-        #         msg.wrench.torque.x,
-        #         msg.wrench.torque.y,
-        #         msg.wrench.torque.z,
-        #     ),
-        # }
+        self._cartesian_effort = {
+            'force': np.asarray([ msg.O_F_ext_hat_K.wrench.force.x,
+                                  msg.O_F_ext_hat_K.wrench.force.y,
+                                  msg.O_F_ext_hat_K.wrench.force.z]),
+
+            'torque': np.asarray([ msg.O_F_ext_hat_K.wrench.torque.x,
+                                   msg.O_F_ext_hat_K.wrench.torque.y,
+                                   msg.O_F_ext_hat_K.wrench.torque.z])
+        }
+
+        self._stiffness_frame_effort = {
+            'force': np.asarray([ msg.K_F_ext_hat_K.wrench.force.x,
+                                  msg.K_F_ext_hat_K.wrench.force.y,
+                                  msg.K_F_ext_hat_K.wrench.force.z]),
+
+            'torque': np.asarray([ msg.K_F_ext_hat_K.wrench.torque.x,
+                                   msg.K_F_ext_hat_K.wrench.torque.y,
+                                   msg.K_F_ext_hat_K.wrench.torque.z])
+        }
 
 
-    def _on_gripper_states(self, msg):
+    # def _on_gripper_states(self, msg):
 
-        for idx, name in enumerate(msg.name):
-            if name in self._joint_names:
-                self._joint_angle[name] = msg.position[idx]
-                self._joint_velocity[name] = msg.velocity[idx]
-                self._joint_effort[name] = msg.effort[idx]
+    #     for idx, name in enumerate(msg.name):
+    #         if name in self._joint_names:
+    #             self._joint_angle[name] = msg.position[idx]
+    #             self._joint_velocity[name] = msg.velocity[idx]
+    #             self._joint_effort[name] = msg.effort[idx]
 
 
     def joint_angle(self, joint):
@@ -324,10 +400,9 @@ class Arm(object):
 
         C{pose = {'position': (x, y, z), 'orientation': (x, y, z, w)}}
 
-          - 'position': Cartesian coordinates x,y,z in
-                        namedtuple L{Limb.Point}
-          - 'orientation': quaternion x,y,z,w in named tuple
-                           L{Limb.Quaternion}
+          - 'position': np.array of x, y, z
+          - 'orientation': quaternion x,y,z,w in quaternion format
+
         """
         return deepcopy(self._cartesian_pose)
 
