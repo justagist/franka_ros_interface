@@ -28,7 +28,7 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
 
  private:
   // Saturation
-  std::array<double, 7> saturateTorqueRate(
+  static std::array<double, 7> saturateTorqueRate(
       const std::array<double, 7>& tau_d_calculated);  // NOLINT (readability-identifier-naming)
 
   std::unique_ptr<franka_hw::FrankaModelHandle> model_handle_;

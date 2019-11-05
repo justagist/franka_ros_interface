@@ -29,6 +29,8 @@ import franka_dataflow
 import franka_interface
 from robot_params import RobotParams
 
+from franka_tools import FrankaFramesInterface
+
 class ArmInterface(object):
 
     """ 
@@ -53,10 +55,12 @@ class ArmInterface(object):
         ROBOT_MODE_USER_STOPPED                 = 5
         ROBOT_MODE_AUTOMATIC_ERROR_RECOVERY     = 6
 
-    def __init__(self, synchronous_pub=False):
+    def __init__(self, ns = "/franka_ros_interface", synchronous_pub=False):
         """
         Constructor.
-
+        
+        @type ns: string
+        @param ns: namespace used by franka_ros_interface nodes
         @type synchronous_pub: bool
         @param synchronous_pub: designates the JointCommand Publisher
             as Synchronous if True and Asynchronous if False.
@@ -74,7 +78,8 @@ class ArmInterface(object):
             http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers#queue_size:_publish.28.29_behavior_and_queuing
         """
 
-        params = RobotParams()
+        self._ns = ns
+        params = RobotParams(ns)
 
         joint_names = params.get_joint_names()
         if not joint_names:
@@ -100,9 +105,12 @@ class ArmInterface(object):
 
         self._robot_mode = False
 
-        ns = self.name+'/'
+        ns = self._ns + self.name+'/'
 
         self._command_msg = JointCommand()
+
+        self._frames_interface = FrankaFramesInterface()
+
 
         queue_size = None if synchronous_pub else 1
         with warnings.catch_warnings():
@@ -115,13 +123,13 @@ class ArmInterface(object):
 
 
         _robot_state_subscriber = rospy.Subscriber(
-            '/custom_franka_state_controller/franka_state',
+            self._ns + '/custom_franka_state_controller/franka_state',
             RobotState,
             self._on_robot_state,
             queue_size=1,
             tcp_nodelay=True)
 
-        joint_state_topic = '/custom_franka_state_controller/joint_states'
+        joint_state_topic = self._ns + '/custom_franka_state_controller/joint_states'
         _joint_state_sub = rospy.Subscriber(
             joint_state_topic,
             JointState,
@@ -138,7 +146,7 @@ class ArmInterface(object):
         #     tcp_nodelay=True)
 
         _cartesian_state_sub = rospy.Subscriber(
-            '/custom_franka_state_controller/tip_state',
+            self._ns + '/custom_franka_state_controller/tip_state',
             TipState,
             self._on_endpoint_state,
             queue_size=1,
@@ -165,13 +173,17 @@ class ArmInterface(object):
         franka_dataflow.wait_for(lambda: self._jacobian is not None,
                                  timeout_msg=err_msg, timeout=5.0)
 
+
+        if not self._frames_interface.EE_frame_is_reset():
+            self.reset_frame(frame_name = 'EE')
+
         self._configure_gripper(params.get_gripper_joint_names())
         
         rospy.sleep(2.)
 
     def _configure_gripper(self, gripper_joint_names):
 
-        self._gripper = franka_interface.GripperInterface(gripper_joint_names = gripper_joint_names)
+        self._gripper = franka_interface.GripperInterface(ns = self._ns, gripper_joint_names = gripper_joint_names)
         if not self._gripper.exists:
             self._gripper = None
             return
@@ -220,7 +232,7 @@ class ArmInterface(object):
         self._joint_contact = msg.joint_contact
         self._joint_collision = msg.joint_collision
 
-        self._flange_to_ee_trans_mat = msg.F_T_EE
+        self._frames_interface._update_frame_data(msg.F_T_EE)
 
         self.q_d = msg.q_d
         self.dq_d = msg.dq_d
@@ -228,8 +240,8 @@ class ArmInterface(object):
         self._errors = message_converter.convert_ros_message_to_dictionary(msg.current_errors)
 
 
-    def get_current_EE_frame_transformation(self, as_mat = False):
-        return self._flange_to_ee_trans_mat if not as_mat else np.asarray(self._flange_to_ee_trans_mat).reshape(4,4,order='F')
+    # def get_current_EE_frame_transformation(self, as_mat = False):
+    #     return self._flange_to_ee_trans_mat if not as_mat else np.asarray(self._flange_to_ee_trans_mat).reshape(4,4,order='F')
 
     def get_robot_status(self):
         """
@@ -405,6 +417,10 @@ class ArmInterface(object):
 
         """
         return deepcopy(self._cartesian_pose)
+
+    def reset_frame(self, frame_name):
+
+        pass
 
 
 

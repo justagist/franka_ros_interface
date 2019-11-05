@@ -29,10 +29,11 @@ if __name__ == '__main__':
     
 
     rospy.init_node("test_node")
-    pub = rospy.Publisher('/franka_ros_controllers/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
-    rospy.Subscriber('/joint_states', JointState, callback)
+    pub = rospy.Publisher('/franka_ros_interface/effort_joint_impedance_controller/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
+    # pub = rospy.Publisher('/franka_ros_interface/position_joint_position_controller/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
+    rospy.Subscriber('/franka_ros_interface/custom_franka_state_controller/joint_states', JointState, callback)
     
-    rate = rospy.Rate(500)
+    rate = rospy.Rate(100)
     upd = 0.002
 
     delta = upd
@@ -77,6 +78,7 @@ if __name__ == '__main__':
 
         pubmsg = JointCommand()
         pubmsg.mode = pubmsg.TORQUE_MODE
+        # pubmsg.mode = pubmsg.POSITION_MODE
         pubmsg.position = vals
         pubmsg.velocity = vels
         # pubmsg.position[6] = pubmsg.position[6] + delta

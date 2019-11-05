@@ -100,7 +100,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   }
 
   desired_joints_subscriber_ = node_handle.subscribe(
-      "/franka_ros_controllers/joint_commands", 20, &EffortJointImpedanceController::jointCmdCallback, this,
+      "joint_commands", 20, &EffortJointImpedanceController::jointCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
   std::fill(dq_filtered_.begin(), dq_filtered_.end(), 0);
@@ -134,7 +134,7 @@ void EffortJointImpedanceController::update(const ros::Time& /*time*/,
     dq_filtered_[i] = (1 - alpha) * dq_filtered_[i] + alpha * robot_state.dq[i];
   }
 
-  std::array<double, 7> tau_d_calculated;
+  std::array<double, 7> tau_d_calculated{};
   for (size_t i = 0; i < 7; ++i) {
     tau_d_calculated[i] = coriolis_factor_ * coriolis[i] +
                           k_gains_[i] * (pos_d_target_[i] - robot_state.q[i]) +

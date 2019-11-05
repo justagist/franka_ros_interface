@@ -34,7 +34,7 @@ class RobotEnable(object):
         
         """
         self._enabled = None
-        state_topic = '/custom_franka_state_controller/franka_state'
+        state_topic = 'franka_ros_interface/custom_franka_state_controller/franka_state'
         self._state_sub = rospy.Subscriber(state_topic,
                                            RobotState,
                                            self._state_callback
@@ -52,7 +52,7 @@ class RobotEnable(object):
 
     def _toggle_enabled(self, status):
 
-        pub = rospy.Publisher('/franka_control/error_recovery/goal', ErrorRecoveryActionGoal,
+        pub = rospy.Publisher('franka_ros_interface/franka_control/error_recovery/goal', ErrorRecoveryActionGoal,
                               queue_size=10)
 
         if self._enabled == status:

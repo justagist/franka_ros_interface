@@ -26,9 +26,9 @@ class GripperInterface(object):
         @param calibrate: Attempts to calibrate the gripper when initializing class (defaults True)
         """
         
-        self.name = ns + '_gripper'
+        self.name = ns + '/franka_gripper'
 
-        ns = '/'+self.name +'/'
+        ns = self.name +'/'
 
         self._joint_positions = dict()
         self._joint_names = gripper_joint_names

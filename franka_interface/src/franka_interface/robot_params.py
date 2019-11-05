@@ -13,16 +13,16 @@ class RobotParams(object):
     Interface class for essential ROS parameters on Intera robot.
     """
 
-    def __init__(self):
+    def __init__(self, ns = ""):
 
+        self._ns = ns
         self._robot_name = self.get_robot_name()
         self._robot_ip = self.get_robot_ip()
-
 
     def get_robot_ip(self):
         robot_ip = None
         try:
-            robot_ip = rospy.get_param("/franka_control/robot_ip")
+            robot_ip = rospy.get_param(self._ns + "/franka_control/robot_ip")
         except KeyError:
             rospy.logerr("RobotParam:robot_ip cannot detect robot ip."
                          " under param /franka_control/robot_ip")
@@ -42,7 +42,7 @@ class RobotParams(object):
         """
         joint_names = list()
         try:
-            joint_names = rospy.get_param(
+            joint_names = rospy.get_param(self._ns + 
                             "/franka_control/joint_names")
         except KeyError:
             rospy.logerr(("RobotParam:get_joint_names cannot detect joint_names for arm"))
@@ -54,7 +54,7 @@ class RobotParams(object):
 
         joint_names = list()
         try:
-            joint_names = rospy.get_param(
+            joint_names = rospy.get_param(self._ns + 
                             "/franka_gripper/joint_names")
         except KeyError:
             rospy.loginfo(("RobotParam:get_gripper_joint_names cannot detect joint_names for gripper. Gripper not connected to robot."))
@@ -72,7 +72,7 @@ class RobotParams(object):
         """
         robot_name = None
         try:
-            robot_name = rospy.get_param("/franka_control/arm_id")
+            robot_name = rospy.get_param(self._ns + "/franka_control/arm_id")
         except KeyError:
             rospy.logerr("RobotParam:get_robot_name cannot detect robot name"
                          " under param /franka_control/arm_id")
