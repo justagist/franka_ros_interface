@@ -29,7 +29,7 @@ import franka_dataflow
 import franka_interface
 from robot_params import RobotParams
 
-from franka_tools import FrankaFramesInterface
+from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface
 
 class ArmInterface(object):
 
@@ -110,6 +110,7 @@ class ArmInterface(object):
         self._command_msg = JointCommand()
 
         self._frames_interface = FrankaFramesInterface()
+        self._ctrl_manager = FrankaControllerManagerInterface()
 
 
         queue_size = None if synchronous_pub else 1
@@ -175,7 +176,7 @@ class ArmInterface(object):
 
 
         if not self._frames_interface.EE_frame_is_reset():
-            self.reset_frame(frame_name = 'EE')
+            self.reset_EE_frame()
 
         self._configure_gripper(params.get_gripper_joint_names())
         
@@ -270,7 +271,7 @@ class ArmInterface(object):
         """
         return not all([e == False for e in self._errors.values()])
 
-    def what_error(self):
+    def what_errors(self):
         """
         Return list of error messages if there is error in robot state
 
@@ -418,10 +419,71 @@ class ArmInterface(object):
         """
         return deepcopy(self._cartesian_pose)
 
-    def reset_frame(self, frame_name):
+    def reset_EE_frame(self):
+        """
+        Reset EE frame to default. (defined by FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) 
 
-        pass
+        @rtype: bool
+        @return: success status of service request
+        """
 
+        if self._frames_interface.EE_frame_is_reset():
+            rospy.loginfo("FrankaArm: EE Frame already reset")
+            return
+
+        active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+
+        rospy.loginfo("FrankaArm: Stopping motion controllers for resetting EE frame")
+        for ctrlr in active_controllers:
+            self._ctrl_manager.stop_controller(ctrlr.name)
+        rospy.sleep(1.)
+
+        self._frames_interface.reset_EE_frame()
+
+        rospy.sleep(1.)
+        rospy.loginfo("FrankaArm: Restarting previously active motion controllers.")
+        for ctrlr in active_controllers:
+            self._ctrl_manager.start_controller(ctrlr.name)
+        rospy.sleep(1.)
+
+    def set_EE_frame(self, frame):
+        """
+        Set new EE frame based on the transformation given by 'frame', which is the 
+        transformation matrix defining the new desired EE frame with respect to the flange frame.
+        Motion controllers are stopped for switching
+
+        @type frame: [float (16,)] / np.ndarray (4x4) 
+        @param frame: transformation matrix of new EE frame wrt flange frame (column major)
+        @rtype: bool
+        @return: success status of service request
+        """
+
+        self._frames_interface._assert_frame_validity(frame)
+
+        active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+
+        rospy.loginfo("FrankaArm: Stopping motion controllers for changing EE frame")
+        for ctrlr in active_controllers:
+            self._ctrl_manager.stop_controller(ctrlr.name)
+        rospy.sleep(1.)
+
+        self._frames_interface.set_EE_frame(frame)
+
+        rospy.sleep(1.)
+        rospy.loginfo("FrankaArm: Restarting previously active motion controllers.")
+        for ctrlr in active_controllers:
+            self._ctrl_manager.start_controller(ctrlr.name)
+        rospy.sleep(1.)
+
+
+    def get_controller_manager(self):
+
+        return self._ctrl_manager
+
+
+    def get_frames_interface(self):
+
+        return self._frames_interface
 
 
 if __name__ == '__main__':

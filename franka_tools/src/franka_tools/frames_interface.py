@@ -35,13 +35,7 @@ class FrankaFramesInterface():
         @rtype: bool
         @return: success status of service request
         """
-        if isinstance(frame, np.ndarray):
-            if frame.shape[0] == frame.shape[1] == 4:
-                frame = frame.flatten('F').tolist()
-            else:
-                raise ValueError("Invalid shape for transformation matrix numpy array")
-        else:
-            assert len(frame) == 16, "Invalid number of elements in transformation matrix. Should have 16 elements."
+        self._assert_frame_validity(frame)
 
         self._request_setEE_service(frame)
 
@@ -50,6 +44,16 @@ class FrankaFramesInterface():
 
         assert len(EE_frame_transformation) == 16, "FrankaFramesInterface: Current EE frame transformation could not be retrieved!"
         self._current_EE_frame_transformation = EE_frame_transformation
+
+    def _assert_frame_validity(self, frame):
+
+        if isinstance(frame, np.ndarray):
+            if frame.shape[0] == frame.shape[1] == 4:
+                frame = frame.flatten('F').tolist()
+            else:
+                raise ValueError("Invalid shape for transformation matrix numpy array")
+        else:
+            assert len(frame) == 16, "Invalid number of elements in transformation matrix. Should have 16 elements."
 
 
     def get_EE_frame(self, as_mat = False):
@@ -73,17 +77,18 @@ class FrankaFramesInterface():
         self.set_EE_frame(frame = DEFAULT_TRANSFORMATIONS.EE_FRAME)
 
     def EE_frame_is_reset(self):
-        return (self._current_EE_frame_transformation is not None) and (list(self._current_EE_frame_transformation) == list(DEFAULT_TRANSFORMATIONS.EE_FRAME))
+        assert self._current_EE_frame_transformation is not None, "FrankaFramesInterface: Current EE Frame is not known."
+        return list(self._current_EE_frame_transformation) == list(DEFAULT_TRANSFORMATIONS.EE_FRAME)
         
 
     def _request_setEE_service(self, trans_mat):
 
-        rospy.wait_for_service('/franka_control/set_EE_frame')
+        rospy.wait_for_service('/franka_ros_interface/franka_control/set_EE_frame')
         try:
-            service_handle = rospy.ServiceProxy('/franka_control/set_EE_frame', AddTwoInts)
-            resp1 = service_handle(F_T_EE = trans_mat)
+            service_handle = rospy.ServiceProxy('/franka_ros_interface/franka_control/set_EE_frame', SetEEFrame)
+            response = service_handle(F_T_EE = trans_mat)
             rospy.loginfo("Set EE Frame Request Status: %s. \n\tDetails: %s"%("Success" if response.success else "Failed!", response.error))
-            return resp1.success
+            return response.success
         except rospy.ServiceException, e:
             rospy.logwarn("Set EE Frame Request: Service call failed: %s"%e)
             return False

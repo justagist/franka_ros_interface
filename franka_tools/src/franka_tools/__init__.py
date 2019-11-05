@@ -1,1 +1,2 @@
 from .frames_interface import FrankaFramesInterface
+from .controller_manager_interface import FrankaControllerManagerInterface
