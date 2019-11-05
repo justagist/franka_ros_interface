@@ -3,22 +3,26 @@ import numpy as np
 from franka_control.srv import SetEEFrame
 import rospy
 
-DEFAULT_EE_FRAME = [0.707099974155426, -0.707099974155426, 0.0, 0.0, 0.707099974155426, 0.707099974155426, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0] # default when the franka_ros control is launched
+from collections import namedtuple
+_FRAME_NAMES = namedtuple('Constants', ['EE_FRAME', 'K_FRAME'])
+DEFAULT_TRANSFORMATIONS = _FRAME_NAMES( [0.707099974155426, -0.707099974155426, 0.0, 0.0, 0.707099974155426, 0.707099974155426, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0], 
+                                        None)
+
+# DEFAULT_EE_FRAME = [0.707099974155426, -0.707099974155426, 0.0, 0.0, 0.707099974155426, 0.707099974155426, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0] # default when the franka_ros control is launched
 
 class FrankaFramesInterface():
     """
         Helper class to retrieve and set EE frames, [and K frame (not implemented)]
 
+        Has to be updated externally each time franka states is updated. This is done by default within the FrankaArm class.
+
+        Note that all controllers have to be unloaded before switching frames. This has to be done externally.
+
     """
 
-    def __init__(self, robot):
-
-        self._robot = robot
-        self._current_EE_frame_transformation = self._robot.get_current_EE_frame_transformation(as_mat = True) # transformation matrix defining the current EE frame with respect to the flange frame
-
-
-        rospy.wait_for_service('/franka_control/set_EE_frame')
-        self._EE_frame_request_handler = rospy.ServiceProxy('/franka_control/set_EE_frame', SetEEFrame)
+    def __init__(self):
+        self._current_EE_frame_transformation = None
+        
 
 
     def set_EE_frame(self, frame):
@@ -27,7 +31,7 @@ class FrankaFramesInterface():
         transformation matrix defining the new desired EE frame with respect to the flange frame.
 
         @type frame: [float (16,)] / np.ndarray (4x4) 
-        @param frame: transformation matrix of new EE frame wrt flange frame
+        @param frame: transformation matrix of new EE frame wrt flange frame (column major)
         @rtype: bool
         @return: success status of service request
         """
@@ -41,7 +45,12 @@ class FrankaFramesInterface():
 
         self._request_setEE_service(frame)
 
-        pass
+
+    def _update_frame_data(self, EE_frame_transformation, K_frame_transformation = None):
+
+        assert len(EE_frame_transformation) == 16, "FrankaFramesInterface: Current EE frame transformation could not be retrieved!"
+        self._current_EE_frame_transformation = EE_frame_transformation
+
 
     def get_EE_frame(self, as_mat = False):
         """
@@ -50,27 +59,33 @@ class FrankaFramesInterface():
         @type as_mat: bool
         @param as_mat: if True, return np array, else as list
         @rtype: [float (16,)] / np.ndarray (4x4) 
-        @return: transformation matrix of EE frame wrt flange frame
+        @return: transformation matrix of EE frame wrt flange frame (column major)
         """
-        return self._robot.get_current_EE_frame_transformation(as_mat = as_mat)
+        return self._current_EE_frame_transformation if not as_mat else np.asarray(self._current_EE_frame_transformation).reshape(4,4,order='F')
 
     def reset_EE_frame(self):
         """
-        Reset EE frame to default. (defined by DEFAULT_EE_FRAME global variable defined above) 
+        Reset EE frame to default. (defined by DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) 
 
         @rtype: bool
         @return: success status of service request
         """
+        self.set_EE_frame(frame = DEFAULT_TRANSFORMATIONS.EE_FRAME)
 
-        pass
+    def EE_frame_is_reset(self):
+        return (self._current_EE_frame_transformation is not None) and (list(self._current_EE_frame_transformation) == list(DEFAULT_TRANSFORMATIONS.EE_FRAME))
+        
 
     def _request_setEE_service(self, trans_mat):
 
+        rospy.wait_for_service('/franka_control/set_EE_frame')
         try:
-            response = self._EE_frame_request_handler(F_T_EE = trans_mat)
+            service_handle = rospy.ServiceProxy('/franka_control/set_EE_frame', AddTwoInts)
+            resp1 = service_handle(F_T_EE = trans_mat)
             rospy.loginfo("Set EE Frame Request Status: %s. \n\tDetails: %s"%("Success" if response.success else "Failed!", response.error))
+            return resp1.success
         except rospy.ServiceException, e:
-            rospy.logwarn("Activation service call failed: %s"%e)
+            rospy.logwarn("Set EE Frame Request: Service call failed: %s"%e)
             return False
 
 
@@ -100,7 +115,7 @@ class FrankaFramesInterface():
 
     def reset_K_frame(self):
         """
-        Reset K frame to default. (defined by DEFAULT_FRAME global variable defined above) 
+        Reset K frame to default. (defined by DEFAULT_K_ FRAME global variable defined above) 
 
         @rtype: bool
         @return: success status of service request
