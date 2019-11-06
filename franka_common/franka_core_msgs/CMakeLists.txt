@@ -16,6 +16,7 @@ add_message_files( DIRECTORY msg
         JointCommand.msg
         RobotState.msg
         TipState.msg
+        JointLimits.msg
 )
 
 # add_service_files( DIRECTORY srv
