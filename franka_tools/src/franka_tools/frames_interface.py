@@ -1,7 +1,10 @@
 
+import tf
 import numpy as np
+import quaternion
 from franka_control.srv import SetEEFrame
 import rospy
+import franka_dataflow
 
 from collections import namedtuple
 _FRAME_NAMES = namedtuple('Constants', ['EE_FRAME', 'K_FRAME'])
@@ -35,9 +38,9 @@ class FrankaFramesInterface():
         @rtype: bool
         @return: success status of service request
         """
-        self._assert_frame_validity(frame)
+        frame = self._assert_frame_validity(frame)
 
-        self._request_setEE_service(frame)
+        return self._request_setEE_service(frame)
 
 
     def _update_frame_data(self, EE_frame_transformation, K_frame_transformation = None):
@@ -54,6 +57,46 @@ class FrankaFramesInterface():
                 raise ValueError("Invalid shape for transformation matrix numpy array")
         else:
             assert len(frame) == 16, "Invalid number of elements in transformation matrix. Should have 16 elements."
+
+        return frame
+
+    def set_EE_frame_to_link(self, frame_name, timeout = 5.0):
+        """
+        Set new EE frame to the same frame as the link frame given by 'frame_name'
+        Motion controllers are stopped for switching
+
+        @type frame_name: str 
+        @param frame_name: desired tf frame name in the tf tree
+        @rtype: [bool, str]
+        @return: [success status of service request, error msg if any]
+        """
+
+        trans = False
+        listener = tf.TransformListener()
+        err = "FrankaFramesInterface: Error while looking up transform from Flange frame to link frame %s"%frame_name
+        def body():
+            try:
+                listener.lookupTransform('/panda_link8', frame_name, rospy.Time(0))
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
+                err = e
+                return False
+            return True
+
+        franka_dataflow.wait_for(lambda: body(), timeout = timeout, raise_on_error = True, timeout_msg = err)
+
+        t,rot = listener.lookupTransform('/panda_link8', frame_name, rospy.Time(0))
+
+        rot = np.quaternion(rot[3],rot[0],rot[1],rot[2])
+
+        rot = quaternion.as_rotation_matrix(rot)
+
+        trans_mat = np.eye(4)
+
+        trans_mat[:3,:3] = rot
+        trans_mat[:3,3] = np.array(t)
+
+        return self.set_EE_frame(trans_mat)
+
 
 
     def get_EE_frame(self, as_mat = False):
@@ -137,6 +180,6 @@ if __name__ == '__main__':
 
     ee_setter = FrankaFramesInterface(ArmInterface())
 
-    ee_setter.set_EE_frame([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
+    # ee_setter.set_EE_frame([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
 
     

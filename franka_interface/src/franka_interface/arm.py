@@ -175,10 +175,15 @@ class ArmInterface(object):
                                  timeout_msg=err_msg, timeout=5.0)
 
 
-        if not self._frames_interface.EE_frame_is_reset():
-            self.reset_EE_frame()
+        # if not self._frames_interface.EE_frame_is_reset():
+        #     self.reset_EE_frame()
 
         self._configure_gripper(params.get_gripper_joint_names())
+
+        if self.has_gripper():
+            self.set_EE_frame_to_link('panda_hand')
+        else:
+            self.set_EE_frame_to_link('panda_link8')
         
         rospy.sleep(2.)
 
@@ -423,8 +428,8 @@ class ArmInterface(object):
         """
         Reset EE frame to default. (defined by FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) 
 
-        @rtype: bool
-        @return: success status of service request
+        @rtype: [bool, str]
+        @return: [success status of service request, error msg if any]
         """
 
         if self._frames_interface.EE_frame_is_reset():
@@ -454,20 +459,48 @@ class ArmInterface(object):
 
         @type frame: [float (16,)] / np.ndarray (4x4) 
         @param frame: transformation matrix of new EE frame wrt flange frame (column major)
-        @rtype: bool
-        @return: success status of service request
+        @rtype: [bool, str]
+        @return: [success status of service request, error msg if any]
         """
 
-        self._frames_interface._assert_frame_validity(frame)
+        frame = self._frames_interface._assert_frame_validity(frame)
 
         active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
-
+        rospy.sleep(1.)
         rospy.loginfo("FrankaArm: Stopping motion controllers for changing EE frame")
         for ctrlr in active_controllers:
             self._ctrl_manager.stop_controller(ctrlr.name)
         rospy.sleep(1.)
 
-        self._frames_interface.set_EE_frame(frame)
+        retval = self._frames_interface.set_EE_frame(frame)
+
+        rospy.sleep(1.)
+        rospy.loginfo("FrankaArm: Restarting previously active motion controllers.")
+        for ctrlr in active_controllers:
+            self._ctrl_manager.start_controller(ctrlr.name)
+        rospy.sleep(1.)
+
+        return retval
+
+    def set_EE_frame_to_link(self, frame_name, timeout = 5.0):
+        """
+        Set new EE frame to the same frame as the link frame given by 'frame_name'
+        Motion controllers are stopped for switching
+
+        @type frame_name: str 
+        @param frame_name: desired tf frame name in the tf tree
+        @rtype: [bool, str]
+        @return: [success status of service request, error msg if any]
+        """
+        active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+
+        rospy.loginfo("FrankaArm: Stopping motion controllers for changing EE frame")
+        rospy.sleep(1.)
+        for ctrlr in active_controllers:
+            self._ctrl_manager.stop_controller(ctrlr.name)
+        rospy.sleep(1.)
+
+        self._frames_interface.set_EE_frame_to_link(frame_name = frame_name, timeout = timeout)
 
         rospy.sleep(1.)
         rospy.loginfo("FrankaArm: Restarting previously active motion controllers.")
