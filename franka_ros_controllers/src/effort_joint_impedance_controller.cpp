@@ -100,7 +100,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   }
 
   desired_joints_subscriber_ = node_handle.subscribe(
-      "joint_commands", 20, &EffortJointImpedanceController::jointCmdCallback, this,
+      "arm/joint_commands", 20, &EffortJointImpedanceController::jointCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
   std::fill(dq_filtered_.begin(), dq_filtered_.end(), 0);
