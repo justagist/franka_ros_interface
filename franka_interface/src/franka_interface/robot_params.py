@@ -68,7 +68,7 @@ class RobotParams(object):
         Return the name of class of robot from ROS parameter.
 
         @rtype: str
-        @return: name of the class of robot (eg. "sawyer", "baxter", etc.)
+        @return: name of the robot
         """
         robot_name = None
         try:
