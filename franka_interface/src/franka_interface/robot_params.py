@@ -13,11 +13,32 @@ class RobotParams(object):
     Interface class for essential ROS parameters on Intera robot.
     """
 
-    def __init__(self, ns = ""):
+    def __init__(self):
 
-        self._ns = ns
+        if self._robot_in_simulation():
+            self._in_sim = True
+            self._ns = "/panda_simulator"
+            rospy.loginfo("Robot control running in Simulation Mode!")
+        else:
+            self._ns = "/franka_ros_interface" 
+            self._in_sim = False
+
         self._robot_name = self.get_robot_name()
         self._robot_ip = self.get_robot_ip()
+
+    def get_base_namespace(self):
+        return self._ns
+
+    def _robot_in_simulation(self):
+        sim = False
+        try:
+            sim = rospy.get_param("/SIMULATOR_")
+        except KeyError:
+            sim = False
+        except (socket.error, socket.gaierror):
+            _log_networking_error()
+
+        return sim
 
     def get_robot_ip(self):
         robot_ip = None

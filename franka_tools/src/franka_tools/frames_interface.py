@@ -17,7 +17,7 @@ class FrankaFramesInterface():
     """
         Helper class to retrieve and set EE frames, [and K frame (not implemented)]
 
-        Has to be updated externally each time franka states is updated. This is done by default within the FrankaArm class.
+        Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class.
 
         Note that all controllers have to be unloaded before switching frames. This has to be done externally.
 
@@ -117,7 +117,7 @@ class FrankaFramesInterface():
         @rtype: bool
         @return: success status of service request
         """
-        self.set_EE_frame(frame = DEFAULT_TRANSFORMATIONS.EE_FRAME)
+        return self.set_EE_frame(frame = DEFAULT_TRANSFORMATIONS.EE_FRAME)
 
     def EE_frame_is_reset(self):
         assert self._current_EE_frame_transformation is not None, "FrankaFramesInterface: Current EE Frame is not known."

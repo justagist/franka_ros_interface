@@ -1,5 +1,14 @@
-// Modified from robot_state_publisher.cpp (franka_ros)
-// Modified by Saif Sidhik <sxs1412@bham.ac.uk>
+/***************************************************************************
+* Adapted from robot_state_publisher.cpp (franka_ros package)
+
+*
+* @package: panda_gazebo
+* @metapackage: panda_simulator
+* @author: Saif Sidhik <sxs1412@bham.ac.uk>
+*
+
+**************************************************************************/
+
 //
 // Copyright (c) 2017 Franka Emika GmbH
 // Use of this source code is governed by the Apache-2.0 license, see LICENSE
@@ -191,7 +200,7 @@ bool CustomFrankaStateController::init(hardware_interface::RobotHW* robot_hardwa
   }
 
   publisher_transforms_.init(root_node_handle, "/tf", 1);
-  publisher_franka_state_.init(controller_node_handle, "franka_state", 1);
+  publisher_franka_state_.init(controller_node_handle, "robot_state", 1);
   publisher_joint_states_.init(controller_node_handle, "joint_states", 1);
   publisher_joint_states_desired_.init(controller_node_handle, "joint_states_desired", 1);
   publisher_tip_state_.init(controller_node_handle, "tip_state", 1);
@@ -275,7 +284,7 @@ void CustomFrankaStateController::publishFrankaState(const ros::Time& time) {
     Eigen::Map<Eigen::Matrix<double, 7, 1>> dq(robot_state_.dq.data());
 
 //  jacobian * dq
-    Eigen::Matrix<double, 6, 1> ee_pose = jacobian * dq;
+    Eigen::Matrix<double, 6, 1> ee_vel = jacobian * dq;
 
     if (publisher_franka_state_.trylock()) {
         static_assert(
@@ -293,7 +302,7 @@ void CustomFrankaStateController::publishFrankaState(const ros::Time& time) {
         for (size_t i = 0; i < robot_state_.cartesian_collision.size(); i++) {
             publisher_franka_state_.msg_.cartesian_collision[i] = robot_state_.cartesian_collision[i];
             publisher_franka_state_.msg_.cartesian_contact[i] = robot_state_.cartesian_contact[i];
-            publisher_franka_state_.msg_.O_dP_EE[i] = ee_pose(i,0);
+            publisher_franka_state_.msg_.O_dP_EE[i] = ee_vel(i,0);
         }
 
     static_assert(sizeof(robot_state_.q) == sizeof(robot_state_.q_d),

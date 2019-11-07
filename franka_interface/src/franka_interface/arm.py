@@ -55,12 +55,10 @@ class ArmInterface(object):
         ROBOT_MODE_USER_STOPPED                 = 5
         ROBOT_MODE_AUTOMATIC_ERROR_RECOVERY     = 6
 
-    def __init__(self, ns = "/franka_ros_interface", synchronous_pub=False):
+    def __init__(self, synchronous_pub=False):
         """
         Constructor.
         
-        @type ns: string
-        @param ns: namespace used by franka_ros_interface nodes
         @type synchronous_pub: bool
         @param synchronous_pub: designates the JointCommand Publisher
             as Synchronous if True and Asynchronous if False.
@@ -78,8 +76,9 @@ class ArmInterface(object):
             http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers#queue_size:_publish.28.29_behavior_and_queuing
         """
 
-        self._ns = ns
-        params = RobotParams(ns)
+        params = RobotParams()
+
+        self._ns = params.get_base_namespace()
 
         joint_names = params.get_joint_names()
         if not joint_names:
@@ -105,7 +104,7 @@ class ArmInterface(object):
 
         self._robot_mode = False
 
-        ns = self._ns + self.name+'/'
+        ns = self._ns + '/'
 
         self._command_msg = JointCommand()
 
@@ -124,13 +123,13 @@ class ArmInterface(object):
 
 
         _robot_state_subscriber = rospy.Subscriber(
-            self._ns + '/custom_franka_state_controller/franka_state',
+            self._ns + '/custom_franka_state_controller/robot_state',
             RobotState,
             self._on_robot_state,
             queue_size=1,
             tcp_nodelay=True)
 
-        joint_state_topic = self._ns + '/custom_franka_state_controller/joint_states'
+        joint_state_topic = self._ns + '/custom_franka_state_controller/joint_states' if not params._in_sim else self._ns + '/joint_states'
         _joint_state_sub = rospy.Subscriber(
             joint_state_topic,
             JointState,
@@ -180,7 +179,10 @@ class ArmInterface(object):
 
         self._configure_gripper(params.get_gripper_joint_names())
 
-        if self.has_gripper():
+        if params._in_sim:
+            self._frames_interface = None # Frames interface is not implemented for simulation controller
+
+        if self.has_gripper:
             self.set_EE_frame_to_link('panda_hand')
         else:
             self.set_EE_frame_to_link('panda_link8')
@@ -237,8 +239,8 @@ class ArmInterface(object):
 
         self._joint_contact = msg.joint_contact
         self._joint_collision = msg.joint_collision
-
-        self._frames_interface._update_frame_data(msg.F_T_EE)
+        if self._frames_interface:
+            self._frames_interface._update_frame_data(msg.F_T_EE)
 
         self.q_d = msg.q_d
         self.dq_d = msg.dq_d
@@ -431,25 +433,33 @@ class ArmInterface(object):
         @rtype: [bool, str]
         @return: [success status of service request, error msg if any]
         """
+        if self._frames_interface:
 
-        if self._frames_interface.EE_frame_is_reset():
-            rospy.loginfo("FrankaArm: EE Frame already reset")
-            return
+            if self._frames_interface.EE_frame_is_reset():
+                rospy.loginfo("PandaArm: EE Frame already reset")
+                return
 
-        active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+            active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
 
-        rospy.loginfo("FrankaArm: Stopping motion controllers for resetting EE frame")
-        for ctrlr in active_controllers:
-            self._ctrl_manager.stop_controller(ctrlr.name)
-        rospy.sleep(1.)
+            rospy.loginfo("PandaArm: Stopping motion controllers for resetting EE frame")
+            for ctrlr in active_controllers:
+                self._ctrl_manager.stop_controller(ctrlr.name)
+            rospy.sleep(1.)
 
-        self._frames_interface.reset_EE_frame()
+            retval = self._frames_interface.reset_EE_frame()
 
-        rospy.sleep(1.)
-        rospy.loginfo("FrankaArm: Restarting previously active motion controllers.")
-        for ctrlr in active_controllers:
-            self._ctrl_manager.start_controller(ctrlr.name)
-        rospy.sleep(1.)
+            rospy.sleep(1.)
+            rospy.loginfo("PandaArm: Restarting previously active motion controllers.")
+            for ctrlr in active_controllers:
+                self._ctrl_manager.start_controller(ctrlr.name)
+            rospy.sleep(1.)
+
+            return retval
+
+        else:
+            rospy.logwarn("PandaArm: Frames changing not available in simulated environment")
+            return False
+
 
     def set_EE_frame(self, frame):
         """
@@ -462,25 +472,29 @@ class ArmInterface(object):
         @rtype: [bool, str]
         @return: [success status of service request, error msg if any]
         """
+        if self._frames_interface:
 
-        frame = self._frames_interface._assert_frame_validity(frame)
+            frame = self._frames_interface._assert_frame_validity(frame)
 
-        active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
-        rospy.sleep(1.)
-        rospy.loginfo("FrankaArm: Stopping motion controllers for changing EE frame")
-        for ctrlr in active_controllers:
-            self._ctrl_manager.stop_controller(ctrlr.name)
-        rospy.sleep(1.)
+            active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+            rospy.sleep(1.)
+            rospy.loginfo("PandaArm: Stopping motion controllers for changing EE frame")
+            for ctrlr in active_controllers:
+                self._ctrl_manager.stop_controller(ctrlr.name)
+            rospy.sleep(1.)
 
-        retval = self._frames_interface.set_EE_frame(frame)
+            retval = self._frames_interface.set_EE_frame(frame)
 
-        rospy.sleep(1.)
-        rospy.loginfo("FrankaArm: Restarting previously active motion controllers.")
-        for ctrlr in active_controllers:
-            self._ctrl_manager.start_controller(ctrlr.name)
-        rospy.sleep(1.)
+            rospy.sleep(1.)
+            rospy.loginfo("PandaArm: Restarting previously active motion controllers.")
+            for ctrlr in active_controllers:
+                self._ctrl_manager.start_controller(ctrlr.name)
+            rospy.sleep(1.)
 
-        return retval
+            return retval
+
+        else:
+            rospy.logwarn("PandaArm: Frames changing not available in simulated environment")
 
     def set_EE_frame_to_link(self, frame_name, timeout = 5.0):
         """
@@ -492,22 +506,26 @@ class ArmInterface(object):
         @rtype: [bool, str]
         @return: [success status of service request, error msg if any]
         """
-        active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+        if self._frames_interface:
+            active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
 
-        rospy.loginfo("FrankaArm: Stopping motion controllers for changing EE frame")
-        rospy.sleep(1.)
-        for ctrlr in active_controllers:
-            self._ctrl_manager.stop_controller(ctrlr.name)
-        rospy.sleep(1.)
+            rospy.loginfo("PandaArm: Stopping motion controllers for changing EE frame")
+            rospy.sleep(1.)
+            for ctrlr in active_controllers:
+                self._ctrl_manager.stop_controller(ctrlr.name)
+            rospy.sleep(1.)
 
-        self._frames_interface.set_EE_frame_to_link(frame_name = frame_name, timeout = timeout)
+            retval = self._frames_interface.set_EE_frame_to_link(frame_name = frame_name, timeout = timeout)
 
-        rospy.sleep(1.)
-        rospy.loginfo("FrankaArm: Restarting previously active motion controllers.")
-        for ctrlr in active_controllers:
-            self._ctrl_manager.start_controller(ctrlr.name)
-        rospy.sleep(1.)
+            rospy.sleep(1.)
+            rospy.loginfo("PandaArm: Restarting previously active motion controllers.")
+            for ctrlr in active_controllers:
+                self._ctrl_manager.start_controller(ctrlr.name)
+            rospy.sleep(1.)
 
+            return retval
+        else:
+            rospy.logwarn("PandaArm: Frames changing not available in simulated environment")
 
     def get_controller_manager(self):
 
