@@ -49,12 +49,18 @@ class PositionJointPositionController : public controller_interface::MultiInterf
 
   double param_change_filter_{0.005};
 
+  std::vector<double> joint_position_limits_lower_;
+  std::vector<double> joint_position_limits_upper_;
+  // std::map<std::string, std::vector<double> > joint_position_limits_;
   // Dynamic reconfigure
   std::unique_ptr< dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig> > dynamic_server_joint_controller_params_;
   ros::NodeHandle dynamic_reconfigure_joint_controller_params_node_;
 
   franka_hw::TriggerRate trigger_publish_;
   realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> publisher_controller_states_;
+
+  bool checkPositionLimits(std::vector<double> positions);
+
 
   void jointControllerParamCallback(franka_ros_controllers::joint_position_controller_paramsConfig& config,
                                uint32_t level);

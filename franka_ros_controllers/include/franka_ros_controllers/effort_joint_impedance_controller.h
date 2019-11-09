@@ -55,6 +55,10 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   std::array<double, 7> dq_d_;
   std::array<double, 7> dq_filtered_;
 
+  std::vector<double> joint_position_limits_lower_;
+  std::vector<double> joint_position_limits_upper_;
+  std::vector<double> joint_velocity_limits_;
+
   franka_hw::FrankaStateInterface* franka_state_interface_{};
   std::unique_ptr<franka_hw::FrankaStateHandle> franka_state_handle_{};
 
@@ -67,6 +71,9 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
 
   franka_hw::TriggerRate trigger_publish_;
   realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> publisher_controller_states_;
+
+  bool checkPositionLimits(std::vector<double> positions);
+  bool checkVelocityLimits(std::vector<double> positions);
 
   void controllerConfigCallback(franka_ros_controllers::joint_position_controller_paramsConfig& config,
                                uint32_t level);

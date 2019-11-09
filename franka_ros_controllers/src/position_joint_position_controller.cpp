@@ -33,6 +33,18 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
                      << joint_names.size() << " instead of 7 names!");
     return false;
   }
+  if (!node_handle.getParam("joint_position_limits_lower", joint_position_limits_lower_) ) {
+  ROS_ERROR(
+      "PositionJointPositionController: Joint limits parameters not provided, aborting "
+      "controller init!");
+  return false;
+      }
+  if (!node_handle.getParam("joint_position_limits_upper", joint_position_limits_upper_) ) {
+  ROS_ERROR(
+      "PositionJointPositionController: Joint limits parameters not provided, aborting "
+      "controller init!");
+  return false;
+      }
   position_joint_handles_.resize(7);
   for (size_t i = 0; i < 7; ++i) {
     try {
@@ -46,7 +58,7 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
 
   double controller_state_publish_rate(30.0);
   if (!node_handle.getParam("controller_state_publish_rate", controller_state_publish_rate)) {
-    ROS_INFO_STREAM("FrankaStateController: Did not find controller_state_publish_rate. Using default "
+    ROS_INFO_STREAM("PositionJointPositionController: Did not find controller_state_publish_rate. Using default "
                     << controller_state_publish_rate << " [Hz].");
   }
   trigger_publish_ = franka_hw::TriggerRate(controller_state_publish_rate);
@@ -114,6 +126,18 @@ void PositionJointPositionController::update(const ros::Time& time,
 
 }
 
+bool PositionJointPositionController::checkPositionLimits(std::vector<double> positions)
+{
+  // bool retval = true;
+  for (size_t i = 0;  i < 7; ++i){
+    if (!((positions[i] <= joint_position_limits_upper_[i]) && (positions[i] >= joint_position_limits_lower_[i]))){
+      return true;
+    }
+  }
+
+  return false;
+}
+
 void PositionJointPositionController::jointPosCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg) {
 
     if (msg->mode == franka_core_msgs::JointCommand::POSITION_MODE){
@@ -123,10 +147,19 @@ void PositionJointPositionController::jointPosCmdCallback(const franka_core_msgs
         pos_d_ = prev_pos_;
         pos_d_target_ = prev_pos_;
       }
-      else {
-        std::copy_n(msg->position.begin(), 7, pos_d_target_.begin());
-        // std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
+      else if (checkPositionLimits(msg->position)) {
+         ROS_ERROR_STREAM(
+            "PositionJointPositionController: Commanded positions are beyond allowed position limits.");
+        pos_d_ = prev_pos_;
+        pos_d_target_ = prev_pos_;
+
       }
+      else
+      {
+        std::copy_n(msg->position.begin(), 7, pos_d_target_.begin());
+      }
+        // std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
+      
     }
     else ROS_ERROR_STREAM("PositionJointPositionController: Published Command msg are not it JointCommand::POSITION_MODE! Dropping message");
 }

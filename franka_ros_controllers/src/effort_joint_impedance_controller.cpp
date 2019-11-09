@@ -45,6 +45,24 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
         "controller init!");
     return false;
   }
+  if (!node_handle.getParam("joint_position_limits_lower", joint_position_limits_lower_) ) {
+  ROS_ERROR(
+      "EffortJointImpedanceController: Joint limits parameters not provided, aborting "
+      "controller init!");
+  return false;
+      }
+  if (!node_handle.getParam("joint_position_limits_upper", joint_position_limits_upper_) ) {
+  ROS_ERROR(
+      "EffortJointImpedanceController: Joint limits parameters not provided, aborting "
+      "controller init!");
+  return false;
+      }
+  if (!node_handle.getParam("joint_velocity_limits", joint_velocity_limits_) ) {
+  ROS_ERROR(
+      "EffortJointImpedanceController: Joint velocity limits parameters not provided, aborting "
+      "controller init!");
+  return false;
+      }
 
   double controller_state_publish_rate(30.0);
   if (!node_handle.getParam("controller_state_publish_rate", controller_state_publish_rate)) {
@@ -195,6 +213,30 @@ void EffortJointImpedanceController::update(const ros::Time& time,
 
 }
 
+bool EffortJointImpedanceController::checkPositionLimits(std::vector<double> positions)
+{
+  // bool retval = true;
+  for (size_t i = 0;  i < 7; ++i){
+    if (!((positions[i] <= joint_position_limits_upper_[i]) && (positions[i] >= joint_position_limits_lower_[i]))){
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool EffortJointImpedanceController::checkVelocityLimits(std::vector<double> velocities)
+{
+  // bool retval = true;
+  for (size_t i = 0;  i < 7; ++i){
+    if (!(velocities[i] >= joint_velocity_limits_[i])){
+      return true;
+    }
+  }
+
+  return false;
+}
+
 std::array<double, 7> EffortJointImpedanceController::saturateTorqueRate(
     const std::array<double, 7>& tau_d_calculated) {  // NOLINT (readability-identifier-naming)
   std::array<double, 7> tau_d_saturated{};
@@ -211,6 +253,12 @@ void EffortJointImpedanceController::jointCmdCallback(const franka_core_msgs::Jo
       ROS_ERROR_STREAM(
           "EffortJointImpedanceController: Published Commands are not of size 7");
       pos_d_target_ = prev_pos_;
+    }
+    else if (checkPositionLimits(msg->position) || checkVelocityLimits(msg->velocity)) {
+         ROS_ERROR_STREAM(
+            "PositionJointPositionController: Commanded positions or velicities are beyond allowed position limits.");
+        pos_d_target_ = prev_pos_;
+
     }
     else {
       std::copy_n(msg->position.begin(), 7, pos_d_target_.begin());
