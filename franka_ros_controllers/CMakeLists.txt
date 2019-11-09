@@ -29,7 +29,7 @@ find_package(Franka 0.5.0 REQUIRED)
 # generate_messages()
 
 generate_dynamic_reconfigure_options(
-  cfg/jointControllerParams.cfg
+  cfg/joint_position_controller_params.cfg
 )
 
 

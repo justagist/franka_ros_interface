@@ -6,7 +6,7 @@
 #include <vector>
 
 #include <dynamic_reconfigure/server.h>
-#include <franka_ros_controllers/jointControllerParamsConfig.h>
+#include <franka_ros_controllers/joint_position_controller_paramsConfig.h>
 
 #include <franka_core_msgs/JointCommand.h>
 #include <controller_interface/multi_interface_controller.h>
@@ -43,10 +43,10 @@ class PositionJointPositionController : public controller_interface::MultiInterf
   double param_change_filter_{0.005};
 
   // Dynamic reconfigure
-  std::unique_ptr< dynamic_reconfigure::Server<franka_ros_controllers::jointControllerParamsConfig> > dynamic_server_joint_controller_params_;
+  std::unique_ptr< dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig> > dynamic_server_joint_controller_params_;
   ros::NodeHandle dynamic_reconfigure_joint_controller_params_node_;
 
-  void jointControllerParamCallback(franka_ros_controllers::jointControllerParamsConfig& config,
+  void jointControllerParamCallback(franka_ros_controllers::joint_position_controller_paramsConfig& config,
                                uint32_t level);
   void jointPosCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg);
 };

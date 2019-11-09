@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
         franka_msgs
         geometry_msgs
         sensor_msgs
+        control_msgs
 )
 
 add_message_files( DIRECTORY msg
@@ -17,6 +18,7 @@ add_message_files( DIRECTORY msg
         RobotState.msg
         TipState.msg
         JointLimits.msg
+        JointControllerStates.msg
 )
 
 # add_service_files( DIRECTORY srv
@@ -29,9 +31,9 @@ add_message_files( DIRECTORY msg
 # add_action_files(DIRECTORY action FILES CalibrationCommand.action)
 
 ## Build
-generate_messages(DEPENDENCIES std_msgs geometry_msgs sensor_msgs actionlib_msgs franka_msgs)
+generate_messages(DEPENDENCIES std_msgs geometry_msgs control_msgs sensor_msgs actionlib_msgs franka_msgs)
 
-catkin_package(CATKIN_DEPENDS message_runtime std_msgs geometry_msgs sensor_msgs franka_msgs actionlib_msgs)
+catkin_package(CATKIN_DEPENDS message_runtime std_msgs geometry_msgs control_msgs sensor_msgs franka_msgs actionlib_msgs)
 
 
 ## Install

@@ -72,8 +72,6 @@ class ArmInterface(object):
             prevent the joint_command functions from exiting. Unless you need exact
             JointCommand timing, default to Asynchronous Publishing (False).
 
-            For more information about Synchronous Publishing see:
-            http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers#queue_size:_publish.28.29_behavior_and_queuing
         """
 
         params = RobotParams()
@@ -425,6 +423,67 @@ class ArmInterface(object):
 
         """
         return deepcopy(self._cartesian_pose)
+
+    def set_joint_positions(self, positions):
+        """
+        Commands the joints of this limb to the specified positions.
+
+        @type positions: [float]
+        @param positions: ordered joint angles (from joint1 to joint7) to be commanded
+        """
+        self._command_msg.names = positions.keys()
+        self._command_msg.position = positions.values()
+        self._command_msg.mode = JointCommand.POSITION_MODE
+        self._command_msg.header.stamp = rospy.Time.now()
+        self._pub_joint_cmd.publish(self._command_msg)
+        
+
+    def move_to_joint_positions(self, positions, timeout=15.0,
+                                threshold=0.0085,
+                                test=None):
+        """
+        (Blocking) Commands the limb to the provided positions.
+
+        Waits until the reported joint state matches that specified.
+
+        This function uses a low-pass filter to smooth the movement.
+
+        @type positions: dict({str:float})
+        @param positions: joint_name:angle command
+        @type timeout: float
+        @param timeout: seconds to wait for move to finish [15]
+        @type threshold: float
+        @param threshold: position threshold in radians across each joint when
+        move is considered successful [0.008726646]
+        @param test: optional function returning True if motion must be aborted
+        """
+        cmd = self.joint_angles()
+
+        def genf(joint, angle):
+            def joint_diff():
+                return abs(angle - self._joint_angle[joint])
+            return joint_diff
+
+        diffs = [genf(j, a) for j, a in positions.items() if
+                 j in self._joint_angle]
+        fail_msg = "{0} limb failed to reach commanded joint positions.".format(
+                                                      self.name.capitalize())
+        def test_collision():
+            if self.has_collided():
+                rospy.logerr(' '.join(["Collision detected.", fail_msg]))
+                return True
+            return False
+        self.set_joint_positions(positions)
+        intera_dataflow.wait_for(
+            test=lambda: test_collision() or \
+                         (callable(test) and test() == True) or \
+                         (all(diff() < threshold for diff in diffs)),
+            timeout=timeout,
+            timeout_msg=fail_msg,
+            rate=100,
+            raise_on_error=False,
+            body=lambda: self.set_joint_positions(positions)
+            )
 
     def reset_EE_frame(self):
         """

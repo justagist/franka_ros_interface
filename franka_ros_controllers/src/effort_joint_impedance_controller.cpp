@@ -98,10 +98,23 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
       return false;
     }
   }
+  k_gains_target_ = k_gains_;
+  d_gains_target_ = d_gains_;
+
+  dynamic_reconfigure_controller_gains_node_ =
+      ros::NodeHandle("dynamic_reconfigure_controller_gains_node");
+
+  dynamic_server_controller_config_ = std::make_unique<
+      dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig>>(
+
+      dynamic_reconfigure_controller_gains_node_);
+  dynamic_server_controller_config_->setCallback(
+      boost::bind(&EffortJointImpedanceController::controllerConfigCallback, this, _1, _2));
 
   desired_joints_subscriber_ = node_handle.subscribe(
       "arm/joint_commands", 20, &EffortJointImpedanceController::jointCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
+
 
   std::fill(dq_filtered_.begin(), dq_filtered_.end(), 0);
 
@@ -147,12 +160,10 @@ void EffortJointImpedanceController::update(const ros::Time& /*time*/,
 
   for (size_t i = 0; i < 7; ++i) {
     joint_handles_[i].setCommand(tau_d_saturated[i]);
-    // std::cout << i << " " << tau_d_saturated[i] << std::endl;
+    k_gains_[i] = filter_params_ * k_gains_target_[i] + (1.0 - filter_params_) * k_gains_[i];
+    d_gains_[i] = filter_params_ * d_gains_target_[i] + (1.0 - filter_params_) * d_gains_[i];
   }
 
-  // for (size_t i = 0; i < 7; ++i) {
-  //   last_tau_d_[i] = tau_d_saturated[i] + gravity[i];
-  // }
 }
 
 std::array<double, 7> EffortJointImpedanceController::saturateTorqueRate(
@@ -180,6 +191,28 @@ void EffortJointImpedanceController::jointCmdCallback(const franka_core_msgs::Jo
     }
   }
   else ROS_ERROR_STREAM("EffortJointImpedanceController: Published Command msg are not it JointCommand::TORQUE_MODE! Dropping message");
+}
+
+void EffortJointImpedanceController::controllerConfigCallback(
+    franka_ros_controllers::joint_position_controller_paramsConfig& config,
+    uint32_t /*level*/) {
+
+    k_gains_target_[0] = config.j1_k;
+    k_gains_target_[1] = config.j2_k;
+    k_gains_target_[2] = config.j3_k;
+    k_gains_target_[3] = config.j4_k;
+    k_gains_target_[4] = config.j5_k;
+    k_gains_target_[5] = config.j6_k;
+    k_gains_target_[6] = config.j7_k;
+
+    d_gains_target_[0] = config.j1_d;
+    d_gains_target_[1] = config.j2_d;
+    d_gains_target_[2] = config.j3_d;
+    d_gains_target_[3] = config.j4_d;
+    d_gains_target_[4] = config.j5_d;
+    d_gains_target_[5] = config.j6_d;
+    d_gains_target_[6] = config.j7_d;
+
 }
 
 }  // namespace franka_ros_controllers
