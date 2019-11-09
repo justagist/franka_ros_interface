@@ -7,6 +7,10 @@
 #include <dynamic_reconfigure/server.h>
 #include <franka_ros_controllers/joint_position_controller_paramsConfig.h>
 #include <franka_core_msgs/JointCommand.h>
+#include <franka_core_msgs/JointControllerStates.h>
+
+#include <franka_hw/trigger_rate.h>
+#include <realtime_tools/realtime_publisher.h>
 
 #include <controller_interface/multi_interface_controller.h>
 #include <hardware_interface/joint_command_interface.h>
@@ -16,7 +20,6 @@
 #include <ros/time.h>
 
 #include <franka_hw/franka_model_interface.h>
-#include <franka_hw/trigger_rate.h>
 
 namespace franka_ros_controllers {
 
@@ -61,6 +64,9 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   ros::Subscriber desired_joints_subscriber_;
   std::unique_ptr< dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig> > dynamic_server_controller_config_;
   ros::NodeHandle dynamic_reconfigure_controller_gains_node_;
+
+  franka_hw::TriggerRate trigger_publish_;
+  realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> publisher_controller_states_;
 
   void controllerConfigCallback(franka_ros_controllers::joint_position_controller_paramsConfig& config,
                                uint32_t level);

@@ -43,8 +43,16 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
       return false;
     }
   }
+
+  double controller_state_publish_rate(30.0);
+  if (!node_handle.getParam("controller_state_publish_rate", controller_state_publish_rate)) {
+    ROS_INFO_STREAM("FrankaStateController: Did not find controller_state_publish_rate. Using default "
+                    << controller_state_publish_rate << " [Hz].");
+  }
+  trigger_publish_ = franka_hw::TriggerRate(controller_state_publish_rate);
+
   dynamic_reconfigure_joint_controller_params_node_ =
-      ros::NodeHandle("dynamic_reconfigure_joint_controller_params_node");
+      ros::NodeHandle("position_joint_position_controller/arm/controller_parameters_config");
 
   dynamic_server_joint_controller_params_ = std::make_unique<
       dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig>>(
@@ -52,6 +60,16 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
 
   dynamic_server_joint_controller_params_->setCallback(
       boost::bind(&PositionJointPositionController::jointControllerParamCallback, this, _1, _2));
+
+  publisher_controller_states_.init(node_handle, "arm/joint_controller_states", 1);
+
+  {
+    std::lock_guard<realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> > lock(
+        publisher_controller_states_);
+    publisher_controller_states_.msg_.names.resize(joint_names.size());
+    publisher_controller_states_.msg_.joint_controller_states.resize(joint_names.size());
+
+  }
 
   return true;
 }
@@ -74,6 +92,20 @@ void PositionJointPositionController::update(const ros::Time& time,
   for (size_t i = 0; i < 7; ++i) {
     prev_pos_[i] = position_joint_handles_[i].getPosition();
     pos_d_[i] = filter_val * pos_d_target_[i] + (1.0 - filter_val) * pos_d_[i];
+  }
+
+  if (trigger_publish_() && publisher_controller_states_.trylock()) {
+    for (size_t i = 0; i < 7; ++i){
+
+      publisher_controller_states_.msg_.joint_controller_states[i].set_point = pos_d_target_[i];
+      publisher_controller_states_.msg_.joint_controller_states[i].process_value = pos_d_[i];
+      publisher_controller_states_.msg_.joint_controller_states[i].time_step = period.toSec();
+
+      publisher_controller_states_.msg_.joint_controller_states[i].header.stamp = time;
+
+    }
+
+    publisher_controller_states_.unlockAndPublish();        
   }
 
   // update parameters changed online either through dynamic reconfigure or through the interactive

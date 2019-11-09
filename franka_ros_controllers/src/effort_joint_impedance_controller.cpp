@@ -46,12 +46,12 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
     return false;
   }
 
-  double publish_rate(30.0);
-  if (!node_handle.getParam("publish_rate", publish_rate)) {
-    ROS_INFO_STREAM("EffortJointImpedanceController: publish_rate not found. Defaulting to "
-                    << publish_rate);
+  double controller_state_publish_rate(30.0);
+  if (!node_handle.getParam("controller_state_publish_rate", controller_state_publish_rate)) {
+    ROS_INFO_STREAM("FrankaStateController: Did not find controller_state_publish_rate. Using default "
+                    << controller_state_publish_rate << " [Hz].");
   }
-  rate_trigger_ = franka_hw::TriggerRate(publish_rate);
+  trigger_publish_ = franka_hw::TriggerRate(controller_state_publish_rate);
 
   if (!node_handle.getParam("coriolis_factor", coriolis_factor_)) {
     ROS_INFO_STREAM("EffortJointImpedanceController: coriolis_factor not found. Defaulting to "
@@ -102,7 +102,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   d_gains_target_ = d_gains_;
 
   dynamic_reconfigure_controller_gains_node_ =
-      ros::NodeHandle("dynamic_reconfigure_controller_gains_node");
+      ros::NodeHandle("effort_joint_impedance_controller/arm/controller_parameters_config");
 
   dynamic_server_controller_config_ = std::make_unique<
       dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig>>(
@@ -115,6 +115,15 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
       "arm/joint_commands", 20, &EffortJointImpedanceController::jointCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
+  publisher_controller_states_.init(node_handle, "arm/joint_controller_states", 1);
+
+  {
+    std::lock_guard<realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> > lock(
+        publisher_controller_states_);
+    publisher_controller_states_.msg_.names.resize(joint_names.size());
+    publisher_controller_states_.msg_.joint_controller_states.resize(joint_names.size());
+
+  }
 
   std::fill(dq_filtered_.begin(), dq_filtered_.end(), 0);
 
@@ -128,7 +137,6 @@ void EffortJointImpedanceController::starting(const ros::Time& /*time*/) {
     std::cout << "Joint Pos: " << initial_pos_[i]  << std::endl;
     // initial_vel_[i] = robot_state.dq[i];
   }
-  pos_d_ = initial_pos_;
   prev_pos_ = initial_pos_;
   pos_d_target_ = initial_pos_;
 
@@ -136,7 +144,7 @@ void EffortJointImpedanceController::starting(const ros::Time& /*time*/) {
   dq_d_ = dq_filtered_;
 }
 
-void EffortJointImpedanceController::update(const ros::Time& /*time*/,
+void EffortJointImpedanceController::update(const ros::Time& time,
                                              const ros::Duration& period) {
   franka::RobotState robot_state = franka_state_handle_->getRobotState();
   std::array<double, 7> coriolis = model_handle_->getCoriolis();
@@ -158,8 +166,29 @@ void EffortJointImpedanceController::update(const ros::Time& /*time*/,
   // 1000 * (1 / sampling_time).
   std::array<double, 7> tau_d_saturated = saturateTorqueRate(tau_d_calculated);
 
+  if (trigger_publish_() && publisher_controller_states_.trylock()) {
+      for (size_t i = 0; i < 7; ++i){
+
+        publisher_controller_states_.msg_.joint_controller_states[i].set_point = pos_d_target_[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].process_value = robot_state.q[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].process_value_dot = robot_state.dq[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].error = pos_d_target_[i] - robot_state.q[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].time_step = period.toSec();
+        publisher_controller_states_.msg_.joint_controller_states[i].command = tau_d_calculated[i];
+
+        publisher_controller_states_.msg_.joint_controller_states[i].p = k_gains_[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].d = d_gains_[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].header.stamp = time;
+
+      }
+
+      publisher_controller_states_.unlockAndPublish();
+
+    }
+
   for (size_t i = 0; i < 7; ++i) {
     joint_handles_[i].setCommand(tau_d_saturated[i]);
+
     k_gains_[i] = filter_params_ * k_gains_target_[i] + (1.0 - filter_params_) * k_gains_[i];
     d_gains_[i] = filter_params_ * d_gains_target_[i] + (1.0 - filter_params_) * d_gains_[i];
   }
@@ -181,7 +210,6 @@ void EffortJointImpedanceController::jointCmdCallback(const franka_core_msgs::Jo
     if (msg->position.size() != 7) {
       ROS_ERROR_STREAM(
           "EffortJointImpedanceController: Published Commands are not of size 7");
-      pos_d_ = prev_pos_;
       pos_d_target_ = prev_pos_;
     }
     else {
