@@ -38,6 +38,10 @@ ros_version="kinetic"
 ## ========================================= #
 ## ========================================= #
 
+if [ "${1}" == "sim" ]; then
+    your_ip="localhost"
+fi
+
 if [ "${your_ip}" == "" ]; then
     echo -e "\n\t\033[01;31m\033[1mError:\033[00m [franka.sh] \033[01;33m\033[4myour_ip\033[00m variable has to be set in 'franka.sh'\n"
     exit 1
@@ -56,7 +60,11 @@ elif [ "${1}" == "slave" ] || [[ "${1}" == "remote" ]]; then
     if [[ $# -ge 2 ]]; then
         ROS_MASTER_IP="$2"
     fi
-    IS_MASTER=false
+    IS_MASTER=false  
+elif [ "${1}" == "sim" ]; then
+    ROS_MASTER_IP=""
+    IS_MASTER="true"
+    FRANKA_ROBOT_IP="sim"
 else
     echo -e "\n\t\033[01;31m\033[1mError:\033[00m [franka.sh] Atleast one argument has to be passed
         
@@ -66,6 +74,7 @@ else
         -- arg1:
                - 'master' / 'local' (No <arg2>): The local machine will be the ros master. Run this on the main master pc (connected to the franka controller). 
                - 'slave' / 'remote': If IP address is provided as <arg2>, this will make sure that this PC is connected to the ROS Master at that IP. If <arg2> provided, ROS_MASTER_IP set below will be used
+               - 'sim': Franka robot simulation environment will be used. Real robot will not be controlled.
 
         -- arg2:
                - <IP of ROS MASTER> (valid only if <arg1> is 'slave'/'remote'): IP address of ROS Master
@@ -149,7 +158,10 @@ has been built (source /opt/ros/\${ros_version}/setup.sh; catkin_make).\n\
             eval \${__ORIG_PROMPT_COMMAND}
         fi
         if ! echo \${PS1} | grep '\[franka' &>/dev/null; then
-            if [[ $IS_MASTER == true ]]; then
+            if [[ $your_ip == "localhost" ]]; then
+                export PS1="\[\033[00;33m\][franka <SIM> - Robot@\
+${FRANKA_ROBOT_IP}]\[\033[00m\] \${PS1}"
+            elif [[ $IS_MASTER == true ]]; then
                 export PS1="\[\033[00;33m\][franka <Master> - Robot@\
 ${FRANKA_ROBOT_IP}]\[\033[00m\] \${PS1}"
             else
@@ -163,7 +175,10 @@ ${ROS_MASTER_IP}]\[\033[00m\] \${PS1}"
         export PROMPT_COMMAND=__ros_prompt
         __ROS_PROMPT=1
     elif ! echo \${PS1} | grep '\[franka' &>/dev/null; then
-        if [[ $IS_MASTER == true ]]; then
+        if [[ $your_ip == "localhost" ]]; then
+            export PS1="\[\033[00;33m\][franka <SIM> - Robot@\
+${FRANKA_ROBOT_IP}]\[\033[00m\] \${PS1}"
+        elif [[ $IS_MASTER == true ]]; then
             export PS1="\[\033[00;33m\][franka <Master> - Robot@\
 ${FRANKA_ROBOT_IP}]\[\033[00m\] \${PS1}"
         else
