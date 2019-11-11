@@ -14,7 +14,7 @@ namespace franka_ros_controllers {
 bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
                                            ros::NodeHandle& node_handle) {
   std::string arm_id;
-  if (!node_handle.getParam("arm_id", arm_id)) {
+  if (!node_handle.getParam("/robot_config/arm_id", arm_id)) {
     ROS_ERROR("EffortJointImpedanceController: Could not read parameter arm_id");
     return false;
   }
@@ -24,8 +24,8 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
     ROS_ERROR("EffortJointImpedanceController: Could not get Franka state interface from hardware");
     return false;
   }
-  std::vector<std::string> joint_names;
-  if (!node_handle.getParam("joint_names", joint_names) || joint_names.size() != 7) {
+  // std::vector<std::string> joint_names;
+  if (!node_handle.getParam("/robot_config/joint_names", joint_limits_.joint_names) || joint_limits_.joint_names.size() != 7) {
     ROS_ERROR(
         "EffortJointImpedanceController: Invalid or no joint_names parameters provided, aborting "
         "controller init!");
@@ -45,24 +45,66 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
         "controller init!");
     return false;
   }
-  if (!node_handle.getParam("joint_position_limits_lower", joint_position_limits_lower_) ) {
+  std::map<std::string, double> pos_limit_lower_map;
+  std::map<std::string, double> pos_limit_upper_map;
+  if (!node_handle.getParam("/robot_config/joint_config/joint_position_limit/lower", pos_limit_lower_map) ) {
   ROS_ERROR(
       "EffortJointImpedanceController: Joint limits parameters not provided, aborting "
       "controller init!");
   return false;
       }
-  if (!node_handle.getParam("joint_position_limits_upper", joint_position_limits_upper_) ) {
+  if (!node_handle.getParam("/robot_config/joint_config/joint_position_limit/upper", pos_limit_upper_map) ) {
   ROS_ERROR(
       "EffortJointImpedanceController: Joint limits parameters not provided, aborting "
       "controller init!");
   return false;
       }
-  if (!node_handle.getParam("joint_velocity_limits", joint_velocity_limits_) ) {
-  ROS_ERROR(
-      "EffortJointImpedanceController: Joint velocity limits parameters not provided, aborting "
-      "controller init!");
-  return false;
+  // if (!node_handle.getParam("joint_velocity_limits", joint_velocity_limits_) ) {
+  // ROS_ERROR(
+  //     "EffortJointImpedanceController: Joint velocity limits parameters not provided, aborting "
+  //     "controller init!");
+  // return false;
+  //     }
+
+  std::map<std::string, double> velocity_limit_map;
+  if (!node_handle.getParam("/robot_config/joint_config/joint_velocity_limit", velocity_limit_map))
+  {
+    ROS_ERROR("EffortJointImpedanceController: Failed to find joint velocity limits on the param server. Aborting controller init");
+    return false;
+  }
+
+  for (size_t i = 0; i < joint_limits_.joint_names.size(); ++i){
+    if (pos_limit_lower_map.find(joint_limits_.joint_names[i]) != pos_limit_lower_map.end())
+      {
+        joint_limits_.position_lower.push_back(pos_limit_lower_map[joint_limits_.joint_names[i]]);
       }
+      else
+      {
+        ROS_ERROR("EffortJointImpedanceController: Unable to find lower position limit values for joint %s...",
+                       joint_limits_.joint_names[i].c_str());
+        // joint_limits_.position_lower.push_back(8.0);
+      }
+    if (pos_limit_upper_map.find(joint_limits_.joint_names[i]) != pos_limit_upper_map.end())
+      {
+        joint_limits_.position_upper.push_back(pos_limit_upper_map[joint_limits_.joint_names[i]]);
+      }
+      else
+      {
+        ROS_ERROR("EffortJointImpedanceController: Unable to find upper position limit  values for joint %s...",
+                       joint_limits_.joint_names[i].c_str());
+        // joint_limits_.position_upper.push_back(8.0);
+      }
+    if (velocity_limit_map.find(joint_limits_.joint_names[i]) != velocity_limit_map.end())
+      {
+        joint_limits_.velocity.push_back(velocity_limit_map[joint_limits_.joint_names[i]]);
+      }
+      else
+      {
+        ROS_ERROR("EffortJointImpedanceController: Unable to find velocity limit values for joint %s...",
+                       joint_limits_.joint_names[i].c_str());
+        // joint_limits_.velocity.push_back(8.0);
+      }
+  }  
 
   double controller_state_publish_rate(30.0);
   if (!node_handle.getParam("controller_state_publish_rate", controller_state_publish_rate)) {
@@ -109,7 +151,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   }
   for (size_t i = 0; i < 7; ++i) {
     try {
-      joint_handles_.push_back(effort_joint_interface->getHandle(joint_names[i]));
+      joint_handles_.push_back(effort_joint_interface->getHandle(joint_limits_.joint_names[i]));
     } catch (const hardware_interface::HardwareInterfaceException& ex) {
       ROS_ERROR_STREAM(
           "EffortJointImpedanceController: Exception getting joint handles: " << ex.what());
@@ -138,8 +180,8 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   {
     std::lock_guard<realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> > lock(
         publisher_controller_states_);
-    publisher_controller_states_.msg_.names.resize(joint_names.size());
-    publisher_controller_states_.msg_.joint_controller_states.resize(joint_names.size());
+    publisher_controller_states_.msg_.names.resize(joint_limits_.joint_names.size());
+    publisher_controller_states_.msg_.joint_controller_states.resize(joint_limits_.joint_names.size());
 
   }
 
@@ -217,7 +259,7 @@ bool EffortJointImpedanceController::checkPositionLimits(std::vector<double> pos
 {
   // bool retval = true;
   for (size_t i = 0;  i < 7; ++i){
-    if (!((positions[i] <= joint_position_limits_upper_[i]) && (positions[i] >= joint_position_limits_lower_[i]))){
+    if (!((positions[i] <= joint_limits_.position_upper[i]) && (positions[i] >= joint_limits_.position_lower[i]))){
       return true;
     }
   }
@@ -229,7 +271,7 @@ bool EffortJointImpedanceController::checkVelocityLimits(std::vector<double> vel
 {
   // bool retval = true;
   for (size_t i = 0;  i < 7; ++i){
-    if (!(velocities[i] >= joint_velocity_limits_[i])){
+    if (!(velocities[i] >= joint_limits_.velocity[i])){
       return true;
     }
   }

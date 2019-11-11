@@ -10,6 +10,7 @@
 
 #include <franka_core_msgs/JointCommand.h>
 #include <franka_core_msgs/JointControllerStates.h>
+#include <franka_core_msgs/JointLimits.h>
 
 #include <mutex>
 #include <franka_hw/trigger_rate.h>
@@ -49,8 +50,9 @@ class PositionJointPositionController : public controller_interface::MultiInterf
 
   double param_change_filter_{0.005};
 
-  std::vector<double> joint_position_limits_lower_;
-  std::vector<double> joint_position_limits_upper_;
+  franka_core_msgs::JointLimits joint_limits_;
+  // std::vector<double> joint_position_limits_lower_;
+  // std::vector<double> joint_position_limits_upper_;
   // std::map<std::string, std::vector<double> > joint_position_limits_;
   // Dynamic reconfigure
   std::unique_ptr< dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig> > dynamic_server_joint_controller_params_;

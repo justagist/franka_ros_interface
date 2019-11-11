@@ -8,6 +8,7 @@
 #include <franka_ros_controllers/joint_position_controller_paramsConfig.h>
 #include <franka_core_msgs/JointCommand.h>
 #include <franka_core_msgs/JointControllerStates.h>
+#include <franka_core_msgs/JointLimits.h>
 
 #include <franka_hw/trigger_rate.h>
 #include <realtime_tools/realtime_publisher.h>
@@ -55,9 +56,11 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   std::array<double, 7> dq_d_;
   std::array<double, 7> dq_filtered_;
 
-  std::vector<double> joint_position_limits_lower_;
-  std::vector<double> joint_position_limits_upper_;
-  std::vector<double> joint_velocity_limits_;
+  // std::vector<double> joint_position_limits_lower_;
+  // std::vector<double> joint_position_limits_upper_;
+  // std::vector<double> joint_velocity_limits_;
+
+  // std::map<std::string, double> acceleration_map_;;
 
   franka_hw::FrankaStateInterface* franka_state_interface_{};
   std::unique_ptr<franka_hw::FrankaStateHandle> franka_state_handle_{};
@@ -68,6 +71,8 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   ros::Subscriber desired_joints_subscriber_;
   std::unique_ptr< dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig> > dynamic_server_controller_config_;
   ros::NodeHandle dynamic_reconfigure_controller_gains_node_;
+
+  franka_core_msgs::JointLimits joint_limits_;
 
   franka_hw::TriggerRate trigger_publish_;
   realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> publisher_controller_states_;

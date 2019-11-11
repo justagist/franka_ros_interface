@@ -24,31 +24,56 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
         "PositionJointPositionController: Error getting position joint interface from hardware!");
     return false;
   }
-  std::vector<std::string> joint_names;
-  if (!node_handle.getParam("joint_names", joint_names)) {
+  if (!node_handle.getParam("/robot_config/joint_names", joint_limits_.joint_names)) {
     ROS_ERROR("PositionJointPositionController: Could not parse joint names");
   }
-  if (joint_names.size() != 7) {
+  if (joint_limits_.joint_names.size() != 7) {
     ROS_ERROR_STREAM("PositionJointPositionController: Wrong number of joint names, got "
-                     << joint_names.size() << " instead of 7 names!");
+                     << joint_limits_.joint_names.size() << " instead of 7 names!");
     return false;
   }
-  if (!node_handle.getParam("joint_position_limits_lower", joint_position_limits_lower_) ) {
+  std::map<std::string, double> pos_limit_lower_map;
+  std::map<std::string, double> pos_limit_upper_map;
+  if (!node_handle.getParam("/robot_config/joint_config/joint_position_limit/lower", pos_limit_lower_map) ) {
   ROS_ERROR(
       "PositionJointPositionController: Joint limits parameters not provided, aborting "
       "controller init!");
   return false;
       }
-  if (!node_handle.getParam("joint_position_limits_upper", joint_position_limits_upper_) ) {
+  if (!node_handle.getParam("/robot_config/joint_config/joint_position_limit/upper", pos_limit_upper_map) ) {
   ROS_ERROR(
       "PositionJointPositionController: Joint limits parameters not provided, aborting "
       "controller init!");
   return false;
       }
+
+  for (size_t i = 0; i < joint_limits_.joint_names.size(); ++i){
+    if (pos_limit_lower_map.find(joint_limits_.joint_names[i]) != pos_limit_lower_map.end())
+      {
+        joint_limits_.position_lower.push_back(pos_limit_lower_map[joint_limits_.joint_names[i]]);
+      }
+      else
+      {
+        ROS_ERROR("EffortJointImpedanceController: Unable to find lower position limit values for joint %s...",
+                       joint_limits_.joint_names[i].c_str());
+        // joint_limits_.position_lower.push_back(8.0);
+      }
+    if (pos_limit_upper_map.find(joint_limits_.joint_names[i]) != pos_limit_upper_map.end())
+      {
+        joint_limits_.position_upper.push_back(pos_limit_upper_map[joint_limits_.joint_names[i]]);
+      }
+      else
+      {
+        ROS_ERROR("EffortJointImpedanceController: Unable to find upper position limit  values for joint %s...",
+                       joint_limits_.joint_names[i].c_str());
+        // joint_limits_.position_upper.push_back(8.0);
+      }
+  }  
+
   position_joint_handles_.resize(7);
   for (size_t i = 0; i < 7; ++i) {
     try {
-      position_joint_handles_[i] = position_joint_interface_->getHandle(joint_names[i]);
+      position_joint_handles_[i] = position_joint_interface_->getHandle(joint_limits_.joint_names[i]);
     } catch (const hardware_interface::HardwareInterfaceException& e) {
       ROS_ERROR_STREAM(
           "PositionJointPositionController: Exception getting joint handles: " << e.what());
@@ -78,8 +103,8 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
   {
     std::lock_guard<realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> > lock(
         publisher_controller_states_);
-    publisher_controller_states_.msg_.names.resize(joint_names.size());
-    publisher_controller_states_.msg_.joint_controller_states.resize(joint_names.size());
+    publisher_controller_states_.msg_.names.resize(joint_limits_.joint_names.size());
+    publisher_controller_states_.msg_.joint_controller_states.resize(joint_limits_.joint_names.size());
 
   }
 
@@ -130,7 +155,7 @@ bool PositionJointPositionController::checkPositionLimits(std::vector<double> po
 {
   // bool retval = true;
   for (size_t i = 0;  i < 7; ++i){
-    if (!((positions[i] <= joint_position_limits_upper_[i]) && (positions[i] >= joint_position_limits_lower_[i]))){
+    if (!((positions[i] <= joint_limits_.position_upper[i]) && (positions[i] >= joint_limits_.position_lower[i]))){
       return true;
     }
   }
