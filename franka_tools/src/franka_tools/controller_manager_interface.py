@@ -64,10 +64,10 @@ def _rosparam_controller_type(ctrls_ns, ctrl_name):
 
 class FrankaControllerManagerInterface(object):
 
-    def __init__(self, ns="franka_ros_interface/"):
+    def __init__(self, ns="franka_ros_interface"):
 
         self._ns = ns
-        self._prefix = "controller_manager"
+        self._prefix = "/controller_manager"
         self._cm_ns = self._ns + self._prefix
         self._service_names = ["list_controllers",
                          "unload_controller",
@@ -216,6 +216,14 @@ class FrankaControllerManagerInterface(object):
 
         return active_controllers
 
+    def list_active_controller_names(self, only_motion_controllers = False):
+
+        return [c.name for c in self.list_active_controllers(only_motion_controllers = only_motion_controllers)]
+
+
+    def list_controller_names(self):
+
+        return [c.name for c in self.list_controllers()]
 
 
 
