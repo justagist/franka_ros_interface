@@ -21,6 +21,7 @@
 
   <!-- Start the custom state publisher for franka_ros_interface -->
   <rosparam command="load" file="$(find franka_interface)/config/basic_controllers.yaml" ns="/franka_ros_interface"/>
+  <rosparam command="load" file="$(find franka_interface)/config/robot_config.yaml"/>
   <node name="state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="custom_franka_state_controller" ns="/franka_ros_interface"/>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
     <param name="publish_frequency" value="$(arg rate)"/>
@@ -39,8 +40,9 @@
   </node>
 
   <!-- <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller"/> -->
-  <node name="controllers" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/franka_ros_interface" args=" position_joint_position_controller"/>
+  <node name="controllers" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/franka_ros_interface" args=" effort_joint_impedance_controller"/>
   <!-- <node name="joint_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/franka_ros_interface" args="effort_joint_impedance_controller"/> -->
+  <!-- position_joint_trajectory_controller -->
 <!--   <include file="$(find panda_moveit_config)/launch/move_group.launch">
     <arg name="load_gripper" value="$(arg load_gripper)" />
  </include> -->

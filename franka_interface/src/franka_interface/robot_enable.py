@@ -34,7 +34,7 @@ class RobotEnable(object):
         
         """
         self._enabled = None
-        state_topic = 'franka_ros_interface/custom_franka_state_controller/franka_state'
+        state_topic = 'franka_ros_interface/custom_franka_state_controller/robot_state'
         self._state_sub = rospy.Subscriber(state_topic,
                                            RobotState,
                                            self._state_callback

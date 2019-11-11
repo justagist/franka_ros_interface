@@ -24,12 +24,13 @@ from rospy_message_converter import message_converter
 from franka_core_msgs.msg import JointCommand
 from franka_core_msgs.msg import RobotState, TipState
 from sensor_msgs.msg import JointState
+from std_msgs.msg import Float64
 
 import franka_dataflow
 import franka_interface
 from robot_params import RobotParams
 
-from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface
+from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface, JointTrajectoryActionClient
 
 class ArmInterface(object):
 
@@ -74,11 +75,13 @@ class ArmInterface(object):
 
         """
 
-        params = RobotParams()
+        self._params = RobotParams()
 
-        self._ns = params.get_base_namespace()
+        self._ns = self._params.get_base_namespace()
 
-        joint_names = params.get_joint_names()
+        self._joint_limits = self._params.get_joint_limits()
+
+        joint_names = self._joint_limits.joint_names
         if not joint_names:
             rospy.logerr("Cannot detect joint names for arm on this "
                          "robot. Exiting Arm.init().")
@@ -86,7 +89,7 @@ class ArmInterface(object):
             return   
 
         self._joint_names = joint_names
-        self.name = params.get_robot_name()
+        self.name = self._params.get_robot_name()
         self._joint_angle = dict()
         self._joint_velocity = dict()
         self._joint_effort = dict()
@@ -106,18 +109,27 @@ class ArmInterface(object):
 
         self._command_msg = JointCommand()
 
+        self._neutral_pose = self._params.get_neutral_pose()
+
         self._frames_interface = FrankaFramesInterface()
-        self._ctrl_manager = FrankaControllerManagerInterface()
+        self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns)
 
 
         queue_size = None if synchronous_pub else 1
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self._pub_joint_cmd = rospy.Publisher(
-                ns + 'joint_command',
+                ns + 'arm/joint_command',
                 JointCommand,
                 tcp_nodelay=True,
                 queue_size=queue_size)
+
+        # self._pub_speed_ratio = rospy.Publisher(
+        #     ns + 'arm/set_speed_ratio',
+        #     Float64,
+        #     latch=True,
+        #     queue_size=10)
+        self._speed_ratio = 0.15
 
 
         _robot_state_subscriber = rospy.Subscriber(
@@ -127,7 +139,7 @@ class ArmInterface(object):
             queue_size=1,
             tcp_nodelay=True)
 
-        joint_state_topic = self._ns + '/custom_franka_state_controller/joint_states' if not params._in_sim else self._ns + '/joint_states'
+        joint_state_topic = self._ns + '/custom_franka_state_controller/joint_states' if not self._params._in_sim else self._ns + '/joint_states'
         _joint_state_sub = rospy.Subscriber(
             joint_state_topic,
             JointState,
@@ -175,31 +187,11 @@ class ArmInterface(object):
         # if not self._frames_interface.EE_frame_is_reset():
         #     self.reset_EE_frame()
 
-        self._configure_gripper(params.get_gripper_joint_names())
+    def get_robot_params(self):
+        return self._params
 
-        if params._in_sim:
-            self._frames_interface = None # Frames interface is not implemented for simulation controller
-
-        if self.has_gripper:
-            self.set_EE_frame_to_link('panda_hand')
-        else:
-            self.set_EE_frame_to_link('panda_link8')
-        
-        rospy.sleep(2.)
-
-    def _configure_gripper(self, gripper_joint_names):
-
-        self._gripper = franka_interface.GripperInterface(ns = self._ns, gripper_joint_names = gripper_joint_names)
-        if not self._gripper.exists:
-            self._gripper = None
-            return
-
-    def get_gripper(self):
-        return self._gripper
-
-    @property
-    def has_gripper(self):
-        return self._gripper is not None
+    def get_joint_limits(self):
+        return self._joint_limits
 
     def joint_names(self):
         """
@@ -424,6 +416,27 @@ class ArmInterface(object):
         """
         return deepcopy(self._cartesian_pose)
 
+    def set_joint_position_speed(self, speed=0.3):
+        """
+        Set ratio of max joint speed to use during joint position moves.
+
+        Set the proportion of maximum controllable velocity to use
+        during joint position control execution. The default ratio
+        is `0.3`, and can be set anywhere from [0.0-1.0] (clipped).
+        Once set, a speed ratio will persist until a new execution
+        speed is set.
+
+        @type speed: float
+        @param speed: ratio of maximum joint speed for execution
+                      default= 0.3; range= [0.0-1.0]
+        """
+        # self._pub_speed_ratio.publish(Float64(speed))
+
+        if speed > 0.3:
+            rospy.logwarn("PandaArm: Setting speed above 0.3 could be risky!! Be extremely careful.")
+
+        self._speed_ratio = speed 
+
     def set_joint_positions(self, positions):
         """
         Commands the joints of this limb to the specified positions.
@@ -436,9 +449,28 @@ class ArmInterface(object):
         self._command_msg.mode = JointCommand.POSITION_MODE
         self._command_msg.header.stamp = rospy.Time.now()
         self._pub_joint_cmd.publish(self._command_msg)
+
+    def has_collided(self):
+
+        return any(self._joint_collision) or any(self._cartesian_collision)
         
 
-    def move_to_joint_positions(self, positions, timeout=15.0,
+    def move_to_neutral(self, timeout=15.0, speed=0.15):
+        """
+        Command the Limb joints to a predefined set of "neutral" joint angles.
+        From rosparam /franka_control/neutral_pose.
+
+        @type timeout: float
+        @param timeout: seconds to wait for move to finish [15]
+        @type speed: float
+        @param speed: ratio of maximum joint speed for execution
+                      default= 0.15; range= [0.0-1.0]
+        """
+        self.set_joint_position_speed(speed)
+        return self.move_to_joint_positions(self._neutral_pose, timeout) if not self._params._in_sim else None
+
+
+    def move_to_joint_positions(self, positions, timeout=10.0,
                                 threshold=0.0085,
                                 test=None):
         """
@@ -457,7 +489,38 @@ class ArmInterface(object):
         move is considered successful [0.008726646]
         @param test: optional function returning True if motion must be aborted
         """
-        cmd = self.joint_angles()
+
+        active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+        for ctrlr in active_controllers:
+            self._ctrl_manager.stop_controller(ctrlr.name)
+            rospy.loginfo("PandaArm: Stopping %s for trajectory controlling"%ctrlr.name)
+            rospy.sleep(0.5)
+
+        if self._params._in_sim:
+            rospy.warn("PandaArm: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
+            return
+
+        if 'position_joint_trajectory_controller' not in self._ctrl_manager.list_controller_names():
+            print self._ctrl_manager.list_controller_names()
+            self._ctrl_manager.load_controller('position_joint_trajectory_controller')
+        if 'position_joint_trajectory_controller' not in self._ctrl_manager.list_active_controller_names():
+            print self._ctrl_manager.list_active_controller_names()
+            self._ctrl_manager.start_controller('position_joint_trajectory_controller')
+
+        # rospy.sleep(1.)
+        min_traj_dur = 0.5
+
+        traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
+        traj_client.clear()
+
+        # velocities = self._speed_ratio* np.asarray(self._joint_limits.velocity)
+
+        dur = []
+        for j in range(len(self._joint_names)):
+            dur.append(max(abs(positions[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
+
+        traj_client.add_point(positions = [positions[n] for n in self._joint_names], time = max(dur)/self._speed_ratio)
+
 
         def genf(joint, angle):
             def joint_diff():
@@ -466,15 +529,19 @@ class ArmInterface(object):
 
         diffs = [genf(j, a) for j, a in positions.items() if
                  j in self._joint_angle]
-        fail_msg = "{0} limb failed to reach commanded joint positions.".format(
+
+        fail_msg = "PandaArm: {0} limb failed to reach commanded joint positions.".format(
                                                       self.name.capitalize())
         def test_collision():
             if self.has_collided():
                 rospy.logerr(' '.join(["Collision detected.", fail_msg]))
                 return True
             return False
-        self.set_joint_positions(positions)
-        intera_dataflow.wait_for(
+
+        traj_client.start() # send the trajectory action request
+        # traj_client.wait(timeout = timeout)
+
+        franka_dataflow.wait_for(
             test=lambda: test_collision() or \
                          (callable(test) and test() == True) or \
                          (all(diff() < threshold for diff in diffs)),
@@ -484,6 +551,45 @@ class ArmInterface(object):
             raise_on_error=False,
             body=lambda: self.set_joint_positions(positions)
             )
+
+        rospy.sleep(0.5)
+        self._ctrl_manager.stop_controller('position_joint_trajectory_controller')
+
+        rospy.loginfo("PandaArm: Trajectory controlling complete")
+
+        for ctrlr in active_controllers:
+            self._ctrl_manager.start_controller(ctrlr.name)
+            rospy.loginfo("PandaArm: Restaring %s"%ctrlr.name)
+            rospy.sleep(0.5)
+
+        # cmd = self.joint_angles()
+
+        # def genf(joint, angle):
+        #     def joint_diff():
+        #         return abs(angle - self._joint_angle[joint])
+        #     return joint_diff
+
+        # diffs = [genf(j, a) for j, a in positions.items() if
+        #          j in self._joint_angle]
+        # fail_msg = "{0} limb failed to reach commanded joint positions.".format(
+        #                                               self.name.capitalize())
+        # def test_collision():
+        #     if self.has_collided():
+        #         rospy.logerr(' '.join(["Collision detected.", fail_msg]))
+        #         return True
+        #     return False
+        # self.set_joint_positions(positions)
+        # franka_dataflow.wait_for(
+        #     test=lambda: test_collision() or \
+        #                  (callable(test) and test() == True) or \
+        #                  (all(diff() < threshold for diff in diffs)),
+        #     timeout=timeout,
+        #     timeout_msg=fail_msg,
+        #     rate=100,
+        #     raise_on_error=False,
+        #     body=lambda: self.set_joint_positions(positions)
+        #     )
+
 
     def reset_EE_frame(self):
         """
