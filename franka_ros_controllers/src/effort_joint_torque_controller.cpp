@@ -66,7 +66,9 @@ bool EffortJointTorqueController::init(hardware_interface::RobotHW* robot_hw,
       return false;
     }
   }
-
+  desired_joints_subscriber_ = node_handle.subscribe(
+      "arm/joint_commands", 20, &EffortJointTorqueController::jointCmdCallback, this,
+      ros::TransportHints().reliable().tcpNoDelay());
   publisher_controller_states_.init(node_handle, "arm/joint_controller_states", 1);
 
   {
