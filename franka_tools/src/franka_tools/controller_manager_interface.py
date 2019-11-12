@@ -123,7 +123,7 @@ class FrankaControllerManagerInterface(object):
 
     def start_controller(self, name):
 
-        self._assert_one_active_controller()
+        assert len(ctrlr_list) == 0, "FrankaControllerManagerInterface: One motion controller already active: %s. Stop this controller before activating another!"%self._current_controller
 
         strict = SwitchControllerRequest.STRICT
         req = SwitchControllerRequest(start_controllers=[name],

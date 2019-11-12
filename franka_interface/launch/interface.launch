@@ -43,7 +43,7 @@
   <node name="controllers" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/franka_ros_interface" args=" effort_joint_position_controller"/>
 
   <node name="stopped_controllers" pkg="controller_manager" type="controller_manager" respawn="false"
-                                         output="screen" ns="$(arg ns)" args="load
+                                         output="screen" ns="/franka_ros_interface" args="load
                                                                              effort_joint_torque_controller
                                                                              effort_joint_impedance_controller
                                                                              position_joint_position_controller
