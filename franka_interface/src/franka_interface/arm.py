@@ -22,7 +22,7 @@ import collections, warnings
 from rospy_message_converter import message_converter
 
 from franka_core_msgs.msg import JointCommand
-from franka_core_msgs.msg import RobotState, TipState
+from franka_core_msgs.msg import RobotState, EndPointState
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
 
@@ -31,6 +31,31 @@ import franka_interface
 from robot_params import RobotParams
 
 from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface, JointTrajectoryActionClient
+
+
+class TipState():
+
+    def __init__(self, pose, vel, O_effort, K_effort):
+        self._pose = pose
+        self._velocity = vel
+        self._effort = O_effort
+        self._effort_in_K_frame = K_effort
+
+    @property
+    def pose(self):
+        return self._pose
+    @property
+    def velocity(self):
+        return self._velocity
+    @property
+    def effort(self):
+        return self._effort
+    @property
+    def effort_in_K_frame(self):
+        return self._effort_in_K_frame
+    
+    
+    
 
 class ArmInterface(object):
 
@@ -157,7 +182,7 @@ class ArmInterface(object):
 
         _cartesian_state_sub = rospy.Subscriber(
             self._ns + '/custom_franka_state_controller/tip_state',
-            TipState,
+            EndPointState,
             self._on_endpoint_state,
             queue_size=1,
             tcp_nodelay=True)
@@ -286,21 +311,6 @@ class ArmInterface(object):
             'position': cart_pose_trans_mat[:3,3],
             'orientation': quaternion.from_rotation_matrix(cart_pose_trans_mat[:3,:3]) }
 
-
-
-        
-        #     'linear': self.Point(
-        #         msg.twist.linear.x,
-        #         msg.twist.linear.y,
-        #         msg.twist.linear.z,
-        #     ),
-        #     'angular': self.Point(
-        #         msg.twist.angular.x,
-        #         msg.twist.angular.y,
-        #         msg.twist.angular.z,
-        #     ),
-        # }
-        # # _wrench = {'force': (x, y, z), 'torque': (x, y, z)}
         self._cartesian_effort = {
             'force': np.asarray([ msg.O_F_ext_hat_K.wrench.force.x,
                                   msg.O_F_ext_hat_K.wrench.force.y,
@@ -321,14 +331,8 @@ class ArmInterface(object):
                                    msg.K_F_ext_hat_K.wrench.torque.z])
         }
 
+        self._tip_states = TipState(deepcopy(self._cartesian_pose), deepcopy(self._cartesian_velocity), deepcopy(self._cartesian_effort), deepcopy(self._stiffness_frame_effort))
 
-    # def _on_gripper_states(self, msg):
-
-    #     for idx, name in enumerate(msg.name):
-    #         if name in self._joint_names:
-    #             self._joint_angle[name] = msg.position[idx]
-    #             self._joint_velocity[name] = msg.velocity[idx]
-    #             self._joint_effort[name] = msg.effort[idx]
 
 
     def joint_angle(self, joint):
@@ -416,9 +420,47 @@ class ArmInterface(object):
         """
         return deepcopy(self._cartesian_pose)
 
+    def endpoint_velocity(self):
+        """
+        Return Cartesian endpoint twist {linear, angular}.
+
+        @rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
+        @return: linear and angular velocities as named tuples in a dict
+
+        C{twist = {'linear': (x, y, z), 'angular': (x, y, z)}}
+
+          - 'linear': np.array of x, y, z
+          - 'angular': np.array of x, y, z (angular velocity along the axes)
+        """
+        return deepcopy(self._cartesian_velocity)
+
+    def endpoint_effort(self):
+        """
+        Return Cartesian endpoint wrench {force, torque}.
+
+        @rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
+        @return: force and torque at endpoint as named tuples in a dict
+
+        C{wrench = {'force': (x, y, z), 'torque': (x, y, z)}}
+
+          - 'force': Cartesian force on x,y,z axes in np.ndarray format
+          - 'torque': Torque around x,y,z axes in np.ndarray format
+        """
+        return deepcopy(self._cartesian_effort)
+
+    def tip_state(self, tip_name):
+        """
+        Return Cartesian endpoint state for a given tip name
+
+        @rtype: TipState object
+        @return: pose, velocity, effort, effort_in_K_frame
+        """
+        return deepcopy(self._tip_states)
+
+
     def set_joint_position_speed(self, speed=0.3):
         """
-        Set ratio of max joint speed to use during joint position moves.
+        Set ratio of max joint speed to use during joint position moves (only for move_to_joint_positions).
 
         Set the proportion of maximum controllable velocity to use
         during joint position control execution. The default ratio
@@ -447,6 +489,42 @@ class ArmInterface(object):
         self._command_msg.names = positions.keys()
         self._command_msg.position = positions.values()
         self._command_msg.mode = JointCommand.POSITION_MODE
+        self._command_msg.header.stamp = rospy.Time.now()
+        self._pub_joint_cmd.publish(self._command_msg)
+
+    def set_joint_velocities(self, velocities):
+        """
+        Commands the joints of this limb to the specified velocities.
+
+        B{IMPORTANT}: set_joint_velocities must be commanded at a rate great
+        than the timeout specified by set_command_timeout. If the timeout is
+        exceeded before a new set_joint_velocities command is received, the
+        controller will switch modes back to position mode for safety purposes.
+
+        @type velocities: dict({str:float})
+        @param velocities: joint_name:velocity command
+        """
+        self._command_msg.names = velocities.keys()
+        self._command_msg.velocity = velocities.values()
+        self._command_msg.mode = JointCommand.VELOCITY_MODE
+        self._command_msg.header.stamp = rospy.Time.now()
+        self._pub_joint_cmd.publish(self._command_msg)
+
+    def set_joint_torques(self, torques):
+        """
+        Commands the joints of this limb to the specified torques.
+
+        B{IMPORTANT}: set_joint_torques must be commanded at a rate great than
+        the timeout specified by set_command_timeout. If the timeout is
+        exceeded before a new set_joint_torques command is received, the
+        controller will switch modes back to position mode for safety purposes.
+
+        @type torques: dict({str:float})
+        @param torques: joint_name:torque command
+        """
+        self._command_msg.names = torques.keys()
+        self._command_msg.effort = torques.values()
+        self._command_msg.mode = JointCommand.TORQUE_MODE
         self._command_msg.header.stamp = rospy.Time.now()
         self._pub_joint_cmd.publish(self._command_msg)
 
@@ -500,12 +578,12 @@ class ArmInterface(object):
             rospy.warn("PandaArm: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
             return
 
-        if 'position_joint_trajectory_controller' not in self._ctrl_manager.list_controller_names():
+        if not self._ctrl_manager.is_loaded(self._ctrl_manager.joint_trajectory_controller):
             print self._ctrl_manager.list_controller_names()
-            self._ctrl_manager.load_controller('position_joint_trajectory_controller')
-        if 'position_joint_trajectory_controller' not in self._ctrl_manager.list_active_controller_names():
+            self._ctrl_manager.load_controller(self._ctrl_manager.joint_trajectory_controller)
+        if self._ctrl_manager.joint_trajectory_controller not in self._ctrl_manager.list_active_controller_names():
             print self._ctrl_manager.list_active_controller_names()
-            self._ctrl_manager.start_controller('position_joint_trajectory_controller')
+            self._ctrl_manager.start_controller(self._ctrl_manager.joint_trajectory_controller)
 
         # rospy.sleep(1.)
         min_traj_dur = 0.5
@@ -553,7 +631,7 @@ class ArmInterface(object):
             )
 
         rospy.sleep(0.5)
-        self._ctrl_manager.stop_controller('position_joint_trajectory_controller')
+        self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
 
         rospy.loginfo("PandaArm: Trajectory controlling complete")
 
