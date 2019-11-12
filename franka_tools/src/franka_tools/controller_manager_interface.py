@@ -104,6 +104,16 @@ class FrankaControllerManagerInterface(object):
 
         self._state_publisher_controllers = ['custom_franka_state_controller','franka_state_controller']
 
+        self._assert_one_active_controller()
+
+
+
+    def _assert_one_active_controller(self):
+        ctrlr_list = self.list_active_controllers(only_motion_controllers=True)
+        assert len(ctrlr_list) <= 1, "FrankaControllerManagerInterface: More than one motion controller active!"
+
+        self._current_controller = ctrlr_list[0].name if len(ctrlr_list) == 1 else None
+
 
     def load_controller(self, name):
         self._load_srv.call(LoadControllerRequest(name=name))
@@ -116,6 +126,7 @@ class FrankaControllerManagerInterface(object):
         req = SwitchControllerRequest(start_controllers=[name],
                                       stop_controllers=[],
                                       strictness=strict)
+        rospy.loginfo("FrankaControllerManagerInterface: Starting controller: %s"%name)
         self._switch_srv.call(req)
 
     def stop_controller(self, name):
@@ -123,6 +134,7 @@ class FrankaControllerManagerInterface(object):
         req = SwitchControllerRequest(start_controllers=[],
                                       stop_controllers=[name],
                                       strictness=strict)
+        rospy.loginfo("FrankaControllerManagerInterface: Stopping controller: %s"%name)
         self._switch_srv.call(req)
 
 
@@ -176,6 +188,16 @@ class FrankaControllerManagerInterface(object):
 
         return controller_dict
 
+    def set_motion_controller(self, controller_name):
+
+        active_motion_ctrls = self.list_active_controllers(only_motion_controllers = True)
+
+        for c in active_motion_ctrls:
+            self.stop_controller(c.name)
+
+        self.start_controller(controller_name)
+
+
     def is_running(self, controller_name):
 
         controllers = self.controller_dict()
@@ -225,6 +247,29 @@ class FrankaControllerManagerInterface(object):
 
         return [c.name for c in self.list_controllers()]
 
+    """
+        Properties that give the names of the controllers for each type.
+    """
+    @property
+    def joint_velocity_controller(self):
+        return "effort_joint_velocity_controller"
+    @property
+    def joint_position_controller(self):
+        return "effort_joint_position_controller"
+    @property
+    def joint_effort_controller(self):
+        return "effort_joint_effort_controller"    
+    @property
+    def joint_impedance_controller(self):
+        return "effort_joint_impedance_controller"   
+    @property
+    def joint_trajectory_controller(self):
+        return "position_joint_trajectory_controller" 
+
+    @property
+    def current_controller(self):
+        return self._current_controller
+    
 
 
 if __name__ == '__main__':

@@ -16,7 +16,7 @@ add_message_files( DIRECTORY msg
         FILES
         JointCommand.msg
         RobotState.msg
-        TipState.msg
+        EndPointState.msg
         JointLimits.msg
         JointControllerStates.msg
 )
