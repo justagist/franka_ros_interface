@@ -54,7 +54,7 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
       }
       else
       {
-        ROS_ERROR("EffortJointImpedanceController: Unable to find lower position limit values for joint %s...",
+        ROS_ERROR("PositionJointPositionController: Unable to find lower position limit values for joint %s...",
                        joint_limits_.joint_names[i].c_str());
         // joint_limits_.position_lower.push_back(8.0);
       }
@@ -64,7 +64,7 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
       }
       else
       {
-        ROS_ERROR("EffortJointImpedanceController: Unable to find upper position limit  values for joint %s...",
+        ROS_ERROR("PositionJointPositionController: Unable to find upper position limit  values for joint %s...",
                        joint_limits_.joint_names[i].c_str());
         // joint_limits_.position_upper.push_back(8.0);
       }
@@ -186,7 +186,7 @@ void PositionJointPositionController::jointPosCmdCallback(const franka_core_msgs
         // std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
       
     }
-    else ROS_ERROR_STREAM("PositionJointPositionController: Published Command msg are not it JointCommand::POSITION_MODE! Dropping message");
+    else ROS_ERROR_STREAM("PositionJointPositionController: Published Command msg are not of JointCommand::POSITION_MODE! Dropping message");
 }
 
 void PositionJointPositionController::jointControllerParamCallback(franka_ros_controllers::joint_position_controller_paramsConfig& config,

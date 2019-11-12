@@ -54,6 +54,7 @@ add_library(franka_ros_controllers
   src/effort_joint_impedance_controller.cpp
   src/position_joint_position_controller.cpp
   src/effort_joint_position_controller.cpp
+  src/effort_joint_torque_controller.cpp
 )
 
 add_dependencies(franka_ros_controllers

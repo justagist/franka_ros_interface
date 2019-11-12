@@ -59,19 +59,6 @@ bool EffortJointPositionController::init(hardware_interface::RobotHW* robot_hw,
       "controller init!");
   return false;
       }
-  // if (!node_handle.getParam("joint_velocity_limits", joint_velocity_limits_) ) {
-  // ROS_ERROR(
-  //     "EffortJointPositionController: Joint velocity limits parameters not provided, aborting "
-  //     "controller init!");
-  // return false;
-  //     }
-
-  std::map<std::string, double> velocity_limit_map;
-  if (!node_handle.getParam("/robot_config/joint_config/joint_velocity_limit", velocity_limit_map))
-  {
-    ROS_ERROR("EffortJointPositionController: Failed to find joint velocity limits on the param server. Aborting controller init");
-    return false;
-  }
 
   for (size_t i = 0; i < joint_limits_.joint_names.size(); ++i){
     if (pos_limit_lower_map.find(joint_limits_.joint_names[i]) != pos_limit_lower_map.end())
@@ -94,21 +81,11 @@ bool EffortJointPositionController::init(hardware_interface::RobotHW* robot_hw,
                        joint_limits_.joint_names[i].c_str());
         // joint_limits_.position_upper.push_back(8.0);
       }
-    if (velocity_limit_map.find(joint_limits_.joint_names[i]) != velocity_limit_map.end())
-      {
-        joint_limits_.velocity.push_back(velocity_limit_map[joint_limits_.joint_names[i]]);
-      }
-      else
-      {
-        ROS_ERROR("EffortJointPositionController: Unable to find velocity limit values for joint %s...",
-                       joint_limits_.joint_names[i].c_str());
-        // joint_limits_.velocity.push_back(8.0);
-      }
   }  
 
   double controller_state_publish_rate(30.0);
   if (!node_handle.getParam("controller_state_publish_rate", controller_state_publish_rate)) {
-    ROS_INFO_STREAM("FrankaStateController: Did not find controller_state_publish_rate. Using default "
+    ROS_INFO_STREAM("EffortJointPositionController: Did not find controller_state_publish_rate. Using default "
                     << controller_state_publish_rate << " [Hz].");
   }
   trigger_publish_ = franka_hw::TriggerRate(controller_state_publish_rate);
@@ -263,18 +240,6 @@ bool EffortJointPositionController::checkPositionLimits(std::vector<double> posi
   return false;
 }
 
-bool EffortJointPositionController::checkVelocityLimits(std::vector<double> velocities)
-{
-  // bool retval = true;
-  for (size_t i = 0;  i < 7; ++i){
-    if (!(velocities[i] >= joint_limits_.velocity[i])){
-      return true;
-    }
-  }
-
-  return false;
-}
-
 std::array<double, 7> EffortJointPositionController::saturateTorqueRate(
     const std::array<double, 7>& tau_d_calculated) {  // NOLINT (readability-identifier-naming)
   std::array<double, 7> tau_d_saturated{};
@@ -306,7 +271,7 @@ void EffortJointPositionController::jointCmdCallback(const franka_core_msgs::Joi
 
     }
   }
-  else ROS_ERROR_STREAM("EffortJointPositionController: Published Command msg are not it JointCommand::POSITION_MODE! Dropping message");
+  else ROS_ERROR_STREAM("EffortJointPositionController: Published Command msg are not of JointCommand::POSITION_MODE! Dropping message");
 }
 
 void EffortJointPositionController::controllerConfigCallback(

@@ -53,8 +53,6 @@ if __name__ == '__main__':
     # pub2 = rospy.Publisher("/panda_simulator/effort_joint_position_controller/joints/panda_joint6_controller/command", Float64)
 
     rate = rospy.Rate(1000)
-    upd = 0.002
-    delta = upd
 
     max_val = 1.1897
     min_val = 0.4723473991867569

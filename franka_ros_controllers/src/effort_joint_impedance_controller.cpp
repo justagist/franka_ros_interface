@@ -108,7 +108,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
 
   double controller_state_publish_rate(30.0);
   if (!node_handle.getParam("controller_state_publish_rate", controller_state_publish_rate)) {
-    ROS_INFO_STREAM("FrankaStateController: Did not find controller_state_publish_rate. Using default "
+    ROS_INFO_STREAM("EffortJointImpedanceController: Did not find controller_state_publish_rate. Using default "
                     << controller_state_publish_rate << " [Hz].");
   }
   trigger_publish_ = franka_hw::TriggerRate(controller_state_publish_rate);
@@ -310,7 +310,7 @@ void EffortJointImpedanceController::jointCmdCallback(const franka_core_msgs::Jo
       // std::cout << "Desired Joint Pos: " << pos_d_target_[0] << "  " << pos_d_target_[2] << std::endl;
     }
   }
-  else ROS_ERROR_STREAM("EffortJointImpedanceController: Published Command msg are not it JointCommand::IMPEDANCE_MODE! Dropping message");
+  else ROS_ERROR_STREAM("EffortJointImpedanceController: Published Command msg are not of JointCommand::IMPEDANCE_MODE! Dropping message");
 }
 
 void EffortJointImpedanceController::controllerConfigCallback(

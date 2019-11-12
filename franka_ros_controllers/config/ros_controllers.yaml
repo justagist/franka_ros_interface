@@ -71,17 +71,15 @@ effort_joint_position_controller:
         - 10.0
     publish_rate: 30.0
 
-
-# franka_state_controller:
-#   type: franka_control/FrankaStateController
-#   publish_rate: 1000  # [Hz]
-#   joint_names:
-#     - panda_joint1
-#     - panda_joint2
-#     - panda_joint3
-#     - panda_joint4
-#     - panda_joint5
-#     - panda_joint6
-#     - panda_joint7
-#   arm_id: panda
+effort_joint_torque_controller:
+    type: franka_ros_controllers/EffortJointTorqueController
+    arm_id: panda
+    joint_names:
+        - panda_joint1
+        - panda_joint2
+        - panda_joint3
+        - panda_joint4
+        - panda_joint5
+        - panda_joint6
+        - panda_joint7
 
