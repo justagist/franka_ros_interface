@@ -18,7 +18,6 @@ import rospy
 import quaternion
 import numpy as np
 from copy import deepcopy
-import collections, warnings
 from rospy_message_converter import message_converter
 
 from franka_core_msgs.msg import JointCommand
@@ -139,13 +138,6 @@ class ArmInterface(object):
         self._frames_interface = FrankaFramesInterface()
         self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns)
 
-        self._create_command_publisher(self._ctrl_manager.current_controller, synchronous_pub)
-
-        # self._pub_speed_ratio = rospy.Publisher(
-        #     ns + 'arm/set_speed_ratio',
-        #     Float64,
-        #     latch=True,
-        #     queue_size=10)
         self._speed_ratio = 0.15
 
 
@@ -164,26 +156,12 @@ class ArmInterface(object):
             queue_size=1,
             tcp_nodelay=True)
 
-        # gripper_state_topic = '/franka_gripper/joint_states'
-        # _joint_state_sub = rospy.Subscriber(
-        #     gripper_state_topic,
-        #     JointState,
-        #     self._on_gripper_states,
-        #     queue_size=1,
-        #     tcp_nodelay=True)
-
         _cartesian_state_sub = rospy.Subscriber(
             self._ns + '/custom_franka_state_controller/tip_state',
             EndPointState,
             self._on_endpoint_state,
             queue_size=1,
             tcp_nodelay=True)
-
-        # ns_pkn = "ExternalTools/" + limb + "/PositionKinematicsNode/"
-        # self._iksvc = rospy.ServiceProxy(ns_pkn + 'IKService', SolvePositionIK)
-        # self._fksvc = rospy.ServiceProxy(ns_pkn + 'FKService', SolvePositionFK)
-        # rospy.wait_for_service(ns_pkn + 'IKService', 5.0)
-        # rospy.wait_for_service(ns_pkn + 'FKService', 5.0)
 
         err_msg = ("%s arm init failed to get current joint_states "
                    "from %s") % (self.name.capitalize(), joint_state_topic)
@@ -201,22 +179,6 @@ class ArmInterface(object):
                                  timeout_msg=err_msg, timeout=5.0)
 
 
-        # if not self._frames_interface.EE_frame_is_reset():
-        #     self.reset_EE_frame()
-
-    def _create_command_publisher(self, controller_name, synchronous_pub = False):
-        self._changing_publisher = True
-        queue_size = None if synchronous_pub else 1
-        with warnings.catch_warnings():
-            rospy.loginfo("PandaArm: Creating command publisher for controller: %s"%controller_name)
-            warnings.simplefilter("ignore")
-            self._pub_joint_cmd = rospy.Publisher(
-                self._ns +'/' + controller_name + '/arm/joint_commands',
-                JointCommand,
-                tcp_nodelay=True,
-                queue_size=queue_size)
-        self._curr_publisher_controller_name = controller_name
-        self._changing_publisher = False
 
     def get_robot_params(self):
         return self._params
@@ -268,13 +230,6 @@ class ArmInterface(object):
 
         self._errors = message_converter.convert_ros_message_to_dictionary(msg.current_errors)
 
-        if (self._ctrl_manager.current_controller != self._curr_publisher_controller_name) and (self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller):
-            if not self._changing_publisher and self._ctrl_manager.current_controller:
-                self._create_command_publisher(self._ctrl_manager.current_controller)
-
-
-    # def get_current_EE_frame_transformation(self, as_mat = False):
-    #     return self._flange_to_ee_trans_mat if not as_mat else np.asarray(self._flange_to_ee_trans_mat).reshape(4,4,order='F')
 
     def get_robot_status(self):
         """
@@ -482,12 +437,10 @@ _ns
         @param speed: ratio of maximum joint speed for execution
                       default= 0.3; range= [0.0-1.0]
         """
-        # self._pub_speed_ratio.publish(Float64(speed))
-
         if speed > 0.3:
-            rospy.logwarn("PandaArm: Setting speed above 0.3 could be risky!! Be extremely careful.")
+            rospy.logwarn("ArmInterface: Setting speed above 0.3 could be risky!! Be extremely careful.")
 
-        self._speed_ratio = speed 
+        self._speed_ratio = speed
 
     def set_joint_positions(self, positions):
         """
@@ -500,7 +453,7 @@ _ns
         self._command_msg.position = positions.values()
         self._command_msg.mode = JointCommand.POSITION_MODE
         self._command_msg.header.stamp = rospy.Time.now()
-        self._pub_joint_cmd.publish(self._command_msg)
+        self._ctrl_manager.send_control_command(self._command_msg)
 
     def set_joint_velocities(self, velocities):
         """
@@ -509,11 +462,13 @@ _ns
         @type velocities: dict({str:float})
         @param velocities: joint_name:velocity command
         """
-        self._command_msg.names = velocities.keys()
-        self._command_msg.velocity = velocities.values()
-        self._command_msg.mode = JointCommand.VELOCITY_MODE
-        self._command_msg.header.stamp = rospy.Time.now()
-        self._pub_joint_cmd.publish(self._command_msg)
+        raise NotImplementedError("ArmInterface: Velocity Controller Not Implemented!")
+
+        # self._command_msg.names = velocities.keys()
+        # self._command_msg.velocity = velocities.values()
+        # self._command_msg.mode = JointCommand.VELOCITY_MODE
+        # self._command_msg.header.stamp = rospy.Time.now()
+        # self._ctrl_manager.send_control_command(self._command_msg)
 
     def set_joint_torques(self, torques):
         """
@@ -526,7 +481,7 @@ _ns
         self._command_msg.effort = torques.values()
         self._command_msg.mode = JointCommand.TORQUE_MODE
         self._command_msg.header.stamp = rospy.Time.now()
-        self._pub_joint_cmd.publish(self._command_msg)
+        self._ctrl_manager.send_control_command(self._command_msg)
 
     def set_joint_positions_velocities(self, positions, velocities):
         """
@@ -546,7 +501,7 @@ _ns
         self._command_msg.velocity = velocities
         self._command_msg.mode = JointCommand.IMPEDANCE_MODE
         self._command_msg.header.stamp = rospy.Time.now()
-        self._pub_joint_cmd.publish(self._command_msg)
+        self._ctrl_manager.send_control_command(self._command_msg)
 
 
     def has_collided(self):
@@ -592,11 +547,11 @@ _ns
         active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
         for ctrlr in active_controllers:
             self._ctrl_manager.stop_controller(ctrlr.name)
-            rospy.loginfo("PandaArm: Stopping %s for trajectory controlling"%ctrlr.name)
+            rospy.loginfo("ArmInterface: Stopping %s for trajectory controlling"%ctrlr.name)
             rospy.sleep(0.5)
 
         if self._params._in_sim:
-            rospy.warn("PandaArm: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
+            rospy.warn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
             return
 
         if not self._ctrl_manager.is_loaded(self._ctrl_manager.joint_trajectory_controller):
@@ -624,7 +579,7 @@ _ns
         diffs = [genf(j, a) for j, a in positions.items() if
                  j in self._joint_angle]
 
-        fail_msg = "PandaArm: {0} limb failed to reach commanded joint positions.".format(
+        fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
                                                       self.name.capitalize())
         def test_collision():
             if self.has_collided():
@@ -648,11 +603,11 @@ _ns
         rospy.sleep(0.5)
         self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
 
-        rospy.loginfo("PandaArm: Trajectory controlling complete")
+        rospy.loginfo("ArmInterface: Trajectory controlling complete")
 
         for ctrlr in active_controllers:
             self._ctrl_manager.start_controller(ctrlr.name)
-            rospy.loginfo("PandaArm: Restaring %s"%ctrlr.name)
+            rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
             rospy.sleep(0.5)
 
 
@@ -666,12 +621,12 @@ _ns
         if self._frames_interface:
 
             if self._frames_interface.EE_frame_is_reset():
-                rospy.loginfo("PandaArm: EE Frame already reset")
+                rospy.loginfo("ArmInterface: EE Frame already reset")
                 return
 
             active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
 
-            rospy.loginfo("PandaArm: Stopping motion controllers for resetting EE frame")
+            rospy.loginfo("ArmInterface: Stopping motion controllers for resetting EE frame")
             for ctrlr in active_controllers:
                 self._ctrl_manager.stop_controller(ctrlr.name)
             rospy.sleep(1.)
@@ -679,7 +634,7 @@ _ns
             retval = self._frames_interface.reset_EE_frame()
 
             rospy.sleep(1.)
-            rospy.loginfo("PandaArm: Restarting previously active motion controllers.")
+            rospy.loginfo("ArmInterface: Restarting previously active motion controllers.")
             for ctrlr in active_controllers:
                 self._ctrl_manager.start_controller(ctrlr.name)
             rospy.sleep(1.)
@@ -687,7 +642,7 @@ _ns
             return retval
 
         else:
-            rospy.logwarn("PandaArm: Frames changing not available in simulated environment")
+            rospy.logwarn("ArmInterface: Frames changing not available in simulated environment")
             return False
 
 
@@ -708,7 +663,7 @@ _ns
 
             active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
             rospy.sleep(1.)
-            rospy.loginfo("PandaArm: Stopping motion controllers for changing EE frame")
+            rospy.loginfo("ArmInterface: Stopping motion controllers for changing EE frame")
             for ctrlr in active_controllers:
                 self._ctrl_manager.stop_controller(ctrlr.name)
             rospy.sleep(1.)
@@ -716,7 +671,7 @@ _ns
             retval = self._frames_interface.set_EE_frame(frame)
 
             rospy.sleep(1.)
-            rospy.loginfo("PandaArm: Restarting previously active motion controllers.")
+            rospy.loginfo("ArmInterface: Restarting previously active motion controllers.")
             for ctrlr in active_controllers:
                 self._ctrl_manager.start_controller(ctrlr.name)
             rospy.sleep(1.)
@@ -724,7 +679,7 @@ _ns
             return retval
 
         else:
-            rospy.logwarn("PandaArm: Frames changing not available in simulated environment")
+            rospy.logwarn("ArmInterface: Frames changing not available in simulated environment")
 
     def set_EE_frame_to_link(self, frame_name, timeout = 5.0):
         """
@@ -739,7 +694,7 @@ _ns
         if self._frames_interface:
             active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
 
-            rospy.loginfo("PandaArm: Stopping motion controllers for changing EE frame")
+            rospy.loginfo("ArmInterface: Stopping motion controllers for changing EE frame")
             rospy.sleep(1.)
             for ctrlr in active_controllers:
                 self._ctrl_manager.stop_controller(ctrlr.name)
@@ -748,14 +703,14 @@ _ns
             retval = self._frames_interface.set_EE_frame_to_link(frame_name = frame_name, timeout = timeout)
 
             rospy.sleep(1.)
-            rospy.loginfo("PandaArm: Restarting previously active motion controllers.")
+            rospy.loginfo("ArmInterface: Restarting previously active motion controllers.")
             for ctrlr in active_controllers:
                 self._ctrl_manager.start_controller(ctrlr.name)
             rospy.sleep(1.)
 
             return retval
         else:
-            rospy.logwarn("PandaArm: Frames changing not available in simulated environment")
+            rospy.logwarn("ArmInterface: Frames changing not available in simulated environment")
 
     def get_controller_manager(self):
 
