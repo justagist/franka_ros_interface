@@ -15,7 +15,7 @@
 #include <franka_hw/franka_model_interface.h>
 #include <franka_hw/trigger_rate.h>
 #include <franka_core_msgs/RobotState.h>
-#include <franka_core_msgs/TipState.h>
+#include <franka_core_msgs/EndPointState.h>
 #include <geometry_msgs/WrenchStamped.h>
 #include <realtime_tools/realtime_publisher.h>
 #include <sensor_msgs/JointState.h>
@@ -59,7 +59,7 @@ class CustomFrankaStateController
   void publishFrankaState(const ros::Time& time);
   void publishJointStates(const ros::Time& time);
   void publishTransforms(const ros::Time& time);
-  void publishTipState(const ros::Time& time);
+  void publishEndPointState(const ros::Time& time);
 
   std::string arm_id_;
 
@@ -71,7 +71,7 @@ class CustomFrankaStateController
   realtime_tools::RealtimePublisher<franka_core_msgs::RobotState> publisher_franka_state_;
   realtime_tools::RealtimePublisher<sensor_msgs::JointState> publisher_joint_states_;
   realtime_tools::RealtimePublisher<sensor_msgs::JointState> publisher_joint_states_desired_;
-  realtime_tools::RealtimePublisher<franka_core_msgs::TipState> publisher_tip_state_;
+  realtime_tools::RealtimePublisher<franka_core_msgs::EndPointState> publisher_tip_state_;
   franka_hw::TriggerRate trigger_publish_;
   franka::RobotState robot_state_;
   uint64_t sequence_number_ = 0;

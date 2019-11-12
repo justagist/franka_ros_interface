@@ -241,7 +241,7 @@ bool CustomFrankaStateController::init(hardware_interface::RobotHW* robot_hardwa
     publisher_transforms_.msg_.transforms[1] = transform_message;
   }
   {
-    std::lock_guard<realtime_tools::RealtimePublisher<franka_core_msgs::TipState> > lock(
+    std::lock_guard<realtime_tools::RealtimePublisher<franka_core_msgs::EndPointState> > lock(
         publisher_tip_state_);
     publisher_tip_state_.msg_.O_F_ext_hat_K.header.frame_id = arm_id_ + "_link0";
     publisher_tip_state_.msg_.O_F_ext_hat_K.wrench.force.x = 0.0;
@@ -267,7 +267,7 @@ void CustomFrankaStateController::update(const ros::Time& time, const ros::Durat
     robot_state_ = franka_state_handle_->getRobotState();
     publishFrankaState(time);
     publishTransforms(time);
-    publishTipState(time);
+    publishEndPointState(time);
     publishJointStates(time);
     sequence_number_++;
   }
@@ -458,7 +458,7 @@ void CustomFrankaStateController::publishTransforms(const ros::Time& time) {
   }
 }
 
-void CustomFrankaStateController::publishTipState(const ros::Time& time) {
+void CustomFrankaStateController::publishEndPointState(const ros::Time& time) {
   if (publisher_tip_state_.trylock()) {
     for (size_t i = 0; i < robot_state_.O_T_EE.size(); i++) {
       publisher_tip_state_.msg_.O_T_EE[i] = robot_state_.O_T_EE[i];
