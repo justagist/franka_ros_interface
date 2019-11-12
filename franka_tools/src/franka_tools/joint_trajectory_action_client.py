@@ -33,7 +33,9 @@ class JointTrajectoryActionClient(object):
     def add_point(self, positions, time, velocities = None):
         point = JointTrajectoryPoint()
         point.positions = copy(positions)
-        if velocities:
+        if velocities is None:
+            point.velocities = [0.0001 for n in positions]
+        else:
             point.velocities = copy(velocities)
         point.time_from_start = rospy.Duration(time)
         self._goal.trajectory.points.append(point)
