@@ -12,33 +12,6 @@ position_joint_position_controller:
     joint_position_limits_upper: [ 2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973 ]
 
 
-# position_joint_trajectory_controller:
-#   type: position_controllers/JointTrajectoryController
-#   joints:
-#     - panda_joint1
-#     - panda_joint2
-#     - panda_joint3
-#     - panda_joint4
-#     - panda_joint5
-#     - panda_joint6
-#     - panda_joint7
-#   constraints:
-#     goal_time: 0.5
-#     panda_joint1:
-#       goal: 0.05
-#     panda_joint2:
-#       goal: 0.05
-#     panda_joint3:
-#       goal: 0.05
-#     panda_joint4:
-#       goal: 0.05
-#     panda_joint5:
-#       goal: 0.05
-#     panda_joint6:
-#       goal: 0.05
-#     panda_joint7:
-#       goal: 0.05
-
 effort_joint_impedance_controller:
     type: franka_ros_controllers/EffortJointImpedanceController
     arm_id: panda
@@ -68,9 +41,36 @@ effort_joint_impedance_controller:
         - 10.0
     publish_rate: 30.0
     coriolis_factor: 1.0
-    joint_position_limits_lower: [ -2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973 ]
-    joint_position_limits_upper: [ 2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973 ]
-    joint_velocity_limits: [2.1750, 2.1750, 2.1750, 2.1750, 2.6100, 2.6100, 2.6100]
+
+effort_joint_position_controller:
+    type: franka_ros_controllers/EffortJointPositionController
+    arm_id: panda
+    joint_names:
+        - panda_joint1
+        - panda_joint2
+        - panda_joint3
+        - panda_joint4
+        - panda_joint5
+        - panda_joint6
+        - panda_joint7
+    k_gains:
+        - 600.0
+        - 600.0
+        - 600.0
+        - 600.0
+        - 250.0
+        - 150.0
+        - 50.0
+    d_gains:
+        - 50.0
+        - 50.0
+        - 50.0
+        - 20.0
+        - 20.0
+        - 20.0
+        - 10.0
+    publish_rate: 30.0
+
 
 # franka_state_controller:
 #   type: franka_control/FrankaStateController

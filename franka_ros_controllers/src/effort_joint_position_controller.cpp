@@ -1,4 +1,4 @@
-#include <franka_ros_controllers/effort_joint_impedance_controller.h>
+#include <franka_ros_controllers/effort_joint_position_controller.h>
 
 #include <cmath>
 #include <memory>
@@ -11,37 +11,37 @@
 
 namespace franka_ros_controllers {
 
-bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
+bool EffortJointPositionController::init(hardware_interface::RobotHW* robot_hw,
                                            ros::NodeHandle& node_handle) {
   std::string arm_id;
   if (!node_handle.getParam("/robot_config/arm_id", arm_id)) {
-    ROS_ERROR("EffortJointImpedanceController: Could not read parameter arm_id");
+    ROS_ERROR("EffortJointPositionController: Could not read parameter arm_id");
     return false;
   }
 
   franka_state_interface_ = robot_hw->get<franka_hw::FrankaStateInterface>();
   if (franka_state_interface_ == nullptr) {
-    ROS_ERROR("EffortJointImpedanceController: Could not get Franka state interface from hardware");
+    ROS_ERROR("EffortJointPositionController: Could not get Franka state interface from hardware");
     return false;
   }
   // std::vector<std::string> joint_names;
   if (!node_handle.getParam("/robot_config/joint_names", joint_limits_.joint_names) || joint_limits_.joint_names.size() != 7) {
     ROS_ERROR(
-        "EffortJointImpedanceController: Invalid or no joint_names parameters provided, aborting "
+        "EffortJointPositionController: Invalid or no joint_names parameters provided, aborting "
         "controller init!");
     return false;
   }
 
   if (!node_handle.getParam("k_gains", k_gains_) || k_gains_.size() != 7) {
     ROS_ERROR(
-        "EffortJointImpedanceController:  Invalid or no k_gain parameters provided, aborting "
+        "EffortJointPositionController:  Invalid or no k_gain parameters provided, aborting "
         "controller init!");
     return false;
   }
 
   if (!node_handle.getParam("d_gains", d_gains_) || d_gains_.size() != 7) {
     ROS_ERROR(
-        "EffortJointImpedanceController:  Invalid or no d_gain parameters provided, aborting "
+        "EffortJointPositionController:  Invalid or no d_gain parameters provided, aborting "
         "controller init!");
     return false;
   }
@@ -49,19 +49,19 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   std::map<std::string, double> pos_limit_upper_map;
   if (!node_handle.getParam("/robot_config/joint_config/joint_position_limit/lower", pos_limit_lower_map) ) {
   ROS_ERROR(
-      "EffortJointImpedanceController: Joint limits parameters not provided, aborting "
+      "EffortJointPositionController: Joint limits parameters not provided, aborting "
       "controller init!");
   return false;
       }
   if (!node_handle.getParam("/robot_config/joint_config/joint_position_limit/upper", pos_limit_upper_map) ) {
   ROS_ERROR(
-      "EffortJointImpedanceController: Joint limits parameters not provided, aborting "
+      "EffortJointPositionController: Joint limits parameters not provided, aborting "
       "controller init!");
   return false;
       }
   // if (!node_handle.getParam("joint_velocity_limits", joint_velocity_limits_) ) {
   // ROS_ERROR(
-  //     "EffortJointImpedanceController: Joint velocity limits parameters not provided, aborting "
+  //     "EffortJointPositionController: Joint velocity limits parameters not provided, aborting "
   //     "controller init!");
   // return false;
   //     }
@@ -69,7 +69,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   std::map<std::string, double> velocity_limit_map;
   if (!node_handle.getParam("/robot_config/joint_config/joint_velocity_limit", velocity_limit_map))
   {
-    ROS_ERROR("EffortJointImpedanceController: Failed to find joint velocity limits on the param server. Aborting controller init");
+    ROS_ERROR("EffortJointPositionController: Failed to find joint velocity limits on the param server. Aborting controller init");
     return false;
   }
 
@@ -80,7 +80,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
       }
       else
       {
-        ROS_ERROR("EffortJointImpedanceController: Unable to find lower position limit values for joint %s...",
+        ROS_ERROR("EffortJointPositionController: Unable to find lower position limit values for joint %s...",
                        joint_limits_.joint_names[i].c_str());
         // joint_limits_.position_lower.push_back(8.0);
       }
@@ -90,7 +90,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
       }
       else
       {
-        ROS_ERROR("EffortJointImpedanceController: Unable to find upper position limit  values for joint %s...",
+        ROS_ERROR("EffortJointPositionController: Unable to find upper position limit  values for joint %s...",
                        joint_limits_.joint_names[i].c_str());
         // joint_limits_.position_upper.push_back(8.0);
       }
@@ -100,7 +100,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
       }
       else
       {
-        ROS_ERROR("EffortJointImpedanceController: Unable to find velocity limit values for joint %s...",
+        ROS_ERROR("EffortJointPositionController: Unable to find velocity limit values for joint %s...",
                        joint_limits_.joint_names[i].c_str());
         // joint_limits_.velocity.push_back(8.0);
       }
@@ -113,32 +113,16 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   }
   trigger_publish_ = franka_hw::TriggerRate(controller_state_publish_rate);
 
-  if (!node_handle.getParam("coriolis_factor", coriolis_factor_)) {
-    ROS_INFO_STREAM("EffortJointImpedanceController: coriolis_factor not found. Defaulting to "
-                    << coriolis_factor_);
-  }
-
-  auto* model_interface = robot_hw->get<franka_hw::FrankaModelInterface>();
-  if (model_interface == nullptr) {
-    ROS_ERROR_STREAM(
-        "EffortJointImpedanceController: Error getting model interface from hardware");
-    return false;
-  }
-  try {
-    model_handle_ = std::make_unique<franka_hw::FrankaModelHandle>(
-        model_interface->getHandle(arm_id + "_model"));
-  } catch (hardware_interface::HardwareInterfaceException& ex) {
-    ROS_ERROR_STREAM(
-        "EffortJointImpedanceController: Exception getting model handle from interface: "
-        << ex.what());
-    return false;
-  }
+  // if (!node_handle.getParam("coriolis_factor", coriolis_factor_)) {
+  //   ROS_INFO_STREAM("EffortJointPositionController: coriolis_factor not found. Defaulting to "
+  //                   << coriolis_factor_);
+  // }
 
   try {
     franka_state_handle_ = std::make_unique<franka_hw::FrankaStateHandle>(
         franka_state_interface_->getHandle(arm_id + "_robot"));
   } catch (const hardware_interface::HardwareInterfaceException& ex) {
-    ROS_ERROR_STREAM("EffortJointImpedanceController: Exception getting franka state handle: " << ex.what());
+    ROS_ERROR_STREAM("EffortJointPositionController: Exception getting franka state handle: " << ex.what());
     return false;
   }
 
@@ -146,7 +130,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   auto* effort_joint_interface = robot_hw->get<hardware_interface::EffortJointInterface>();
   if (effort_joint_interface == nullptr) {
     ROS_ERROR_STREAM(
-        "EffortJointImpedanceController: Error getting effort joint interface from hardware");
+        "EffortJointPositionController: Error getting effort joint interface from hardware");
     return false;
   }
   for (size_t i = 0; i < 7; ++i) {
@@ -154,7 +138,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
       joint_handles_.push_back(effort_joint_interface->getHandle(joint_limits_.joint_names[i]));
     } catch (const hardware_interface::HardwareInterfaceException& ex) {
       ROS_ERROR_STREAM(
-          "EffortJointImpedanceController: Exception getting joint handles: " << ex.what());
+          "EffortJointPositionController: Exception getting joint handles: " << ex.what());
       return false;
     }
   }
@@ -162,17 +146,17 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   d_gains_target_ = d_gains_;
 
   dynamic_reconfigure_controller_gains_node_ =
-      ros::NodeHandle("effort_joint_impedance_controller/arm/controller_parameters_config");
+      ros::NodeHandle("effort_joint_position_controller/arm/controller_parameters_config");
 
   dynamic_server_controller_config_ = std::make_unique<
       dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig>>(
 
       dynamic_reconfigure_controller_gains_node_);
   dynamic_server_controller_config_->setCallback(
-      boost::bind(&EffortJointImpedanceController::controllerConfigCallback, this, _1, _2));
+      boost::bind(&EffortJointPositionController::controllerConfigCallback, this, _1, _2));
 
   desired_joints_subscriber_ = node_handle.subscribe(
-      "arm/joint_commands", 20, &EffortJointImpedanceController::jointCmdCallback, this,
+      "arm/joint_commands", 20, &EffortJointPositionController::jointCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
   publisher_controller_states_.init(node_handle, "arm/joint_controller_states", 1);
@@ -185,42 +169,52 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
 
   }
 
-  std::fill(dq_filtered_.begin(), dq_filtered_.end(), 0);
-
   return true;
 }
 
-void EffortJointImpedanceController::starting(const ros::Time& /*time*/) {
+void EffortJointPositionController::starting(const ros::Time& /*time*/) {
   franka::RobotState robot_state = franka_state_handle_->getRobotState();
   for (size_t i = 0; i < 7; ++i) {
     initial_pos_[i] = robot_state.q[i];
-    std::cout << "Joint Pos: " << initial_pos_[i]  << std::endl;
-    // initial_vel_[i] = robot_state.dq[i];
   }
   prev_pos_ = initial_pos_;
   pos_d_target_ = initial_pos_;
 
-  std::fill(dq_filtered_.begin(), dq_filtered_.end(), 0);
-  dq_d_ = dq_filtered_;
+  std::fill(p_error_last_.begin(), p_error_last_.end(), 0);
+  d_error_ = p_error_last_;
 }
 
-void EffortJointImpedanceController::update(const ros::Time& time,
+void EffortJointPositionController::update(const ros::Time& time,
                                              const ros::Duration& period) {
   franka::RobotState robot_state = franka_state_handle_->getRobotState();
-  std::array<double, 7> coriolis = model_handle_->getCoriolis();
-  std::array<double, 7> gravity = model_handle_->getGravity();
 
   double alpha = 0.99;
+  std::array<double, 7> error = p_error_last_;
+  std::array<double, 7> error_dot = d_error_;
+
   for (size_t i = 0; i < 7; i++) {
-    dq_filtered_[i] = (1 - alpha) * dq_filtered_[i] + alpha * robot_state.dq[i];
+
+    error[i] = (pos_d_target_[i] - robot_state.q[i]);
+
+    if (period.toSec() > 0.0)
+    {
+      error_dot[i] = (error[i] - p_error_last_[i]) / period.toSec();
+    }
+
   }
 
+  d_error_ = error_dot;
+
+  // Compute torque command using PD control law
   std::array<double, 7> tau_d_calculated{};
   for (size_t i = 0; i < 7; ++i) {
-    tau_d_calculated[i] = coriolis_factor_ * coriolis[i] +
-                          k_gains_[i] * (pos_d_target_[i] - robot_state.q[i]) +
-                          d_gains_[i] * (dq_d_[i] - dq_filtered_[i]);
+
+    tau_d_calculated[i] = k_gains_[i] * error[i]  + 
+                          d_gains_[i] * d_error_[i];
+
   }
+
+  p_error_last_ = error;
 
   // Maximum torque difference with a sampling rate of 1 kHz. The maximum torque rate is
   // 1000 * (1 / sampling_time).
@@ -231,8 +225,8 @@ void EffortJointImpedanceController::update(const ros::Time& time,
 
         publisher_controller_states_.msg_.joint_controller_states[i].set_point = pos_d_target_[i];
         publisher_controller_states_.msg_.joint_controller_states[i].process_value = robot_state.q[i];
-        publisher_controller_states_.msg_.joint_controller_states[i].process_value_dot = robot_state.dq[i];
-        publisher_controller_states_.msg_.joint_controller_states[i].error = pos_d_target_[i] - robot_state.q[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].process_value_dot = d_error_[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].error = error[i];
         publisher_controller_states_.msg_.joint_controller_states[i].time_step = period.toSec();
         publisher_controller_states_.msg_.joint_controller_states[i].command = tau_d_calculated[i];
 
@@ -257,7 +251,7 @@ void EffortJointImpedanceController::update(const ros::Time& time,
 
 }
 
-bool EffortJointImpedanceController::checkPositionLimits(std::vector<double> positions)
+bool EffortJointPositionController::checkPositionLimits(std::vector<double> positions)
 {
   // bool retval = true;
   for (size_t i = 0;  i < 7; ++i){
@@ -269,7 +263,7 @@ bool EffortJointImpedanceController::checkPositionLimits(std::vector<double> pos
   return false;
 }
 
-bool EffortJointImpedanceController::checkVelocityLimits(std::vector<double> velocities)
+bool EffortJointPositionController::checkVelocityLimits(std::vector<double> velocities)
 {
   // bool retval = true;
   for (size_t i = 0;  i < 7; ++i){
@@ -281,7 +275,7 @@ bool EffortJointImpedanceController::checkVelocityLimits(std::vector<double> vel
   return false;
 }
 
-std::array<double, 7> EffortJointImpedanceController::saturateTorqueRate(
+std::array<double, 7> EffortJointPositionController::saturateTorqueRate(
     const std::array<double, 7>& tau_d_calculated) {  // NOLINT (readability-identifier-naming)
   std::array<double, 7> tau_d_saturated{};
   for (size_t i = 0; i < 7; i++) {
@@ -290,30 +284,32 @@ std::array<double, 7> EffortJointImpedanceController::saturateTorqueRate(
   return tau_d_saturated;
 }
 
-void EffortJointImpedanceController::jointCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg) {
+void EffortJointPositionController::jointCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg) {
 
-  if (msg->mode == franka_core_msgs::JointCommand::IMPEDANCE_MODE){
+  if (msg->mode == franka_core_msgs::JointCommand::POSITION_MODE){
     if (msg->position.size() != 7) {
       ROS_ERROR_STREAM(
-          "EffortJointImpedanceController: Published Commands are not of size 7");
+          "EffortJointPositionController: Published Commands are not of size 7");
       pos_d_target_ = prev_pos_;
+      std::fill(p_error_last_.begin(), p_error_last_.end(), 0);
+      d_error_ = p_error_last_;
     }
-    else if (checkPositionLimits(msg->position) || checkVelocityLimits(msg->velocity)) {
+    else if (checkPositionLimits(msg->position)) {
          ROS_ERROR_STREAM(
-            "PositionJointPositionController: Commanded positions or velicities are beyond allowed position limits.");
+            "PositionJointPositionController: Commanded positions are beyond allowed position limits.");
         pos_d_target_ = prev_pos_;
-
+        std::fill(p_error_last_.begin(), p_error_last_.end(), 0);
+        d_error_ = p_error_last_;
     }
     else {
       std::copy_n(msg->position.begin(), 7, pos_d_target_.begin());
-      std::copy_n(msg->velocity.begin(), 7, dq_d_.begin()); // if velocity is not there, the controller fails!!
-      // std::cout << "Desired Joint Pos: " << pos_d_target_[0] << "  " << pos_d_target_[2] << std::endl;
+
     }
   }
-  else ROS_ERROR_STREAM("EffortJointImpedanceController: Published Command msg are not it JointCommand::IMPEDANCE_MODE! Dropping message");
+  else ROS_ERROR_STREAM("EffortJointPositionController: Published Command msg are not it JointCommand::POSITION_MODE! Dropping message");
 }
 
-void EffortJointImpedanceController::controllerConfigCallback(
+void EffortJointPositionController::controllerConfigCallback(
     franka_ros_controllers::joint_position_controller_paramsConfig& config,
     uint32_t /*level*/) {
 
@@ -337,5 +333,5 @@ void EffortJointImpedanceController::controllerConfigCallback(
 
 }  // namespace franka_ros_controllers
 
-PLUGINLIB_EXPORT_CLASS(franka_ros_controllers::EffortJointImpedanceController,
+PLUGINLIB_EXPORT_CLASS(franka_ros_controllers::EffortJointPositionController,
                        controller_interface::ControllerBase)

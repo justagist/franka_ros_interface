@@ -44,11 +44,11 @@ if __name__ == '__main__':
     
 
     rospy.init_node("test_node")
-    # pub = rospy.Publisher('/franka_ros_interface/effort_joint_impedance_controller/arm/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
+    pub = rospy.Publisher('/franka_ros_interface/effort_joint_position_controller/arm/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
     # pub = rospy.Publisher('/franka_ros_interface/position_joint_position_controller/arm/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
-    pub = rospy.Publisher('/panda_simulator/arm/joint_command',JointCommand, queue_size = 1, tcp_nodelay = True)
-    rospy.Subscriber('/panda_simulator/joint_states', JointState, callback)
-    # rospy.Subscriber('/franka_ros_interface/custom_franka_state_controller/joint_states', JointState, callback)
+    # pub = rospy.Publisher('/panda_simulator/arm/joint_command',JointCommand, queue_size = 1, tcp_nodelay = True)
+    # rospy.Subscriber('/panda_simulator/joint_states', JointState, callback)
+    rospy.Subscriber('/franka_ros_interface/custom_franka_state_controller/joint_states', JointState, callback)
     
     # pub2 = rospy.Publisher("/panda_simulator/effort_joint_position_controller/joints/panda_joint6_controller/command", Float64)
 

@@ -19,14 +19,11 @@
 #include <hardware_interface/robot_hw.h>
 #include <ros/node_handle.h>
 #include <ros/time.h>
-
-#include <franka_hw/franka_model_interface.h>
-
+#include <mutex>
 
 namespace franka_ros_controllers {
 
-class EffortJointImpedanceController : public controller_interface::MultiInterfaceController<
-                                            franka_hw::FrankaModelInterface,
+class EffortJointPositionController : public controller_interface::MultiInterfaceController<
                                             franka_hw::FrankaStateInterface,
                                             hardware_interface::EffortJointInterface> {
  public:
@@ -39,7 +36,6 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   static std::array<double, 7> saturateTorqueRate(
       const std::array<double, 7>& tau_d_calculated);  // NOLINT (readability-identifier-naming)
 
-  std::unique_ptr<franka_hw::FrankaModelHandle> model_handle_;
   std::vector<hardware_interface::JointHandle> joint_handles_;
 
   static constexpr double kDeltaTauMax{1.0};
@@ -54,8 +50,8 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   std::array<double, 7> initial_pos_;
   std::array<double, 7> prev_pos_;
   std::array<double, 7> pos_d_target_;
-  std::array<double, 7> dq_d_;
-  std::array<double, 7> dq_filtered_;
+  std::array<double, 7> d_error_;
+  std::array<double, 7> p_error_last_;
 
   // std::vector<double> joint_position_limits_lower_;
   // std::vector<double> joint_position_limits_upper_;
