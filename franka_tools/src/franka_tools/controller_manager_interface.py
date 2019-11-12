@@ -122,12 +122,17 @@ class FrankaControllerManagerInterface(object):
         self._unload_srv.call(UnloadControllerRequest(name=name))
 
     def start_controller(self, name):
+
+        self._assert_one_active_controller()
+
         strict = SwitchControllerRequest.STRICT
         req = SwitchControllerRequest(start_controllers=[name],
                                       stop_controllers=[],
                                       strictness=strict)
         rospy.loginfo("FrankaControllerManagerInterface: Starting controller: %s"%name)
         self._switch_srv.call(req)
+
+        self._assert_one_active_controller()
 
     def stop_controller(self, name):
         strict = SwitchControllerRequest.STRICT
@@ -252,16 +257,20 @@ class FrankaControllerManagerInterface(object):
     """
     @property
     def joint_velocity_controller(self):
-        return "effort_joint_velocity_controller"
+        raise NotImplementedError("Velocity Controller Not Implemented")
+        # return "effort_joint_velocity_controller"
     @property
     def joint_position_controller(self):
-        return "effort_joint_position_controller"
+        return "position_joint_position_controller"
     @property
-    def joint_effort_controller(self):
-        return "effort_joint_effort_controller"    
+    def joint_torque_controller(self):
+        return "effort_joint_torque_controller"    
     @property
     def joint_impedance_controller(self):
         return "effort_joint_impedance_controller"   
+    @property
+    def effort_joint_position_controller(self):
+        return "effort_joint_position_controller"
     @property
     def joint_trajectory_controller(self):
         return "position_joint_trajectory_controller" 
