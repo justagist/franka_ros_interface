@@ -10,7 +10,7 @@
 # @info: 
 #   Inteface Class for Franka robot arm.
 #
-#   Todo: send control commands (position, velocity, torque), get cartesian velocity, finish getting robot state
+#   Todo: send control commands (position, velocity, torque), change K frame (important for cartesian effort measurement)
 #
 
 import enum
@@ -139,15 +139,7 @@ class ArmInterface(object):
         self._frames_interface = FrankaFramesInterface()
         self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns)
 
-
-        queue_size = None if synchronous_pub else 1
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self._pub_joint_cmd = rospy.Publisher(
-                ns + 'arm/joint_command',
-                JointCommand,
-                tcp_nodelay=True,
-                queue_size=queue_size)
+        self._create_command_publisher(self._ctrl_manager.current_controller, synchronous_pub)
 
         # self._pub_speed_ratio = rospy.Publisher(
         #     ns + 'arm/set_speed_ratio',
@@ -212,6 +204,20 @@ class ArmInterface(object):
         # if not self._frames_interface.EE_frame_is_reset():
         #     self.reset_EE_frame()
 
+    def _create_command_publisher(self, controller_name, synchronous_pub = False):
+        self._changing_publisher = True
+        queue_size = None if synchronous_pub else 1
+        with warnings.catch_warnings():
+            rospy.loginfo("PandaArm: Creating command publisher for controller: %s"%controller_name)
+            warnings.simplefilter("ignore")
+            self._pub_joint_cmd = rospy.Publisher(
+                self._ns +'/' + controller_name + '/arm/joint_commands',
+                JointCommand,
+                tcp_nodelay=True,
+                queue_size=queue_size)
+        self._curr_publisher_controller_name = controller_name
+        self._changing_publisher = False
+
     def get_robot_params(self):
         return self._params
 
@@ -261,6 +267,10 @@ class ArmInterface(object):
         self.dq_d = msg.dq_d
 
         self._errors = message_converter.convert_ros_message_to_dictionary(msg.current_errors)
+
+        if (self._ctrl_manager.current_controller != self._curr_publisher_controller_name) and (self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller):
+            if not self._changing_publisher and self._ctrl_manager.current_controller:
+                self._create_command_publisher(self._ctrl_manager.current_controller)
 
 
     # def get_current_EE_frame_transformation(self, as_mat = False):
@@ -388,7 +398,7 @@ class ArmInterface(object):
     def joint_effort(self, joint):
         """
         Return the requested joint effort.
-
+_ns
         @type joint: str
         @param joint: name of a joint
         @rtype: float
@@ -496,11 +506,6 @@ class ArmInterface(object):
         """
         Commands the joints of this limb to the specified velocities.
 
-        B{IMPORTANT}: set_joint_velocities must be commanded at a rate great
-        than the timeout specified by set_command_timeout. If the timeout is
-        exceeded before a new set_joint_velocities command is received, the
-        controller will switch modes back to position mode for safety purposes.
-
         @type velocities: dict({str:float})
         @param velocities: joint_name:velocity command
         """
@@ -514,11 +519,6 @@ class ArmInterface(object):
         """
         Commands the joints of this limb to the specified torques.
 
-        B{IMPORTANT}: set_joint_torques must be commanded at a rate great than
-        the timeout specified by set_command_timeout. If the timeout is
-        exceeded before a new set_joint_torques command is received, the
-        controller will switch modes back to position mode for safety purposes.
-
         @type torques: dict({str:float})
         @param torques: joint_name:torque command
         """
@@ -527,6 +527,27 @@ class ArmInterface(object):
         self._command_msg.mode = JointCommand.TORQUE_MODE
         self._command_msg.header.stamp = rospy.Time.now()
         self._pub_joint_cmd.publish(self._command_msg)
+
+    def set_joint_positions_velocities(self, positions, velocities):
+        """
+        Commands the joints of this limb using specified positions and velocities using impedance control.
+        Command at time t is computed as 
+            u_t = coriolis_factor * coriolis_t + 
+                  K_p * (positions - curr_positions) + 
+                  K_d * (velocities - curr_velocities)
+
+        @type positions: [float]
+        @param positions: desired joint positions as an ordered list corresponding to joints given by self.joint_names()
+        @type velocities: [float]
+        @param velocities: desired joint velocities as an ordered list corresponding to joints given by self.joint_names()
+        """
+        self._command_msg.names = self._joint_names
+        self._command_msg.position = positions
+        self._command_msg.velocity = velocities
+        self._command_msg.mode = JointCommand.IMPEDANCE_MODE
+        self._command_msg.header.stamp = rospy.Time.now()
+        self._pub_joint_cmd.publish(self._command_msg)
+
 
     def has_collided(self):
 
@@ -579,19 +600,14 @@ class ArmInterface(object):
             return
 
         if not self._ctrl_manager.is_loaded(self._ctrl_manager.joint_trajectory_controller):
-            print self._ctrl_manager.list_controller_names()
             self._ctrl_manager.load_controller(self._ctrl_manager.joint_trajectory_controller)
         if self._ctrl_manager.joint_trajectory_controller not in self._ctrl_manager.list_active_controller_names():
-            print self._ctrl_manager.list_active_controller_names()
             self._ctrl_manager.start_controller(self._ctrl_manager.joint_trajectory_controller)
 
-        # rospy.sleep(1.)
         min_traj_dur = 0.5
 
         traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
         traj_client.clear()
-
-        # velocities = self._speed_ratio* np.asarray(self._joint_limits.velocity)
 
         dur = []
         for j in range(len(self._joint_names)):
@@ -626,8 +642,7 @@ class ArmInterface(object):
             timeout=timeout,
             timeout_msg=fail_msg,
             rate=100,
-            raise_on_error=False,
-            body=lambda: self.set_joint_positions(positions)
+            raise_on_error=False
             )
 
         rospy.sleep(0.5)
@@ -639,34 +654,6 @@ class ArmInterface(object):
             self._ctrl_manager.start_controller(ctrlr.name)
             rospy.loginfo("PandaArm: Restaring %s"%ctrlr.name)
             rospy.sleep(0.5)
-
-        # cmd = self.joint_angles()
-
-        # def genf(joint, angle):
-        #     def joint_diff():
-        #         return abs(angle - self._joint_angle[joint])
-        #     return joint_diff
-
-        # diffs = [genf(j, a) for j, a in positions.items() if
-        #          j in self._joint_angle]
-        # fail_msg = "{0} limb failed to reach commanded joint positions.".format(
-        #                                               self.name.capitalize())
-        # def test_collision():
-        #     if self.has_collided():
-        #         rospy.logerr(' '.join(["Collision detected.", fail_msg]))
-        #         return True
-        #     return False
-        # self.set_joint_positions(positions)
-        # franka_dataflow.wait_for(
-        #     test=lambda: test_collision() or \
-        #                  (callable(test) and test() == True) or \
-        #                  (all(diff() < threshold for diff in diffs)),
-        #     timeout=timeout,
-        #     timeout_msg=fail_msg,
-        #     rate=100,
-        #     raise_on_error=False,
-        #     body=lambda: self.set_joint_positions(positions)
-        #     )
 
 
     def reset_EE_frame(self):
@@ -786,5 +773,4 @@ if __name__ == '__main__':
 
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
-        print r.joint_angles()
         rate.sleep()
