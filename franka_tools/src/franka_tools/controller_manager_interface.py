@@ -124,7 +124,7 @@ class FrankaControllerManagerInterface(object):
 
         self._state_publisher_controllers = ['custom_franka_state_controller','franka_state_controller']
 
-        self._assert_one_active_controller()
+        # self._assert_one_active_controller()
 
         # self._create_command_publisher_and_state_subscriber(synchronous_pub = synchronous_pub)
         self._state_subscriber = rospy.Subscriber("%s/motion_controller/arm/joint_controller_states" %(self._ns),
@@ -137,12 +137,6 @@ class FrankaControllerManagerInterface(object):
 
         if self._state_subscriber:
             self._state_subscriber.unregister()
-
-    def _stop_command_publisher_and_state_subscriber(self, synchronous_pub = False):
-
-        self._pub_joint_cmd.unregister()
-        self._state_subscriber.unregister()
-        self._controller_state = ControllerStateInfo(JointControllerStates(), None)
 
 
     def _on_controller_state(self, msg):
@@ -164,9 +158,6 @@ class FrankaControllerManagerInterface(object):
     def unload_controller(self, name):
         self._unload_srv.call(UnloadControllerRequest(name=name))
 
-        if name == self._current_controller:
-            self._stop_command_publisher_and_state_subscriber()
-
     def start_controller(self, name):
 
         # assert len(self.list_active_controllers(only_motion_controllers=True)) == 0, "FrankaControllerManagerInterface: One motion controller already active: %s. Stop this controller before activating another!"%self._current_controller
@@ -178,9 +169,7 @@ class FrankaControllerManagerInterface(object):
         rospy.loginfo("FrankaControllerManagerInterface: Starting controller: %s"%name)
         self._switch_srv.call(req)
 
-        self._assert_one_active_controller()
-
-        self._create_command_publisher_and_state_subscriber()
+        # self._assert_one_active_controller()
 
     def get_controller_state(self):
         return deepcopy(self._controller_state)
@@ -192,9 +181,6 @@ class FrankaControllerManagerInterface(object):
                                       strictness=strict)
         rospy.loginfo("FrankaControllerManagerInterface: Stopping controller: %s"%name)
         self._switch_srv.call(req)
-
-        if name == self._current_controller:
-            self._stop_command_publisher_and_state_subscriber()
 
 
     def list_loaded_controllers(self):
