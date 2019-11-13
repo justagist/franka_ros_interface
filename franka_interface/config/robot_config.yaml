@@ -83,3 +83,9 @@ gripper_config:
   default_grasp_epsilon:
     inner: 0.005 # [m]
     outer: 0.005 # [m]
+
+controllers_config:
+    position_controller: "position_joint_position_controller"
+    torque_controller: "effort_joint_torque_controller"
+    impedance_controller: "effort_joint_impedance_controller"
+    # effort_controller: "effort_joint_effort_controller"
