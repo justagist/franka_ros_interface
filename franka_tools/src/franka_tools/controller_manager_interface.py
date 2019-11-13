@@ -2,7 +2,6 @@
 
 import rospy
 import numpy as np
-import warnings
 from copy import deepcopy
 from controller_manager_msgs.msg import ControllerState
 from controller_manager_msgs.srv import *
@@ -70,8 +69,8 @@ def _rosparam_controller_type(ctrls_ns, ctrl_name):
 
 class ControllerStateInfo:
 
-    def __init__(self, controller_state_msg, current_controller):
-        self.controller_name = current_controller
+    def __init__(self, controller_state_msg):
+        self.controller_name = controller_state_msg.controller_name
         self.p = np.asarray([j.p for j in controller_state_msg.joint_controller_states])
         self.d = np.asarray([j.d for j in controller_state_msg.joint_controller_states])
         self.i = np.asarray([j.i for j in controller_state_msg.joint_controller_states])
@@ -127,33 +126,17 @@ class FrankaControllerManagerInterface(object):
 
         self._assert_one_active_controller()
 
-        self._create_command_publisher_and_state_subscriber(synchronous_pub = synchronous_pub)
+        # self._create_command_publisher_and_state_subscriber(synchronous_pub = synchronous_pub)
+        self._state_subscriber = rospy.Subscriber("%s/motion_controller/arm/joint_controller_states" %(self._ns),
+                                                    JointControllerStates, self._on_controller_state, queue_size = 1,
+                                                    tcp_nodelay = True)
 
         rospy.on_shutdown(self._clean_shutdown)
 
     def _clean_shutdown(self):
 
-        if self._pub_joint_cmd:
-            self._pub_joint_cmd.unregister()
         if self._state_subscriber:
             self._state_subscriber.unregister()
-
-    def _create_command_publisher_and_state_subscriber(self, synchronous_pub = False):
-
-        self._assert_one_active_controller()
-        queue_size = None if synchronous_pub else 1
-        with warnings.catch_warnings():
-            rospy.loginfo("FrankaControllerManagerInterface: Creating command publisher for controller: %s"%self._current_controller)
-            warnings.simplefilter("ignore")
-            self._pub_joint_cmd = rospy.Publisher(
-                self._ns +'/' + self._current_controller + '/arm/joint_commands',
-                JointCommand,
-                tcp_nodelay=True,
-                queue_size=queue_size)
-
-        self._state_subscriber = rospy.Subscriber("%s/%s/arm/joint_controller_states" %(self._ns, self._current_controller),
-                                                    JointControllerStates, self._on_controller_state, queue_size = 1,
-                                                    tcp_nodelay = True)
 
     def _stop_command_publisher_and_state_subscriber(self, synchronous_pub = False):
 
@@ -163,9 +146,9 @@ class FrankaControllerManagerInterface(object):
 
 
     def _on_controller_state(self, msg):
-        self._controller_state = deepcopy(ControllerStateInfo(msg,self._current_controller))
+        self._controller_state = deepcopy(ControllerStateInfo(msg))
 
-        self._assert_one_active_controller()
+        # self._assert_one_active_controller()
 
 
     def _assert_one_active_controller(self):
@@ -186,7 +169,7 @@ class FrankaControllerManagerInterface(object):
 
     def start_controller(self, name):
 
-        assert len(self.list_active_controllers(only_motion_controllers=True)) == 0, "FrankaControllerManagerInterface: One motion controller already active: %s. Stop this controller before activating another!"%self._current_controller
+        # assert len(self.list_active_controllers(only_motion_controllers=True)) == 0, "FrankaControllerManagerInterface: One motion controller already active: %s. Stop this controller before activating another!"%self._current_controller
 
         strict = SwitchControllerRequest.STRICT
         req = SwitchControllerRequest(start_controllers=[name],
@@ -349,13 +332,6 @@ class FrankaControllerManagerInterface(object):
     @property
     def current_controller(self):
         return self._current_controller
-
-    def send_control_command(self, msg):
-        
-        if self._pub_joint_cmd:
-            self._pub_joint_cmd.publish(msg)
-        else:
-            rospy.loginfo("FrankaControllerManagerInterface: No active motion controller!")
     
 
 
