@@ -48,7 +48,6 @@ namespace franka_interface {
     // mutex for re-entrant calls to modeCommandCallback
     std::mutex mtx_;
     int current_mode_;
-    std::string side_;
 
     realtime_tools::RealtimeBox< std::shared_ptr<const ros::Duration > > box_timeout_length_;
     realtime_tools::RealtimeBox< std::shared_ptr<const ros::Time > > box_cmd_timeout_;
@@ -58,6 +57,11 @@ namespace franka_interface {
     ros::Subscriber joint_command_timeout_sub_;
     ros::Subscriber joint_command_sub_;
     boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
+
+    std::string position_controller_name_;
+    std::string velocity_controller_name_;
+    std::string torque_controller_name_;
+    std::string impedance_controller_name_;
 
   protected:
     void jointCommandTimeoutCallback(const std_msgs::Float64 msg);

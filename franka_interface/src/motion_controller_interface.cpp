@@ -33,6 +33,17 @@ namespace franka_interface {
 void MotionControllerInterface::init(ros::NodeHandle& nh,
         boost::shared_ptr<controller_manager::ControllerManager> controller_manager) {
   current_mode_ = -1;
+
+  if (!nh.getParam("/controllers_config/position_controller", position_controller_name_)) {
+        position_controller_name_ = "position_joint_position_controller";
+    }
+  if (!nh.getParam("/controllers_config/torque_controller", torque_controller_name_)) {
+        torque_controller_name_ = "effort_joint_torque_controller";
+    }
+  if (!nh.getParam("/controllers_config/impedance_controller", impedance_controller_name_)) {
+        impedance_controller_name_ = "effort_joint_impedance_controller";
+    }
+
   controller_manager_ = controller_manager;
   joint_command_sub_ = nh.subscribe("/franka_ros_interface/motion_controller/arm/joint_commands", 1,
                        &MotionControllerInterface::jointCommandCallback, this);
@@ -62,10 +73,10 @@ void MotionControllerInterface::commandTimeoutCheck(const ros::TimerEvent& e) {
   box_cmd_timeout_.get(p_cmd_msg_time);
   bool command_timeout = (p_cmd_msg_time && p_timeout_length &&
       ((ros::Time::now() - *p_cmd_msg_time.get()) > (*p_timeout_length.get())));
-  if(command_timeout) {
+  if(command_timeout && current_mode_ != franka_core_msgs::JointCommand::POSITION_MODE) {
     // Timeout violated, force robot back to Position Mode
     switchControllers(franka_core_msgs::JointCommand::POSITION_MODE);
-    ROS_WARN_ONCE("MotionControllerInterface: Command timeout violated: Switched to Position control mode.");
+    ROS_WARN("MotionControllerInterface: Command timeout violated: Switched to Position control mode.");
   }
 }
 
@@ -85,19 +96,19 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
     switch (control_mode)
     {
       case franka_core_msgs::JointCommand::POSITION_MODE:
-        start_controllers.push_back("position_joint_position_controller");
-        stop_controllers.push_back("effort_joint_impedance_controller");
-        stop_controllers.push_back("effort_joint_torque_controller");
+        start_controllers.push_back(position_controller_name_);
+        stop_controllers.push_back(impedance_controller_name_);
+        stop_controllers.push_back(torque_controller_name_);
         break;
       case franka_core_msgs::JointCommand::IMPEDANCE_MODE:
-        start_controllers.push_back("effort_joint_impedance_controller");
-        stop_controllers.push_back("position_joint_position_controller");
-        stop_controllers.push_back("effort_joint_torque_controller");
+        start_controllers.push_back(impedance_controller_name_);
+        stop_controllers.push_back(position_controller_name_);
+        stop_controllers.push_back(torque_controller_name_);
         break;
       case franka_core_msgs::JointCommand::TORQUE_MODE:
-        start_controllers.push_back("effort_joint_torque_controller");
-        stop_controllers.push_back("position_joint_position_controller");
-        stop_controllers.push_back("effort_joint_impedance_controller");
+        start_controllers.push_back(torque_controller_name_);
+        stop_controllers.push_back(position_controller_name_);
+        stop_controllers.push_back(impedance_controller_name_);
         break;
       default:
         ROS_ERROR_STREAM_NAMED("MotionControllerInterface", "Unknown JointCommand mode "
@@ -112,7 +123,7 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
     }
     current_mode_ = control_mode;
     ROS_INFO_STREAM("MotionControllerInterface: Controller " << start_controllers[0]
-                            << " started and " << stop_controllers[0] +
+                            << " started; Controllers " << stop_controllers[0] +
                             " and " + stop_controllers[1] << " stopped.");
   }
   return true;
