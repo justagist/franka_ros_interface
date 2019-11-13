@@ -92,7 +92,7 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
       ros::NodeHandle("position_joint_position_controller/arm/controller_parameters_config");
 
   dynamic_server_joint_controller_params_ = std::make_unique<
-      dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig>>(
+      dynamic_reconfigure::Server<franka_ros_controllers::joint_controller_paramsConfig>>(
       dynamic_reconfigure_joint_controller_params_node_);
 
   dynamic_server_joint_controller_params_->setCallback(
@@ -190,7 +190,7 @@ void PositionJointPositionController::jointPosCmdCallback(const franka_core_msgs
     // else ROS_ERROR_STREAM("PositionJointPositionController: Published Command msg are not of JointCommand::POSITION_MODE! Dropping message");
 }
 
-void PositionJointPositionController::jointControllerParamCallback(franka_ros_controllers::joint_position_controller_paramsConfig& config,
+void PositionJointPositionController::jointControllerParamCallback(franka_ros_controllers::joint_controller_paramsConfig& config,
                                uint32_t level){
   target_filter_joint_pos_ = config.position_joint_delta_filter;
 }

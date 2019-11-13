@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <dynamic_reconfigure/server.h>
-#include <franka_ros_controllers/joint_position_controller_paramsConfig.h>
+#include <franka_ros_controllers/joint_controller_paramsConfig.h>
 #include <franka_core_msgs/JointCommand.h>
 #include <franka_core_msgs/JointControllerStates.h>
 #include <franka_core_msgs/JointLimits.h>
@@ -70,7 +70,7 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   std::array<double, 7> last_tau_d_{};
 
   ros::Subscriber desired_joints_subscriber_;
-  std::unique_ptr< dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig> > dynamic_server_controller_config_;
+  std::unique_ptr< dynamic_reconfigure::Server<franka_ros_controllers::joint_controller_paramsConfig> > dynamic_server_controller_config_;
   ros::NodeHandle dynamic_reconfigure_controller_gains_node_;
 
   franka_core_msgs::JointLimits joint_limits_;
@@ -81,7 +81,7 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   bool checkPositionLimits(std::vector<double> positions);
   bool checkVelocityLimits(std::vector<double> positions);
 
-  void controllerConfigCallback(franka_ros_controllers::joint_position_controller_paramsConfig& config,
+  void controllerConfigCallback(franka_ros_controllers::joint_controller_paramsConfig& config,
                                uint32_t level);
   void jointCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg);
 };

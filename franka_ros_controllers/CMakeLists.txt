@@ -23,14 +23,8 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Eigen3 REQUIRED)
 find_package(Franka 0.5.0 REQUIRED)
 
-# add_message_files(FILES
-#   JointTorqueComparison.msg
-# )
-
-# generate_messages()
-
 generate_dynamic_reconfigure_options(
-  cfg/joint_position_controller_params.cfg
+  cfg/joint_controller_params.cfg
 )
 
 
@@ -60,7 +54,7 @@ add_library(franka_ros_controllers
 add_dependencies(franka_ros_controllers
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
-  # ${PROJECT_NAME}_gencfg
+  ${PROJECT_NAME}_gencfg
 )
 
 target_link_libraries(franka_ros_controllers PUBLIC
@@ -97,19 +91,19 @@ install(FILES controller_plugins.xml
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-# ## Tools
-# include(${CMAKE_CURRENT_LIST_DIR}/../cmake/ClangTools.cmake OPTIONAL
-#   RESULT_VARIABLE CLANG_TOOLS
-# )
-# if(CLANG_TOOLS)
-#   file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-#   file(GLOB_RECURSE HEADERS
-#     ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
-#     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
-#   )
-#   add_format_target(franka_ros_controllers FILES ${SOURCES} ${HEADERS})
-#   add_tidy_target(franka_ros_controllers
-#     FILES ${SOURCES}
-#     DEPENDS franka_ros_controllers
-#   )
-# endif()
+## Tools
+include(${CMAKE_CURRENT_LIST_DIR}/../cmake/ClangTools.cmake OPTIONAL
+  RESULT_VARIABLE CLANG_TOOLS
+)
+if(CLANG_TOOLS)
+  file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+  file(GLOB_RECURSE HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
+  )
+  add_format_target(franka_ros_controllers FILES ${SOURCES} ${HEADERS})
+  add_tidy_target(franka_ros_controllers
+    FILES ${SOURCES}
+    DEPENDS franka_ros_controllers
+  )
+endif()

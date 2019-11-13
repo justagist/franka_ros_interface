@@ -165,7 +165,7 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
       ros::NodeHandle("effort_joint_impedance_controller/arm/controller_parameters_config");
 
   dynamic_server_controller_config_ = std::make_unique<
-      dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig>>(
+      dynamic_reconfigure::Server<franka_ros_controllers::joint_controller_paramsConfig>>(
 
       dynamic_reconfigure_controller_gains_node_);
   dynamic_server_controller_config_->setCallback(
@@ -315,24 +315,24 @@ void EffortJointImpedanceController::jointCmdCallback(const franka_core_msgs::Jo
 }
 
 void EffortJointImpedanceController::controllerConfigCallback(
-    franka_ros_controllers::joint_position_controller_paramsConfig& config,
+    franka_ros_controllers::joint_controller_paramsConfig& config,
     uint32_t /*level*/) {
 
-    k_gains_target_[0] = config.j1_k;
-    k_gains_target_[1] = config.j2_k;
-    k_gains_target_[2] = config.j3_k;
-    k_gains_target_[3] = config.j4_k;
-    k_gains_target_[4] = config.j5_k;
-    k_gains_target_[5] = config.j6_k;
-    k_gains_target_[6] = config.j7_k;
+    k_gains_target_[0] = config.groups.controller_gains.j1_k;
+    k_gains_target_[1] = config.groups.controller_gains.j2_k;
+    k_gains_target_[2] = config.groups.controller_gains.j3_k;
+    k_gains_target_[3] = config.groups.controller_gains.j4_k;
+    k_gains_target_[4] = config.groups.controller_gains.j5_k;
+    k_gains_target_[5] = config.groups.controller_gains.j6_k;
+    k_gains_target_[6] = config.groups.controller_gains.j7_k;
 
-    d_gains_target_[0] = config.j1_d;
-    d_gains_target_[1] = config.j2_d;
-    d_gains_target_[2] = config.j3_d;
-    d_gains_target_[3] = config.j4_d;
-    d_gains_target_[4] = config.j5_d;
-    d_gains_target_[5] = config.j6_d;
-    d_gains_target_[6] = config.j7_d;
+    d_gains_target_[0] = config.groups.controller_gains.j1_d;
+    d_gains_target_[1] = config.groups.controller_gains.j2_d;
+    d_gains_target_[2] = config.groups.controller_gains.j3_d;
+    d_gains_target_[3] = config.groups.controller_gains.j4_d;
+    d_gains_target_[4] = config.groups.controller_gains.j5_d;
+    d_gains_target_[5] = config.groups.controller_gains.j6_d;
+    d_gains_target_[6] = config.groups.controller_gains.j7_d;
 
 }
 

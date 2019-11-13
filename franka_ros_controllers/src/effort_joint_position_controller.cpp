@@ -126,7 +126,7 @@ bool EffortJointPositionController::init(hardware_interface::RobotHW* robot_hw,
       ros::NodeHandle("effort_joint_position_controller/arm/controller_parameters_config");
 
   dynamic_server_controller_config_ = std::make_unique<
-      dynamic_reconfigure::Server<franka_ros_controllers::joint_position_controller_paramsConfig>>(
+      dynamic_reconfigure::Server<franka_ros_controllers::joint_controller_paramsConfig>>(
 
       dynamic_reconfigure_controller_gains_node_);
   dynamic_server_controller_config_->setCallback(
@@ -276,7 +276,7 @@ void EffortJointPositionController::jointCmdCallback(const franka_core_msgs::Joi
 }
 
 void EffortJointPositionController::controllerConfigCallback(
-    franka_ros_controllers::joint_position_controller_paramsConfig& config,
+    franka_ros_controllers::joint_controller_paramsConfig& config,
     uint32_t /*level*/) {
 
     k_gains_target_[0] = config.j1_k;
