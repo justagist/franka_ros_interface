@@ -15,7 +15,7 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
                                           ros::NodeHandle& node_handle) {
 
   desired_joints_subscriber_ = node_handle.subscribe(
-      "arm/joint_commands", 20, &PositionJointPositionController::jointPosCmdCallback, this,
+      "/franka_ros_interface/motion_controller/arm/joint_commands", 20, &PositionJointPositionController::jointPosCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
   position_joint_interface_ = robot_hardware->get<hardware_interface::PositionJointInterface>();
@@ -98,11 +98,12 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
   dynamic_server_joint_controller_params_->setCallback(
       boost::bind(&PositionJointPositionController::jointControllerParamCallback, this, _1, _2));
 
-  publisher_controller_states_.init(node_handle, "arm/joint_controller_states", 1);
+  publisher_controller_states_.init(node_handle, "/franka_ros_interface/motion_controller/arm/joint_controller_states", 1);
 
   {
     std::lock_guard<realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> > lock(
         publisher_controller_states_);
+    publisher_controller_states_.msg_.controller_name = "position_joint_position_controller";
     publisher_controller_states_.msg_.names.resize(joint_limits_.joint_names.size());
     publisher_controller_states_.msg_.joint_controller_states.resize(joint_limits_.joint_names.size());
 
@@ -186,7 +187,7 @@ void PositionJointPositionController::jointPosCmdCallback(const franka_core_msgs
         // std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
       
     }
-    else ROS_ERROR_STREAM("PositionJointPositionController: Published Command msg are not of JointCommand::POSITION_MODE! Dropping message");
+    // else ROS_ERROR_STREAM("PositionJointPositionController: Published Command msg are not of JointCommand::POSITION_MODE! Dropping message");
 }
 
 void PositionJointPositionController::jointControllerParamCallback(franka_ros_controllers::joint_position_controller_paramsConfig& config,

@@ -67,13 +67,14 @@ bool EffortJointTorqueController::init(hardware_interface::RobotHW* robot_hw,
     }
   }
   desired_joints_subscriber_ = node_handle.subscribe(
-      "arm/joint_commands", 20, &EffortJointTorqueController::jointCmdCallback, this,
+      "/franka_ros_interface/motion_controller/arm/joint_commands", 20, &EffortJointTorqueController::jointCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
-  publisher_controller_states_.init(node_handle, "arm/joint_controller_states", 1);
+  publisher_controller_states_.init(node_handle, "/franka_ros_interface/motion_controller/arm/joint_controller_states", 1);
 
   {
     std::lock_guard<realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> > lock(
         publisher_controller_states_);
+    publisher_controller_states_.msg_.controller_name = "effort_joint_torque_controller";
     publisher_controller_states_.msg_.names.resize(joint_limits_.joint_names.size());
     publisher_controller_states_.msg_.joint_controller_states.resize(joint_limits_.joint_names.size());
 
@@ -163,7 +164,7 @@ void EffortJointTorqueController::jointCmdCallback(const franka_core_msgs::Joint
 
     }
   }
-  else ROS_ERROR_STREAM("EffortJointTorqueController: Published Command msg are not of JointCommand::TORQUE_MODE! Dropping message");
+  // else ROS_ERROR_STREAM("EffortJointTorqueController: Published Command msg are not of JointCommand::TORQUE_MODE! Dropping message");
 }
 
 }  // namespace franka_ros_controllers

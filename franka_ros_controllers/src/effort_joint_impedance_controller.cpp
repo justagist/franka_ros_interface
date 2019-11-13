@@ -172,14 +172,15 @@ bool EffortJointImpedanceController::init(hardware_interface::RobotHW* robot_hw,
       boost::bind(&EffortJointImpedanceController::controllerConfigCallback, this, _1, _2));
 
   desired_joints_subscriber_ = node_handle.subscribe(
-      "arm/joint_commands", 20, &EffortJointImpedanceController::jointCmdCallback, this,
+      "/franka_ros_interface/motion_controller/arm/joint_commands", 20, &EffortJointImpedanceController::jointCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
-  publisher_controller_states_.init(node_handle, "arm/joint_controller_states", 1);
+  publisher_controller_states_.init(node_handle, "/franka_ros_interface/motion_controller/arm/joint_controller_states", 1);
 
   {
     std::lock_guard<realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> > lock(
         publisher_controller_states_);
+    publisher_controller_states_.msg_.controller_name = "effort_joint_impedance_controller";
     publisher_controller_states_.msg_.names.resize(joint_limits_.joint_names.size());
     publisher_controller_states_.msg_.joint_controller_states.resize(joint_limits_.joint_names.size());
 
@@ -273,7 +274,7 @@ bool EffortJointImpedanceController::checkVelocityLimits(std::vector<double> vel
 {
   // bool retval = true;
   for (size_t i = 0;  i < 7; ++i){
-    if (!(velocities[i] >= joint_limits_.velocity[i])){
+    if (!(abs(velocities[i]) <= joint_limits_.velocity[i])){
       return true;
     }
   }
@@ -300,7 +301,7 @@ void EffortJointImpedanceController::jointCmdCallback(const franka_core_msgs::Jo
     }
     else if (checkPositionLimits(msg->position) || checkVelocityLimits(msg->velocity)) {
          ROS_ERROR_STREAM(
-            "PositionJointPositionController: Commanded positions or velicities are beyond allowed position limits.");
+            "EffortJointImpedanceController: Commanded positions or velicities are beyond allowed position limits.");
         pos_d_target_ = prev_pos_;
 
     }
@@ -310,7 +311,7 @@ void EffortJointImpedanceController::jointCmdCallback(const franka_core_msgs::Jo
       // std::cout << "Desired Joint Pos: " << pos_d_target_[0] << "  " << pos_d_target_[2] << std::endl;
     }
   }
-  else ROS_ERROR_STREAM("EffortJointImpedanceController: Published Command msg are not of JointCommand::IMPEDANCE_MODE! Dropping message");
+  // else ROS_ERROR_STREAM("EffortJointImpedanceController: Published Command msg are not of JointCommand::IMPEDANCE_MODE! Dropping message");
 }
 
 void EffortJointImpedanceController::controllerConfigCallback(

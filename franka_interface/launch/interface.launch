@@ -12,16 +12,16 @@
     <arg name="robot_ip" value="$(env FRANKA_ROBOT_IP)" />
   </include>
 
-  <!-- Start the franka_control_node for advertising controller services -->
-  <node name="franka_control" pkg="franka_control" type="franka_control_node" output="screen" required="true" ns="/franka_ros_interface">
-    <rosparam command="load" file="$(find franka_control)/config/franka_control_node.yaml" />
+  <!-- Start the franka_control_node for advertising controller services and starting custom controller manager-->
+  <rosparam command="load" file="$(find franka_interface)/config/robot_config.yaml"/>
+  <node name="franka_control" pkg="franka_interface" type="franka_control_node" output="screen" required="true" ns="/franka_ros_interface">
+    <!-- <rosparam command="load" file="$(find franka_control)/config/franka_control_node.yaml" /> -->
     <param name="robot_ip" value="$(env FRANKA_ROBOT_IP)" />
     <param name="publish_frequency" value="$(arg rate)"/>
   </node>
 
   <!-- Start the custom state publisher for franka_ros_interface -->
   <rosparam command="load" file="$(find franka_interface)/config/basic_controllers.yaml" ns="/franka_ros_interface"/>
-  <rosparam command="load" file="$(find franka_interface)/config/robot_config.yaml"/>
   <node name="state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="custom_franka_state_controller" ns="/franka_ros_interface"/>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
     <param name="publish_frequency" value="$(arg rate)"/>
@@ -40,13 +40,14 @@
   </node>
 
   <!-- <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller"/> -->
-  <node name="controllers" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/franka_ros_interface" args=" effort_joint_position_controller"/>
+  <!-- <node name="controllers" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/franka_ros_interface" args=" effort_joint_impedance_controller"/> -->
 
-  <node name="stopped_controllers" pkg="controller_manager" type="controller_manager" respawn="false"
+  <node name="load_controllers" pkg="controller_manager" type="controller_manager" respawn="false"
                                          output="screen" ns="/franka_ros_interface" args="load
-                                                                             effort_joint_torque_controller
                                                                              effort_joint_impedance_controller
                                                                              position_joint_position_controller
+                                                                             effort_joint_position_controller
+                                                                             effort_joint_torque_controller
                                                                              position_joint_trajectory_controller"/>
   <!-- <node name="joint_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/franka_ros_interface" args="effort_joint_impedance_controller"/> -->
   <!-- position_joint_trajectory_controller -->
