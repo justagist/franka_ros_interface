@@ -122,7 +122,7 @@ class FrankaControllerManagerInterface(object):
 
         self._controller_lister = ControllerLister(self._cm_ns)
 
-        self._state_publisher_controllers = ['custom_franka_state_controller','franka_state_controller']
+        self._non_motion_controllers = ['custom_franka_state_controller','franka_state_controller']
 
         # self._assert_one_active_controller()
 
@@ -142,7 +142,7 @@ class FrankaControllerManagerInterface(object):
     def _on_controller_state(self, msg):
         self._controller_state = deepcopy(ControllerStateInfo(msg))
 
-        # self._assert_one_active_controller()
+        self._assert_one_active_controller()
 
 
     def _assert_one_active_controller(self):
@@ -263,7 +263,7 @@ class FrankaControllerManagerInterface(object):
 
         motion_controllers = []
         for controller in self.list_controllers():
-            if not controller.name in self._state_publisher_controllers:
+            if not controller.name in self._non_motion_controllers:
                 motion_controllers.append(controller)
 
         return motion_controllers
