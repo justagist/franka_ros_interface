@@ -44,7 +44,7 @@ if __name__ == '__main__':
     
 
     rospy.init_node("test_node")
-    pub = rospy.Publisher('/franka_ros_interface/effort_joint_position_controller/arm/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
+    pub = rospy.Publisher('/franka_ros_interface/motion_controller/arm/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
     # pub = rospy.Publisher('/franka_ros_interface/position_joint_position_controller/arm/joint_commands',JointCommand, queue_size = 1, tcp_nodelay = True)
     # pub = rospy.Publisher('/panda_simulator/arm/joint_command',JointCommand, queue_size = 1, tcp_nodelay = True)
     # rospy.Subscriber('/panda_simulator/joint_states', JointState, callback)
@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
         delta = 3.14 / 16.0 * (1 - np.cos(3.14 / 5.0 * elapsed_time_.to_sec())) * 0.2
         # delta = 0.001
-        delta = 0.1*delta
+        delta = 0.3*delta
         # if count%100 == 0:
         for j in range(len(vals)):
             if j == 4:
@@ -101,14 +101,14 @@ if __name__ == '__main__':
         # if vals[6] <= min_val:
         #     delta = upd
 
-        pubmsg = JointCommand()
-        # pubmsg.mode = pubmsg.TORQUE_MODE
-        pubmsg.names = names
-        pubmsg.mode = pubmsg.POSITION_MODE
-        # pubmsg.position = [0.00020082598954863977, -0.7850038009359614, 0.00015446583697012738, -2.3556103476139536, -0.00048749371177230215, 1.571537698017226, vals[-1]]
-        pubmsg.position = vals
-        # pubmsg.position = [0.00020082598954863977, -0.7850038009359614, 0.00015446583697012738, -2.3556103476139536, -0.00048749371177230215, 1.571537698017226, 0.7845346834179426]
-        # [0.00020082598954863977, -0.7850038009359614, 0.00015446583697012738, -2.3556103476139536, -0.00048749371177230215, 1.571537698017226, 0.7845346834179426]
+        # pubmsg = JointCommand()
+        # # pubmsg.mode = pubmsg.TORQUE_MODE
+        # pubmsg.names = names
+        # pubmsg.mode = pubmsg.IMPEDANCE_MODE
+        # # pubmsg.position = [0.00020082598954863977, -0.7850038009359614, 0.00015446583697012738, -2.3556103476139536, -0.00048749371177230215, 1.571537698017226, vals[-1]]
+        # pubmsg.position = vals
+        # # pubmsg.position = [0.00020082598954863977, -0.7850038009359614, 0.00015446583697012738, -2.3556103476139536, -0.00048749371177230215, 1.571537698017226, 0.7845346834179426]
+        # # [0.00020082598954863977, -0.7850038009359614, 0.00015446583697012738, -2.3556103476139536, -0.00048749371177230215, 1.571537698017226, 0.7845346834179426]
         # pubmsg.velocity = vels
         # pubmsg.position[6] = pubmsg.position[6] + delta
         # print pubmsg.position[6]
