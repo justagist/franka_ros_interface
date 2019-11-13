@@ -15,6 +15,7 @@
 
 import enum
 import rospy
+import warnings
 import quaternion
 import numpy as np
 from copy import deepcopy
@@ -139,6 +140,15 @@ class ArmInterface(object):
         self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns)
 
         self._speed_ratio = 0.15
+
+        queue_size = None if synchronous_pub else 1
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            self._joint_command_publisher = rospy.Publisher(
+                self._ns +'/motion_controller/arm/joint_commands',
+                JointCommand,
+                tcp_nodelay=True,
+                queue_size=queue_size)
 
 
         _robot_state_subscriber = rospy.Subscriber(
@@ -453,7 +463,7 @@ _ns
         self._command_msg.position = positions.values()
         self._command_msg.mode = JointCommand.POSITION_MODE
         self._command_msg.header.stamp = rospy.Time.now()
-        self._ctrl_manager.send_control_command(self._command_msg)
+        self._joint_command_publisher.publish(self._command_msg)
 
     def set_joint_velocities(self, velocities):
         """
@@ -468,7 +478,7 @@ _ns
         # self._command_msg.velocity = velocities.values()
         # self._command_msg.mode = JointCommand.VELOCITY_MODE
         # self._command_msg.header.stamp = rospy.Time.now()
-        # self._ctrl_manager.send_control_command(self._command_msg)
+        # self._joint_command_publisher.publish(self._command_msg)
 
     def set_joint_torques(self, torques):
         """
@@ -481,7 +491,7 @@ _ns
         self._command_msg.effort = torques.values()
         self._command_msg.mode = JointCommand.TORQUE_MODE
         self._command_msg.header.stamp = rospy.Time.now()
-        self._ctrl_manager.send_control_command(self._command_msg)
+        self._joint_command_publisher.publish(self._command_msg)
 
     def set_joint_positions_velocities(self, positions, velocities):
         """
@@ -501,7 +511,7 @@ _ns
         self._command_msg.velocity = velocities
         self._command_msg.mode = JointCommand.IMPEDANCE_MODE
         self._command_msg.header.stamp = rospy.Time.now()
-        self._ctrl_manager.send_control_command(self._command_msg)
+        self._joint_command_publisher.publish(self._command_msg)
 
 
     def has_collided(self):

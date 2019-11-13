@@ -10,6 +10,8 @@ find_package(catkin REQUIRED COMPONENTS
   controller_interface
   dynamic_reconfigure
   franka_hw
+  franka_control
+  controller_manager
   franka_core_msgs
   geometry_msgs
   hardware_interface
@@ -27,8 +29,10 @@ catkin_package(
   LIBRARIES custom_franka_state_controller
   CATKIN_DEPENDS
     controller_interface
+    franka_msgs
     dynamic_reconfigure
     franka_hw
+    franka_control
     franka_core_msgs
     geometry_msgs
     hardware_interface
@@ -62,8 +66,34 @@ target_include_directories(custom_franka_state_controller PUBLIC
   include
 )
 
+## franka_control_node
+add_executable(franka_control_node
+  src/franka_control_node.cpp
+  src/motion_controller_interface.cpp
+)
+
+add_dependencies(franka_control_node
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+
+)
+
+target_link_libraries(franka_control_node
+  ${Franka_LIBRARIES}
+  ${franka_control_LIBRARIES}
+  # franka_control_services
+  ${catkin_LIBRARIES}
+)
+
+target_include_directories(franka_control_node SYSTEM PUBLIC
+  ${Franka_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
+  include
+)
+
 ## Installation
 install(TARGETS custom_franka_state_controller
+                franka_control_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -88,7 +118,7 @@ if(CLANG_TOOLS)
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
   )
   add_format_target(custom_franka_state_controller FILES ${SOURCES} ${HEADERS})
-  add_tidy_target(custom_franka_state_controller
+  add_tidy_target(custom_franka_state_controller franka_control_node
     FILES ${SOURCES}
     DEPENDS custom_franka_state_controller
   )

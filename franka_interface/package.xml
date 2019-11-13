@@ -18,11 +18,14 @@
 
   <build_depend>message_generation</build_depend>
   <build_depend>eigen</build_depend>
+  <build_depend>franka_control</build_depend>
 
   <depend>controller_interface</depend>
   <depend>dynamic_reconfigure</depend>
   <depend>franka_hw</depend>
+  <depend>controller_manager</depend>
   <depend>franka_core_msgs</depend>
+  <depend>franka_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>hardware_interface</depend>
   <depend>libfranka</depend>
