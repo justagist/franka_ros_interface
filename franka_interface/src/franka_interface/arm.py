@@ -144,14 +144,14 @@ class ArmInterface(object):
         queue_size = None if synchronous_pub else 1
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            self._joint_command_publisher = rospy.Publisher(
+            self._joint_command_publisher = rospy.Publisher("/"+
                 self._ns +'/motion_controller/arm/joint_commands',
                 JointCommand,
                 tcp_nodelay=True,
                 queue_size=queue_size)
 
 
-        _robot_state_subscriber = rospy.Subscriber(
+        self._robot_state_subscriber = rospy.Subscriber(
             self._ns + '/custom_franka_state_controller/robot_state',
             RobotState,
             self._on_robot_state,
@@ -159,19 +159,21 @@ class ArmInterface(object):
             tcp_nodelay=True)
 
         joint_state_topic = self._ns + '/custom_franka_state_controller/joint_states' if not self._params._in_sim else self._ns + '/joint_states'
-        _joint_state_sub = rospy.Subscriber(
+        self._joint_state_sub = rospy.Subscriber(
             joint_state_topic,
             JointState,
             self._on_joint_states,
             queue_size=1,
             tcp_nodelay=True)
 
-        _cartesian_state_sub = rospy.Subscriber(
+        self._cartesian_state_sub = rospy.Subscriber(
             self._ns + '/custom_franka_state_controller/tip_state',
             EndPointState,
             self._on_endpoint_state,
             queue_size=1,
             tcp_nodelay=True)
+
+        rospy.on_shutdown(self._clean_shutdown)
 
         err_msg = ("%s arm init failed to get current joint_states "
                    "from %s") % (self.name.capitalize(), joint_state_topic)
@@ -188,6 +190,12 @@ class ArmInterface(object):
         franka_dataflow.wait_for(lambda: self._jacobian is not None,
                                  timeout_msg=err_msg, timeout=5.0)
 
+
+    def _clean_shutdown(self):
+        self._joint_state_sub.unregister()
+        self._cartesian_state_sub.unregister()
+        self._robot_state_subscriber.unregister()
+        self._joint_command_publisher.unregister()
 
 
     def get_robot_params(self):
@@ -459,8 +467,10 @@ _ns
         @type positions: [float]
         @param positions: ordered joint angles (from joint1 to joint7) to be commanded
         """
-        self._command_msg.names = positions.keys()
-        self._command_msg.position = positions.values()
+        # sorted_vals = [x for _,x in sorted(zip(self._joint_names,positions.values()))]
+        # sorted_names = [x for _,x in sorted(zip(self._joint_names,positions.keys()))]
+        self._command_msg.names = self._joint_names
+        self._command_msg.position = [positions[j] for j in self._joint_names]
         self._command_msg.mode = JointCommand.POSITION_MODE
         self._command_msg.header.stamp = rospy.Time.now()
         self._joint_command_publisher.publish(self._command_msg)
@@ -474,8 +484,8 @@ _ns
         """
         raise NotImplementedError("ArmInterface: Velocity Controller Not Implemented!")
 
-        # self._command_msg.names = velocities.keys()
-        # self._command_msg.velocity = velocities.values()
+        # self._command_msg.names = self._joint_names
+        # self._command_msg.velocity = [velocities[j] for j in self._joint_names]
         # self._command_msg.mode = JointCommand.VELOCITY_MODE
         # self._command_msg.header.stamp = rospy.Time.now()
         # self._joint_command_publisher.publish(self._command_msg)
@@ -487,8 +497,8 @@ _ns
         @type torques: dict({str:float})
         @param torques: joint_name:torque command
         """
-        self._command_msg.names = torques.keys()
-        self._command_msg.effort = torques.values()
+        self._command_msg.names = self._joint_names
+        self._command_msg.effort = [torques[j] for j in self._joint_names]
         self._command_msg.mode = JointCommand.TORQUE_MODE
         self._command_msg.header.stamp = rospy.Time.now()
         self._joint_command_publisher.publish(self._command_msg)
