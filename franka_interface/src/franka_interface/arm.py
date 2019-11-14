@@ -35,7 +35,8 @@ from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface
 
 class TipState():
 
-    def __init__(self, pose, vel, O_effort, K_effort):
+    def __init__(self, timestamp, pose, vel, O_effort, K_effort):
+        self.timestamp = timestamp
         self._pose = pose
         self._velocity = vel
         self._effort = O_effort
@@ -53,6 +54,7 @@ class TipState():
     @property
     def effort_in_K_frame(self):
         return self._effort_in_K_frame
+
     
     
     
@@ -130,25 +132,31 @@ class ArmInterface(object):
 
         self._robot_mode = False
 
-        ns = self._ns + '/'
-
         self._command_msg = JointCommand()
 
-        self._neutral_pose = self._params.get_neutral_pose()
+        # neutral pose joint positions
+        self._tuck = self._params.get_neutral_pose()
 
         self._frames_interface = FrankaFramesInterface()
-        self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns)
+        self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns, sim = True if self._params._in_sim else False)
 
         self._speed_ratio = 0.15
 
         queue_size = None if synchronous_pub else 1
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            self._joint_command_publisher = rospy.Publisher("/"+
+            self._joint_command_publisher = rospy.Publisher(
                 self._ns +'/motion_controller/arm/joint_commands',
                 JointCommand,
                 tcp_nodelay=True,
                 queue_size=queue_size)
+
+        self._pub_joint_cmd_timeout = rospy.Publisher(
+            self._ns +'/motion_controller/arm/joint_command_timeout',
+            Float64,
+            latch=True,
+            queue_size=10)
+
 
 
         self._robot_state_subscriber = rospy.Subscriber(
@@ -181,12 +189,12 @@ class ArmInterface(object):
                                  timeout_msg=err_msg, timeout=5.0)
 
         err_msg = ("%s arm, init failed to get current tip_state "
-                   "from %s") % (self.name.capitalize(), ns + 'tip_state')
+                   "from %s") % (self.name.capitalize(), self._ns + 'tip_state')
         franka_dataflow.wait_for(lambda: len(self._cartesian_pose.keys()) > 0,
                                  timeout_msg=err_msg, timeout=5.0)
 
         err_msg = ("%s arm, init failed to get current robot_state "
-                   "from %s") % (self.name.capitalize(), ns + 'robot_state')
+                   "from %s") % (self.name.capitalize(), self._ns + 'robot_state')
         franka_dataflow.wait_for(lambda: self._jacobian is not None,
                                  timeout_msg=err_msg, timeout=5.0)
 
@@ -194,6 +202,7 @@ class ArmInterface(object):
     def _clean_shutdown(self):
         self._joint_state_sub.unregister()
         self._cartesian_state_sub.unregister()
+        self._pub_joint_cmd_timeout.unregister()
         self._robot_state_subscriber.unregister()
         self._joint_command_publisher.unregister()
 
@@ -241,13 +250,18 @@ class ArmInterface(object):
         self._joint_contact = msg.joint_contact
         self._joint_collision = msg.joint_collision
         if self._frames_interface:
-            self._frames_interface._update_frame_data(msg.F_T_EE)
+            self._frames_interface._update_frame_data(msg.F_T_EE, msg.EE_T_K)
 
         self.q_d = msg.q_d
         self.dq_d = msg.dq_d
 
+        self._gravity = np.asarray(msg.gravity)
+
         self._errors = message_converter.convert_ros_message_to_dictionary(msg.current_errors)
 
+
+    def gravity_comp(self):
+        return self._gravity
 
     def get_robot_status(self):
         """
@@ -314,7 +328,7 @@ class ArmInterface(object):
                                    msg.K_F_ext_hat_K.wrench.torque.z])
         }
 
-        self._tip_states = TipState(deepcopy(self._cartesian_pose), deepcopy(self._cartesian_velocity), deepcopy(self._cartesian_effort), deepcopy(self._stiffness_frame_effort))
+        self._tip_states = TipState(msg.header.stamp, deepcopy(self._cartesian_pose), deepcopy(self._cartesian_velocity), deepcopy(self._cartesian_effort), deepcopy(self._stiffness_frame_effort))
 
 
 
@@ -431,7 +445,7 @@ _ns
         """
         return deepcopy(self._cartesian_effort)
 
-    def tip_state(self, tip_name):
+    def tip_states(self):
         """
         Return Cartesian endpoint state for a given tip name
 
@@ -439,6 +453,15 @@ _ns
         @return: pose, velocity, effort, effort_in_K_frame
         """
         return deepcopy(self._tip_states)
+
+    def set_command_timeout(self, timeout):
+        """
+        Set the timeout in seconds for the joint controller
+
+        @type timeout: float
+        @param timeout: timeout in seconds
+        """
+        self._pub_joint_cmd_timeout.publish(Float64(timeout))
 
 
     def set_joint_position_speed(self, speed=0.3):
@@ -541,7 +564,7 @@ _ns
                       default= 0.15; range= [0.0-1.0]
         """
         self.set_joint_position_speed(speed)
-        return self.move_to_joint_positions(self._neutral_pose, timeout) if not self._params._in_sim else None
+        return self.move_to_joint_positions(self._tuck, timeout) if not self._params._in_sim else None
 
 
     def move_to_joint_positions(self, positions, timeout=10.0,

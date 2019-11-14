@@ -2,14 +2,15 @@
 import tf
 import numpy as np
 import quaternion
-from franka_control.srv import SetEEFrame
+from franka_control.srv import SetEEFrame, SetKFrame
 import rospy
 import franka_dataflow
 
 from collections import namedtuple
 _FRAME_NAMES = namedtuple('Constants', ['EE_FRAME', 'K_FRAME'])
-DEFAULT_TRANSFORMATIONS = _FRAME_NAMES( [0.707099974155426, -0.707099974155426, 0.0, 0.0, 0.707099974155426, 0.707099974155426, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0], 
-                                        None)
+DEFAULT_TRANSFORMATIONS = _FRAME_NAMES( [0.707099974155426, -0.707099974155426, 0.0, 0.0, 0.707099974155426, 0.707099974155426, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0], # EE_FRAME  
+    [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0]  # K_FRAME
+    )
 
 # DEFAULT_EE_FRAME = [0.707099974155426, -0.707099974155426, 0.0, 0.0, 0.707099974155426, 0.707099974155426, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0] # default when the franka_ros control is launched
 
@@ -25,6 +26,7 @@ class FrankaFramesInterface():
 
     def __init__(self):
         self._current_EE_frame_transformation = None
+        self._current_K_frame_transformation = None
         
 
 
@@ -43,10 +45,14 @@ class FrankaFramesInterface():
         return self._request_setEE_service(frame)
 
 
-    def _update_frame_data(self, EE_frame_transformation, K_frame_transformation = None):
+    def _update_frame_data(self, EE_frame_transformation, K_frame_transformation):
 
         assert len(EE_frame_transformation) == 16, "FrankaFramesInterface: Current EE frame transformation could not be retrieved!"
         self._current_EE_frame_transformation = EE_frame_transformation
+
+        assert len(K_frame_transformation) == 16, "FrankaFramesInterface: Current K frame transformation could not be retrieved!"
+        self._current_K_frame_transformation = K_frame_transformation
+
 
     def _assert_frame_validity(self, frame):
 
@@ -147,7 +153,46 @@ class FrankaFramesInterface():
         @rtype: bool
         @return: success status of service request
         """
-        raise NotImplementedError("Not defined yet")
+        frame = self._assert_frame_validity(frame)
+
+        return self._request_setK_service(frame)
+
+    def set_K_frame_to_link(self, frame_name, timeout = 5.0):
+        """
+        Set new K frame to the same frame as the link frame given by 'frame_name'
+        Motion controllers are stopped for switching
+
+        @type frame_name: str 
+        @param frame_name: desired tf frame name in the tf tree
+        @rtype: [bool, str]
+        @return: [success status of service request, error msg if any]
+        """
+
+        trans = False
+        listener = tf.TransformListener()
+        err = "FrankaFramesInterface: Error while looking up transform from EE frame to link frame %s"%frame_name
+        def body():
+            try:
+                listener.lookupTransform('/panda_EE', frame_name, rospy.Time(0))
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
+                err = e
+                return False
+            return True
+
+        franka_dataflow.wait_for(lambda: body(), timeout = timeout, raise_on_error = True, timeout_msg = err)
+
+        t,rot = listener.lookupTransform('/panda_EE', frame_name, rospy.Time(0))
+
+        rot = np.quaternion(rot[3],rot[0],rot[1],rot[2])
+
+        rot = quaternion.as_rotation_matrix(rot)
+
+        trans_mat = np.eye(4)
+
+        trans_mat[:3,:3] = rot
+        trans_mat[:3,3] = np.array(t)
+
+        return self.set_K_frame(trans_mat)
         
 
     def get_K_frame(self, as_mat = False):
@@ -159,7 +204,7 @@ class FrankaFramesInterface():
         @rtype: [float (16,)] / np.ndarray (4x4) 
         @return: transformation matrix of K frame wrt EE frame
         """
-        raise NotImplementedError("Not defined yet")
+        return self._current_K_frame_transformation if not as_mat else np.asarray(self._current_K_frame_transformation).reshape(4,4,order='F')
 
     def reset_K_frame(self):
         """
@@ -169,7 +214,23 @@ class FrankaFramesInterface():
         @return: success status of service request
         """
 
-        raise NotImplementedError("Not defined yet")
+        return self.set_K_frame(frame = DEFAULT_TRANSFORMATIONS.K_FRAME)
+
+    def K_frame_is_reset(self): 
+        assert self._current_K_frame_transformation is not None, "FrankaFramesInterface: Current K Frame is not known."
+        return list(self._current_K_frame_transformation) == list(DEFAULT_TRANSFORMATIONS.K_FRAME)
+
+    def _request_setK_service(self, trans_mat):
+        print trans_mat
+        rospy.wait_for_service('/franka_ros_interface/franka_control/set_K_frame')
+        try:
+            service_handle = rospy.ServiceProxy('/franka_ros_interface/franka_control/set_K_frame', SetKFrame)
+            response = service_handle(EE_T_K = trans_mat)
+            rospy.loginfo("Set K Frame Request Status: %s. \n\tDetails: %s"%("Success" if response.success else "Failed!", response.error))
+            return response.success
+        except rospy.ServiceException, e:
+            rospy.logwarn("Set K Frame Request: Service call failed: %s"%e)
+            return False
 
 
 if __name__ == '__main__':
