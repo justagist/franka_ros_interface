@@ -3,7 +3,7 @@
 # @author: Saif Sidhik <sxs1412@bham.ac.uk>
 #
 # @info: 
-#       Wrapper class for controlling and monitoring robot state.
+#       Wrapper class for enabling and resetting robot state.
 #
 #   Todo: fix reset request to use service call instead of publishing on topic, set up stopping, redefine status class.
 #
@@ -16,6 +16,7 @@ from franka_control.msg import ErrorRecoveryActionGoal
 from franka_core_msgs.msg import RobotState
 
 import franka_dataflow
+from robot_params import RobotParams
 
 class RobotEnable(object):
     """
@@ -29,12 +30,21 @@ class RobotEnable(object):
 
     param_lock = Lock()
 
-    def __init__(self, versioned=False):
+    def __init__(self, robot_params = None):
         """
         
         """
+
+        if robot_params:
+            self._params = robot_params
+        else:
+            self._params = RobotParams()
+
+        self._ns = self._params.get_base_namespace()
+
         self._enabled = None
-        state_topic = 'franka_ros_interface/custom_franka_state_controller/robot_state'
+
+        state_topic = '{}/custom_franka_state_controller/robot_state'.format(self._ns)
         self._state_sub = rospy.Subscriber(state_topic,
                                            RobotState,
                                            self._state_callback
@@ -56,7 +66,7 @@ class RobotEnable(object):
 
     def _toggle_enabled(self, status):
 
-        pub = rospy.Publisher('franka_ros_interface/franka_control/error_recovery/goal', ErrorRecoveryActionGoal,
+        pub = rospy.Publisher('{}/franka_control/error_recovery/goal'.format(self._ns), ErrorRecoveryActionGoal,
                               queue_size=10)
 
         if self._enabled == status:
@@ -101,52 +111,6 @@ class RobotEnable(object):
         the robot.
         """
         pass
-#         error_not_stopped = """\
-# Robot is not in a Error State. Cannot perform Reset.
-# """
-#         error_estop = """\
-# E-Stop is ASSERTED. Disengage E-Stop and then reset the robot.
-# """
-#         error_nonfatal = """Non-fatal Robot Error on reset.
-# Robot reset cleared stopped state and robot can be enabled, but a non-fatal
-# error persists. Check diagnostics or rethink.log for more info.
-# """
-#         error_env = """Failed to reset robot.
-# Please verify that the ROS_IP or ROS_HOSTNAME environment variables are set
-# and resolvable. For more information please visit:
-# http://sdk.rethinkrobotics.com/intera/SDK_Shell
-# """
-
-
-#         is_reset = lambda: (self._enabled.stopped == False and
-#                             self._enabled.error == False and
-#                             self._enabled.estop_button == 0 and
-#                             self._enabled.estop_source == 0)
-#         pub = rospy.Publisher('robot/set_super_reset', Empty, queue_size=10)
-
-#         if (not self._enabled.stopped):
-#             rospy.logfatal(error_not_stopped)
-#             raise IOError(errno.EREMOTEIO, "Failed to Reset due to lack of Error State.")
-
-#         if (self._enabled.stopped and
-#               self._enabled.estop_button == AssemblyState.ESTOP_BUTTON_PRESSED):
-#             rospy.logfatal(error_estop)
-#             raise IOError(errno.EREMOTEIO, "Failed to Reset: E-Stop Engaged")
-
-#         rospy.loginfo("Resetting robot...")
-#         try:
-#             franka_dataflow.wait_for(
-#                 test=is_reset,
-#                 timeout=5.0,
-#                 timeout_msg=error_env,
-#                 body=pub.publish
-#             )
-#         except OSError, e:
-#             if e.errno == errno.ETIMEDOUT:
-#                 if self._enabled.error == True and self._enabled.stopped == False:
-#                     rospy.logwarn(error_nonfatal)
-#                     return False
-#             raise
 
     def stop(self):
         """

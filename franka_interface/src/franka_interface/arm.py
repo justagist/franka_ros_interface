@@ -564,7 +564,7 @@ _ns
                       default= 0.15; range= [0.0-1.0]
         """
         self.set_joint_position_speed(speed)
-        return self.move_to_joint_positions(self._tuck, timeout) if not self._params._in_sim else None
+        return self.move_to_joint_positions(self._tuck, timeout) if not self._params._in_sim else self.set_joint_positions(self._tuck)
 
 
     def move_to_joint_positions(self, positions, timeout=10.0,
