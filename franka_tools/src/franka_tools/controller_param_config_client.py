@@ -57,7 +57,7 @@ class ControllerParamConfigClient:
         k_gains = [config[n] for n in K_GAINS_KW]
         d_gains = [config[n] for n in D_GAINS_KW]
 
-        rospy.loginfo("ControllerParamConfigClient: {controller_name} config set to \n\tSmoothing Param: {smoothing_param} \n\tJoint Stiffness: {K_gains} \n\tJoint Damping: {D_gains}".format(controller_name=self._controller_name, smoothing_param = config['position_joint_delta_filter'], K_gains = k_gains, D_gains = d_gains))
+        rospy.logdebug("ControllerParamConfigClient: {controller_name} config set to \n\tSmoothing Param: {smoothing_param} \n\tJoint Stiffness: {K_gains} \n\tJoint Damping: {D_gains}".format(controller_name=self._controller_name, smoothing_param = config['position_joint_delta_filter'], K_gains = k_gains, D_gains = d_gains))
 
 
     def update_config(self, **kwargs):
