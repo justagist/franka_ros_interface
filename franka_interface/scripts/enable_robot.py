@@ -30,7 +30,7 @@ import rospy
 import franka_interface
 
 def main():
-    rospy.init_node('sdk_robot_enable')
+    rospy.init_node('panda_robot_enable')
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--state', const='state',
                         dest='actions', action='append_const',
