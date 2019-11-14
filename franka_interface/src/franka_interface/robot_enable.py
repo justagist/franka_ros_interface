@@ -50,6 +50,10 @@ class RobotEnable(object):
     def _state_callback(self, msg):
         self._enabled = True if msg.robot_mode != 4 else False
 
+    def is_enabled(self):
+        return self._enabled
+    
+
     def _toggle_enabled(self, status):
 
         pub = rospy.Publisher('franka_ros_interface/franka_control/error_recovery/goal', ErrorRecoveryActionGoal,
