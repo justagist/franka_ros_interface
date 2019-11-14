@@ -88,7 +88,7 @@ class ControllerStateInfo:
 
 class FrankaControllerManagerInterface(object):
 
-    def __init__(self, ns="franka_ros_interface", synchronous_pub = False):
+    def __init__(self, ns="franka_ros_interface", synchronous_pub = False, sim = False):
 
         self._ns = ns
         self._prefix = "/controller_manager"
@@ -121,6 +121,8 @@ class FrankaControllerManagerInterface(object):
         self._list_types_srv = rospy.ServiceProxy(list_types_srv_name,
                                                   ListControllerTypes,
                                                   persistent=True)
+
+        self._in_sim = sim
 
 
 
@@ -164,9 +166,10 @@ class FrankaControllerManagerInterface(object):
         Asserts that only one active motion controller.
         """
         ctrlr_list = self.list_active_controllers(only_motion_controllers=True)
-        assert len(ctrlr_list) <= 1, "FrankaControllerManagerInterface: More than one motion controller active!"
+        if not self._in_sim:
+            assert len(ctrlr_list) <= 1, "FrankaControllerManagerInterface: More than one motion controller active!"
 
-        self._current_controller = ctrlr_list[0].name if len(ctrlr_list) == 1 else None
+        self._current_controller = ctrlr_list[0].name if len(ctrlr_list) > 0 else None
 
 
     def load_controller(self, name):
