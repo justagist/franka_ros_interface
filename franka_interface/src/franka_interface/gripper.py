@@ -61,6 +61,7 @@ class GripperInterface(object):
         if not self._exists:
             return
 
+        self._gripper_speed = 0.05
 
         self._homing_action_client = actionlib.SimpleActionClient("{}homing".format(ns), HomingAction)
 
@@ -75,6 +76,12 @@ class GripperInterface(object):
         self._move_action_client.wait_for_server()
         self._stop_action_client.wait_for_server()
 
+        self.MIN_FORCE = 0.01
+        self.MAX_FORCE = 50 # documentation says upto 70N is possible as continuous force (max upto 140N)
+
+        self.MIN_WIDTH = 0.0001
+        self.MAX_WIDTH = 0.2
+
         if calibrate:
             self.home_joints(wait_for_result = True)
 
@@ -83,6 +90,17 @@ class GripperInterface(object):
     @property
     def exists(self):
         return self._exists
+
+    def set_velocity(self, value):
+        """
+        Set default value for gripper joint motions. Used for move and grasp commands.
+       
+        @param value  : speed value [m/s]
+        @type value   : float
+       
+        """
+        assert self.MIN_WIDTH <= value <= self.MAX_WIDTH, "GripperInterface: Invalid speed request for gripper joints. Should be within {} and {}.".format(self.MIN_WIDTH, self.MAX_WIDTH)
+        self._gripper_speed = value        
 
 
     def _joint_states_callback(self, msg):
@@ -154,6 +172,16 @@ class GripperInterface(object):
         """
         return deepcopy(self._joint_velocity)
 
+    def joint_ordered_velocities(self):
+        """
+        Return all joint velocities.
+
+        @rtype: [double]
+        @return: joint velocities ordered by joint_names.
+        """
+        return [self._joint_velocity[name] for name in self._joint_names]
+
+
     def joint_effort(self, joint):
         """
         Return the requested joint effort.
@@ -174,6 +202,15 @@ class GripperInterface(object):
         @return: unordered dict of joint name Keys to effort (Nm) Values
         """
         return deepcopy(self._joint_effort)
+
+    def joint_ordered_efforts(self):
+        """
+        Return all joint efforts.
+
+        @rtype: [double]
+        @return: joint efforts ordered by joint_names.
+        """
+        return [self._joint_effort[name] for name in self._joint_names]
 
     def _active_cb(self):
         rospy.loginfo("GripperInterface: '{}' request active.".format(self._caller))
@@ -212,7 +249,35 @@ class GripperInterface(object):
 
         return True
 
-    def move_joints(self, width, speed = 0.05, wait_for_result = True):
+    def open(self):
+        """
+        Open gripper to max possible width.
+
+        @return True if command was successful, False otherwise.
+        @rtype bool
+        """
+        self._caller = "open gripper"
+        return self.move_joints(0.2)
+
+    def close(self):
+        """
+        close gripper to till collision is detected.
+        Note: This is not exactly doing what it should. The behaviour is 
+        faked by catching the error thrown when trying to grasp a very small
+        object with a very small force. Since the gripper will actually hit the
+        object before it reaches the commanded width, we catch the feedback 
+        and send the gripper stop command to stop it where it is.
+
+        @return True if command was successful, False otherwise.
+        @rtype bool
+        """
+        def cb( _, result):
+            if not result.success:
+                self.stop_action()
+        self._caller = "close gripper"
+        return self.grasp(0.001, 0.1, cb = cb)
+
+    def move_joints(self, width, speed = None, wait_for_result = True):
         """
         Moves the gripper fingers to a specified width.
        
@@ -231,6 +296,8 @@ class GripperInterface(object):
         self._caller = "move_joints"
 
         goal = MoveGoal()
+        if not speed:
+            speed = self._gripper_speed
         goal.width = width
         goal.speed = speed
 
@@ -259,7 +326,7 @@ class GripperInterface(object):
         result = self._stop_action_client.wait_for_result(rospy.Duration(15.))
         return result
 
-    def grasp(self, width, force, speed = 0.04, epsilon_inner = 0.005, epsilon_outer = 0.005,wait_for_result = True):
+    def grasp(self, width, force, speed = None, epsilon_inner = 0.005, epsilon_outer = 0.005,wait_for_result = True, cb = None):
         """
         Grasps an object.
        
@@ -273,6 +340,7 @@ class GripperInterface(object):
                                 than the commanded grasp width.
         @param epsilon_outer: Maximum tolerated deviation when the actual grasped width is wider
                                 than the commanded grasp width.
+        @param cb           : Optional callback function to use when the service call is done
 
         @type width         : float
         @type speed         : float
@@ -284,13 +352,19 @@ class GripperInterface(object):
         """
         self._caller = "grasp_action"
 
+        if not speed:
+            speed = self._gripper_speed
+
         goal = GraspGoal()
         goal.width = width
         goal.speed = speed
         goal.force = force
         goal.epsilon = GraspEpsilon(inner = epsilon_inner, outer = epsilon_outer)
 
-        self._grasp_action_client.send_goal(goal, done_cb =self._done_cb, active_cb = self._active_cb, feedback_cb = self._feedback_cb)
+        if not cb:
+            cb = self._done_cb
+
+        self._grasp_action_client.send_goal(goal, done_cb = cb, active_cb = self._active_cb, feedback_cb = self._feedback_cb)
 
         if wait_for_result:
             result = self._grasp_action_client.wait_for_result(rospy.Duration(15.))
