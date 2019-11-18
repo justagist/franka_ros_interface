@@ -1,3 +1,28 @@
+/***************************************************************************
+
+*
+* @package: franka_ros_controllers
+* @metapackage: franka_ros_interface
+* @author: Saif Sidhik <sxs1412@bham.ac.uk>
+*
+
+**************************************************************************/
+
+/***************************************************************************
+* Copyright (c) 2019, Saif Sidhik.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
 #include <franka_ros_controllers/effort_joint_torque_controller.h>
 
 #include <cmath>
@@ -16,7 +41,6 @@ bool EffortJointTorqueController::init(hardware_interface::RobotHW* robot_hw,
     ROS_ERROR("EffortJointTorqueController: Could not read parameter arm_id");
     return false;
   }
-  // std::vector<std::string> joint_names;
   if (!node_handle.getParam("/robot_config/joint_names", joint_limits_.joint_names) || joint_limits_.joint_names.size() != 7) {
     ROS_ERROR(
         "EffortJointTorqueController: Invalid or no joint_names parameters provided, aborting "
@@ -125,7 +149,6 @@ void EffortJointTorqueController::update(const ros::Time& time,
 
 bool EffortJointTorqueController::checkTorqueLimits(std::vector<double> torques)
 {
-  // bool retval = true;
   for (size_t i = 0;  i < 7; ++i){
     if (!(torques[i] >= joint_limits_.effort[i])){
       return true;

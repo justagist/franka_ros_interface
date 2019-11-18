@@ -1,3 +1,28 @@
+/***************************************************************************
+
+*
+* @package: franka_ros_controllers
+* @metapackage: franka_ros_interface
+* @author: Saif Sidhik <sxs1412@bham.ac.uk>
+*
+
+**************************************************************************/
+
+/***************************************************************************
+* Copyright (c) 2019, Saif Sidhik.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
 #include <franka_ros_controllers/position_joint_position_controller.h>
 
 #include <cmath>
@@ -56,7 +81,6 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
       {
         ROS_ERROR("PositionJointPositionController: Unable to find lower position limit values for joint %s...",
                        joint_limits_.joint_names[i].c_str());
-        // joint_limits_.position_lower.push_back(8.0);
       }
     if (pos_limit_upper_map.find(joint_limits_.joint_names[i]) != pos_limit_upper_map.end())
       {
@@ -66,7 +90,6 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
       {
         ROS_ERROR("PositionJointPositionController: Unable to find upper position limit  values for joint %s...",
                        joint_limits_.joint_names[i].c_str());
-        // joint_limits_.position_upper.push_back(8.0);
       }
   }  
 
@@ -184,7 +207,6 @@ void PositionJointPositionController::jointPosCmdCallback(const franka_core_msgs
       {
         std::copy_n(msg->position.begin(), 7, pos_d_target_.begin());
       }
-        // std::cout << "Desired Joint Pos: " << pos_d_[0] << "  " << pos_d_[2] << std::endl;
       
     }
     // else ROS_ERROR_STREAM("PositionJointPositionController: Published Command msg are not of JointCommand::POSITION_MODE! Dropping message");

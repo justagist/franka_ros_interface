@@ -1,5 +1,5 @@
 /***************************************************************************
-* Adapted from sawyer_gazebo.h (sawyer_simulator package)
+* Adapted from sawyer_simulator package
 
 *
 * @package: franka_interface
@@ -10,6 +10,7 @@
 **************************************************************************/
 
 /***************************************************************************
+* Copyright (c) 2019, Saif Sidhik.
 * Copyright (c) 2013-2018, Rethink Robotics Inc.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,6 +42,12 @@ namespace franka_interface {
   class MotionControllerInterface
   {
   public:
+    /**
+   * Initializes the controller manager.
+   *
+   * @param[in] root_node_handle Node handle in the controller_manager namespace.
+   * @param[in] controller_manager the controller manager instance.
+   */
     void init(ros::NodeHandle& nh,
          boost::shared_ptr<controller_manager::ControllerManager> controller_manager);
 
@@ -64,9 +71,36 @@ namespace franka_interface {
     std::string impedance_controller_name_;
 
   protected:
+  /**
+   * Callback function to set time out to switch back to position mode. When using torque
+   * mode controllers, consecutive torque commands should be sent in smaller intervals than
+   * this timeout value
+   *
+   * @param[in] msg Float64 instance containing the desired timeout.
+   */
     void jointCommandTimeoutCallback(const std_msgs::Float64 msg);
+
+  /**
+   * Callback function to choose the appropriate controller. This function checks the type
+   * of controller requested by the client through the type field in the message, and 
+   * starts the controller.
+   *
+   * @param[in] msg JointCommandConstPtr instance containing the joint commands.
+   */
     void jointCommandCallback(const franka_core_msgs::JointCommandConstPtr& msg);
+
+  /**
+   * Switch controller depending on the mode specified.
+   *
+   * @param[in] control_mode integer value representing the type of controller to use
+   */
     bool switchControllers(int control_mode);
+
+   /**
+   * Check if the command timeout has been violated.
+   *
+   * @param[in] control_mode integer value representing the type of controller to use
+   */
     void commandTimeoutCheck(const ros::TimerEvent& e);
 
 

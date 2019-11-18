@@ -1,3 +1,29 @@
+/***************************************************************************
+
+*
+* @package: franka_ros_controllers
+* @metapackage: franka_ros_interface
+* @author: Saif Sidhik <sxs1412@bham.ac.uk>
+*
+
+**************************************************************************/
+
+/***************************************************************************
+* Copyright (c) 2019, Saif Sidhik.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
+
 #pragma once
 
 #include <memory>
@@ -57,11 +83,6 @@ class EffortJointImpedanceController : public controller_interface::MultiInterfa
   std::array<double, 7> dq_d_;
   std::array<double, 7> dq_filtered_;
 
-  // std::vector<double> joint_position_limits_lower_;
-  // std::vector<double> joint_position_limits_upper_;
-  // std::vector<double> joint_velocity_limits_;
-
-  // std::map<std::string, double> acceleration_map_;;
 
   franka_hw::FrankaStateInterface* franka_state_interface_{};
   std::unique_ptr<franka_hw::FrankaStateHandle> franka_state_handle_{};

@@ -1,3 +1,5 @@
+# global robot configuration and details
+
 robot_config:
 
     joint_names:

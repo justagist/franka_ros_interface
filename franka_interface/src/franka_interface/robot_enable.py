@@ -1,12 +1,34 @@
+# /***************************************************************************
+
+# 
 # @package: franka_interface
-# @metapackage: franka_ros_interface 
+# @metapackage: franka_ros_interface
 # @author: Saif Sidhik <sxs1412@bham.ac.uk>
-#
-# @info: 
-#       Wrapper class for enabling and resetting robot state.
-#
-#   Todo: fix reset request to use service call instead of publishing on topic, set up stopping, redefine status class.
-#
+# 
+
+# **************************************************************************/
+
+# /***************************************************************************
+# Copyright (c) 2019, Saif Sidhik
+ 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# **************************************************************************/
+
+"""
+ @info: 
+       Wrapper class for enabling and resetting robot state.
+
+"""
 
 
 import rospy
@@ -104,25 +126,4 @@ class RobotEnable(object):
         Disable all joints
         """
         self._toggle_enabled(False)
-
-    def reset(self):
-        """
-        Reset all joints.  Trigger JRCP hardware to reset all faults.  Disable
-        the robot.
-        """
-        pass
-
-    def stop(self):
-        """
-        Simulate an e-stop button being pressed.  Robot must be reset to clear
-        the stopped state.
-        """
-        # pub = rospy.Publisher('robot/set_super_stop', Empty, queue_size=10)
-        # franka_dataflow.wait_for(
-        #     test=lambda: self._enabled.stopped == True,
-        #     timeout=5.0,
-        #     timeout_msg="Failed to stop the robot",
-        #     body=pub.publish,
-        # )
-
-        pass
+        

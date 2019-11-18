@@ -1,17 +1,35 @@
-# 
-# Modified from: Rethink Robotics Intera SDK
-# Modified by: Saif Sidhik <sxs1412@bham.ac.uk>
-# Modified for: franka_ros_interface
+# /***************************************************************************
+
 # 
 # @package: franka_interface
-# @metapackage: franka_ros_interface 
+# @metapackage: franka_ros_interface
 # @author: Saif Sidhik <sxs1412@bham.ac.uk>
-#
-# @info: 
-#   Inteface Class for Franka robot arm.
-#
-#   Todo: send control commands (position, velocity, torque), change K frame (important for cartesian effort measurement)
-#
+# 
+
+# **************************************************************************/
+
+# /***************************************************************************
+# Copyright (c) 2019, Saif Sidhik
+ 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# **************************************************************************/
+
+"""
+ @info: 
+   Inteface Class for Franka robot arm.
+
+"""
+
 
 import enum
 import rospy
@@ -490,8 +508,6 @@ _ns
         @type positions: [float]
         @param positions: ordered joint angles (from joint1 to joint7) to be commanded
         """
-        # sorted_vals = [x for _,x in sorted(zip(self._joint_names,positions.values()))]
-        # sorted_names = [x for _,x in sorted(zip(self._joint_names,positions.keys()))]
         self._command_msg.names = self._joint_names
         self._command_msg.position = [positions[j] for j in self._joint_names]
         self._command_msg.mode = JointCommand.POSITION_MODE
@@ -505,13 +521,11 @@ _ns
         @type velocities: dict({str:float})
         @param velocities: joint_name:velocity command
         """
-        raise NotImplementedError("ArmInterface: Velocity Controller Not Implemented!")
-
-        # self._command_msg.names = self._joint_names
-        # self._command_msg.velocity = [velocities[j] for j in self._joint_names]
-        # self._command_msg.mode = JointCommand.VELOCITY_MODE
-        # self._command_msg.header.stamp = rospy.Time.now()
-        # self._joint_command_publisher.publish(self._command_msg)
+        self._command_msg.names = self._joint_names
+        self._command_msg.velocity = [velocities[j] for j in self._joint_names]
+        self._command_msg.mode = JointCommand.VELOCITY_MODE
+        self._command_msg.header.stamp = rospy.Time.now()
+        self._joint_command_publisher.publish(self._command_msg)
 
     def set_joint_torques(self, torques):
         """

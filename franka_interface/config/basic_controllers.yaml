@@ -1,3 +1,5 @@
+# load the internal joint trajectory controller, and the custom robot state controller
+
 position_joint_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints:

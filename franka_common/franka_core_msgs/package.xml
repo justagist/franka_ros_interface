@@ -4,13 +4,13 @@
   <version>0.0.1</version>
   <description>
     Messages and Services required for communication with the Franka robot when using 
-    franka_ros_interface
+    franka_ros_interface and panda_simulator
   </description>
 
   <maintainer email="sxs1412@bham.ac.uk">
     Saif Sidhik
   </maintainer>
-  <license>TODO</license>
+  <license>Apache 2.0</license>
 
   <author>Saif Sidhik</author>
 

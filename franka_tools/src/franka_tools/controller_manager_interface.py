@@ -1,5 +1,31 @@
 #!/usr/bin/env python
 
+# /***************************************************************************
+
+# 
+# @package: franka_tools
+# @metapackage: franka_ros_interface
+# @author: Saif Sidhik <sxs1412@bham.ac.uk>
+# 
+
+# **************************************************************************/
+
+# /***************************************************************************
+# Copyright (c) 2019, Saif Sidhik
+ 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# **************************************************************************/
+
 import rospy
 import numpy as np
 from copy import deepcopy
@@ -441,8 +467,7 @@ class FrankaControllerManagerInterface(object):
     """
     @property
     def joint_velocity_controller(self):
-        raise NotImplementedError("Velocity Controller Not Implemented")
-        # return "effort_joint_velocity_controller"
+        return "velocity_joint_velocity_controller"
     @property
     def joint_position_controller(self):
         return "position_joint_position_controller"

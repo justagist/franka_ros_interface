@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Copyright (c) 2019, Saif Sidhik
+# Copyright (c) 2013-2016, Rethink Robotics
+# All rights reserved.
+
+
 # This file is to be used in the *root* of your Catkin workspace.
 
 # This is a convenient script which will set up your ROS environment and
@@ -12,6 +17,7 @@
 # -- arg1:
 #        - 'master' / 'local' (No <arg2>): The local machine will be the ros master. Run this on the main master pc (connected to the franka controller). 
 #        - 'slave' / 'remote': If IP address is provided as <arg2>, this will make sure that this PC is connected to the ROS Master at that IP. If <arg2> provided, ROS_MASTER_IP set below will be used
+#        - 'sim': start in simulation environment (to be used with panda_simulator package only)
 
 # -- arg2:
 #        - <IP of ROS MASTER> (valid only if <arg1> is 'slave'/'remote'): IP address of ROS Master
