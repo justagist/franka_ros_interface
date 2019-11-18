@@ -29,7 +29,7 @@ Once the above dependencies are installed, the package can be installed using ca
  - Copy/move the *franka.sh* file to the root of the catkin_ws
     `$ cp franka_ros_interface/franka.sh ./`
  - Change the values in the copied file (described in the file).
- - 
+ 
  ### The *franka.sh* environments
  Once the values are correctly modified, different environments can be set for controlling the robot by sourcing this file.
 
@@ -74,7 +74,7 @@ Most of the above services and topics are wrapped using simple Python classes or
 
 - [*panda_simulator*][ps-repo] : A Gazebo simulator for the Franka Emika Panda robot with ROS interface, providing exposed controllers and real-time robot state feedback similar to the real robot when using the *franka_ros_interface* package. Provides almost complete real-to-sim transfer of code.
 - [*panda_robot*](https://github.com/justagist/panda_robot) : Python interface providing higher-level control of the robot integrated with its gripper control, controller manager, coordinate frames manager, etc. with safety checks and other helper utilities. It also provides the kinematics and dynamics of the robot using the [KDL library](http://wiki.ros.org/kdl).
-- 
+
 
 #### License
 
