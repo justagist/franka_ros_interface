@@ -10,6 +10,7 @@
 **************************************************************************/
 
 /***************************************************************************
+* Copyright (c) 2019, Saif Sidhik
 * Copyright (c) 2013-2018, Rethink Robotics Inc.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +43,9 @@ void MotionControllerInterface::init(ros::NodeHandle& nh,
     }
   if (!nh.getParam("/controllers_config/impedance_controller", impedance_controller_name_)) {
         impedance_controller_name_ = "effort_joint_impedance_controller";
+    }
+  if (!nh.getParam("/controllers_config/velocity_controller", velocity_controller_name_)) {
+        velocity_controller_name_ = "velocity_joint_velocity_controller";
     }
 
   controller_manager_ = controller_manager;
@@ -99,17 +103,26 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
         start_controllers.push_back(position_controller_name_);
         stop_controllers.push_back(impedance_controller_name_);
         stop_controllers.push_back(torque_controller_name_);
+        stop_controllers.push_back(velocity_controller_name_);
         break;
       case franka_core_msgs::JointCommand::IMPEDANCE_MODE:
         start_controllers.push_back(impedance_controller_name_);
         stop_controllers.push_back(position_controller_name_);
         stop_controllers.push_back(torque_controller_name_);
+        stop_controllers.push_back(velocity_controller_name_);
         break;
       case franka_core_msgs::JointCommand::TORQUE_MODE:
         start_controllers.push_back(torque_controller_name_);
         stop_controllers.push_back(position_controller_name_);
         stop_controllers.push_back(impedance_controller_name_);
+        stop_controllers.push_back(velocity_controller_name_);
         break;
+      case franka_core_msgs::JointCommand::VELOCITY_MODE:
+        start_controllers.push_back(velocity_controller_name_);
+        stop_controllers.push_back(position_controller_name_);
+        stop_controllers.push_back(impedance_controller_name_);
+        stop_controllers.push_back(torque_controller_name_);
+        break;        
       default:
         ROS_ERROR_STREAM_NAMED("MotionControllerInterface", "Unknown JointCommand mode "
                                 << control_mode << ". Ignoring command.");
