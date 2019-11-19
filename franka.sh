@@ -45,7 +45,7 @@ ros_version="kinetic"
 ## ========================================= #
 
 if [ "${1}" == "sim" ]; then
-    your_ip="localhost"
+    your_ip="127.0.0.1"
 fi
 
 if [ "${your_ip}" == "" ]; then
@@ -68,7 +68,7 @@ elif [ "${1}" == "slave" ] || [[ "${1}" == "remote" ]]; then
     fi
     IS_MASTER=false  
 elif [ "${1}" == "sim" ]; then
-    ROS_MASTER_IP=""
+    ROS_MASTER_IP="$your_ip"
     IS_MASTER="true"
     FRANKA_ROBOT_IP="sim"
 else
