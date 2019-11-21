@@ -235,6 +235,11 @@ class FrankaControllerManagerInterface(object):
         self._assert_one_active_controller()
 
     def get_controller_state(self):
+        """
+            Get the status of the current controller, including set points, computed 
+            command, controller gains etc. See the ControllerStateInfo class (above) 
+            parameters for more info.
+        """
         return deepcopy(self._controller_state)
 
     def stop_controller(self, name):

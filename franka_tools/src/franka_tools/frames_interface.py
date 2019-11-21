@@ -40,11 +40,11 @@ DEFAULT_TRANSFORMATIONS = _FRAME_NAMES( [0.707099974155426, -0.707099974155426, 
 
 class FrankaFramesInterface():
     """
-        Helper class to retrieve and set EE frames, [and K frame (not implemented)]
+        Helper class to retrieve and set EE frames
 
-        Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class.
+        Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class (panda_robot package: https://github.com/justagist/panda_robot ).
 
-        Note that all controllers have to be unloaded before switching frames. This has to be done externally.
+        Note that all controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).
 
     """
 
@@ -70,7 +70,9 @@ class FrankaFramesInterface():
 
 
     def _update_frame_data(self, EE_frame_transformation, K_frame_transformation):
-
+        """
+            The callback function used by the PandaArm class to update the current frame transformations.
+        """
         assert len(EE_frame_transformation) == 16, "FrankaFramesInterface: Current EE frame transformation could not be retrieved!"
         self._current_EE_frame_transformation = EE_frame_transformation
 
