@@ -1,3 +1,0 @@
- - builder: epydoc
-   name: Franka SDK ROS/Python API
-   config: epydoc.config
