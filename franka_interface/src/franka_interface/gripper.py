@@ -108,7 +108,7 @@ class GripperInterface(object):
         self.MAX_WIDTH = 0.2
 
         if calibrate:
-            self.home_joints(wait_for_result = True)
+            self.calibrate()
 
 
 
@@ -238,13 +238,13 @@ class GripperInterface(object):
         return [self._joint_effort[name] for name in self._joint_names]
 
     def _active_cb(self):
-        rospy.loginfo("GripperInterface: '{}' request active.".format(self._caller))
+        rospy.logdebug("GripperInterface: '{}' request active.".format(self._caller))
 
     def _feedback_cb(self, msg):
-        rospy.loginfo("GripperInterface: '{}' request feedback: \n\t{}".format(self._caller,msg))
+        rospy.logdebug("GripperInterface: '{}' request feedback: \n\t{}".format(self._caller,msg))
 
     def _done_cb(self, status, result):
-        rospy.loginfo("GripperInterface: '{}' complete. Result: \n\t{}".format(self._caller, result))
+        rospy.logdebug("GripperInterface: '{}' complete. Result: \n\t{}".format(self._caller, result))
 
 
     def home_joints(self, wait_for_result = False):
@@ -301,6 +301,9 @@ class GripperInterface(object):
                 self.stop_action()
         self._caller = "close gripper"
         return self.grasp(0.001, 0.1, cb = cb)
+
+    def calibrate(self):
+        return self.home_joints(wait_for_result = True)
 
     def move_joints(self, width, speed = None, wait_for_result = True):
         """
