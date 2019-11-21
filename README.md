@@ -13,8 +13,8 @@ Provides controlling and managing the Franka Emika Panda robot (real and simulat
  
   ### Dependencies
 
- - *libfranka* (`sudo apt install ros-<version>-libfranka` or [install from source][libfranka-doc])
- - *franka-ros* (`sudo apt install ros-<version>-franka-ros` or [install from source][libfranka-doc])
+ - *libfranka* (`sudo apt install ros-$ROS_DISTRO-libfranka` or [install from source][libfranka-doc])
+ - *franka-ros* (`sudo apt install ros-$ROS_DISTRO-franka-ros` or [install from source][libfranka-doc])
  
 ### Installation
 Once the above dependencies are installed, the package can be installed using catkin_make:
