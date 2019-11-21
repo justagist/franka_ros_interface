@@ -58,8 +58,9 @@ class EffortJointPositionController : public controller_interface::MultiInterfac
 
  private:
   // Saturation
-  static std::array<double, 7> saturateTorqueRate(
-      const std::array<double, 7>& tau_d_calculated);  // NOLINT (readability-identifier-naming)
+  std::array<double, 7> saturateTorqueRate(
+      const std::array<double, 7>& tau_d_calculated,
+      const std::array<double, 7>& tau_J_d);  // NOLINT (readability-identifier-naming)
 
   std::vector<hardware_interface::JointHandle> joint_handles_;
 

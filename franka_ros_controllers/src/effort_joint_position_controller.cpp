@@ -69,6 +69,11 @@ bool EffortJointPositionController::init(hardware_interface::RobotHW* robot_hw,
         "controller init!");
     return false;
   }
+
+  k_gains_target_.clear();
+  d_gains_target_.clear();
+
+
   std::map<std::string, double> pos_limit_lower_map;
   std::map<std::string, double> pos_limit_upper_map;
   if (!node_handle.getParam("/robot_config/joint_config/joint_position_limit/lower", pos_limit_lower_map) ) {
@@ -136,9 +141,9 @@ bool EffortJointPositionController::init(hardware_interface::RobotHW* robot_hw,
           "EffortJointPositionController: Exception getting joint handles: " << ex.what());
       return false;
     }
+    k_gains_target_.push_back(k_gains_[i]);
+    d_gains_target_.push_back(d_gains_[i]);
   }
-  k_gains_target_ = k_gains_;
-  d_gains_target_ = d_gains_;
 
   dynamic_reconfigure_controller_gains_node_ =
       ros::NodeHandle("effort_joint_position_controller/arm/controller_parameters_config");
@@ -163,6 +168,11 @@ bool EffortJointPositionController::init(hardware_interface::RobotHW* robot_hw,
     publisher_controller_states_.msg_.names.resize(joint_limits_.joint_names.size());
     publisher_controller_states_.msg_.joint_controller_states.resize(joint_limits_.joint_names.size());
 
+  }
+
+  for (size_t i = 0; i < 7; ++i) { // this has to be done again; apparently when the dyn callback is initialised everything is set to zeros again!?
+    k_gains_target_[i] = k_gains_[i];
+    d_gains_target_[i] = d_gains_[i];
   }
 
   return true;
@@ -214,7 +224,7 @@ void EffortJointPositionController::update(const ros::Time& time,
 
   // Maximum torque difference with a sampling rate of 1 kHz. The maximum torque rate is
   // 1000 * (1 / sampling_time).
-  std::array<double, 7> tau_d_saturated = saturateTorqueRate(tau_d_calculated);
+  std::array<double, 7> tau_d_saturated = saturateTorqueRate(tau_d_calculated, robot_state.tau_J_d);
 
   if (trigger_publish_() && publisher_controller_states_.trylock()) {
       for (size_t i = 0; i < 7; ++i){
@@ -259,10 +269,12 @@ bool EffortJointPositionController::checkPositionLimits(std::vector<double> posi
 }
 
 std::array<double, 7> EffortJointPositionController::saturateTorqueRate(
-    const std::array<double, 7>& tau_d_calculated) {  // NOLINT (readability-identifier-naming)
+  const std::array<double, 7>& tau_d_calculated,
+    const std::array<double, 7>& tau_J_d) {  // NOLINT (readability-identifier-naming)
   std::array<double, 7> tau_d_saturated{};
   for (size_t i = 0; i < 7; i++) {
-    tau_d_saturated[i] = std::max(std::min(tau_d_calculated[i], kDeltaTauMax), -kDeltaTauMax);
+    double difference = tau_d_calculated[i] - tau_J_d[i];
+    tau_d_saturated[i] = tau_J_d[i] + std::max(std::min(difference, kDeltaTauMax), -kDeltaTauMax);
   }
   return tau_d_saturated;
 }

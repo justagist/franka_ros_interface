@@ -578,11 +578,11 @@ _ns
                       default= 0.15; range= [0.0-1.0]
         """
         self.set_joint_position_speed(speed)
-        return self.move_to_joint_positions(self._tuck, timeout) if not self._params._in_sim else self.set_joint_positions(self._tuck)
+        self.move_to_joint_positions(self._tuck, timeout) if not self._params._in_sim else self.set_joint_positions(self._tuck)
 
 
     def move_to_joint_positions(self, positions, timeout=10.0,
-                                threshold=0.0085,
+                                threshold=0.00085,
                                 test=None):
         """
         (Blocking) Commands the limb to the provided positions.
@@ -600,20 +600,23 @@ _ns
         move is considered successful [0.008726646]
         @param test: optional function returning True if motion must be aborted
         """
-
-        active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
-        for ctrlr in active_controllers:
-            self._ctrl_manager.stop_controller(ctrlr.name)
-            rospy.loginfo("ArmInterface: Stopping %s for trajectory controlling"%ctrlr.name)
-            rospy.sleep(0.5)
-
         if self._params._in_sim:
             rospy.warn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
             return
 
-        if not self._ctrl_manager.is_loaded(self._ctrl_manager.joint_trajectory_controller):
-            self._ctrl_manager.load_controller(self._ctrl_manager.joint_trajectory_controller)
-        if self._ctrl_manager.joint_trajectory_controller not in self._ctrl_manager.list_active_controller_names():
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
+
+        if switch_ctrl:
+            active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+            for ctrlr in active_controllers:
+                self._ctrl_manager.stop_controller(ctrlr.name)
+                rospy.loginfo("ArmInterface: Stopping %s for trajectory controlling"%ctrlr.name)
+                rospy.sleep(0.5)
+
+
+            if not self._ctrl_manager.is_loaded(self._ctrl_manager.joint_trajectory_controller):
+                self._ctrl_manager.load_controller(self._ctrl_manager.joint_trajectory_controller)
+            # if self._ctrl_manager.joint_trajectory_controller not in self._ctrl_manager.list_active_controller_names():
             self._ctrl_manager.start_controller(self._ctrl_manager.joint_trajectory_controller)
 
         min_traj_dur = 0.5
@@ -658,14 +661,17 @@ _ns
             )
 
         rospy.sleep(0.5)
-        self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
+
+        if switch_ctrl:
+            self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
+            for ctrlr in active_controllers:
+                self._ctrl_manager.start_controller(ctrlr.name)
+                rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
+                rospy.sleep(0.5)
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
 
-        for ctrlr in active_controllers:
-            self._ctrl_manager.start_controller(ctrlr.name)
-            rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
-            rospy.sleep(0.5)
+            
 
 
     def reset_EE_frame(self):
