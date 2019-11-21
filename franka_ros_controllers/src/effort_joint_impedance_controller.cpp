@@ -227,7 +227,7 @@ void EffortJointImpedanceController::starting(const ros::Time& /*time*/) {
 
   for (size_t i = 0; i < 7; ++i) {
     initial_pos_[i] = robot_state.q[i];
-    std::cout << "---- Joint Number: " << [i]  << std::endl;
+    std::cout << "---- Joint Number: " << i  << std::endl;
     std::cout << "Joint Pos: " << initial_pos_[i]  << std::endl;
     std::cout << "K_des: " << k_gains_target_[i]  << std::endl;
     std::cout << "D_des: " << d_gains_target_[i]  << std::endl;
