@@ -118,8 +118,7 @@ class RobotEnable(object):
         """
         if not self._enabled:
             rospy.loginfo("Robot Stopped: Attempting Reset...")
-            self.reset()
-        self._toggle_enabled(True)
+            self._toggle_enabled(True)
 
     def disable(self):
         """
