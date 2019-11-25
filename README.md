@@ -10,6 +10,10 @@ Provides controlling and managing the Franka Emika Panda robot (real and simulat
   - Python API to monitor and control the robot using any of the available controllers.
   - Python API for managing controllers, coordinate frames, controlling and monitoring the gripper.
   - The [*panda_simulator*][ps-repo] package (which is Gazebo-based simulator for the robot) can also be controlled using this package (ROS and Python interface), providing almost complete sim-to-real transfer of code.
+  
+  ### Continuous Integration Builds
+  
+  ROS Kinetic / Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface)
  
   ### Dependencies
 
