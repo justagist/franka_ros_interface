@@ -508,6 +508,7 @@ _ns
         @type positions: [float]
         @param positions: ordered joint angles (from joint1 to joint7) to be commanded
         """
+
         self._command_msg.names = self._joint_names
         self._command_msg.position = [positions[j] for j in self._joint_names]
         self._command_msg.mode = JointCommand.POSITION_MODE
@@ -755,21 +756,23 @@ _ns
         @return: [success status of service request, error msg if any]
         """
         if self._frames_interface:
-            active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+            retval = True
+            if not self._frames_interface.EE_frame_already_set(self._frames_interface.get_link_tf(frame_name)):
+                active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
 
-            rospy.loginfo("ArmInterface: Stopping motion controllers for changing EE frame")
-            rospy.sleep(1.)
-            for ctrlr in active_controllers:
-                self._ctrl_manager.stop_controller(ctrlr.name)
-            rospy.sleep(1.)
+                rospy.loginfo("ArmInterface: Stopping motion controllers for changing EE frame")
+                rospy.sleep(1.)
+                for ctrlr in active_controllers:
+                    self._ctrl_manager.stop_controller(ctrlr.name)
+                rospy.sleep(1.)
 
-            retval = self._frames_interface.set_EE_frame_to_link(frame_name = frame_name, timeout = timeout)
+                retval = self._frames_interface.set_EE_frame_to_link(frame_name = frame_name, timeout = timeout)
 
-            rospy.sleep(1.)
-            rospy.loginfo("ArmInterface: Restarting previously active motion controllers.")
-            for ctrlr in active_controllers:
-                self._ctrl_manager.start_controller(ctrlr.name)
-            rospy.sleep(1.)
+                rospy.sleep(1.)
+                rospy.loginfo("ArmInterface: Restarting previously active motion controllers.")
+                for ctrlr in active_controllers:
+                    self._ctrl_manager.start_controller(ctrlr.name)
+                rospy.sleep(1.)
 
             return retval
         else:
