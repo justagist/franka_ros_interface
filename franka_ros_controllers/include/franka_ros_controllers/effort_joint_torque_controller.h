@@ -56,7 +56,8 @@ class EffortJointTorqueController : public controller_interface::MultiInterfaceC
  private:
   // Saturation
   static std::array<double, 7> saturateTorqueRate(
-      const std::array<double, 7>& tau_d_calculated);  // NOLINT (readability-identifier-naming)
+      const std::array<double, 7>& tau_d_calculated,
+      const std::array<double, 7>& prev_tau);  // NOLINT (readability-identifier-naming)
 
   std::vector<hardware_interface::JointHandle> joint_handles_;
 

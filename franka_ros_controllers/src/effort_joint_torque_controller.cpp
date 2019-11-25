@@ -120,7 +120,7 @@ void EffortJointTorqueController::update(const ros::Time& time,
 
   // Maximum torque difference with a sampling rate of 1 kHz. The maximum torque rate is
   // 1000 * (1 / sampling_time).
-  std::array<double, 7> tau_d_saturated = saturateTorqueRate(jnt_cmd_);
+  std::array<double, 7> tau_d_saturated = saturateTorqueRate(jnt_cmd_, prev_jnt_cmd_);
 
   if (trigger_publish_() && publisher_controller_states_.trylock()) {
       for (size_t i = 0; i < 7; ++i){
@@ -150,7 +150,7 @@ void EffortJointTorqueController::update(const ros::Time& time,
 bool EffortJointTorqueController::checkTorqueLimits(std::vector<double> torques)
 {
   for (size_t i = 0;  i < 7; ++i){
-    if (!(torques[i] >= joint_limits_.effort[i])){
+    if (!(abs(torques[i]) < joint_limits_.effort[i])){
       return true;
     }
   }
@@ -159,10 +159,11 @@ bool EffortJointTorqueController::checkTorqueLimits(std::vector<double> torques)
 }
 
 std::array<double, 7> EffortJointTorqueController::saturateTorqueRate(
-    const std::array<double, 7>& tau_d_calculated) {  // NOLINT (readability-identifier-naming)
+    const std::array<double, 7>& tau_d_calculated, const std::array<double, 7>& prev_tau) {  // NOLINT (readability-identifier-naming)
   std::array<double, 7> tau_d_saturated{};
   for (size_t i = 0; i < 7; i++) {
-    tau_d_saturated[i] = std::max(std::min(tau_d_calculated[i], kDeltaTauMax), -kDeltaTauMax);
+    double difference = tau_d_calculated[i] - prev_tau[i];
+    tau_d_saturated[i] = prev_tau[i] + std::max(std::min(difference, kDeltaTauMax), -kDeltaTauMax);
   }
   return tau_d_saturated;
 }
@@ -174,13 +175,13 @@ void EffortJointTorqueController::jointCmdCallback(const franka_core_msgs::Joint
       ROS_ERROR_STREAM(
           "EffortJointTorqueController: Published Commands are not of size 7");
       std::fill(jnt_cmd_.begin(), jnt_cmd_.end(), 0);
-      prev_jnt_cmd_ = jnt_cmd_;
+      jnt_cmd_= prev_jnt_cmd_;
     }
     else if (checkTorqueLimits(msg->effort)) {
          ROS_ERROR_STREAM(
             "EffortJointTorqueController: Commanded torques are beyond allowed torque limits.");
         std::fill(jnt_cmd_.begin(), jnt_cmd_.end(), 0);
-        prev_jnt_cmd_ = jnt_cmd_;
+        jnt_cmd_= prev_jnt_cmd_;
     }
     else {
       std::copy_n(msg->effort.begin(), 7, jnt_cmd_.begin());
