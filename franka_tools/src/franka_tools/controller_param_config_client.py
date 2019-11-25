@@ -46,7 +46,7 @@ class ControllerParamConfigClient:
 
         """
         self._controller_name = controller_name
-        self._base_ns = ns
+        self._base_ns = ns if ns[0] != '/' else ns[1:]
         self._is_running = False
 
     @property
@@ -71,7 +71,7 @@ class ControllerParamConfigClient:
         try:
             self._client = dynamic_reconfigure.client.Client(service_name, timeout=timeout, config_callback=self._log_update)
         except rospy.ROSException:
-            rospy.loginfo("Could not find configuration server at {}".format(service_name))
+            rospy.loginfo("ControllerParamConfigClient: Could not find configuration server at {}".format(service_name))
         self._is_running = True
 
     def _log_update(self, config):  

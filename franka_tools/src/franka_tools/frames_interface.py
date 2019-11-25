@@ -92,6 +92,52 @@ class FrankaFramesInterface():
 
         return frame
 
+    def get_link_tf(self, frame_name, timeout = 5.0, parent = '/panda_link8'):
+
+        listener = tf.TransformListener()
+        err = "FrankaFramesInterface: Error while looking up transform from Flange frame to link frame %s"%frame_name
+        def body():
+            try:
+                listener.lookupTransform(parent, frame_name, rospy.Time(0))
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
+                err = e
+                return False
+            return True
+
+        franka_dataflow.wait_for(lambda: body(), timeout = timeout, raise_on_error = True, timeout_msg = err)
+
+        t,rot = listener.lookupTransform(parent, frame_name, rospy.Time(0))
+
+        rot = np.quaternion(rot[3],rot[0],rot[1],rot[2])
+
+        rot = quaternion.as_rotation_matrix(rot)
+
+        trans_mat = np.eye(4)
+
+        trans_mat[:3,:3] = rot
+        trans_mat[:3,3] = np.array(t)
+
+        return trans_mat
+
+    def frames_are_same(self, frame1, frame2):
+        """
+        @return True if two transformation matrices are equal
+        @rtype: bool
+        @param frame1: 4x4 transformation matrix representing frame1
+        @type frame1: np.ndarray (shape 4x4), or list (flattened column major 4x4)
+        @param frame2: 4x4 transformation matrix representing frame2
+        @type frame2: np.ndarray (shape 4x4), or list (flattened column major 4x4)
+        """
+        frame1 = self._assert_frame_validity(frame1)
+        frame2 = self._assert_frame_validity(frame2)
+
+        return np.array_equal(np.asarray(frame1), np.asarray(frame2))
+
+    def EE_frame_already_set(self, frame):
+
+        return self.frames_are_same(frame, self._current_EE_frame_transformation)
+
+
     def set_EE_frame_to_link(self, frame_name, timeout = 5.0):
         """
         Set new EE frame to the same frame as the link frame given by 'frame_name'
@@ -103,31 +149,7 @@ class FrankaFramesInterface():
         @return: [success status of service request, error msg if any]
         """
 
-        trans = False
-        listener = tf.TransformListener()
-        err = "FrankaFramesInterface: Error while looking up transform from Flange frame to link frame %s"%frame_name
-        def body():
-            try:
-                listener.lookupTransform('/panda_link8', frame_name, rospy.Time(0))
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
-                err = e
-                return False
-            return True
-
-        franka_dataflow.wait_for(lambda: body(), timeout = timeout, raise_on_error = True, timeout_msg = err)
-
-        t,rot = listener.lookupTransform('/panda_link8', frame_name, rospy.Time(0))
-
-        rot = np.quaternion(rot[3],rot[0],rot[1],rot[2])
-
-        rot = quaternion.as_rotation_matrix(rot)
-
-        trans_mat = np.eye(4)
-
-        trans_mat[:3,:3] = rot
-        trans_mat[:3,3] = np.array(t)
-
-        return self.set_EE_frame(trans_mat)
+        return self.set_EE_frame(self.get_link_tf(frame_name, timeout))
 
 
 
