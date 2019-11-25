@@ -49,6 +49,8 @@
                                                                              effort_joint_torque_controller
                                                                              velocity_joint_velocity_controller
                                                                              position_joint_trajectory_controller"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="base_to_link0" args="0 0 0 0 0 0 1 base panda_link0 100" />                                                                      
   <!-- <node name="joint_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/franka_ros_interface" args="effort_joint_impedance_controller"/> -->
   <!-- position_joint_trajectory_controller -->
 <!--   <include file="$(find panda_moveit_config)/launch/move_group.launch">

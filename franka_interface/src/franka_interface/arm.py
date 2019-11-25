@@ -153,7 +153,7 @@ class ArmInterface(object):
         self._command_msg = JointCommand()
 
         # neutral pose joint positions
-        self._tuck = self._params.get_neutral_pose()
+        self._neutral_pose_joints = self._params.get_neutral_pose()
 
         self._frames_interface = FrankaFramesInterface()
         self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns, sim = True if self._params._in_sim else False)
@@ -578,7 +578,7 @@ _ns
                       default= 0.15; range= [0.0-1.0]
         """
         self.set_joint_position_speed(speed)
-        self.move_to_joint_positions(self._tuck, timeout) if not self._params._in_sim else self.set_joint_positions(self._tuck)
+        self.move_to_joint_positions(self._neutral_pose_joints, timeout) if not self._params._in_sim else self.set_joint_positions(self._neutral_pose_joints)
 
 
     def move_to_joint_positions(self, positions, timeout=10.0,
