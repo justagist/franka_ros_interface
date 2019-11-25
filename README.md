@@ -1,4 +1,4 @@
-# Franka ROS Interface
+# Franka ROS Interface [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface)
 
 A ROS API for the Franka Emika Panda robot, extending the [*franka_ros* package][franka-ros] to expose more information about the robot, and providing low level control of the robot using ROS and Python API.  
 
