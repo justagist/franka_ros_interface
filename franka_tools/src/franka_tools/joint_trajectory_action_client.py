@@ -25,7 +25,7 @@
 # **************************************************************************/
 
 import rospy
-
+import sys
 import actionlib
 from copy import copy
 from control_msgs.msg import (
@@ -41,7 +41,7 @@ class JointTrajectoryActionClient(object):
     def __init__(self, joint_names, ns = "franka_ros_interface", controller_name = "position_joint_trajectory_controller"):
         self._joint_names = joint_names
 
-        self._client = actionlib.SimpleActionClient("%s/%s/follow_joint_trajectory"%(ns,controller_name),
+        self._client = actionlib.SimpleActionClient("/%s/follow_joint_trajectory"%(controller_name),
             FollowJointTrajectoryAction,
         )
         self._goal = FollowJointTrajectoryGoal()

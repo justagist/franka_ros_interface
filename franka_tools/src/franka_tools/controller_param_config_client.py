@@ -40,13 +40,12 @@ class ControllerParamConfigClient:
         Interface class for updating dynamically configurable paramters of a controller.
 
     """
-    def __init__(self, controller_name, ns = "franka_ros_interface"):
+    def __init__(self, controller_name):
         """
         Initialisation: Client is not started yet.
 
         """
-        self._controller_name = controller_name
-        self._base_ns = ns if ns[0] != '/' else ns[1:]
+        self._controller_name = controller_name if controller_name[0] != '/' else controller_name[1:]
         self._is_running = False
 
     @property
@@ -67,7 +66,7 @@ class ControllerParamConfigClient:
         @type timeout: float
 
         """
-        service_name = "/{}/{}/arm/controller_parameters_config".format(self._base_ns, self._controller_name)
+        service_name = "/{}/arm/controller_parameters_config".format(self._controller_name)
         try:
             self._client = dynamic_reconfigure.client.Client(service_name, timeout=timeout, config_callback=self._log_update)
         except rospy.ROSException:

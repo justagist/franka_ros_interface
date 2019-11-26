@@ -116,9 +116,9 @@ class FrankaControllerManagerInterface(object):
 
     def __init__(self, ns="franka_ros_interface", synchronous_pub = False, sim = False):
 
-        self._ns = ns
+        self._ns = ns if ns[0] == '/' else '/' + ns
         self._prefix = "/controller_manager"
-        self._cm_ns = self._ns + self._prefix
+        self._cm_ns = self._prefix
         self._service_names = ["list_controllers",
                              "unload_controller",
                              "load_controller",
@@ -150,11 +150,9 @@ class FrankaControllerManagerInterface(object):
 
         self._in_sim = sim
 
-
-
         self._controller_lister = ControllerLister(self._cm_ns)
 
-        self._non_motion_controllers = ['custom_franka_state_controller','franka_state_controller']
+        self._non_motion_controllers = [self._ns[1:] + '/custom_franka_state_controller',self._ns[1:] + '/franka_state_controller']
 
         self._assert_one_active_controller()
 
@@ -183,7 +181,7 @@ class FrankaControllerManagerInterface(object):
         self._assert_one_active_controller()
 
         if self._current_controller and self._current_controller not in self._param_config_clients:
-            self._param_config_clients[self._current_controller] = ControllerParamConfigClient(self._current_controller, self._ns)
+            self._param_config_clients[self._current_controller] = ControllerParamConfigClient(self._current_controller)
             self._param_config_clients[self._current_controller].start()
 
 
@@ -472,19 +470,19 @@ class FrankaControllerManagerInterface(object):
     """
     @property
     def joint_velocity_controller(self):
-        return "velocity_joint_velocity_controller"
+        return self._ns[1:] + "/velocity_joint_velocity_controller"
     @property
     def joint_position_controller(self):
-        return "position_joint_position_controller"
+        return self._ns[1:] + "/position_joint_position_controller"
     @property
     def joint_torque_controller(self):
-        return "effort_joint_torque_controller"    
+        return self._ns[1:] + "/effort_joint_torque_controller"    
     @property
     def joint_impedance_controller(self):
-        return "effort_joint_impedance_controller"   
+        return self._ns[1:] + "/effort_joint_impedance_controller"   
     @property
     def effort_joint_position_controller(self):
-        return "effort_joint_position_controller"
+        return self._ns[1:] + "/effort_joint_position_controller"
     @property
     def joint_trajectory_controller(self):
         return "position_joint_trajectory_controller" 
