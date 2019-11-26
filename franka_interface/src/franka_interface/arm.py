@@ -184,7 +184,7 @@ class ArmInterface(object):
             queue_size=1,
             tcp_nodelay=True)
 
-        joint_state_topic = self._ns + '/custom_franka_state_controller/joint_states' if not self._params._in_sim else self._ns + '/joint_states'
+        joint_state_topic = self._ns + '/custom_franka_state_controller/joint_states'
         self._joint_state_sub = rospy.Subscriber(
             joint_state_topic,
             JointState,

@@ -62,11 +62,8 @@ class GripperInterface(object):
         @type ns                      : str
 
         """
-
-        if ns == 'franka_ros_interface' or ns == '/franka_ros_interface':
-            ns = ''
         
-        self.name = ns + '/franka_gripper'
+        self.name = '/franka_gripper'
 
         ns = self.name +'/'
 
