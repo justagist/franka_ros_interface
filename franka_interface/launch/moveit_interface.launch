@@ -1,0 +1,16 @@
+<launch>
+  <arg name="fake_execution" default="false"/>
+  <arg name="load_gripper" default="true"/>
+
+  <!-- <param name="franka_ros_interface/robot_description" value="$(param robot_description)"/> -->
+  <include file="$(find franka_interface)/launch/interface.launch">
+    <arg name="load_gripper" value="$(arg load_gripper)" />
+    <arg name="start_controllers" value="false" />
+  </include>
+  
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller"/>
+  <include file="$(find panda_moveit_config)/launch/move_group.launch" pass_all_args="true">
+    <arg name="fake_execution" value="$(arg fake_execution)" />
+  </include>
+
+</launch>
