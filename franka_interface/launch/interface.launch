@@ -40,8 +40,6 @@
     <remap from="/joint_states" to="/joint_states_desired" />
   </node>
 
-  <!-- <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller"/> -->
-
   <group if="$(eval arg('start_controllers') == true)">
     <node name="controllers" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="franka_ros_interface/position_joint_position_controller"/>
 
@@ -56,12 +54,6 @@
 
   <node pkg="tf" type="static_transform_publisher" name="base_to_link0" args="0 0 0 0 0 0 1 base panda_link0 100" />                                                                      
   <node pkg="tf" type="static_transform_publisher" name="world_to_base" args="0 0 0 0 0 0 1 world base 100" />                                                                      
-  <!-- <node name="joint_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/franka_ros_interface" args="effort_joint_impedance_controller"/> -->
-  <!-- position_joint_trajectory_controller -->
-<!--   <include file="$(find panda_moveit_config)/launch/move_group.launch">
-    <arg name="load_gripper" value="$(arg load_gripper)" />
- </include> -->
-
 
 </launch>
 

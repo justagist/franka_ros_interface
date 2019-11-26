@@ -73,7 +73,8 @@ if __name__ == '__main__':
     period = rospy.Duration(0.005)
 
     count = 0
-
+    pubmsg = JointCommand()
+    pubmsg.names = names # names of joints (has to be 7 and in the same order as the command fields (positions, velocities, efforts))
     while not rospy.is_shutdown():
 
         elapsed_time_ += period
@@ -96,30 +97,10 @@ if __name__ == '__main__':
             print " "
             print initial_pose
         
-        # if vals[6] >= max_val:
-        #     delta = -upd
-        # if vals[6] <= min_val:
-        #     delta = upd
+        pubmsg.position = vals # JointCommand msg has other fields (velocities, efforts) for
+                               # when controlling in other control mode
+        pubmsg.velocities = vels
+        pubmsg.mode = pubmsg.IMPEDANCE_MODE # Specify control mode (POSITION_MODE, VELOCITY_MODE, IMPEDANCE_MODE (not available in sim), TORQUE_MODE)
 
-        # pubmsg = JointCommand()
-        # # pubmsg.mode = pubmsg.TORQUE_MODE
-        # pubmsg.names = names
-        # pubmsg.mode = pubmsg.IMPEDANCE_MODE
-        # # pubmsg.position = [0.00020082598954863977, -0.7850038009359614, 0.00015446583697012738, -2.3556103476139536, -0.00048749371177230215, 1.571537698017226, vals[-1]]
-        # pubmsg.position = vals
-        # # pubmsg.position = [0.00020082598954863977, -0.7850038009359614, 0.00015446583697012738, -2.3556103476139536, -0.00048749371177230215, 1.571537698017226, 0.7845346834179426]
-        # # [0.00020082598954863977, -0.7850038009359614, 0.00015446583697012738, -2.3556103476139536, -0.00048749371177230215, 1.571537698017226, 0.7845346834179426]
-        # pubmsg.velocity = vels
-        # pubmsg.position[6] = pubmsg.position[6] + delta
-        # print pubmsg.position[6]
-        # flt_msg = Float64(vals[-2])
-
-        # pub2.publish(flt_msg)
-
-        i+=0.5
-        count += 1
-        # # print pubmsg.position
-        # # i+=1
-        # # print vals
         pub.publish(pubmsg)
         rate.sleep()

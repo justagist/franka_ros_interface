@@ -508,7 +508,6 @@ _ns
         @type positions: [float]
         @param positions: ordered joint angles (from joint1 to joint7) to be commanded
         """
-
         self._command_msg.names = self._joint_names
         self._command_msg.position = [positions[j] for j in self._joint_names]
         self._command_msg.mode = JointCommand.POSITION_MODE
