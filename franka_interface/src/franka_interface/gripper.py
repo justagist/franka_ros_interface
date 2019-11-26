@@ -62,6 +62,9 @@ class GripperInterface(object):
         @type ns                      : str
 
         """
+
+        if ns == 'franka_ros_interface':
+            ns = ''
         
         self.name = ns + '/franka_gripper'
 

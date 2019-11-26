@@ -146,7 +146,7 @@ bool EffortJointPositionController::init(hardware_interface::RobotHW* robot_hw,
   }
 
   dynamic_reconfigure_controller_gains_node_ =
-      ros::NodeHandle("effort_joint_position_controller/arm/controller_parameters_config");
+      ros::NodeHandle("/franka_ros_interface/effort_joint_position_controller/arm/controller_parameters_config");
 
   dynamic_server_controller_config_ = std::make_unique<
       dynamic_reconfigure::Server<franka_ros_controllers::joint_controller_paramsConfig>>(

@@ -112,7 +112,7 @@ bool PositionJointPositionController::init(hardware_interface::RobotHW* robot_ha
   trigger_publish_ = franka_hw::TriggerRate(controller_state_publish_rate);
 
   dynamic_reconfigure_joint_controller_params_node_ =
-      ros::NodeHandle("position_joint_position_controller/arm/controller_parameters_config");
+      ros::NodeHandle("/franka_ros_interface/position_joint_position_controller/arm/controller_parameters_config");
 
   dynamic_server_joint_controller_params_ = std::make_unique<
       dynamic_reconfigure::Server<franka_ros_controllers::joint_controller_paramsConfig>>(

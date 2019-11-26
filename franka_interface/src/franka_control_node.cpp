@@ -58,7 +58,7 @@ class ServiceContainer {
 };
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "franka_control_node");
+  ros::init(argc, argv, "custom_franka_control_node");
   ros::NodeHandle public_node_handle;
   ros::NodeHandle node_handle("~");
 
@@ -120,37 +120,37 @@ int main(int argc, char** argv) {
   ServiceContainer services;
   services
       .advertiseService<franka_control::SetJointImpedance>(
-          node_handle, "set_joint_impedance",
+          node_handle, "/franka_ros_interface/franka_control/set_joint_impedance",
           [&robot](auto&& req, auto&& res) {
             return franka_control::setJointImpedance(robot, req, res);
           })
       .advertiseService<franka_control::SetCartesianImpedance>(
-          node_handle, "set_cartesian_impedance",
+          node_handle, "/franka_ros_interface/franka_control/set_cartesian_impedance",
           [&robot](auto&& req, auto&& res) {
             return franka_control::setCartesianImpedance(robot, req, res);
           })
       .advertiseService<franka_control::SetEEFrame>(
-          node_handle, "set_EE_frame",
+          node_handle, "/franka_ros_interface/franka_control/set_EE_frame",
           [&robot](auto&& req, auto&& res) { return franka_control::setEEFrame(robot, req, res); })
       .advertiseService<franka_control::SetKFrame>(
-          node_handle, "set_K_frame",
+          node_handle, "/franka_ros_interface/franka_control/set_K_frame",
           [&robot](auto&& req, auto&& res) { return franka_control::setKFrame(robot, req, res); })
       .advertiseService<franka_control::SetForceTorqueCollisionBehavior>(
-          node_handle, "set_force_torque_collision_behavior",
+          node_handle, "/franka_ros_interface/franka_control/set_force_torque_collision_behavior",
           [&robot](auto&& req, auto&& res) {
             return franka_control::setForceTorqueCollisionBehavior(robot, req, res);
           })
       .advertiseService<franka_control::SetFullCollisionBehavior>(
-          node_handle, "set_full_collision_behavior",
+          node_handle, "/franka_ros_interface/franka_control/set_full_collision_behavior",
           [&robot](auto&& req, auto&& res) {
             return franka_control::setFullCollisionBehavior(robot, req, res);
           })
       .advertiseService<franka_control::SetLoad>(
-          node_handle, "set_load",
+          node_handle, "/franka_ros_interface/franka_control/set_load",
           [&robot](auto&& req, auto&& res) { return franka_control::setLoad(robot, req, res); });
 
   actionlib::SimpleActionServer<franka_control::ErrorRecoveryAction> recovery_action_server(
-      node_handle, "error_recovery",
+      node_handle, "/franka_ros_interface/franka_control/error_recovery",
       [&](const franka_control::ErrorRecoveryGoalConstPtr&) {
         try {
           robot.automaticErrorRecovery();
