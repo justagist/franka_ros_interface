@@ -63,7 +63,7 @@ class GripperInterface(object):
 
         """
 
-        if ns == 'franka_ros_interface':
+        if ns == 'franka_ros_interface' or ns == '/franka_ros_interface':
             ns = ''
         
         self.name = ns + '/franka_gripper'

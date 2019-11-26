@@ -89,7 +89,7 @@ class RobotParams(object):
     def get_robot_ip(self):
         robot_ip = None
         try:
-            robot_ip = rospy.get_param(self._ns + "/robot_ip")
+            robot_ip = rospy.get_param("/franka_control/robot_ip")
         except KeyError:
             rospy.logerr("RobotParam:robot_ip cannot detect robot ip."
                          " under param /robot_ip")
