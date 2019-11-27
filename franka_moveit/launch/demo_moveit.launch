@@ -30,7 +30,7 @@
   <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_1" args="0 0 0 0 0 0 world panda_link0" />
 
 
-  <include file="$(find franka_interface)/launch/moveit_interface.launch">
+  <include file="$(find franka_moveit)/launch/moveit_interface.launch">
     <arg name="fake_execution" value="false"/>
     <arg name="load_gripper" default="$(arg load_gripper)"/>
   </include>
