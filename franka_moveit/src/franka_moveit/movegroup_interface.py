@@ -39,7 +39,7 @@ class PandaMoveGroupInterface:
         moveit_commander.roscpp_initialize(sys.argv)
 
         self._robot = moveit_commander.RobotCommander()
-        
+
         self._scene = moveit_commander.PlanningSceneInterface()
 
         self._arm_group = moveit_commander.MoveGroupCommander("panda_arm")
@@ -65,6 +65,8 @@ class PandaMoveGroupInterface:
 
         rospy.loginfo("Setting default EE link to '{}' "
             "Use group.set_end_effector_link() method to change default EE.".format(self._default_ee))
+
+        self._arm_group.set_max_velocity_scaling_factor(0.3)
 
 
     @property
@@ -153,6 +155,19 @@ class PandaMoveGroupInterface:
         plan, fraction = self._arm_group.compute_cartesian_path(waypoints, 0.01, 0.0)
 
         return plan, fraction
+
+    def set_velocity_scale(self, value, group = "arm"):
+        """
+            Set the max velocity scale for executing planned motion.
+            @param value: scale value (allowed (0,1] )
+        """
+        if group == "arm":
+            self._arm_group.set_max_velocity_scaling_factor(value)
+        elif group == "gripper":
+            self._gripper_group.set_max_velocity_scaling_factor(value)
+        else:
+            raise ValueError("PandaMoveGroupInterface: Invalid group specified!")
+        rospy.loginfo("PandaMoveGroupInterface: Setting velocity scale to {}".format(value))
 
     def plan_joint_path(self, joint_position):
         return self._arm_group.plan(joint_position)
