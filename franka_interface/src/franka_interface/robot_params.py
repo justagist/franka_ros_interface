@@ -78,7 +78,7 @@ class RobotParams(object):
         try:
             neutral_pose = rospy.get_param("/robot_config/neutral_pose")
         except KeyError:
-            rospy.logerr("RobotParam:robot_ip cannot detect neutral joint pos."
+            rospy.logerr("RobotParam: robot_ip cannot detect neutral joint pos."
                          " under param /franka_control/neutral_pose")
         except (socket.error, socket.gaierror):
             _log_networking_error()
@@ -91,7 +91,7 @@ class RobotParams(object):
         try:
             robot_ip = rospy.get_param("/franka_control/robot_ip")
         except KeyError:
-            rospy.logerr("RobotParam:robot_ip cannot detect robot ip."
+            rospy.logerr("RobotParam: robot_ip cannot detect robot ip."
                          " under param /robot_ip")
         except (socket.error, socket.gaierror):
             _log_networking_error()
@@ -111,7 +111,7 @@ class RobotParams(object):
         try:
             joint_names = rospy.get_param("/robot_config/joint_names")
         except KeyError:
-            rospy.logerr(("RobotParam:get_joint_names cannot detect joint_names for arm"))
+            rospy.logerr("RobotParam: get_joint_names cannot detect joint_names for arm")
         except (socket.error, socket.gaierror):
             _log_networking_error()
         return joint_names
@@ -122,7 +122,7 @@ class RobotParams(object):
         try:
             joint_names = rospy.get_param("/gripper_config/joint_names")
         except KeyError:
-            rospy.loginfo(("RobotParam:get_gripper_joint_names cannot detect joint_names for gripper. Gripper not connected to robot."))
+            rospy.loginfo("RobotParam: get_gripper_joint_names cannot detect joint_names for gripper.")
             return None
         except (socket.error, socket.gaierror):
             _log_networking_error()
@@ -139,7 +139,7 @@ class RobotParams(object):
         try:
             robot_name = rospy.get_param("/robot_config/arm_id")
         except KeyError:
-            rospy.logerr("RobotParam:get_robot_name cannot detect robot name"
+            rospy.logerr("RobotParam: get_robot_name cannot detect robot name"
                          " under param /robot_config/arm_id")
         except (socket.error, socket.gaierror):
             _log_networking_error()
@@ -153,7 +153,7 @@ class RobotParams(object):
         try:
             vel_lim = rospy.get_param("/robot_config/joint_config/joint_velocity_limit")
         except KeyError:
-            rospy.logerr("RobotParam:get_joint_limits cannot detect robot joint velocity limits"
+            rospy.logerr("RobotParam: get_joint_limits cannot detect robot joint velocity limits"
                          " under param /robot_config/joint_config/joint_velocity_limit")
         except (socket.error, socket.gaierror):
             _log_networking_error()
@@ -161,7 +161,7 @@ class RobotParams(object):
         try:
             pos_min_lim = rospy.get_param("/robot_config/joint_config/joint_position_limit/lower")
         except KeyError:
-            rospy.logerr("RobotParam:get_joint_limits cannot detect robot joint position lower limits"
+            rospy.logerr("RobotParam: get_joint_limits cannot detect robot joint position lower limits"
                          " under param /robot_config/joint_config/joint_position_limit/lower")
         except (socket.error, socket.gaierror):
             _log_networking_error()
@@ -169,7 +169,7 @@ class RobotParams(object):
         try:
             pos_max_lim = rospy.get_param("/robot_config/joint_config/joint_position_limit/upper")
         except KeyError:
-            rospy.logerr("RobotParam:get_joint_limits cannot detect robot joint position upper limits"
+            rospy.logerr("RobotParam: get_joint_limits cannot detect robot joint position upper limits"
                          " under param /robot_config/joint_config/joint_position_limit/upper")
         except (socket.error, socket.gaierror):
             _log_networking_error()
@@ -177,7 +177,7 @@ class RobotParams(object):
         try:
             eff_lim = rospy.get_param("/robot_config/joint_config/joint_effort_limit")
         except KeyError:
-            rospy.logerr("RobotParam:get_joint_limits cannot detect robot joint torque limits"
+            rospy.logerr("RobotParam: get_joint_limits cannot detect robot joint torque limits"
                          " under param /robot_config/joint_config/joint_effort_limit")
         except (socket.error, socket.gaierror):
             _log_networking_error()
@@ -185,7 +185,7 @@ class RobotParams(object):
         try:
             acc_lim = rospy.get_param("/robot_config/joint_config/joint_acceleration_limit")
         except KeyError:
-            rospy.logerr("RobotParam:get_joint_limits cannot detect robot joint acceleration limits"
+            rospy.logerr("RobotParam: get_joint_limits cannot detect robot joint acceleration limits"
                          " under param /robot_config/joint_config/joint_acceleration_limit")
         except (socket.error, socket.gaierror):
             _log_networking_error()

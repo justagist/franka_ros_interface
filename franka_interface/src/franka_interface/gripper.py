@@ -74,14 +74,25 @@ class GripperInterface(object):
 
         self._joint_states_state_sub = rospy.Subscriber(ns + 'joint_states', JointState, self._joint_states_callback, queue_size = 1, tcp_nodelay = True)
 
+        self._exists = False
+
+        # ----- Initial test to see if gripper is loaded
+        try:
+            rospy.get_param("/franka_gripper/robot_ip")
+        except KeyError:
+            rospy.loginfo("FrankaGripper: could not detect gripper.")
+            return
+        except (socket.error, socket.gaierror):
+            print ("Failed to connect to the ROS parameter server!\n"
+           "Please check to make sure your ROS networking is "
+           "properly configured:\n")
+            sys.exit()
+
         # ----- Wait for the gripper device status to be true
-        if not franka_dataflow.wait_for(lambda: len(self._joint_positions.keys()) > 0, timeout=2.0, timeout_msg=("FrankaGripper: Failed to get gripper. No gripper attached on the robot."), raise_on_error = False ):
-            self._exists = False
+        if not franka_dataflow.wait_for(lambda: len(self._joint_positions.keys()) > 0, timeout=2.0, timeout_msg=("FrankaGripper: Failed to get gripper joint positions. Assuming no gripper attached to robot."), raise_on_error = False ):
             return 
         self._exists = True
 
-        if not self._exists:
-            return
 
         self._gripper_speed = 0.05
 
