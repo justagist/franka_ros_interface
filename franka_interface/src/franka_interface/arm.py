@@ -48,6 +48,7 @@ import franka_dataflow
 import franka_interface
 from robot_params import RobotParams
 
+from franka_moveit import PandaMoveGroupInterface
 from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface, JointTrajectoryActionClient
 
 
@@ -216,6 +217,14 @@ class ArmInterface(object):
         franka_dataflow.wait_for(lambda: self._jacobian is not None,
                                  timeout_msg=err_msg, timeout=5.0)
 
+        try:
+            self._movegroup_interface = PandaMoveGroupInterface()
+        except:
+            self._movegroup_interface = None
+
+        self.set_joint_position_speed(self._speed_ratio)
+
+
 
     def _clean_shutdown(self):
         self._joint_state_sub.unregister()
@@ -223,6 +232,9 @@ class ArmInterface(object):
         self._pub_joint_cmd_timeout.unregister()
         self._robot_state_subscriber.unregister()
         self._joint_command_publisher.unregister()
+
+    def get_movegroup_interface(self):
+        return self._movegroup_interface
 
 
     def get_robot_params(self):
@@ -498,7 +510,8 @@ _ns
         """
         if speed > 0.3:
             rospy.logwarn("ArmInterface: Setting speed above 0.3 could be risky!! Be extremely careful.")
-
+        if self._movegroup_interface:
+            self._movegroup_interface.set_velocity_scale(speed * 2)
         self._speed_ratio = speed
 
     def set_joint_positions(self, positions):
@@ -602,6 +615,11 @@ _ns
         """
         if self._params._in_sim:
             rospy.warn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
+            return
+
+        # If move_group interface is available, just use that.
+        if self._movegroup_interface:
+            self._movegroup_interface.go_to_joint_positions([positions[n] for n in self._joint_names], tolerance = threshold)
             return
 
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
