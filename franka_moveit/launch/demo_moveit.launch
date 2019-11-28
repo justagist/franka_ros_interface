@@ -30,9 +30,11 @@
   <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_1" args="0 0 0 0 0 0 world panda_link0" />
 
 
-  <include file="$(find franka_moveit)/launch/moveit_interface.launch">
+  <include file="$(find franka_interface)/launch/interface.launch">
     <arg name="fake_execution" value="false"/>
-    <arg name="load_gripper" default="$(arg load_gripper)"/>
+    <arg name="load_gripper" value="$(arg load_gripper)"/>
+    <arg name="load_demo_planning_scene" value="true"/>
+    <arg name="start_moveit" value="true"/>
   </include>
 
   <node name="topic_remap" pkg="topic_tools" type="relay" args="/franka_ros_interface/franka_gripper /franka_gripper"/>
