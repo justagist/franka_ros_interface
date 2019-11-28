@@ -1,3 +1,29 @@
+# /***************************************************************************
+
+# 
+# @package: franka_moveit
+# @metapackage: franka_ros_interface
+# @author: Saif Sidhik <sxs1412@bham.ac.uk>
+# 
+
+# **************************************************************************/
+
+# /***************************************************************************
+# Copyright (c) 2019, Saif Sidhik
+ 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# **************************************************************************/
+
 import sys
 import copy
 import rospy
@@ -7,6 +33,7 @@ import geometry_msgs.msg
 from math import pi
 from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
+from franka_moveit import ExtendedPlanningSceneInterface
 
 
 def all_close(goal, actual, tolerance):
@@ -40,7 +67,7 @@ class PandaMoveGroupInterface:
 
         self._robot = moveit_commander.RobotCommander()
 
-        self._scene = moveit_commander.PlanningSceneInterface()
+        self._scene = ExtendedPlanningSceneInterface()
 
         self._arm_group = moveit_commander.MoveGroupCommander("panda_arm")
 
@@ -63,7 +90,7 @@ class PandaMoveGroupInterface:
         self._default_ee = 'panda_hand' if self._gripper_group else 'panda_link8'
         # self._arm_group.set_end_effector_link(self._default_ee)
 
-        rospy.loginfo("Setting default EE link to '{}' "
+        rospy.loginfo("PandaMoveGroupInterface: Setting default EE link to '{}' "
             "Use group.set_end_effector_link() method to change default EE.".format(self._default_ee))
 
         self._arm_group.set_max_velocity_scaling_factor(0.3)
@@ -167,9 +194,12 @@ class PandaMoveGroupInterface:
             self._gripper_group.set_max_velocity_scaling_factor(value)
         else:
             raise ValueError("PandaMoveGroupInterface: Invalid group specified!")
-        rospy.loginfo("PandaMoveGroupInterface: Setting velocity scale to {}".format(value))
+        rospy.logdebug("PandaMoveGroupInterface: Setting velocity scale to {}".format(value))
 
     def plan_joint_path(self, joint_position):
+        """
+        @return plan for executing joint trajectory
+        """
         return self._arm_group.plan(joint_position)
 
     def go_to_poses(self, poses):
