@@ -6,6 +6,7 @@
   <include file="$(find franka_interface)/launch/interface.launch">
     <arg name="load_gripper" value="$(arg load_gripper)" />
     <arg name="start_controllers" value="false" />
+    <arg name="start_moveit" value="false" />
   </include>
   
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller"/>
