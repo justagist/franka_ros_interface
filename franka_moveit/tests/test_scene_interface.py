@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 
 import sys
 import rospy
@@ -31,6 +32,9 @@ objects = [
 
 
 def main():
+
+  print "============ Starting test ..."
+  rospy.sleep(5.)
   try:
     print "============ Press `Enter` to begin the tutorial by setting up the scene_interface (press ctrl-d to exit) ..."
     raw_input()
@@ -52,7 +56,7 @@ def main():
     return
 
 if __name__ == '__main__':
-    rospy.init_node('simple_scene_creator',
+    rospy.init_node('simple_scene_tester',
                     anonymous=True)
 
     moveit_commander.roscpp_initialize(sys.argv)

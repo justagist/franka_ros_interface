@@ -52,4 +52,6 @@
     <arg name="moveit_warehouse_database_path" value="$(arg db_path)"/>
   </include>
 
+  <node name="demo_boxes_scene_loader" pkg="franka_moveit" type="test_scene_interface.py" respawn="false" output="screen" />
+
 </launch>
