@@ -596,7 +596,7 @@ _ns
 
     def move_to_joint_positions(self, positions, timeout=10.0,
                                 threshold=0.00085,
-                                test=None):
+                                test=None, use_moveit = True):
         """
         (Blocking) Commands the limb to the provided positions.
 
@@ -612,15 +612,14 @@ _ns
         @param threshold: position threshold in radians across each joint when
         move is considered successful [0.008726646]
         @param test: optional function returning True if motion must be aborted
+        @type use_moveit: bool
+        @param use_moveit: if set to True, and movegroup interface is available, 
+                        move to the joint positions using moveit planner.
         """
         if self._params._in_sim:
             rospy.warn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
             return
 
-        # If move_group interface is available, just use that.
-        if self._movegroup_interface:
-            self._movegroup_interface.go_to_joint_positions([positions[n] for n in self._joint_names], tolerance = threshold)
-            return
 
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
 
@@ -637,46 +636,51 @@ _ns
             # if self._ctrl_manager.joint_trajectory_controller not in self._ctrl_manager.list_active_controller_names():
             self._ctrl_manager.start_controller(self._ctrl_manager.joint_trajectory_controller)
 
-        min_traj_dur = 0.5
 
-        traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
-        traj_client.clear()
+        # If move_group interface is available, just use that.
+        if self._movegroup_interface:
+            self._movegroup_interface.go_to_joint_positions([positions[n] for n in self._joint_names], tolerance = threshold)
+        
+        else:
+            min_traj_dur = 0.5
+            traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
+            traj_client.clear()
 
-        dur = []
-        for j in range(len(self._joint_names)):
-            dur.append(max(abs(positions[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
+            dur = []
+            for j in range(len(self._joint_names)):
+                dur.append(max(abs(positions[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
 
-        traj_client.add_point(positions = [positions[n] for n in self._joint_names], time = max(dur)/self._speed_ratio)
+            traj_client.add_point(positions = [positions[n] for n in self._joint_names], time = max(dur)/self._speed_ratio)
 
 
-        def genf(joint, angle):
-            def joint_diff():
-                return abs(angle - self._joint_angle[joint])
-            return joint_diff
+            def genf(joint, angle):
+                def joint_diff():
+                    return abs(angle - self._joint_angle[joint])
+                return joint_diff
 
-        diffs = [genf(j, a) for j, a in positions.items() if
-                 j in self._joint_angle]
+            diffs = [genf(j, a) for j, a in positions.items() if
+                     j in self._joint_angle]
 
-        fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
-                                                      self.name.capitalize())
-        def test_collision():
-            if self.has_collided():
-                rospy.logerr(' '.join(["Collision detected.", fail_msg]))
-                return True
-            return False
+            fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
+                                                          self.name.capitalize())
+            def test_collision():
+                if self.has_collided():
+                    rospy.logerr(' '.join(["Collision detected.", fail_msg]))
+                    return True
+                return False
 
-        traj_client.start() # send the trajectory action request
-        # traj_client.wait(timeout = timeout)
+            traj_client.start() # send the trajectory action request
+            # traj_client.wait(timeout = timeout)
 
-        franka_dataflow.wait_for(
-            test=lambda: test_collision() or \
-                         (callable(test) and test() == True) or \
-                         (all(diff() < threshold for diff in diffs)),
-            timeout=timeout,
-            timeout_msg=fail_msg,
-            rate=100,
-            raise_on_error=False
-            )
+            franka_dataflow.wait_for(
+                test=lambda: test_collision() or \
+                             (callable(test) and test() == True) or \
+                             (all(diff() < threshold for diff in diffs)),
+                timeout=timeout,
+                timeout_msg=fail_msg,
+                rate=100,
+                raise_on_error=False
+                )
 
         rospy.sleep(0.5)
 
