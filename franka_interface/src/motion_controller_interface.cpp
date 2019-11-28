@@ -47,6 +47,40 @@ void MotionControllerInterface::init(ros::NodeHandle& nh,
   if (!nh.getParam("/controllers_config/velocity_controller", velocity_controller_name_)) {
         velocity_controller_name_ = "velocity_joint_velocity_controller";
     }
+  if (!nh.getParam("/controllers_config/trajectory_controller", trajectory_controller_name_)) {
+        trajectory_controller_name_ = "position_joint_trajectory_controller";
+    }
+  if (!nh.getParam("/controllers_config/default_controller", default_controller_name_)) {
+        default_controller_name_ = "position_joint_trajectory_controller";
+    }
+
+  current_controller_name_ = default_controller_name_;
+
+  all_controllers_.clear();
+  all_controllers_.push_back(position_controller_name_);
+  all_controllers_.push_back(torque_controller_name_);
+  all_controllers_.push_back(impedance_controller_name_);
+  all_controllers_.push_back(velocity_controller_name_);
+  all_controllers_.push_back(trajectory_controller_name_);
+
+  bool default_defined = false;
+
+  for (size_t i = 0; i < all_controllers_.size(); ++i){
+    if (all_controllers_[i] == default_controller_name_){
+      default_defined = true;
+      break;
+    }
+  }
+
+  controller_name_to_mode_map_[position_controller_name_] = franka_core_msgs::JointCommand::POSITION_MODE;
+  controller_name_to_mode_map_[torque_controller_name_] = franka_core_msgs::JointCommand::TORQUE_MODE;
+  controller_name_to_mode_map_[impedance_controller_name_] = franka_core_msgs::JointCommand::IMPEDANCE_MODE;
+  controller_name_to_mode_map_[velocity_controller_name_] = franka_core_msgs::JointCommand::VELOCITY_MODE;
+  controller_name_to_mode_map_[trajectory_controller_name_] = -1;
+
+  if (! default_defined){
+    ROS_ERROR_STREAM_NAMED("MotionControllerInterface", "Default controller not present in the provided controllers!");
+  }
 
   controller_manager_ = controller_manager;
   joint_command_sub_ = nh.subscribe("/franka_ros_interface/motion_controller/arm/joint_commands", 1,
@@ -77,12 +111,41 @@ void MotionControllerInterface::commandTimeoutCheck(const ros::TimerEvent& e) {
   box_cmd_timeout_.get(p_cmd_msg_time);
   bool command_timeout = (p_cmd_msg_time && p_timeout_length &&
       ((ros::Time::now() - *p_cmd_msg_time.get()) > (*p_timeout_length.get())));
-  if(command_timeout && current_mode_ != franka_core_msgs::JointCommand::POSITION_MODE) {
-    // Timeout violated, force robot back to Position Mode
-    switchControllers(franka_core_msgs::JointCommand::POSITION_MODE);
-    ROS_WARN("MotionControllerInterface: Command timeout violated: Switched to Position control mode.");
+  if(command_timeout && (current_controller_name_ != default_controller_name_)) {
+    // Timeout violated, force robot back to Default Controller Mode
+
+    ROS_WARN_STREAM("MotionControllerInterface: Command timeout violated: Switching to Default control mode." << default_controller_name_);
+    switchToDefaultController();
   }
 }
+
+bool MotionControllerInterface::switchToDefaultController() {
+
+  std::vector<std::string> start_controllers; 
+  std::vector<std::string> stop_controllers;
+
+  for (size_t i = 0; i < all_controllers_.size(); ++i) {
+
+    if (all_controllers_[i] == default_controller_name_)
+      start_controllers.push_back(all_controllers_[i]);
+    else stop_controllers.push_back(all_controllers_[i]);
+  }
+  if (!controller_manager_->switchController(start_controllers, stop_controllers,
+                              controller_manager_msgs::SwitchController::Request::BEST_EFFORT))
+    {
+      ROS_ERROR_STREAM_NAMED("MotionControllerInterface", "Failed to switch controllers");
+      return false;
+    }
+    current_controller_name_ = start_controllers[0];
+    current_mode_ = controller_name_to_mode_map_[current_controller_name_];
+    ROS_INFO_STREAM("MotionControllerInterface: Controller " << start_controllers[0]
+                            << " started; Controllers " << stop_controllers[0] <<
+                            ", " << stop_controllers[1] <<
+                            ", " << stop_controllers[2] <<
+                            ", " << stop_controllers[3] << " stopped.");
+  return true;
+}
+
 
 void MotionControllerInterface::jointCommandTimeoutCallback(const std_msgs::Float64 msg) {
   ROS_INFO_STREAM("MotionControllerInterface: Joint command timeout: " << msg.data);
@@ -104,24 +167,28 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
         stop_controllers.push_back(impedance_controller_name_);
         stop_controllers.push_back(torque_controller_name_);
         stop_controllers.push_back(velocity_controller_name_);
+        stop_controllers.push_back(trajectory_controller_name_);
         break;
       case franka_core_msgs::JointCommand::IMPEDANCE_MODE:
         start_controllers.push_back(impedance_controller_name_);
         stop_controllers.push_back(position_controller_name_);
         stop_controllers.push_back(torque_controller_name_);
         stop_controllers.push_back(velocity_controller_name_);
+        stop_controllers.push_back(trajectory_controller_name_);
         break;
       case franka_core_msgs::JointCommand::TORQUE_MODE:
         start_controllers.push_back(torque_controller_name_);
         stop_controllers.push_back(position_controller_name_);
         stop_controllers.push_back(impedance_controller_name_);
         stop_controllers.push_back(velocity_controller_name_);
+        stop_controllers.push_back(trajectory_controller_name_);
         break;
       case franka_core_msgs::JointCommand::VELOCITY_MODE:
         start_controllers.push_back(velocity_controller_name_);
         stop_controllers.push_back(position_controller_name_);
         stop_controllers.push_back(impedance_controller_name_);
         stop_controllers.push_back(torque_controller_name_);
+        stop_controllers.push_back(trajectory_controller_name_);
         break;        
       default:
         ROS_ERROR_STREAM_NAMED("MotionControllerInterface", "Unknown JointCommand mode "
@@ -135,9 +202,12 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
       return false;
     }
     current_mode_ = control_mode;
+    current_controller_name_ = start_controllers[0];
     ROS_INFO_STREAM("MotionControllerInterface: Controller " << start_controllers[0]
-                            << " started; Controllers " << stop_controllers[0] +
-                            " and " + stop_controllers[1] << " stopped.");
+                            << " started; Controllers " << stop_controllers[0] <<
+                            ", " << stop_controllers[1] <<
+                            ", " << stop_controllers[2] <<
+                            ", " << stop_controllers[3] << " stopped.");
   }
   return true;
 }

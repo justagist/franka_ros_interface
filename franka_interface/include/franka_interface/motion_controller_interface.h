@@ -69,7 +69,13 @@ namespace franka_interface {
     std::string velocity_controller_name_;
     std::string torque_controller_name_;
     std::string impedance_controller_name_;
+    std::string trajectory_controller_name_;
 
+    std::string default_controller_name_;
+    std::string current_controller_name_;
+    std::vector<std::string> all_controllers_;
+
+    std::map<std::string,int> controller_name_to_mode_map_;
   protected:
   /**
    * Callback function to set time out to switch back to position mode. When using torque
@@ -95,6 +101,11 @@ namespace franka_interface {
    * @param[in] control_mode integer value representing the type of controller to use
    */
     bool switchControllers(int control_mode);
+
+  /**
+   * Switch controller to the initially defined default controller.
+   */
+    bool switchToDefaultController();
 
    /**
    * Check if the command timeout has been violated.
