@@ -40,27 +40,27 @@ A script for creating a simple environment as a PlanningScene
 IRLab_workspace = [
            {
            'name': 'back_wall',
-           'pose': create_pose_stamped_msg(position = [-0.57,0.0,0.5], orientation = [1,0,0,0], frame = 'world'),
+           'pose': create_pose_stamped_msg(position = [-0.57,0.0,0.5], orientation = [1,0,0,0], frame = 'panda_link0'),
            'size': [0.1,1.8,1]
            },
            {
            'name': 'side_wall',
-           'pose': create_pose_stamped_msg(position = [-0.3,-0.85,0.5], orientation = [1,0,0,0], frame = 'world'),
+           'pose': create_pose_stamped_msg(position = [-0.3,-0.85,0.5], orientation = [1,0,0,0], frame = 'panda_link0'),
            'size': [0.6,0.1,1]
            },
            {
            'name': 'table',
-           'pose': create_pose_stamped_msg(position = [0.45,-0.0,0], orientation = [1,0,0,0], frame = 'world'),
+           'pose': create_pose_stamped_msg(position = [0.45,-0.0,0], orientation = [1,0,0,0], frame = 'panda_link0'),
            'size': [2,1.8,0.02]
            },
            {
            'name': 'controller_box',
-           'pose': create_pose_stamped_msg(position = [-0.37,0.55,0.08], orientation = [1,0,0,0], frame = 'world'),
+           'pose': create_pose_stamped_msg(position = [-0.37,0.55,0.08], orientation = [1,0,0,0], frame = 'panda_link0'),
            'size': [0.4,0.6,0.16]
            },
            {
            'name': 'equipment_box',
-           'pose': create_pose_stamped_msg(position = [-0.35,-0.68,0.17], orientation = [1,0,0,0], frame = 'world'),
+           'pose': create_pose_stamped_msg(position = [-0.35,-0.68,0.17], orientation = [1,0,0,0], frame = 'panda_link0'),
            'size': [0.46,0.4,0.34]
            }
             ]
@@ -71,10 +71,14 @@ def main():
   try:
     rospy.loginfo("Creating Demo Planning Scene")
     scene = ExtendedPlanningSceneInterface()
-    # print tutorial.scene.get_known_object_names()
+
+    rospy.sleep(1) # ----- Not having this delay sometimes caused failing to create some boxes
 
     for config in IRLab_workspace:
-        scene.add_box(**config)
+
+        rospy.loginfo("-- Creating object: {}..".format(config['name']))
+        success = scene.add_box(**config)
+        rospy.loginfo("------ {}".format("success" if success else "FAILED!"))
 
     rospy.loginfo("Created Demo Planning Scene.")
 

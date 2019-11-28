@@ -33,7 +33,7 @@ import geometry_msgs.msg
 from math import pi
 from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
-from franka_moveit import ExtendedPlanningSceneInterface
+from extended_planning_scene_interface import ExtendedPlanningSceneInterface
 
 
 def all_close(goal, actual, tolerance):
@@ -210,10 +210,27 @@ class PandaMoveGroupInterface:
         """
 
     def close_gripper(self, wait = False):
+        """
+            Using named states defined in urdf.
+
+            NOTE: If this named state is not found, your ros environment is
+            probably not using the right panda_moveit_config package. Ensure
+            that sourced package is from this repo -->
+            https://github.com/justagist/panda_moveit_config
+
+        """
         self._gripper_group.set_named_target("close")
         return self._gripper_group.go(wait = wait)
 
     def open_gripper(self, wait = False):
+        """
+            Using named states defined in urdf.
+
+            NOTE: If this named state is not found, your ros environment is
+            probably not using the right panda_moveit_config package. Ensure
+            that sourced package is from this repo -->
+            https://github.com/justagist/panda_moveit_config
+        """
         self._gripper_group.set_named_target("open")
         return self._gripper_group.go(wait = wait)
 
@@ -226,6 +243,9 @@ class PandaMoveGroupInterface:
         self._display_trajectory_publisher.publish(display_trajectory)
 
     def move_to_neutral(self, wait = True):
+        """
+            Send arm group to neutral pose defined using named state in urdf.
+        """
         self._arm_group.set_named_target("ready")
         return self._arm_group.go(wait = wait)
 
