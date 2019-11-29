@@ -152,7 +152,10 @@ class FrankaControllerManagerInterface(object):
 
         self._controller_lister = ControllerLister(self._cm_ns)
 
-        self._non_motion_controllers = [self._ns[1:] + '/custom_franka_state_controller',self._ns[1:] + '/franka_state_controller']
+        if self._in_sim:
+            self._non_motion_controllers = [self._ns[1:] + '/custom_franka_state_controller', self._ns[1:] + '/panda_gripper_controller', self._ns[1:] + '/effort_joint_gravity_controller', self._ns[1:] + '/joint_state_controller']
+        else:
+            self._non_motion_controllers = [self._ns[1:] + '/custom_franka_state_controller',self._ns[1:] + '/franka_state_controller']
 
         self._assert_one_active_controller()
 
@@ -190,8 +193,8 @@ class FrankaControllerManagerInterface(object):
         Asserts that only one active motion controller.
         """
         ctrlr_list = self.list_active_controllers(only_motion_controllers=True)
-        if not self._in_sim:
-            assert len(ctrlr_list) <= 1, "FrankaControllerManagerInterface: More than one motion controller active!"
+        # if not self._in_sim:
+        assert len(ctrlr_list) <= 1, "FrankaControllerManagerInterface: More than one motion controller active!"
 
         self._current_controller = ctrlr_list[0].name if len(ctrlr_list) > 0 else None
 
