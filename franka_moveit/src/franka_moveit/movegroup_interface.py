@@ -83,7 +83,7 @@ class PandaMoveGroupInterface:
            "properly configured:\n")
             sys.exit()
 
-        display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',
+        self._display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',
                                            moveit_msgs.msg.DisplayTrajectory,
                                            queue_size=20)
 
