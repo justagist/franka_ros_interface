@@ -218,7 +218,7 @@ class ArmInterface(object):
                                  timeout_msg=err_msg, timeout=5.0)
 
         try:
-            self._movegroup_interface = PandaMoveGroupInterface()
+            self._movegroup_interface = PandaMoveGroupInterface() if not self._params._in_sim else None
         except:
             self._movegroup_interface = None
 
@@ -617,7 +617,8 @@ _ns
                         move to the joint positions using moveit planner.
         """
         if self._params._in_sim:
-            rospy.warn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
+            rospy.logwarn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
+            self.set_joint_positions(positions)
             return
 
 
