@@ -49,7 +49,7 @@ import franka_interface
 from robot_params import RobotParams
 
 from franka_moveit import PandaMoveGroupInterface
-from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface, JointTrajectoryActionClient
+from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface, JointTrajectoryActionClient, CollisionBehaviourInterface
 
 
 class TipState():
@@ -157,6 +157,7 @@ class ArmInterface(object):
         self._neutral_pose_joints = self._params.get_neutral_pose()
 
         self._frames_interface = FrankaFramesInterface()
+        self._collision_behaviour_interface = CollisionBehaviourInterface()
         self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns, sim = True if self._params._in_sim else False)
 
         self._speed_ratio = 0.15
@@ -799,6 +800,19 @@ _ns
             return retval
         else:
             rospy.logwarn("ArmInterface: Frames changing not available in simulated environment")
+
+    def set_collision_threshold(self, cartesian_forces = None, joint_torques = None):
+        """
+        Set Force Torque thresholds for deciding robot has collided.
+
+        @return True if service call successful, False otherwise
+        @rtype: bool
+        @param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
+        @type cartesian_forces: [float] size 6
+        @param joint_torques: Joint torque threshold for collision (robot motion stops if violated)
+        @type joint_torques: [float] size 7
+        """
+        return self._collision_behaviour_interface.set_collision_threshold(joint_torques = joint_torques, cartesian_forces = cartesian_forces)
 
     def get_controller_manager(self):
 
