@@ -117,3 +117,13 @@ class CollisionBehaviourInterface:
         """
         return self.set_ft_contact_collision_behaviour(torque_upper = joint_torques, force_upper = cartesian_forces)
 
+    def set_contact_threshold(self, joint_torques = None, cartesian_forces = None):
+        """
+        @return True if service call successful, False otherwise
+        @rtype: bool
+        @param joint_torques: Joint torque threshold for identifying as contact
+        @type joint_torques: [float] size 7
+        @param cartesian_forces: Cartesian force threshold for identifying as contact
+        @type cartesian_forces: [float] size 6
+        """
+        return self.set_ft_contact_collision_behaviour(torque_lower = joint_torques, force_lower = cartesian_forces)
