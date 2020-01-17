@@ -221,6 +221,7 @@ class ArmInterface(object):
         try:
             self._movegroup_interface = PandaMoveGroupInterface() if not self._params._in_sim else None
         except:
+            rospy.loginfo("MoveGroup was not found! This is okay if moveit service is not required!")
             self._movegroup_interface = None
 
         self.set_joint_position_speed(self._speed_ratio)

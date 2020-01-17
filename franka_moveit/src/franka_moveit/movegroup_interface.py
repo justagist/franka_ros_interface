@@ -63,6 +63,17 @@ class PandaMoveGroupInterface:
 
     def __init__(self):
 
+        try:
+            rospy.get_param("/robot_description_semantic")
+        except KeyError:
+            rospy.loginfo(("Moveit server does not seem to be running."))
+            raise Exception
+        except (socket.error, socket.gaierror):
+            print ("Failed to connect to the ROS parameter server!\n"
+           "Please check to make sure your ROS networking is "
+           "properly configured:\n")
+            sys.exit()
+
         moveit_commander.roscpp_initialize(sys.argv)
 
         self._robot = moveit_commander.RobotCommander()
