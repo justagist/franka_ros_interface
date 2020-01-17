@@ -1,5 +1,7 @@
 # Franka ROS Interface [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface)
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 A ROS API for the Franka Emika Panda robot, extending the [*franka_ros* package][franka-ros] to expose more information about the robot, and providing low level control of the robot using ROS and Python API.  
 
 Provides controlling and managing the Franka Emika Panda robot (real and simulated). Contains exposed controllers for the robot (joint position, velocity, torque), interfaces for the gripper, controller manager, coordinate frames, etc. Provides almost complete sim-to-real / real-to-sim transfer of code with the [*panda_simulator*][ps-repo] package. 
@@ -81,8 +83,7 @@ Most of the above services and topics are wrapped using simple Python classes or
 
 
 #### License
-
-Apache 2.0
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
    [libfranka-doc]: <https://frankaemika.github.io/docs/installation_linux.html#building-from-source>
    [franka-ros]: <https://frankaemika.github.io/docs/franka_ros.html>

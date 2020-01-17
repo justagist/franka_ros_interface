@@ -9,8 +9,6 @@ from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
 
 
-
-
 if __name__ == '__main__':
     
     from franka_moveit import PandaMoveGroupInterface

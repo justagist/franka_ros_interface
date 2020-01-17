@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2019, Saif Sidhik
+# Copyright (c) 2019-2020, Saif Sidhik
 # Copyright (c) 2013-2016, Rethink Robotics
 # All rights reserved.
 
