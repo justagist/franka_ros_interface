@@ -223,7 +223,6 @@ class FrankaFramesInterface():
             try:
                 listener.lookupTransform('/panda_EE', frame_name, rospy.Time(0))
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
-                err = e
                 return False
             return True
 

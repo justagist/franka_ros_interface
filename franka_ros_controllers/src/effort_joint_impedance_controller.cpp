@@ -244,7 +244,6 @@ void EffortJointImpedanceController::update(const ros::Time& time,
                                              const ros::Duration& period) {
   franka::RobotState robot_state = franka_state_handle_->getRobotState();
   std::array<double, 7> coriolis = model_handle_->getCoriolis();
-  std::array<double, 7> gravity = model_handle_->getGravity();
 
   double alpha = 0.99;
   for (size_t i = 0; i < 7; i++) {

@@ -1,5 +1,4 @@
 
-import moveit_msgs.msg
 import geometry_msgs.msg
 import quaternion
 

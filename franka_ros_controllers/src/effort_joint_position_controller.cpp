@@ -194,7 +194,6 @@ void EffortJointPositionController::update(const ros::Time& time,
                                              const ros::Duration& period) {
   franka::RobotState robot_state = franka_state_handle_->getRobotState();
 
-  double alpha = 0.99;
   std::array<double, 7> error = p_error_last_;
   std::array<double, 7> error_dot = d_error_;
 

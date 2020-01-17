@@ -30,7 +30,6 @@ import rospy
 import moveit_commander
 import moveit_msgs.msg
 import geometry_msgs.msg
-from math import pi
 from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
 from extended_planning_scene_interface import ExtendedPlanningSceneInterface
@@ -44,7 +43,6 @@ def all_close(goal, actual, tolerance):
     @param: tolerance  A float
     @rtype: bool
     """
-    all_equal = True
     if type(goal) is list:
         for index in range(len(goal)):
           if abs(actual[index] - goal[index]) > tolerance:

@@ -50,7 +50,7 @@ from actionlib_msgs.msg import GoalStatus
 
 from franka_interface import GripperInterface
 
-from franka_gripper.msg import ( MoveAction, MoveGoal,
+from franka_gripper.msg import ( MoveAction,
                                  StopAction, StopGoal )
 
 def _active_cb():

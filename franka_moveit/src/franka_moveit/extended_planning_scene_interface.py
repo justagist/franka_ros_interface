@@ -24,12 +24,8 @@
 # limitations under the License.
 # **************************************************************************/
 
-import sys
-import copy
 import rospy
 import moveit_commander
-import geometry_msgs.msg
-from math import pi
 from std_msgs.msg import String
 
 class ExtendedPlanningSceneInterface(moveit_commander.PlanningSceneInterface):

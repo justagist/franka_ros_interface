@@ -28,8 +28,6 @@
 # **************************************************************************/
 
 
-import argparse
-
 import rospy
 
 from franka_interface import ArmInterface, GripperInterface
