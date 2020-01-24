@@ -157,7 +157,11 @@ class ArmInterface(object):
         self._neutral_pose_joints = self._params.get_neutral_pose()
 
         self._frames_interface = FrankaFramesInterface()
-        self._collision_behaviour_interface = CollisionBehaviourInterface()
+        try:
+            self._collision_behaviour_interface = CollisionBehaviourInterface()
+        except rospy.ROSException:
+            rospy.loginfo("Collision Service Not found. It will not be possible to change collision behaviour of robot!")
+            self._collision_behaviour_interface = None
         self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns, sim = True if self._params._in_sim else False)
 
         self._speed_ratio = 0.15
@@ -813,7 +817,10 @@ _ns
         @param joint_torques: Joint torque threshold for collision (robot motion stops if violated)
         @type joint_torques: [float] size 7
         """
-        return self._collision_behaviour_interface.set_collision_threshold(joint_torques = joint_torques, cartesian_forces = cartesian_forces)
+        if self._collision_behaviour_interface:
+            return self._collision_behaviour_interface.set_collision_threshold(joint_torques = joint_torques, cartesian_forces = cartesian_forces)
+        else:
+            rospy.logwarn("No CollisionBehaviourInterface object found!")
 
     def get_controller_manager(self):
 
