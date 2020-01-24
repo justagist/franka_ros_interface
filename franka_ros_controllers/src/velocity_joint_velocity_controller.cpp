@@ -73,7 +73,7 @@ bool VelocityJointVelocityController::init(hardware_interface::RobotHW* robot_ha
       }
       else
       {
-        ROS_ERROR("VelocityJointVelocityController: Unable to find lower position limit values for joint %s...",
+        ROS_ERROR("VelocityJointVelocityController: Unable to find lower velocity limit values for joint %s...",
                        joint_limits_.joint_names[i].c_str());
       }
   }  
@@ -173,32 +173,32 @@ bool VelocityJointVelocityController::checkVelocityLimits(std::vector<double> ve
 
 void VelocityJointVelocityController::jointVelCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg) {
 
-    if (msg->mode == franka_core_msgs::JointCommand::POSITION_MODE){
-      if (msg->position.size() != 7) {
+    if (msg->mode == franka_core_msgs::JointCommand::VELOCITY_MODE){
+      if (msg->velocity.size() != 7) {
         ROS_ERROR_STREAM(
             "VelocityJointVelocityController: Published Commands are not of size 7");
         vel_d_ = prev_d_;
         vel_d_target_ = prev_d_;
       }
-      else if (checkVelocityLimits(msg->position)) {
+      else if (checkVelocityLimits(msg->velocity)) {
          ROS_ERROR_STREAM(
-            "VelocityJointVelocityController: Commanded velocities are beyond allowed position limits.");
+            "VelocityJointVelocityController: Commanded velocities are beyond allowed velocity limits.");
         vel_d_ = prev_d_;
         vel_d_target_ = prev_d_;
 
       }
       else
       {
-        std::copy_n(msg->position.begin(), 7, vel_d_target_.begin());
+        std::copy_n(msg->velocity.begin(), 7, vel_d_target_.begin());
       }
       
     }
-    // else ROS_ERROR_STREAM("VelocityJointVelocityController: Published Command msg are not of JointCommand::POSITION_MODE! Dropping message");
+    // else ROS_ERROR_STREAM("VelocityJointVelocityController: Published Command msg are not of JointCommand::Velocity! Dropping message");
 }
 
 void VelocityJointVelocityController::jointControllerParamCallback(franka_ros_controllers::joint_controller_paramsConfig& config,
                                uint32_t level){
-  target_filter_joint_vel_ = config.position_joint_delta_filter;
+  target_filter_joint_vel_ = config.velocity_joint_delta_filter;
 }
 
 void VelocityJointVelocityController::stopping(const ros::Time& /*time*/) {
