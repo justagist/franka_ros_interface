@@ -47,7 +47,7 @@ class CollisionBehaviourInterface:
     def __init__(self):
 
         rospy.loginfo("Waiting for collision behaviour services...")
-        rospy.wait_for_service("/franka_ros_interface/franka_control/set_force_torque_collision_behavior")
+        rospy.wait_for_service("/franka_ros_interface/franka_control/set_force_torque_collision_behavior", timeout = 1.0)
         self._ft_collision_behaviour_handle = rospy.ServiceProxy("/franka_ros_interface/franka_control/set_force_torque_collision_behavior", SetForceTorqueCollisionBehavior)
         self._full_collision_behaviour_handle = rospy.ServiceProxy("/franka_ros_interface/franka_control/set_full_collision_behavior", SetForceTorqueCollisionBehavior)
 
