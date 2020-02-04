@@ -9,7 +9,7 @@
 # **************************************************************************/
 
 # /***************************************************************************
-# Copyright (c) 2019-2020, Saif Sidhik
+# Copyright (c) 2019, Saif Sidhik
  
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,8 +48,7 @@ import franka_dataflow
 import franka_interface
 from robot_params import RobotParams
 
-from franka_moveit import PandaMoveGroupInterface
-from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface, JointTrajectoryActionClient, CollisionBehaviourInterface
+from franka_tools import FrankaFramesInterface, FrankaControllerManagerInterface, JointTrajectoryActionClient
 
 
 class TipState():
@@ -157,11 +156,6 @@ class ArmInterface(object):
         self._neutral_pose_joints = self._params.get_neutral_pose()
 
         self._frames_interface = FrankaFramesInterface()
-        try:
-            self._collision_behaviour_interface = CollisionBehaviourInterface()
-        except rospy.ROSException:
-            rospy.loginfo("Collision Service Not found. It will not be possible to change collision behaviour of robot!")
-            self._collision_behaviour_interface = None
         self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns, sim = True if self._params._in_sim else False)
 
         self._speed_ratio = 0.15
@@ -222,15 +216,7 @@ class ArmInterface(object):
         franka_dataflow.wait_for(lambda: self._jacobian is not None,
                                  timeout_msg=err_msg, timeout=5.0)
 
-        try:
-            self._movegroup_interface = PandaMoveGroupInterface() if not self._params._in_sim else None
-        except:
-            rospy.loginfo("MoveGroup was not found! This is okay if moveit service is not required!")
-            self._movegroup_interface = None
-
         self.set_joint_position_speed(self._speed_ratio)
-
-
 
     def _clean_shutdown(self):
         self._joint_state_sub.unregister()
@@ -238,10 +224,6 @@ class ArmInterface(object):
         self._pub_joint_cmd_timeout.unregister()
         self._robot_state_subscriber.unregister()
         self._joint_command_publisher.unregister()
-
-    def get_movegroup_interface(self):
-        return self._movegroup_interface
-
 
     def get_robot_params(self):
         return self._params
@@ -516,8 +498,6 @@ _ns
         """
         if speed > 0.3:
             rospy.logwarn("ArmInterface: Setting speed above 0.3 could be risky!! Be extremely careful.")
-        if self._movegroup_interface:
-            self._movegroup_interface.set_velocity_scale(speed * 2)
         self._speed_ratio = speed
 
     def set_joint_positions(self, positions):
@@ -581,7 +561,6 @@ _ns
 
 
     def has_collided(self):
-
         return any(self._joint_collision) or any(self._cartesian_collision)
         
 
@@ -601,8 +580,7 @@ _ns
 
 
     def move_to_joint_positions(self, positions, timeout=10.0,
-                                threshold=0.00085,
-                                test=None, use_moveit = True):
+                                threshold=0.00085, test=None):
         """
         (Blocking) Commands the limb to the provided positions.
 
@@ -618,9 +596,6 @@ _ns
         @param threshold: position threshold in radians across each joint when
         move is considered successful [0.008726646]
         @param test: optional function returning True if motion must be aborted
-        @type use_moveit: bool
-        @param use_moveit: if set to True, and movegroup interface is available, 
-                        move to the joint positions using moveit planner.
         """
         if self._params._in_sim:
             rospy.logwarn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
@@ -640,54 +615,45 @@ _ns
 
             if not self._ctrl_manager.is_loaded(self._ctrl_manager.joint_trajectory_controller):
                 self._ctrl_manager.load_controller(self._ctrl_manager.joint_trajectory_controller)
-            # if self._ctrl_manager.joint_trajectory_controller not in self._ctrl_manager.list_active_controller_names():
             self._ctrl_manager.start_controller(self._ctrl_manager.joint_trajectory_controller)
-
-
-        # If move_group interface is available, just use that.
-        if self._movegroup_interface:
-            self._movegroup_interface.go_to_joint_positions([positions[n] for n in self._joint_names], tolerance = threshold)
         
-        else:
-            min_traj_dur = 0.5
-            traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
-            traj_client.clear()
+        min_traj_dur = 0.5
+        traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
+        traj_client.clear()
 
-            dur = []
-            for j in range(len(self._joint_names)):
-                dur.append(max(abs(positions[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
+        dur = []
+        for j in range(len(self._joint_names)):
+            dur.append(max(abs(positions[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
 
-            traj_client.add_point(positions = [positions[n] for n in self._joint_names], time = max(dur)/self._speed_ratio)
+        traj_client.add_point(positions = [positions[n] for n in self._joint_names], time = max(dur)/self._speed_ratio)
 
 
-            def genf(joint, angle):
-                def joint_diff():
-                    return abs(angle - self._joint_angle[joint])
-                return joint_diff
+        def genf(joint, angle):
+            def joint_diff():
+                return abs(angle - self._joint_angle[joint])
+            return joint_diff
 
-            diffs = [genf(j, a) for j, a in positions.items() if
-                     j in self._joint_angle]
+        diffs = [genf(j, a) for j, a in positions.items() if j in self._joint_angle]
 
-            fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
-                                                          self.name.capitalize())
-            def test_collision():
-                if self.has_collided():
-                    rospy.logerr(' '.join(["Collision detected.", fail_msg]))
-                    return True
-                return False
+        fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
+                                                      self.name.capitalize())
+        def test_collision():
+            if self.has_collided():
+                rospy.logerr(' '.join(["Collision detected.", fail_msg]))
+                return True
+            return False
 
-            traj_client.start() # send the trajectory action request
-            # traj_client.wait(timeout = timeout)
+        traj_client.start() # send the trajectory action request
 
-            franka_dataflow.wait_for(
-                test=lambda: test_collision() or \
-                             (callable(test) and test() == True) or \
-                             (all(diff() < threshold for diff in diffs)),
-                timeout=timeout,
-                timeout_msg=fail_msg,
-                rate=100,
-                raise_on_error=False
-                )
+        franka_dataflow.wait_for(
+            test=lambda: test_collision() or \
+                         (callable(test) and test() == True) or \
+                         (all(diff() < threshold for diff in diffs)),
+            timeout=timeout,
+            timeout_msg=fail_msg,
+            rate=100,
+            raise_on_error=False
+            )
 
         rospy.sleep(0.5)
 
@@ -700,8 +666,94 @@ _ns
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
 
-            
+    def execute_position_path(self, position_path, timeout=10.0,
+                                threshold=0.00085, test=None):
+        """
+        (Blocking) Commands the limb to the provided positions.
 
+        Waits until the reported joint state matches that specified.
+
+        This function uses a low-pass filter to smooth the movement.
+
+        @type positions: dict({str:float})
+        @param positions: joint_name:angle command
+        @type timeout: float
+        @param timeout: seconds to wait for move to finish [15]
+        @type threshold: float
+        @param threshold: position threshold in radians across each joint when
+        move is considered successful [0.008726646]
+        @param test: optional function returning True if motion must be aborted
+        """
+
+        #TODO want to check that first point in traj is where the robot currently is. 
+        # However, what to remove that point (i.e. not add to traj_client) cause robot will just sit there 
+        # (which causes it to look like there is a pause before the trajectory starts executing)
+
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
+
+        # possibly move this to its own helper function?
+        if switch_ctrl:
+            active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+            for ctrlr in active_controllers:
+                self._ctrl_manager.stop_controller(ctrlr.name)
+                rospy.loginfo("ArmInterface: Stopping %s for trajectory controlling"%ctrlr.name)
+                rospy.sleep(0.5)
+
+            if not self._ctrl_manager.is_loaded(self._ctrl_manager.joint_trajectory_controller):
+                self._ctrl_manager.load_controller(self._ctrl_manager.joint_trajectory_controller)
+            self._ctrl_manager.start_controller(self._ctrl_manager.joint_trajectory_controller)
+        
+        min_traj_dur = 0.4
+        traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
+        traj_client.clear()
+
+        time_so_far = 0
+        for q in position_path: 
+            dur = []
+            for j in range(len(self._joint_names)):
+                dur.append(max(abs(q[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
+
+            time_so_far += max(dur)/self._speed_ratio
+            traj_client.add_point(positions = [q[n] for n in self._joint_names], time = time_so_far, velocities=[0.005 for n in self._joint_names])
+ 
+
+        def genf(joint, angle):
+            def joint_diff():
+                return abs(angle - self._joint_angle[joint])
+            return joint_diff
+
+        def test_collision():
+            if self.has_collided():
+                rospy.logerr(' '.join(["Collision detected.", fail_msg]))
+                return True
+            return False
+
+        diffs = [genf(j, a) for j, a in (position_path[-1]).items() if j in self._joint_angle] # Measures diff to last waypoint
+        fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
+                                                      self.name.capitalize())
+
+        traj_client.start() # send the trajectory action request
+
+        franka_dataflow.wait_for(
+            test=lambda: test_collision() or \
+                         (callable(test) and test() == True) or \
+                         (all(diff() < threshold for diff in diffs)),
+            timeout=timeout,
+            timeout_msg=fail_msg,
+            rate=100,
+            raise_on_error=False
+            )
+
+        rospy.sleep(0.5)
+
+        if switch_ctrl:
+            self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
+            for ctrlr in active_controllers:
+                self._ctrl_manager.start_controller(ctrlr.name)
+                rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
+                rospy.sleep(0.5)
+
+        rospy.loginfo("ArmInterface: Trajectory controlling complete")
 
     def reset_EE_frame(self):
         """
@@ -806,29 +858,10 @@ _ns
         else:
             rospy.logwarn("ArmInterface: Frames changing not available in simulated environment")
 
-    def set_collision_threshold(self, cartesian_forces = None, joint_torques = None):
-        """
-        Set Force Torque thresholds for deciding robot has collided.
-
-        @return True if service call successful, False otherwise
-        @rtype: bool
-        @param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
-        @type cartesian_forces: [float] size 6
-        @param joint_torques: Joint torque threshold for collision (robot motion stops if violated)
-        @type joint_torques: [float] size 7
-        """
-        if self._collision_behaviour_interface:
-            return self._collision_behaviour_interface.set_collision_threshold(joint_torques = joint_torques, cartesian_forces = cartesian_forces)
-        else:
-            rospy.logwarn("No CollisionBehaviourInterface object found!")
-
     def get_controller_manager(self):
-
         return self._ctrl_manager
 
-
     def get_frames_interface(self):
-
         return self._frames_interface
 
 
