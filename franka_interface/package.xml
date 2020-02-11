@@ -35,8 +35,8 @@
 
   <exec_depend>franka_control</exec_depend>
   <exec_depend>franka_description</exec_depend>
-  <exec_depend>panda_moveit_config</exec_depend>
-  <exec_depend>franka_moveit</exec_depend>
+  <!--<exec_depend>panda_moveit_config</exec_depend>
+  <exec_depend>franka_moveit</exec_depend>-->
   <exec_depend>rospy</exec_depend>
 
 

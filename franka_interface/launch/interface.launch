@@ -4,9 +4,9 @@
   <arg name="load_gripper" default="true" />
   <arg name="rate" default="1000" />
   <arg name="start_controllers" default="true" />
-  <arg name="start_moveit" default="true" />
+  <arg name="start_moveit" default="false" />
   <arg name="fake_execution" default="false" /> <!-- Only valid if running moveit movegroup (start_moveit:=true) -->
-  <arg name="load_demo_planning_scene" default="true"/>
+  <arg name="load_demo_planning_scene" default="false"/>
 
   <!-- Panda Control Interface -->
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find franka_description)/robots/panda_arm_hand.urdf.xacro'" if="$(arg load_gripper)" />
