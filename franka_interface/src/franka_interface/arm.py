@@ -162,7 +162,7 @@ class ArmInterface(object):
         except rospy.ROSException:
             rospy.loginfo("Collision Service Not found. It will not be possible to change collision behaviour of robot!")
             self._collision_behaviour_interface = None
-        self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns, sim = True if self._params._in_sim else False)
+        self._ctrl_manager = FrankaControllerManagerInterface(ns = self._ns, sim = self._params._in_sim)
 
         self._speed_ratio = 0.15
 
@@ -628,21 +628,7 @@ _ns
             return
 
 
-        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
-
-        if switch_ctrl:
-            active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
-            for ctrlr in active_controllers:
-                self._ctrl_manager.stop_controller(ctrlr.name)
-                rospy.loginfo("ArmInterface: Stopping %s for trajectory controlling"%ctrlr.name)
-                rospy.sleep(0.5)
-
-
-            if not self._ctrl_manager.is_loaded(self._ctrl_manager.joint_trajectory_controller):
-                self._ctrl_manager.load_controller(self._ctrl_manager.joint_trajectory_controller)
-            # if self._ctrl_manager.joint_trajectory_controller not in self._ctrl_manager.list_active_controller_names():
-            self._ctrl_manager.start_controller(self._ctrl_manager.joint_trajectory_controller)
-
+        curr_controller = self._ctrl_manager.set_motion_controller(self._ctrl_manager.joint_trajectory_controller)
 
         # If move_group interface is available, just use that.
         if self._movegroup_interface:
@@ -691,12 +677,7 @@ _ns
 
         rospy.sleep(0.5)
 
-        if switch_ctrl:
-            self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
-            for ctrlr in active_controllers:
-                self._ctrl_manager.start_controller(ctrlr.name)
-                rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
-                rospy.sleep(0.5)
+        self._ctrl_manager.set_motion_controller(curr_controller)
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
 

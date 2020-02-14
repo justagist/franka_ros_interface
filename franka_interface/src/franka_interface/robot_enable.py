@@ -80,7 +80,7 @@ class RobotEnable(object):
         )
 
     def _state_callback(self, msg):
-        self._enabled = True if msg.robot_mode != 4 else False
+        self._enabled = (msg.robot_mode != 4) 
 
     def is_enabled(self):
         return self._enabled

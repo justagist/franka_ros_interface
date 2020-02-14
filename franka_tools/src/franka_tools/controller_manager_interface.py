@@ -327,16 +327,32 @@ class FrankaControllerManagerInterface(object):
     def set_motion_controller(self, controller_name):
         """
         Set the specified controller as the (only) motion controller
-
+    
+        @return: name of currently active controller (can be used to switch back to this later)
+        @rtype: str
         @type controller_name: str
         @param controller_name: name of controller to start
         """
-        active_motion_ctrls = self.list_active_controllers(only_motion_controllers = True)
 
-        for c in active_motion_ctrls:
-            self.stop_controller(c.name)
+        curr_ctrlr = self.current_controller
+        switch_ctrl = (curr_ctrlr != controller_name)
 
-        self.start_controller(controller_name)
+        if switch_ctrl:
+            active_controllers = self.list_active_controllers(only_motion_controllers = True)
+            for ctrlr in active_controllers:
+                self.stop_controller(ctrlr.name)
+                rospy.loginfo("FrankaControllerManagerInterface: Stopping %s for trajectory controlling"%ctrlr.name)
+                rospy.sleep(0.5)
+
+
+            if not self.is_loaded(controller_name):
+                self.load_controller(controller_name)
+
+            self.start_controller(controller_name)
+        else:
+            rospy.debug("FrankaControllerManagerInterface: Controller '{0}' already active. Not switching.".format(controller_name))
+
+        return curr_ctrlr
 
 
     def is_running(self, controller_name):
