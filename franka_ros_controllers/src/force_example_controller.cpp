@@ -84,7 +84,7 @@ bool ForceExampleController::init(hardware_interface::RobotHW* robot_hw,
   trigger_publish_ = franka_hw::TriggerRate(controller_state_publish_rate);
 
   desired_joints_subscriber_ = node_handle.subscribe(
-      "/franka_ros_interface/motion_controller/arm/joint_commands", 20, &EffortJointTorqueController::jointCmdCallback, this,
+      "/franka_ros_interface/motion_controller/arm/joint_commands", 20, &EffortJointTorqueController::forceCmdCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
   publisher_controller_states_.init(node_handle, "/franka_ros_interface/motion_controller/arm/joint_controller_states", 1);
 
@@ -126,7 +126,11 @@ void ForceExampleController::update(const ros::Time& /*time*/, const ros::Durati
 
   Eigen::VectorXd tau_d(7), desired_force_torque(6), tau_cmd(7), tau_ext(7);
   desired_force_torque.setZero();
-  desired_force_torque(2) = desired_mass_ * -9.81; //X this becomes the input value - for loop thru jnt_cmd_ ?
+  for (size_t i = 0: i < 6; ++i) {
+      desired_force_torque(i) = jnt_cmd_[i] * -9.81;  
+  }
+
+  //desired_force_torque(2) = desired_mass_ * -9.81; //X this becomes the input value - for loop thru jnt_cmd_ ?
   tau_ext = tau_measured - gravity - tau_ext_initial_;
   tau_d << jacobian.transpose() * desired_force_torque;
   tau_error_ = tau_error_ + period.toSec() * (tau_d - tau_ext);
@@ -144,7 +148,7 @@ void ForceExampleController::update(const ros::Time& /*time*/, const ros::Durati
   if (trigger_publish_() && publisher_controller_states_.trylock()) {
       for (size_t i = 0; i < 7; ++i){
 
-        publisher_controller_states_.msg_.joint_controller_states[i].set_point = jnt_cmd_[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].set_point = tau_cmd_[i];
         publisher_controller_states_.msg_.joint_controller_states[i].process_value = tau_cmd[i];
         publisher_controller_states_.msg_.joint_controller_states[i].time_step = period.toSec();
         publisher_controller_states_.msg_.joint_controller_states[i].command = tau_cmd[i];
@@ -200,7 +204,7 @@ void ForceExampleController::forceCmdCallback(const franka_core_msgs::JointComma
         jnt_cmd_= prev_jnt_cmd_;
     }*/
     else {
-      std::copy_n(msg->effort.begin(), 7, jnt_cmd_.begin());
+      std::copy_n(msg->effort.begin(), 6, jnt_cmd_.begin());
 
     }
   }
