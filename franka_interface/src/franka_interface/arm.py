@@ -44,6 +44,7 @@ from franka_core_msgs.msg import RobotState, EndPointState
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
 
+import franka_control
 import franka_dataflow
 import franka_interface
 from robot_params import RobotParams
@@ -219,13 +220,13 @@ class ArmInterface(object):
 
         self.set_joint_position_speed(self._speed_ratio)
 
-    def convertToDict(q):
+    def convertToDict(self, q):
         q_dict = dict()
         for i in xrange(len(q)):
             q_dict['panda_joint{}'.format(i+1)] = q[i]
         return q_dict
 
-    def convertToList(q_dict):
+    def convertToList(self, q_dict):
         q = []
         sorted_keys = sorted(q_dict.keys())
         for i in sorted_keys:
@@ -609,15 +610,6 @@ _ns
             return abs(angle - self._joint_angle[joint])
         return joint_diff
 
-    def test_collision(self):
-        fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
-                                                      self.name.capitalize())
-        if self.has_collided():
-            rospy.logerr(' '.join(["Collision detected.", fail_msg]))
-            return True
-        return False
-
-
     def move_to_joint_positions(self, positions, timeout=10.0,
                                 threshold=0.00085, test=None):
         """
@@ -636,11 +628,6 @@ _ns
         move is considered successful [0.008726646]
         @param test: optional function returning True if motion must be aborted
         """
-        if self._params._in_sim:
-            rospy.logwarn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
-            self.set_joint_positions(positions)
-            return
-
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
         if switch_ctrl:
             self.switchToController(self._ctrl_manager.joint_trajectory_controller)
@@ -658,72 +645,21 @@ _ns
 
   
         traj_client.start() # send the trajectory action request
+        fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
+                                                      self.name.capitalize())
+
+        def test_collision():
+            if self.has_collided():
+                rospy.logerr(' '.join(["Collision detected.", fail_msg]))
+                return True
+            return False
 
         franka_dataflow.wait_for(
-            test=lambda: self.test_collision() or \
+            test=lambda: test_collision() or \
                          (callable(test) and test() == True) or \
                          (all(diff() < threshold for diff in diffs)),
             timeout=timeout,
             timeout_msg=fail_msg,
-            rate=100,
-            raise_on_error=False
-            )
-
-        rospy.sleep(0.5)
-
-        if switch_ctrl:
-            self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
-            for ctrlr in active_controllers:
-                self._ctrl_manager.start_controller(ctrlr.name)
-                rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
-                rospy.sleep(0.5)
-
-        rospy.loginfo("ArmInterface: Trajectory controlling complete")
-
-    def move_until_touch(self, positions, timeout=10.0, threshold=0.00085):
-        """
-        (Blocking) Commands the limb to the provided positions.
-
-        Waits until the reported joint state matches that specified.
-
-        This function uses a low-pass filter to smooth the movement.
-
-        @type positions: dict({str:float})
-        @param positions: joint_name:angle command
-        @type timeout: float
-        @param timeout: seconds to wait for move to finish [15]
-        @type threshold: float
-        @param threshold: position threshold in radians across each joint when
-        move is considered successful [0.008726646]
-        @param test: optional function returning True if motion must be aborted
-        """
-        if self._params._in_sim:
-            rospy.logwarn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
-            self.set_joint_positions(positions)
-            return
-
-        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
-        if switch_ctrl:
-            self.switchToController(self._ctrl_manager.joint_trajectory_controller)
-        
-        min_traj_dur = 0.5
-        traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
-        traj_client.clear()
-
-        dur = []
-        for j in range(len(self._joint_names)):
-            dur.append(max(abs(positions[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
-        traj_client.add_point(positions = [positions[n] for n in self._joint_names], time = max(dur)/self._speed_ratio)
-
-        diffs = [self.genf(j, a) for j, a in positions.items() if j in self._joint_angle]
-  
-        traj_client.start() # send the trajectory action request
-
-        franka_dataflow.wait_for(
-            test=lambda: self.has_collided() or \
-                         (all(diff() < threshold for diff in diffs)),
-            timeout=timeout,
-            timeout_msg="Collision Detected!",
             rate=100,
             raise_on_error=False
             )
@@ -743,9 +679,7 @@ _ns
                                 threshold=0.00085, test=None):
         """
         (Blocking) Commands the limb to the provided positions.
-
         Waits until the reported joint state matches that specified.
-
         This function uses a low-pass filter to smooth the movement.
 
         @type positions: dict({str:float})
@@ -758,17 +692,12 @@ _ns
         @param test: optional function returning True if motion must be aborted
         """
 
-        #TODO want to check that first point in traj is where the robot currently is. 
-        # However, what to remove that point (i.e. not add to traj_client) cause robot will just sit there 
-        # (which causes it to look like there is a pause before the trajectory starts executing)
-
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
 
-        # possibly move this to its own helper function?
         if switch_ctrl:
             self.switchToController(self._ctrl_manager.joint_trajectory_controller)
         
-        min_traj_dur = 0.4
+        min_traj_dur = 0.5
         traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
         traj_client.clear()
 
@@ -783,10 +712,18 @@ _ns
 
         diffs = [self.genf(j, a) for j, a in (position_path[-1]).items() if j in self._joint_angle] # Measures diff to last waypoint
 
+        fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
+                                                      self.name.capitalize())
+        def test_collision():
+            if self.has_collided():
+                rospy.logerr(' '.join(["Collision detected.", fail_msg]))
+                return True
+            return False
+
         traj_client.start() # send the trajectory action request
 
         franka_dataflow.wait_for(
-            test=lambda: self.test_collision() or \
+            test=lambda: test_collision() or \
                          (callable(test) and test() == True) or \
                          (all(diff() < threshold for diff in diffs)),
             timeout=timeout,
@@ -805,6 +742,139 @@ _ns
                 rospy.sleep(0.5)
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
+
+    def move_to_touch(self, positions, timeout=10.0, threshold=0.00085):
+        """
+        (Blocking) Commands the limb to the provided positions.
+
+        Waits until the reported joint state matches that specified.
+
+        This function uses a low-pass filter to smooth the movement.
+
+        @type positions: dict({str:float})
+        @param positions: joint_name:angle command
+        @type timeout: float
+        @param timeout: seconds to wait for move to finish [15]
+        @type threshold: float
+        @param threshold: position threshold in radians across each joint when
+        move is considered successful [0.008726646]
+        @param test: optional function returning True if motion must be aborted
+        """
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
+        if switch_ctrl:
+            self.switchToController(self._ctrl_manager.joint_trajectory_controller)
+        
+        min_traj_dur = 0.5
+        traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
+        traj_client.clear()
+
+        speed_ratio = 0.05 # Move slower when approaching contact
+        dur = []
+        for j in range(len(self._joint_names)):
+            dur.append(max(abs(positions[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
+        traj_client.add_point(positions = [positions[n] for n in self._joint_names], time = max(dur)/speed_ratio, velocities=[0.002 for n in self._joint_names])
+
+        diffs = [self.genf(j, a) for j, a in positions.items() if j in self._joint_angle]
+        fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
+                                                      self.name.capitalize()) 
+ 
+        traj_client.start() # send the trajectory action request
+
+        franka_dataflow.wait_for(
+            test=lambda: self.has_collided() or \
+                         (all(diff() < threshold for diff in diffs)),
+            timeout=timeout,
+            timeout_msg="Collision Detected!",
+            rate=100,
+            raise_on_error=False
+            )
+
+        rospy.sleep(0.5)
+
+        if not self.has_collided():
+            rospy.logerr('Move To Touch did not end in making contact') 
+
+        if switch_ctrl:
+            self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
+            for ctrlr in active_controllers:
+                self._ctrl_manager.start_controller(ctrlr.name)
+                rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
+                rospy.sleep(0.5)
+
+        # The collision, though desirable, triggers a cartesian reflex error. We need to reset that error
+        if self._robot_mode == 4:
+            self.resetErrors()
+
+        rospy.loginfo("ArmInterface: Trajectory controlling complete")
+
+    def resetErrors(self):
+        rospy.sleep(0.5)
+        pub = rospy.Publisher('/franka_ros_interface/franka_control/error_recovery/goal', franka_control.msg.ErrorRecoveryActionGoal, queue_size=10)
+        rospy.sleep(0.5)
+        pub.publish(franka_control.msg.ErrorRecoveryActionGoal())
+        rospy.loginfo("Collision Reflex was reset")
+
+
+
+    def move_from_touch(self, positions, timeout=10.0, threshold=0.00085):
+        """
+        (Blocking) Commands the limb to the provided positions.
+
+        Waits until the reported joint state matches that specified.
+
+        This function uses a low-pass filter to smooth the movement.
+
+        @type positions: dict({str:float})
+        @param positions: joint_name:angle command
+        @type timeout: float
+        @param timeout: seconds to wait for move to finish [15]
+        @type threshold: float
+        @param threshold: position threshold in radians across each joint when
+        move is considered successful [0.008726646]
+        @param test: optional function returning True if motion must be aborted
+        """
+
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
+        if switch_ctrl:
+            self.switchToController(self._ctrl_manager.joint_trajectory_controller)
+        
+        min_traj_dur = 0.5
+        traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
+        traj_client.clear()
+
+        dur = []
+        for j in range(len(self._joint_names)):
+            dur.append(max(abs(positions[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
+        traj_client.add_point(positions = [positions[n] for n in self._joint_names], time = max(dur)/self._speed_ratio)
+
+        diffs = [self.genf(j, a) for j, a in positions.items() if j in self._joint_angle]
+        fail_msg = "ArmInterface: {0} limb failed to reach commanded joint positions.".format(
+                                                      self.name.capitalize()) 
+ 
+        traj_client.start() # send the trajectory action request
+
+        franka_dataflow.wait_for(
+            test=lambda: (all(diff() < threshold for diff in diffs)),
+            timeout=timeout,
+            timeout_msg="Unable to complete plan!",
+            rate=100,
+            raise_on_error=False
+            )
+
+        rospy.sleep(0.5)
+
+        #if not self.has_collided():
+        #    rospy.logerr('Move To Touch did not end in making contact') 
+
+        if switch_ctrl:
+            self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
+            for ctrlr in active_controllers:
+                self._ctrl_manager.start_controller(ctrlr.name)
+                rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
+                rospy.sleep(0.5)
+
+        rospy.loginfo("ArmInterface: Trajectory controlling complete")
+
 
     def reset_EE_frame(self):
         """
