@@ -18,7 +18,7 @@
 
 #include <franka_example_controllers/desired_mass_paramConfig.h>
 
-namespace franka_example_controllers {
+namespace franka_ros_controllers {
 
 class ForceExampleController : public controller_interface::MultiInterfaceController<
                                    franka_hw::FrankaModelInterface,
@@ -56,6 +56,18 @@ class ForceExampleController : public controller_interface::MultiInterfaceContro
   ros::NodeHandle dynamic_reconfigure_desired_mass_param_node_;
   void desiredMassParamCallback(franka_example_controllers::desired_mass_paramConfig& config,
                                 uint32_t level);
+
+  std::array<double, 7> jnt_cmd_{};
+  std::array<double, 7> prev_jnt_cmd_{};
+
+  ros::Subscriber desired_joints_subscriber_;
+  franka_core_msgs::JointLimits joint_limits_;
+
+  franka_hw::TriggerRate trigger_publish_;
+  realtime_tools::RealtimePublisher<franka_core_msgs::JointControllerStates> publisher_controller_states_;
+
+  void forceCmdCallback(const franka_core_msgs::JointCommandConstPtr& msg);
+
 };
 
 }  // namespace franka_example_controllers
