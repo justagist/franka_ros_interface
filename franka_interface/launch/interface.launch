@@ -52,6 +52,7 @@
                                            franka_ros_interface/effort_joint_impedance_controller
                                            franka_ros_interface/effort_joint_position_controller
                                            franka_ros_interface/effort_joint_torque_controller
+                                           franka_ros_interface/force_example_controller
                                            franka_ros_interface/velocity_joint_velocity_controller
                                            franka_ros_interface/position_joint_position_controller"/>
   </group>    

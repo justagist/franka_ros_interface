@@ -365,7 +365,7 @@ class GripperInterface(object):
         result = self._stop_action_client.wait_for_result(rospy.Duration(15.))
         return result
 
-    def grasp(self, width, force, speed = None, epsilon_inner = 0.005, epsilon_outer = 0.005,wait_for_result = True, cb = None):
+    def grasp(self, width, force, speed = None, epsilon_inner = 0.05, epsilon_outer = 0.05,wait_for_result = True, cb = None):
         """
         Grasps an object.
        

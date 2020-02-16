@@ -487,6 +487,9 @@ class FrankaControllerManagerInterface(object):
     def effort_joint_position_controller(self):
         return self._ns[1:] + "/effort_joint_position_controller"
     @property
+    def force_example_controller(self):
+        return self._ns[1:] + "/force_example_controller"
+    @property
     def joint_trajectory_controller(self):
         return "position_joint_trajectory_controller" 
 

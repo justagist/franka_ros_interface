@@ -25,7 +25,10 @@ find_package(Franka 0.5.0 REQUIRED)
 
 generate_dynamic_reconfigure_options(
   cfg/joint_controller_params.cfg
+  cfg/compliance_param.cfg
+  cfg/desired_mass_param.cfg
 )
+
 
 
 catkin_package(
@@ -50,6 +53,7 @@ add_library(franka_ros_controllers
   src/effort_joint_position_controller.cpp
   src/effort_joint_torque_controller.cpp
   src/velocity_joint_velocity_controller.cpp
+  src/force_example_controller.cpp
 )
 
 add_dependencies(franka_ros_controllers
