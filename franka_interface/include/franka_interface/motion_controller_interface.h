@@ -67,6 +67,7 @@ namespace franka_interface {
 
     std::string position_controller_name_;
     std::string velocity_controller_name_;
+    std::string force_controller_name_;
     std::string torque_controller_name_;
     std::string impedance_controller_name_;
     std::string trajectory_controller_name_;

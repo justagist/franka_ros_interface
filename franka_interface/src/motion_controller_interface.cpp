@@ -41,6 +41,9 @@ void MotionControllerInterface::init(ros::NodeHandle& nh,
   if (!nh.getParam("/controllers_config/torque_controller", torque_controller_name_)) {
         torque_controller_name_ = "effort_joint_torque_controller";
     }
+  if (!nh.getParam("/controllers_config/force_controller", torque_controller_name_)) {
+        torque_controller_name_ = "force_example_controller";
+    }
   if (!nh.getParam("/controllers_config/impedance_controller", impedance_controller_name_)) {
         impedance_controller_name_ = "effort_joint_impedance_controller";
     }
@@ -58,6 +61,7 @@ void MotionControllerInterface::init(ros::NodeHandle& nh,
 
   all_controllers_.clear();
   all_controllers_.push_back(position_controller_name_);
+  all_controllers_.push_back(force_controller_name_);
   all_controllers_.push_back(torque_controller_name_);
   all_controllers_.push_back(impedance_controller_name_);
   all_controllers_.push_back(velocity_controller_name_);
@@ -76,6 +80,7 @@ void MotionControllerInterface::init(ros::NodeHandle& nh,
   controller_name_to_mode_map_[torque_controller_name_] = franka_core_msgs::JointCommand::TORQUE_MODE;
   controller_name_to_mode_map_[impedance_controller_name_] = franka_core_msgs::JointCommand::IMPEDANCE_MODE;
   controller_name_to_mode_map_[velocity_controller_name_] = franka_core_msgs::JointCommand::VELOCITY_MODE;
+  controller_name_to_mode_map_[force_controller_name_] = -1; // Unsure about this?
   controller_name_to_mode_map_[trajectory_controller_name_] = -1;
 
   if (! default_defined){
@@ -142,7 +147,8 @@ bool MotionControllerInterface::switchToDefaultController() {
                             << " started; Controllers " << stop_controllers[0] <<
                             ", " << stop_controllers[1] <<
                             ", " << stop_controllers[2] <<
-                            ", " << stop_controllers[3] << " stopped.");
+                            ", " << stop_controllers[3] <<
+                            ", " << stop_controllers[4] << " stopped.");
   return true;
 }
 
@@ -168,6 +174,7 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
         stop_controllers.push_back(torque_controller_name_);
         stop_controllers.push_back(velocity_controller_name_);
         stop_controllers.push_back(trajectory_controller_name_);
+        stop_controllers.push_back(force_controller_name_);
         break;
       case franka_core_msgs::JointCommand::IMPEDANCE_MODE:
         start_controllers.push_back(impedance_controller_name_);
@@ -175,6 +182,7 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
         stop_controllers.push_back(torque_controller_name_);
         stop_controllers.push_back(velocity_controller_name_);
         stop_controllers.push_back(trajectory_controller_name_);
+        stop_controllers.push_back(force_controller_name_);
         break;
       case franka_core_msgs::JointCommand::TORQUE_MODE:
         start_controllers.push_back(torque_controller_name_);
@@ -182,6 +190,7 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
         stop_controllers.push_back(impedance_controller_name_);
         stop_controllers.push_back(velocity_controller_name_);
         stop_controllers.push_back(trajectory_controller_name_);
+        stop_controllers.push_back(force_controller_name_);
         break;
       case franka_core_msgs::JointCommand::VELOCITY_MODE:
         start_controllers.push_back(velocity_controller_name_);
@@ -189,6 +198,7 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
         stop_controllers.push_back(impedance_controller_name_);
         stop_controllers.push_back(torque_controller_name_);
         stop_controllers.push_back(trajectory_controller_name_);
+        stop_controllers.push_back(force_controller_name_);
         break;        
       default:
         ROS_ERROR_STREAM_NAMED("MotionControllerInterface", "Unknown JointCommand mode "
@@ -207,7 +217,8 @@ bool MotionControllerInterface::switchControllers(int control_mode) {
                             << " started; Controllers " << stop_controllers[0] <<
                             ", " << stop_controllers[1] <<
                             ", " << stop_controllers[2] <<
-                            ", " << stop_controllers[3] << " stopped.");
+                            ", " << stop_controllers[3] <<
+                            ", " << stop_controllers[4] << " stopped.");
   }
   return true;
 }
