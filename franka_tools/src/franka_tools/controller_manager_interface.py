@@ -350,7 +350,7 @@ class FrankaControllerManagerInterface(object):
 
             self.start_controller(controller_name)
         else:
-            rospy.debug("FrankaControllerManagerInterface: Controller '{0}' already active. Not switching.".format(controller_name))
+            rospy.logdebug("FrankaControllerManagerInterface: Controller '{0}' already active. Not switching.".format(controller_name))
 
         return curr_ctrlr
 
