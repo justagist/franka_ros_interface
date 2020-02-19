@@ -288,6 +288,8 @@ class ArmInterface(object):
         if self._frames_interface:
             self._frames_interface._update_frame_data(msg.F_T_EE, msg.EE_T_K)
 
+        self._joint_inertia = np.asarray(msg.mass_matrix).reshape(7,7,order='F')
+
         self.q_d = msg.q_d
         self.dq_d = msg.dq_d
 
@@ -489,6 +491,22 @@ _ns
         @return: pose, velocity, effort, effort_in_K_frame
         """
         return deepcopy(self._tip_states)
+        
+    def joint_inertia_matrix(self):
+        """
+        Return joint inertia matrix (7,7)
+        
+        @rtype: np.ndarray [7x7]
+        """
+        return deepcopy(self._joint_inertia)
+
+    def zero_jacobian(self):
+        """
+        Return end-effector jacobian (6,7)
+        
+        @rtype: np.ndarray [6x7]
+        """
+        return deepcopy(self._jacobian)        
 
     def set_command_timeout(self, timeout):
         """
