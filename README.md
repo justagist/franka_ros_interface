@@ -21,6 +21,8 @@ Provides controlling and managing the Franka Emika Panda robot (real and simulat
 
  - *libfranka* (`sudo apt install ros-$ROS_DISTRO-libfranka` or [install from source][libfranka-doc])
  - *franka-ros* (`sudo apt install ros-$ROS_DISTRO-franka-ros` or [install from source][libfranka-doc])
+ - (optional, but recommended) [*franka_panda_description*](https://github.com/justagist/franka_panda_description) (See [*Related Packages*](#related-packages) section for information about package). 
+ **NOTE**: If you do not want to use the *franka_panda_description* package, make sure you modify the `franka_interface/launch/interface.launch` file and replace all occurences of `franka_panda_description` with `franka_description` (two occurences). 
  
 ### Installation
 Once the above dependencies are installed, the package can be installed using catkin_make:
@@ -80,6 +82,7 @@ Most of the above services and topics are wrapped using simple Python classes or
 
 - [*panda_simulator*][ps-repo] : A Gazebo simulator for the Franka Emika Panda robot with ROS interface, providing exposed controllers and real-time robot state feedback similar to the real robot when using the *franka_ros_interface* package. Provides almost complete real-to-sim transfer of code.
 - [*panda_robot*](https://github.com/justagist/panda_robot) : Python interface providing higher-level control of the robot integrated with its gripper control, controller manager, coordinate frames manager, etc. with safety checks and other helper utilities. It also provides the kinematics and dynamics of the robot using the [KDL library](http://wiki.ros.org/kdl).
+- [*franka_panda_description*](https://github.com/justagist/franka_panda_description) : Robot description package modified from [*franka_ros*][franka-ros] package to include dynamics parameters for the robot arm (as estimated in [this paper](https://hal.inria.fr/hal-02265293/document)). Also includes transmission and control definitions required for the [*panda_simulator*][ps-repo] package.
 
 
 #### License
