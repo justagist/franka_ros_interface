@@ -41,4 +41,11 @@
       Controller for commanding forces to be exerted by the Franka Arm
     </description>
   </class> 
+  <class name="franka_ros_controllers/CartesianImpedanceController"
+         type="franka_ros_controllers::CartesianImpedanceController"
+         base_class_type="controller_interface::ControllerBase">
+    <description>
+      REWRITE - Controller for commanding forces to be exerted by the Franka Arm
+    </description>
+  </class>
 </library>
