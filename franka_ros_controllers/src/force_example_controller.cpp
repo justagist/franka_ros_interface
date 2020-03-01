@@ -17,6 +17,12 @@ bool ForceExampleController::init(hardware_interface::RobotHW* robot_hw,
                                   ros::NodeHandle& node_handle) {
   std::vector<std::string> joint_names;
   std::string arm_id;
+
+  force_params_ = node_handle.subscribe(
+    "/wrench_target", 20, &ForceExampleController::forceParamCallback, this,
+    ros::TransportHints().reliable().tcpNoDelay());
+
+
   ROS_WARN(
       "ForceExampleController: Make sure your robot's endeffector is in contact "
       "with a horizontal surface before starting the controller!");
@@ -73,15 +79,10 @@ bool ForceExampleController::init(hardware_interface::RobotHW* robot_hw,
     }
   }
 
-  dynamic_reconfigure_desired_mass_param_node_ =
-      ros::NodeHandle("dynamic_reconfigure_desired_mass_param_node");
-  dynamic_server_desired_mass_param_ = std::make_unique<
-      dynamic_reconfigure::Server<franka_ros_controllers::desired_mass_paramConfig>>(
-
-      dynamic_reconfigure_desired_mass_param_node_);
-  dynamic_server_desired_mass_param_->setCallback(
-      boost::bind(&ForceExampleController::desiredMassParamCallback, this, _1, _2));
-
+  // Initialize
+  //target_mass_ = 0.0;
+  target_mass_.setZero();
+  desired_mass_.setZero();
   return true;
 }
 
@@ -108,7 +109,10 @@ void ForceExampleController::update(const ros::Time& /*time*/, const ros::Durati
 
   Eigen::VectorXd tau_d(7), desired_force_torque(6), tau_cmd(7), tau_ext(7);
   desired_force_torque.setZero();
-  desired_force_torque(2) = desired_mass_ * -9.81;
+  for (size_t i = 0; i < 7; ++i) {
+      desired_force_torque(i) = desired_mass_(i); // * -9.81;
+  }
+  //desired_force_torque(2) = desired_mass_(2) * -9.81;
   tau_ext = tau_measured - gravity - tau_ext_initial_;
   tau_d << jacobian.transpose() * desired_force_torque;
   tau_error_ = tau_error_ + period.toSec() * (tau_d - tau_ext);
@@ -126,13 +130,17 @@ void ForceExampleController::update(const ros::Time& /*time*/, const ros::Durati
   k_i_ = filter_gain_ * target_k_i_ + (1 - filter_gain_) * k_i_;
 }
 
-void ForceExampleController::desiredMassParamCallback(
-    franka_ros_controllers::desired_mass_paramConfig& config,
-    uint32_t /*level*/) {
-  target_mass_ = config.desired_mass;
-  target_k_p_ = config.k_p;
-  target_k_i_ = config.k_i;
+void ForceExampleController::forceParamCallback(
+     const geometry_msgs::Wrench& msg) {
+
+  target_mass_(0) = msg.force.x;
+  target_mass_(1) = msg.force.y;
+  target_mass_(2) = msg.force.z;
+  target_mass_(3) = msg.torque.x;
+  target_mass_(4) = msg.torque.y;
+  target_mass_(5) = msg.torque.z;
 }
+
 
 Eigen::Matrix<double, 7, 1> ForceExampleController::saturateTorqueRate(
     const Eigen::Matrix<double, 7, 1>& tau_d_calculated,

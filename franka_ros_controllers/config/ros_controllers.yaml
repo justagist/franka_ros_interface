@@ -115,3 +115,10 @@ cartesian_impedance_controller:
         - panda_joint5
         - panda_joint6
         - panda_joint7
+    stiffness_gains:
+        - 200.0
+        - 200.0
+        - 200.0
+        - 20.0
+        - 20.0
+        - 20.0

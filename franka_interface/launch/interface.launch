@@ -4,9 +4,6 @@
   <arg name="load_gripper" default="true" />
   <arg name="rate" default="1000" />
   <arg name="start_controllers" default="true" />
-  <arg name="start_moveit" default="false" />
-  <arg name="fake_execution" default="false" /> <!-- Only valid if running moveit movegroup (start_moveit:=true) -->
-  <arg name="load_demo_planning_scene" default="false"/>
 
   <!-- Panda Control Interface -->
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find franka_description)/robots/panda_arm_hand.urdf.xacro'" if="$(arg load_gripper)" />
@@ -53,25 +50,16 @@
                                            franka_ros_interface/effort_joint_position_controller
                                            franka_ros_interface/effort_joint_torque_controller
                                            franka_ros_interface/force_example_controller
+                                           franka_ros_interface/cartesian_impedance_controller
                                            franka_ros_interface/velocity_joint_velocity_controller
                                            franka_ros_interface/position_joint_position_controller"/>
   </group>    
 
+  <!-- Start rViz -->
+  <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(find franka_interface)/launch/rviz/franka_description_with_marker.rviz"/>
 
-  <node pkg="tf" type="static_transform_publisher" name="base_to_link0" args="0 0 0 0 0 0 1 base panda_link0 100" />                                                                      
-  <node pkg="tf" type="static_transform_publisher" name="world_to_base" args="0 0 0 0 0 0 1 world base 100" />                                                                      
-  <group if="$(eval arg('start_moveit') == true)">
-    <include file="$(find panda_moveit_config)/launch/move_group.launch">
-      <arg name="fake_execution" value="$(arg fake_execution)" />
-      <arg name="load_gripper" value="$(arg load_gripper)" />
-      <arg name="info" value="true" />
-    </include>
-  </group>   
-
-  <group if="$(eval arg('load_demo_planning_scene') == true)">
-    <node name="demo_scene_loader" pkg="franka_moveit" type="create_demo_planning_scene.py" respawn="false" output="screen" />
-  </group>   
-
+  <node pkg="tf" type="static_transform_publisher" name="base_to_link0" args="0 0 0 0 0 0 1 base panda_link0 100" />                                                                   <node pkg="tf" type="static_transform_publisher" name="world_to_base" args="0 0 0 0 0 0 1 world base 100" />                                                                      
+    
 </launch>
 
 

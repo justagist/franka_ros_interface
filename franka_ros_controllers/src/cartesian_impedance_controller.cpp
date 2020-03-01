@@ -22,7 +22,10 @@ bool CartesianImpedanceController::init(hardware_interface::RobotHW* robot_hw,
   sub_equilibrium_pose_ = node_handle.subscribe(
       "/equilibrium_pose", 20, &CartesianImpedanceController::equilibriumPoseCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
-
+  stiffness_params_ = node_handle.subscribe(
+      "/impedance_stiffness", 20, &CartesianImpedanceController::stiffnessParamCallback, this,
+      ros::TransportHints().reliable().tcpNoDelay());
+ 
   std::string arm_id;
   if (!node_handle.getParam("arm_id", arm_id)) {
     ROS_ERROR_STREAM("CartesianImpedanceController: Could not read parameter arm_id");
@@ -33,6 +36,12 @@ bool CartesianImpedanceController::init(hardware_interface::RobotHW* robot_hw,
     ROS_ERROR(
         "CartesianImpedanceController: Invalid or no joint_names parameters provided, "
         "aborting controller init!");
+    return false;
+  }
+  if (!node_handle.getParam("stiffness_gains", stiffness_gains_) || stiffness_gains_.size() != 6) {
+    ROS_ERROR(
+        "CartesianImpedanceController:  Invalid or no cartesian_stiffness_ parameters provided, aborting "
+        "controller init!");
     return false;
   }
 
@@ -84,15 +93,14 @@ bool CartesianImpedanceController::init(hardware_interface::RobotHW* robot_hw,
     }
   }
 
-  dynamic_reconfigure_compliance_param_node_ =
-      ros::NodeHandle("dynamic_reconfigure_compliance_param_node");
-
-  dynamic_server_compliance_param_ = std::make_unique<
-      dynamic_reconfigure::Server<franka_ros_controllers::compliance_paramConfig>>(
-
-      dynamic_reconfigure_compliance_param_node_);
-  dynamic_server_compliance_param_->setCallback(
-      boost::bind(&CartesianImpedanceController::complianceParamCallback, this, _1, _2));
+  cartesian_stiffness_target_.setIdentity();
+  cartesian_damping_target_.setIdentity();
+  nullspace_stiffness_target_ = 0;
+  for (size_t i = 0; i < 6; ++i) { 
+    cartesian_stiffness_target_(i,i) = stiffness_gains_[i];
+    cartesian_damping_target_(i,i) = 2.0 * sqrt(stiffness_gains_[i]);
+  }
+  
 
   position_d_.setZero();
   orientation_d_.coeffs() << 0.0, 0.0, 0.0, 1.0;
@@ -190,19 +198,14 @@ void CartesianImpedanceController::update(const ros::Time& /*time*/,
 
   // update parameters changed online either through dynamic reconfigure or through the interactive
   // target by filtering
-  cartesian_stiffness_ =
-      filter_params_ * cartesian_stiffness_target_ + (1.0 - filter_params_) * cartesian_stiffness_;
-  cartesian_damping_ =
-      filter_params_ * cartesian_damping_target_ + (1.0 - filter_params_) * cartesian_damping_;
-  nullspace_stiffness_ =
-      filter_params_ * nullspace_stiffness_target_ + (1.0 - filter_params_) * nullspace_stiffness_;
+  cartesian_stiffness_ = filter_params_ * cartesian_stiffness_target_ + (1.0 - filter_params_) * cartesian_stiffness_;
+  cartesian_damping_ = filter_params_ * cartesian_damping_target_ + (1.0 - filter_params_) * cartesian_damping_;
+  nullspace_stiffness_ = filter_params_ * nullspace_stiffness_target_ + (1.0 - filter_params_) * nullspace_stiffness_;
   position_d_ = filter_params_ * position_d_target_ + (1.0 - filter_params_) * position_d_;
   Eigen::AngleAxisd aa_orientation_d(orientation_d_);
   Eigen::AngleAxisd aa_orientation_d_target(orientation_d_target_);
-  aa_orientation_d.axis() = filter_params_ * aa_orientation_d_target.axis() +
-                            (1.0 - filter_params_) * aa_orientation_d.axis();
-  aa_orientation_d.angle() = filter_params_ * aa_orientation_d_target.angle() +
-                             (1.0 - filter_params_) * aa_orientation_d.angle();
+  aa_orientation_d.axis() = filter_params_ * aa_orientation_d_target.axis() + (1.0 - filter_params_) * aa_orientation_d.axis();
+  aa_orientation_d.angle() = filter_params_ * aa_orientation_d_target.angle() + (1.0 - filter_params_) * aa_orientation_d.angle();
   orientation_d_ = Eigen::Quaterniond(aa_orientation_d);
 }
 
@@ -212,41 +215,30 @@ Eigen::Matrix<double, 7, 1> CartesianImpedanceController::saturateTorqueRate(
   Eigen::Matrix<double, 7, 1> tau_d_saturated{};
   for (size_t i = 0; i < 7; i++) {
     double difference = tau_d_calculated[i] - tau_J_d[i];
-    tau_d_saturated[i] =
-        tau_J_d[i] + std::max(std::min(difference, delta_tau_max_), -delta_tau_max_);
+    tau_d_saturated[i] = tau_J_d[i] + std::max(std::min(difference, delta_tau_max_), -delta_tau_max_);
   }
   return tau_d_saturated;
 }
 
-void CartesianImpedanceController::complianceParamCallback(
-    franka_ros_controllers::compliance_paramConfig& config,
-    uint32_t /*level*/) {
-  cartesian_stiffness_target_.setIdentity();
-  /*cartesian_stiffness_target_.topLeftCorner(3, 3)
-      << config.translational_stiffness * Eigen::Matrix3d::Identity();
-  cartesian_stiffness_target_.bottomRightCorner(3, 3)
-      << config.rotational_stiffness * Eigen::Matrix3d::Identity();*/
-  cartesian_damping_target_.setIdentity();
-  // Damping ratio = 1
-  /*cartesian_damping_target_.topLeftCorner(3, 3)
-      << 2.0 * sqrt(config.translational_stiffness) * Eigen::Matrix3d::Identity();
-  cartesian_damping_target_.bottomRightCorner(3, 3)
-      << 2.0 * sqrt(config.rotational_stiffness) * Eigen::Matrix3d::Identity();*/
-  nullspace_stiffness_target_ = config.nullspace_stiffness;
+void CartesianImpedanceController::stiffnessParamCallback(
+     const franka_core_msgs::ImpedanceStiffness& msg) {
 
-  cartesian_stiffness_target_(0,0) = config.x_stiffness;
-  cartesian_stiffness_target_(1,1) = config.y_stiffness;
-  cartesian_stiffness_target_(2,2) = config.z_stiffness;
-  cartesian_stiffness_target_(3,3) = config.x_rot_stiffness;
-  cartesian_stiffness_target_(4,4) = config.y_rot_stiffness;
-  cartesian_stiffness_target_(5,5) = config.z_rot_stiffness;
-  cartesian_damping_target_(0,0) = 2.0 * sqrt(config.x_stiffness);
-  cartesian_damping_target_(1,1) = 2.0 * sqrt(config.y_stiffness);
-  cartesian_damping_target_(2,2) = 2.0 * sqrt(config.z_stiffness);
-  cartesian_damping_target_(3,3) = 2.0 * sqrt(config.x_rot_stiffness);
-  cartesian_damping_target_(4,4) = 2.0 * sqrt(config.y_rot_stiffness);
-  cartesian_damping_target_(5,5) = 2.0 * sqrt(config.z_rot_stiffness);
-  //std::cout <<cartesian_stiffness_target_;
+  cartesian_stiffness_target_.setIdentity();
+  cartesian_damping_target_.setIdentity(); // Damping ratio = 1
+  //nullspace_stiffness_target_ = config.nullspace_stiffness; TODO
+
+  cartesian_stiffness_target_(0,0) = msg.x;
+  cartesian_stiffness_target_(1,1) = msg.y;
+  cartesian_stiffness_target_(2,2) = msg.z;
+  cartesian_stiffness_target_(3,3) = msg.xrot;
+  cartesian_stiffness_target_(4,4) = msg.yrot;
+  cartesian_stiffness_target_(5,5) = msg.zrot;
+  cartesian_damping_target_(0,0) = 2.0 * sqrt(msg.x);
+  cartesian_damping_target_(1,1) = 2.0 * sqrt(msg.y);
+  cartesian_damping_target_(2,2) = 2.0 * sqrt(msg.z);
+  cartesian_damping_target_(3,3) = 2.0 * sqrt(msg.xrot);
+  cartesian_damping_target_(4,4) = 2.0 * sqrt(msg.yrot);
+  cartesian_damping_target_(5,5) = 2.0 * sqrt(msg.zrot);
 }
 
 void CartesianImpedanceController::equilibriumPoseCallback(

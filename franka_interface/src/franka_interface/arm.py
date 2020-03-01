@@ -39,10 +39,10 @@ import numpy as np
 from copy import deepcopy
 from rospy_message_converter import message_converter
 
-from franka_core_msgs.msg import JointCommand
-from franka_core_msgs.msg import RobotState, EndPointState
+from franka_core_msgs.msg import JointCommand, RobotState, EndPointState, ImpedanceStiffness
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
+from geometry_msgs.msg import PoseStamped, Wrench
 
 import franka_control
 import franka_dataflow
@@ -201,6 +201,13 @@ class ArmInterface(object):
             queue_size=1,
             tcp_nodelay=True)
 
+        # Cartesian Impedance Controller Publishers
+        self._impedance_pose_publisher = rospy.Publisher("equilibrium_pose", PoseStamped, queue_size=10)
+        self._cartesian_stiffness_publisher = rospy.Publisher("impedance_stiffness", ImpedanceStiffness, queue_size=10)
+
+        # Force Control Publisher
+        self._force_controller_publisher = rospy.Publisher("wrench_target", Wrench, queue_size=10)
+
         rospy.on_shutdown(self._clean_shutdown)
 
         err_msg = ("%s arm init failed to get current joint_states "
@@ -240,6 +247,8 @@ class ArmInterface(object):
         self._pub_joint_cmd_timeout.unregister()
         self._robot_state_subscriber.unregister()
         self._joint_command_publisher.unregister()
+        self._impedance_pose_publisher.unregister()
+        self._cartesian_stiffness_publisher.unregister()
 
     def get_robot_params(self):
         return self._params
@@ -668,7 +677,7 @@ _ns
 
         if switch_ctrl:
             self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
-            for ctrlr in active_controllers:
+            for ctrlr in self._ctrl_manager.list_active_controllers(only_motion_controllers = True):
                 self._ctrl_manager.start_controller(ctrlr.name)
                 rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
                 rospy.sleep(0.5)
@@ -736,7 +745,7 @@ _ns
 
         if switch_ctrl:
             self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
-            for ctrlr in active_controllers:
+            for ctrlr in self._ctrl_manager.list_active_controllers(only_motion_controllers = True):
                 self._ctrl_manager.start_controller(ctrlr.name)
                 rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
                 rospy.sleep(0.5)
@@ -796,7 +805,7 @@ _ns
 
         if switch_ctrl:
             self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
-            for ctrlr in active_controllers:
+            for ctrlr in self._ctrl_manager.list_active_controllers(only_motion_controllers = True):
                 self._ctrl_manager.start_controller(ctrlr.name)
                 rospy.loginfo("ArmInterface: Restaring %s"%ctrlr.name)
                 rospy.sleep(0.5)
@@ -863,9 +872,6 @@ _ns
 
         rospy.sleep(0.5)
 
-        #if not self.has_collided():
-        #    rospy.logerr('Move To Touch did not end in making contact') 
-
         if switch_ctrl:
             self._ctrl_manager.stop_controller(self._ctrl_manager.joint_trajectory_controller)
             for ctrlr in active_controllers:
@@ -874,6 +880,45 @@ _ns
                 rospy.sleep(0.5)
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
+
+    def set_cart_impedance_pose(self, pose, stiffness=None):
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.cartesian_impedance_controller else False
+        if switch_ctrl:
+            self.switchToController(self._ctrl_manager.cartesian_impedance_controller)
+
+        if stiffness is not None:
+            stiffness_gains = ImpedanceStiffness()
+            stiffness_gains.x = stiffness[0]
+            stiffness_gains.y = stiffness[1]
+            stiffness_gains.z = stiffness[2]
+            stiffness_gains.xrot = stiffness[3]
+            stiffness_gains.yrot = stiffness[4]
+            stiffness_gains.zrot = stiffness[5]
+            self._cartesian_stiffness_publisher.publish(stiffness_gains)
+
+        marker_pose = PoseStamped()
+        marker_pose.pose.position.x = pose['position'][0]
+        marker_pose.pose.position.y = pose['position'][1]
+        marker_pose.pose.position.z = pose['position'][2]
+        marker_pose.pose.orientation.x = pose['orientation'].x
+        marker_pose.pose.orientation.y = pose['orientation'].y
+        marker_pose.pose.orientation.z = pose['orientation'].z
+        marker_pose.pose.orientation.w = pose['orientation'].w
+        self._impedance_pose_publisher.publish(marker_pose)
+
+    def exert_force(self, target_wrench):
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.force_controller else False
+        if switch_ctrl:
+            self.switchToController(self._ctrl_manager.force_controller)
+
+        wrench = Wrench()
+        wrench.force.x = target_wrench[0]
+        wrench.force.y = target_wrench[1]
+        wrench.force.z = target_wrench[2]
+        wrench.torque.x = target_wrench[3]
+        wrench.torque.y = target_wrench[4] 
+        wrench.torque.z = target_wrench[5]
+        self._force_controller_publisher.publish(wrench)
 
 
     def reset_EE_frame(self):

@@ -18,6 +18,7 @@
 #include <franka_ros_controllers/compliance_paramConfig.h>
 #include <franka_hw/franka_model_interface.h>
 #include <franka_hw/franka_state_interface.h>
+#include <franka_core_msgs/ImpedanceStiffness.h>
 
 namespace franka_ros_controllers {
 
@@ -44,6 +45,7 @@ class CartesianImpedanceController : public controller_interface::MultiInterface
   double nullspace_stiffness_{20.0};
   double nullspace_stiffness_target_{20.0};
   const double delta_tau_max_{1.0};
+  std::vector<double> stiffness_gains_;
   Eigen::Matrix<double, 6, 6> cartesian_stiffness_;
   Eigen::Matrix<double, 6, 6> cartesian_stiffness_target_;
   Eigen::Matrix<double, 6, 6> cartesian_damping_;
@@ -54,16 +56,13 @@ class CartesianImpedanceController : public controller_interface::MultiInterface
   Eigen::Vector3d position_d_target_;
   Eigen::Quaterniond orientation_d_target_;
 
-  // Dynamic reconfigure
-  std::unique_ptr<dynamic_reconfigure::Server<franka_ros_controllers::compliance_paramConfig>>
-      dynamic_server_compliance_param_;
-  ros::NodeHandle dynamic_reconfigure_compliance_param_node_;
-  void complianceParamCallback(franka_ros_controllers::compliance_paramConfig& config,
-                               uint32_t level);
-
   // Equilibrium pose subscriber
   ros::Subscriber sub_equilibrium_pose_;
   void equilibriumPoseCallback(const geometry_msgs::PoseStampedConstPtr& msg);
+
+  // Stiffness subscriber 
+  ros::Subscriber stiffness_params_;
+  void stiffnessParamCallback(const franka_core_msgs::ImpedanceStiffness& msg);
 };
 
 }  // namespace franka_ros_controllers

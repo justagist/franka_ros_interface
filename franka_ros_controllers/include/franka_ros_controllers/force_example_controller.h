@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include <geometry_msgs/Wrench.h>
 #include <controller_interface/multi_interface_controller.h>
 #include <dynamic_reconfigure/server.h>
 #include <franka_hw/franka_model_interface.h>
@@ -39,8 +40,10 @@ class ForceExampleController : public controller_interface::MultiInterfaceContro
   std::unique_ptr<franka_hw::FrankaStateHandle> state_handle_;
   std::vector<hardware_interface::JointHandle> joint_handles_;
 
-  double desired_mass_{0.0};
-  double target_mass_{0.0};
+  //double desired_mass_{0.0};
+  //double target_mass_{0.0};
+  Eigen::Matrix<double, 6, 1> desired_mass_;
+  Eigen::Matrix<double, 6, 1> target_mass_;
   double k_p_{0.0};
   double k_i_{0.0};
   double target_k_p_{0.0};
@@ -50,12 +53,10 @@ class ForceExampleController : public controller_interface::MultiInterfaceContro
   Eigen::Matrix<double, 7, 1> tau_error_;
   static constexpr double kDeltaTauMax{1.0};
 
-  // Dynamic reconfigure
-  std::unique_ptr<dynamic_reconfigure::Server<franka_ros_controllers::desired_mass_paramConfig>>
-      dynamic_server_desired_mass_param_;
-  ros::NodeHandle dynamic_reconfigure_desired_mass_param_node_;
-  void desiredMassParamCallback(franka_ros_controllers::desired_mass_paramConfig& config,
-                                uint32_t level);
+  // Stiffness subscriber 
+  ros::Subscriber force_params_;
+  void forceParamCallback(const geometry_msgs::Wrench& msg);
+
 };
 
 }  // namespace franka_ros_controllers
