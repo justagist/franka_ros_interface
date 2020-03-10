@@ -35,7 +35,7 @@ Once the above dependencies are installed, the package can be installed using ca
  After building the package:
  
  - Copy/move the *franka.sh* file to the root of the catkin_ws
-    `$ cp franka_ros_interface/franka.sh ./`
+    `$ cp src/franka_ros_interface/franka.sh ./`
  - Change the values in the copied file (described in the file).
  
  ### The *franka.sh* environments
