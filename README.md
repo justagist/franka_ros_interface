@@ -25,11 +25,11 @@ Provides controlling and managing the Franka Emika Panda robot (real and simulat
  **NOTE**: If you do not want to use the *franka_panda_description* package, make sure you modify the `franka_interface/launch/interface.launch` file and replace all occurences of `franka_panda_description` with `franka_description` (two occurences). 
  
 ### Installation
-Once the above dependencies are installed, the package can be installed using catkin_make:
+Once the above dependencies are installed, the package can be installed using catkin:
 
     $ cd <catkin_ws>
-    $ git clone https://github.com/justagist/panda_simulator src/panda_simulator
-    $ catkin_make
+    $ git clone https://github.com/justagist/franka_ros_interface src/franka_ros_interface
+    $ catkin build franka_ros_interface # or catkin_make
     $ source devel/setup.bash
  
  After building the package:
@@ -41,7 +41,7 @@ Once the above dependencies are installed, the package can be installed using ca
  ### The *franka.sh* environments
  Once the values are correctly modified, different environments can be set for controlling the robot by sourcing this file.
 
-- For instance, running `./franka.sh master` would start an environment assuming that the computer is directly connected to the robot (requires Real-Time kernel setup as described in the [FCI documentation](https://frankaemika.github.io/docs/installation_linux.html). 
+- For instance, running `./franka.sh master` would start an environment assuming that the computer is directly connected to the robot (requires Real-Time kernel set up as described in the [FCI documentation](https://frankaemika.github.io/docs/installation_linux.html)). 
 - On the other hand, `./franka.sh slave` would start an environment assuming that the robot is not connected directly to the computer, but to another computer in the network (whose IP must be specified in *franka.sh*). This way, if the 'master' is connected to the robot and running the driver node (see below), the 'slave' can control the robot (**no need for Real Time kernel!**) as long as they are in the same network.
 - Simulation environment can be started by running `./franka.sh sim` (only required when using [*panda_simulator*][ps-repo] package).
  
