@@ -906,6 +906,14 @@ _ns
         marker_pose.pose.orientation.w = pose['orientation'].w
         self._impedance_pose_publisher.publish(marker_pose)
 
+    def execute_cart_impedance_traj(self, poses, stiffness=None, timing=None):
+        if timing is None:
+            timing = 0.5
+
+        for i in xrange(len(poses)):
+            self.set_cart_impedance_pose(poses[i], stiffness)
+            rospy.sleep(timing)
+
     def exert_force(self, target_wrench):
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.force_controller else False
         if switch_ctrl:
