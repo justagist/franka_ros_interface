@@ -1,0 +1,185 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>franka_moveit.extended_planning_scene_interface &#8212; franka_ros_interface 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for franka_moveit.extended_planning_scene_interface</h1><div class="highlight"><pre>
+<span></span><span class="c1"># /***************************************************************************</span>
+
+<span class="c1"># </span>
+<span class="c1"># @package: franka_moveit</span>
+<span class="c1"># @metapackage: franka_ros_interface</span>
+<span class="c1"># @author: Saif Sidhik &lt;sxs1412@bham.ac.uk&gt;</span>
+<span class="c1"># </span>
+
+<span class="c1"># **************************************************************************/</span>
+
+<span class="c1"># /***************************************************************************</span>
+<span class="c1"># Copyright (c) 2019-2020, Saif Sidhik</span>
+ 
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="c1"># **************************************************************************/</span>
+
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">import</span> <span class="nn">moveit_commander</span>
+<span class="kn">from</span> <span class="nn">std_msgs.msg</span> <span class="kn">import</span> <span class="n">String</span>
+
+<div class="viewcode-block" id="ExtendedPlanningSceneInterface"><a class="viewcode-back" href="../../index.html#franka_moveit.ExtendedPlanningSceneInterface">[docs]</a><span class="k">class</span> <span class="nc">ExtendedPlanningSceneInterface</span><span class="p">(</span><span class="n">moveit_commander</span><span class="o">.</span><span class="n">PlanningSceneInterface</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">moveit_commander</span><span class="o">.</span><span class="n">PlanningSceneInterface</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ExtendedPlanningSceneInterface.add_box"><a class="viewcode-back" href="../../index.html#franka_moveit.ExtendedPlanningSceneInterface.add_box">[docs]</a>    <span class="k">def</span> <span class="nf">add_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pose</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add object to scene and check if it is created.</span>
+
+<span class="sd">        @param name: name of object</span>
+<span class="sd">        @param pose: desired pose for the box</span>
+<span class="sd">        @param size: size of the box</span>
+<span class="sd">        @param timeout: time in sec to wait while checking if box is created </span>
+
+<span class="sd">        @type name: str</span>
+<span class="sd">        @type pose: geometry_msgs.msg.PoseStamped</span>
+<span class="sd">        @type size: [float] (len 3)</span>
+<span class="sd">        @type timeout: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">moveit_commander</span><span class="o">.</span><span class="n">PlanningSceneInterface</span><span class="o">.</span><span class="n">add_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">pose</span> <span class="o">=</span> <span class="n">pose</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_state_update</span><span class="p">(</span><span class="n">object_name</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">object_is_known</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div>
+
+
+
+    <span class="k">def</span> <span class="nf">_wait_for_state_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_name</span><span class="p">,</span> <span class="n">object_is_known</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">object_is_attached</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+
+        <span class="n">start</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">rospy</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">timeout</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">rospy</span><span class="o">.</span><span class="n">is_shutdown</span><span class="p">():</span>
+
+            <span class="n">attached_objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attached_objects</span><span class="p">([</span><span class="n">object_name</span><span class="p">])</span>
+            <span class="n">is_attached</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attached_objects</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+            <span class="n">is_known</span> <span class="o">=</span> <span class="n">object_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_known_object_names</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">object_is_attached</span> <span class="o">==</span> <span class="n">is_attached</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">object_is_known</span> <span class="o">==</span> <span class="n">is_known</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">remove_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_world_object</span><span class="p">(</span><span class="n">box_name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_state_update</span><span class="p">(</span><span class="n">object_name</span> <span class="o">=</span> <span class="n">box_name</span><span class="p">,</span> <span class="n">object_is_attached</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">object_is_known</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div>
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">scene</span> <span class="o">=</span> <span class="n">ExtendedPlanningSceneInterface</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">franka_ros_interface</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Saif Sidhik.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

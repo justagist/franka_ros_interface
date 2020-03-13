@@ -1,0 +1,229 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>franka_interface.robot_enable &#8212; franka_ros_interface 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for franka_interface.robot_enable</h1><div class="highlight"><pre>
+<span></span><span class="c1"># /***************************************************************************</span>
+
+<span class="c1"># </span>
+<span class="c1"># @package: franka_interface</span>
+<span class="c1"># @metapackage: franka_ros_interface</span>
+<span class="c1"># @author: Saif Sidhik &lt;sxs1412@bham.ac.uk&gt;</span>
+<span class="c1"># </span>
+
+<span class="c1"># **************************************************************************/</span>
+
+<span class="c1"># /***************************************************************************</span>
+<span class="c1"># Copyright (c) 2019-2020, Saif Sidhik</span>
+ 
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="c1"># **************************************************************************/</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd"> @info: </span>
+<span class="sd">       Wrapper class for enabling and resetting robot state.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
+
+<span class="kn">from</span> <span class="nn">franka_control.msg</span> <span class="kn">import</span> <span class="n">ErrorRecoveryActionGoal</span>
+<span class="kn">from</span> <span class="nn">franka_core_msgs.msg</span> <span class="kn">import</span> <span class="n">RobotState</span>
+
+<span class="kn">import</span> <span class="nn">franka_dataflow</span>
+<span class="kn">from</span> <span class="nn">robot_params</span> <span class="kn">import</span> <span class="n">RobotParams</span>
+
+<div class="viewcode-block" id="RobotEnable"><a class="viewcode-back" href="../../index.html#franka_interface.RobotEnable">[docs]</a><span class="k">class</span> <span class="nc">RobotEnable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class RobotEnable - simple control/status wrapper around robot state</span>
+
+<span class="sd">    enable()  - enable all joints</span>
+<span class="sd">    disable() - disable all joints</span>
+<span class="sd">    reset()   - reset all joints, reset all jrcp faults, disable the robot</span>
+<span class="sd">    stop()    - stop the robot, similar to hitting the e-stop button</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">param_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">robot_params</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">robot_params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">robot_params</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">RobotParams</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">get_base_namespace</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">state_topic</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/custom_franka_state_controller/robot_state&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_sub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span><span class="n">state_topic</span><span class="p">,</span>
+                                           <span class="n">RobotState</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">_state_callback</span>
+                                           <span class="p">)</span>
+
+        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+            <span class="n">timeout_msg</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Failed to get robot state on </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+            <span class="p">(</span><span class="n">state_topic</span><span class="p">,)),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_state_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">robot_mode</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">)</span> 
+
+    <span class="k">def</span> <span class="nf">is_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span>
+    
+
+    <span class="k">def</span> <span class="nf">_toggle_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+
+        <span class="n">pub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/franka_control/error_recovery/goal&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">),</span> <span class="n">ErrorRecoveryActionGoal</span><span class="p">,</span>
+                              <span class="n">queue_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">==</span> <span class="n">status</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Robot is already </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">())</span>
+
+        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
+            <span class="n">test</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">==</span> <span class="n">status</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+            <span class="n">timeout_msg</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Failed to </span><span class="si">%s</span><span class="s2">able robot&quot;</span> <span class="o">%</span>
+                         <span class="p">(</span><span class="s1">&#39;en&#39;</span> <span class="k">if</span> <span class="n">status</span> <span class="k">else</span> <span class="s1">&#39;dis&#39;</span><span class="p">,)),</span>
+            <span class="n">body</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">ErrorRecoveryActionGoal</span><span class="p">()),</span>
+        <span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Robot </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Enabled&#39;</span> <span class="k">if</span> <span class="n">status</span> <span class="k">else</span> <span class="s1">&#39;Disabled&#39;</span><span class="p">))</span>
+
+<div class="viewcode-block" id="RobotEnable.state"><a class="viewcode-back" href="../../index.html#franka_interface.RobotEnable.state">[docs]</a>    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the last known robot state.</span>
+
+<span class="sd">        @rtype: intera_core_msgs/AssemblyState</span>
+<span class="sd">        @return: Returns the last received AssemblyState message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">abled&quot;</span><span class="o">%</span><span class="p">(</span><span class="s1">&#39;en&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="k">else</span> <span class="s1">&#39;dis&#39;</span><span class="p">,)</span></div>
+
+<div class="viewcode-block" id="RobotEnable.enable"><a class="viewcode-back" href="../../index.html#franka_interface.RobotEnable.enable">[docs]</a>    <span class="k">def</span> <span class="nf">enable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enable all joints</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Robot Stopped: Attempting Reset...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RobotEnable.disable"><a class="viewcode-back" href="../../index.html#franka_interface.RobotEnable.disable">[docs]</a>    <span class="k">def</span> <span class="nf">disable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Disable all joints</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div></div>
+        
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">franka_ros_interface</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Saif Sidhik.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

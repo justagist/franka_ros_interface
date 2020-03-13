@@ -1,0 +1,314 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>franka_interface.robot_params &#8212; franka_ros_interface 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for franka_interface.robot_params</h1><div class="highlight"><pre>
+<span></span><span class="c1"># /***************************************************************************</span>
+
+<span class="c1"># </span>
+<span class="c1"># @package: franka_interface</span>
+<span class="c1"># @metapackage: franka_ros_interface</span>
+<span class="c1"># @author: Saif Sidhik &lt;sxs1412@bham.ac.uk&gt;</span>
+<span class="c1"># </span>
+
+<span class="c1"># **************************************************************************/</span>
+
+<span class="c1"># /***************************************************************************</span>
+<span class="c1"># Copyright (c) 2019-2020, Saif Sidhik</span>
+ 
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="c1"># **************************************************************************/</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd"> @info: </span>
+<span class="sd">       Interface class for collecting and storing necessary parameters from ROS parameter server.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">franka_core_msgs.msg</span> <span class="kn">import</span> <span class="n">JointLimits</span>
+
+<span class="k">def</span> <span class="nf">_log_networking_error</span><span class="p">():</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Failed to connect to the ROS parameter server!</span><span class="se">\n</span><span class="s2">&quot;</span>
+           <span class="s2">&quot;Please check to make sure your ROS networking is &quot;</span>
+           <span class="s2">&quot;properly configured:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+<div class="viewcode-block" id="RobotParams"><a class="viewcode-back" href="../../index.html#franka_interface.RobotParams">[docs]</a><span class="k">class</span> <span class="nc">RobotParams</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface class for essential ROS parameters on Intera robot.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_in_simulation</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_in_sim</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">=</span> <span class="s2">&quot;/panda_simulator&quot;</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Robot control running in Simulation Mode!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_robot_ip</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">=</span> <span class="s2">&quot;/franka_ros_interface&quot;</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_in_sim</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_robot_ip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_robot_ip</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_robot_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_robot_name</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_base_namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span>
+
+    <span class="k">def</span> <span class="nf">_robot_in_simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sim</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sim</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/SIMULATOR_&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">sim</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">sim</span>
+
+    <span class="k">def</span> <span class="nf">get_neutral_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">neutral_pose</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/neutral_pose&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: robot_ip cannot detect neutral joint pos.&quot;</span>
+                         <span class="s2">&quot; under param /franka_control/neutral_pose&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">neutral_pose</span>
+
+
+    <span class="k">def</span> <span class="nf">get_robot_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">robot_ip</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">robot_ip</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/franka_control/robot_ip&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: robot_ip cannot detect robot ip.&quot;</span>
+                         <span class="s2">&quot; under param /robot_ip&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">robot_ip</span>
+
+<div class="viewcode-block" id="RobotParams.get_joint_names"><a class="viewcode-back" href="../../index.html#franka_interface.RobotParams.get_joint_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the names of the joints for the specified</span>
+<span class="sd">        limb from ROS parameter.</span>
+
+<span class="sd">        @rtype: list [str]</span>
+<span class="sd">        @return: ordered list of joint names from proximal to distal</span>
+<span class="sd">                 (i.e. shoulder to wrist). joint names for limb</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">joint_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">joint_names</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/joint_names&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: get_joint_names cannot detect joint_names for arm&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">joint_names</span></div>
+
+    <span class="k">def</span> <span class="nf">get_gripper_joint_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">joint_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">joint_names</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/gripper_config/joint_names&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;RobotParam: get_gripper_joint_names cannot detect joint_names for gripper.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">joint_names</span>
+
+<div class="viewcode-block" id="RobotParams.get_robot_name"><a class="viewcode-back" href="../../index.html#franka_interface.RobotParams.get_robot_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_robot_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the name of class of robot from ROS parameter.</span>
+
+<span class="sd">        @rtype: str</span>
+<span class="sd">        @return: name of the robot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">robot_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">robot_name</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/arm_id&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: get_robot_name cannot detect robot name&quot;</span>
+                         <span class="s2">&quot; under param /robot_config/arm_id&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">robot_name</span></div>
+
+    <span class="k">def</span> <span class="nf">get_joint_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">lims</span> <span class="o">=</span> <span class="n">JointLimits</span><span class="p">()</span>
+        <span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_joint_names</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">vel_lim</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/joint_config/joint_velocity_limit&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: get_joint_limits cannot detect robot joint velocity limits&quot;</span>
+                         <span class="s2">&quot; under param /robot_config/joint_config/joint_velocity_limit&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pos_min_lim</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/joint_config/joint_position_limit/lower&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: get_joint_limits cannot detect robot joint position lower limits&quot;</span>
+                         <span class="s2">&quot; under param /robot_config/joint_config/joint_position_limit/lower&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pos_max_lim</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/joint_config/joint_position_limit/upper&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: get_joint_limits cannot detect robot joint position upper limits&quot;</span>
+                         <span class="s2">&quot; under param /robot_config/joint_config/joint_position_limit/upper&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">eff_lim</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/joint_config/joint_effort_limit&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: get_joint_limits cannot detect robot joint torque limits&quot;</span>
+                         <span class="s2">&quot; under param /robot_config/joint_config/joint_effort_limit&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">acc_lim</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/joint_config/joint_acceleration_limit&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: get_joint_limits cannot detect robot joint acceleration limits&quot;</span>
+                         <span class="s2">&quot; under param /robot_config/joint_config/joint_acceleration_limit&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+            <span class="n">_log_networking_error</span><span class="p">()</span>
+
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span><span class="p">)):</span>
+            <span class="n">lims</span><span class="o">.</span><span class="n">position_upper</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos_max_lim</span><span class="p">[</span><span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="n">lims</span><span class="o">.</span><span class="n">position_lower</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos_min_lim</span><span class="p">[</span><span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="n">lims</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vel_lim</span><span class="p">[</span><span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="n">lims</span><span class="o">.</span><span class="n">accel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acc_lim</span><span class="p">[</span><span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="n">lims</span><span class="o">.</span><span class="n">effort</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eff_lim</span><span class="p">[</span><span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+
+        <span class="k">return</span> <span class="n">lims</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    
+    <span class="n">rp</span> <span class="o">=</span> <span class="n">RobotParams</span><span class="p">()</span>
+    <span class="c1"># print rp.__dict__</span>
+    <span class="nb">print</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_robot_ip</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_robot_name</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_joint_names</span><span class="p">()</span>
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">franka_ros_interface</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Saif Sidhik.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
