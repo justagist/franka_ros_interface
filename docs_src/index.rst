@@ -6,6 +6,8 @@
 Franka ROS Interface
 ====================
 
+Go to `Project Source Code`_.
+
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
@@ -20,3 +22,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Go to `Project Source Code`_.
+
+.. _Project Source Code: https://github.com/justagist/franka_ros_interface
