@@ -47,20 +47,21 @@ from franka_gripper.msg import ( GraspAction, GraspGoal,
 class GripperInterface(object):
     """
     Interface class for the gripper on the Franka Panda robot.
+
+
+    :param gripper_joint_names: Names of the finger joints
+    :param ns: base namespace of interface ('frank_ros_interface'/'panda_simulator')
+    :param calibrate: Attempts to calibrate the gripper when initializing class (defaults True)
+
+    :type calibrate: bool
+    :type gripper_joint_names: [str]
+    :type ns: str
+
     """
 
     def __init__(self, gripper_joint_names = ['panda_finger_joint1', 'panda_finger_joint2'], ns = 'franka_ros_interface', calibrate = False):
         """
         Constructor.
-
-        @param gripper_joint_names    : Names of the finger joints
-        @param ns                     : base namespace of interface ('frank_ros_interface'/'panda_simulator')
-        @param calibrate              : Attempts to calibrate the gripper when initializing class (defaults True)
-
-        @type calibrate               : bool
-        @type gripper_joint_names     : [str]
-        @type ns                      : str
-
         """
         
         self.name = '/franka_gripper'
@@ -131,8 +132,8 @@ class GripperInterface(object):
         """
         Set default value for gripper joint motions. Used for move and grasp commands.
        
-        @param value  : speed value [m/s]
-        @type value   : float
+        :param value: speed value [m/s]
+        :type value: float
        
         """
         assert self.MIN_WIDTH <= value <= self.MAX_WIDTH, "GripperInterface: Invalid speed request for gripper joints. Should be within {} and {}.".format(self.MIN_WIDTH, self.MAX_WIDTH)
@@ -151,8 +152,8 @@ class GripperInterface(object):
         """
         Return the names of the joints for the specified limb.
 
-        @rtype: [str]
-        @return: ordered list of joint names from proximal to distal
+        :rtype: [str]
+        :return: ordered list of joint names from proximal to distal
         (i.e. shoulder to wrist).
         """
         return self._joint_names
@@ -161,11 +162,11 @@ class GripperInterface(object):
         """
         Return the requested joint position.
 
-        @param joint    : name of a joint
-        @type joint     : str
+        :param joint: name of a joint
+        :type joint: str
 
-        @rtype: float
-        @return: position individual joint
+        :rtype: float
+        :return: position individual joint
         """
         return self._joint_positions[joint]
 
@@ -173,8 +174,8 @@ class GripperInterface(object):
         """
         Return all joint positions.
 
-        @rtype: dict({str:float})
-        @return: unordered dict of joint name Keys to pos
+        :rtype: dict({str:float})
+        :return: unordered dict of joint name Keys to pos
         """
         return deepcopy(self._joint_positions)
 
@@ -182,8 +183,8 @@ class GripperInterface(object):
         """
         Return all joint positions.
 
-        @rtype: [double]
-        @return: joint positions ordered by joint_names.
+        :rtype: [double]
+        :return: joint positions ordered by joint_names.
         """
         return [self._joint_positions[name] for name in self._joint_names]
 
@@ -191,11 +192,11 @@ class GripperInterface(object):
         """
         Return the requested joint velocity.
 
-        @param joint    : name of a joint
-        @type joint     : str
+        :param joint: name of a joint
+        :type joint: str
 
-        @rtype: float
-        @return: velocity in radians/s of individual joint
+        :rtype: float
+        :return: velocity in radians/s of individual joint
         """
         return self._joint_velocity[joint]
 
@@ -203,8 +204,8 @@ class GripperInterface(object):
         """
         Return all joint velocities.
 
-        @rtype: dict({str:float})
-        @return: unordered dict of joint name Keys to velocity (rad/s) Values
+        :rtype: dict({str:float})
+        :return: unordered dict of joint name Keys to velocity (rad/s) Values
         """
         return deepcopy(self._joint_velocity)
 
@@ -212,8 +213,8 @@ class GripperInterface(object):
         """
         Return all joint velocities.
 
-        @rtype: [double]
-        @return: joint velocities ordered by joint_names.
+        :rtype: [double]
+        :return: joint velocities ordered by joint_names.
         """
         return [self._joint_velocity[name] for name in self._joint_names]
 
@@ -222,11 +223,11 @@ class GripperInterface(object):
         """
         Return the requested joint effort.
 
-        @param joint    : name of a joint
-        @type joint     : str
+        :param joint: name of a joint
+        :type joint: str
 
-        @rtype: float
-        @return: effort in Nm of individual joint
+        :rtype: float
+        :return: effort in Nm of individual joint
         """
         return self._joint_effort[joint]
 
@@ -234,8 +235,8 @@ class GripperInterface(object):
         """
         Return all joint efforts.
 
-        @rtype: dict({str:float})
-        @return: unordered dict of joint name Keys to effort (Nm) Values
+        :rtype: dict({str:float})
+        :return: unordered dict of joint name Keys to effort (Nm) Values
         """
         return deepcopy(self._joint_effort)
 
@@ -243,8 +244,8 @@ class GripperInterface(object):
         """
         Return all joint efforts.
 
-        @rtype: [double]
-        @return: joint efforts ordered by joint_names.
+        :rtype: [double]
+        :return: joint efforts ordered by joint_names.
         """
         return [self._joint_effort[name] for name in self._joint_names]
 
@@ -265,12 +266,12 @@ class GripperInterface(object):
         After changing the gripper fingers, a homing needs to be done.
         This is needed to estimate the maximum grasping width.
 
-        @param wait_for_result  : if True, this method will block till response is 
+        :param wait_for_result: if True, this method will block till response is 
                                     recieved from server
-        @type wait_for_result   : bool
+        :type wait_for_result: bool
        
-        @return success
-        @rtype bool      
+        :return: success
+        :rtype: bool      
         
         """
         self._caller = "home_joints"
@@ -289,8 +290,8 @@ class GripperInterface(object):
         """
         Open gripper to max possible width.
 
-        @return True if command was successful, False otherwise.
-        @rtype bool
+        :return: True if command was successful, False otherwise.
+        :rtype: bool
         """
         self._caller = "open gripper"
         return self.move_joints(0.2)
@@ -304,8 +305,8 @@ class GripperInterface(object):
         object before it reaches the commanded width, we catch the feedback 
         and send the gripper stop command to stop it where it is.
 
-        @return True if command was successful, False otherwise.
-        @rtype bool
+        :return True if command was successful, False otherwise.
+        :rtype bool
         """
         def cb( _, result):
             if not result.success:
@@ -320,17 +321,17 @@ class GripperInterface(object):
         """
         Moves the gripper fingers to a specified width.
        
-        @param width            : Intended opening width. [m]
-        @param speed            : Closing speed. [m/s]
-        @param wait_for_result  : if True, this method will block till response is 
+        :param width: Intended opening width. [m]
+        :param speed: Closing speed. [m/s]
+        :param wait_for_result: if True, this method will block till response is 
                                     recieved from server
 
-        @type width             : float
-        @type speed             : float
-        @type wait_for_result   : bool
+        :type width: float
+        :type speed: float
+        :type wait_for_result: bool
        
-        @return True if command was successful, False otherwise.
-        @rtype bool
+        :return: True if command was successful, False otherwise.
+        :rtype: bool
         """
         self._caller = "move_joints"
 
@@ -353,8 +354,8 @@ class GripperInterface(object):
         """
         Stops a currently running gripper move or grasp.
        
-        @return True if command was successful, False otherwise.
-        @rtype bool
+        :return: True if command was successful, False otherwise.
+        :rtype: bool
         """
         self._caller = "stop_action"
 
@@ -372,22 +373,23 @@ class GripperInterface(object):
         An object is considered grasped if the distance $d$ between the gripper fingers satisfies
         $(\text{width} - \text{epsilon_inner}) < d < (\text{width} + \text{epsilon_outer})$.
        
-        @param width        : Size of the object to grasp. [m]
-        @param speed        : Closing speed. [m/s]
-        @param force        : Grasping force. [N]
-        @param epsilon_inner: Maximum tolerated deviation when the actual grasped width is smaller
+        :param width: Size of the object to grasp. [m]
+        :param speed: Closing speed. [m/s]
+        :param force: Grasping force. [N]
+        :param epsilon_inner: Maximum tolerated deviation when the actual grasped width is smaller
                                 than the commanded grasp width.
-        @param epsilon_outer: Maximum tolerated deviation when the actual grasped width is wider
+        :param epsilon_outer: Maximum tolerated deviation when the actual grasped width is wider
                                 than the commanded grasp width.
-        @param cb           : Optional callback function to use when the service call is done
+        :param cb: Optional callback function to use when the service call is done
 
-        @type width         : float
-        @type speed         : float
-        @type force         : float
-        @type epsilon_inner : float
-        @type epsilon_outer : float
+        :type width: float
+        :type speed: float
+        :type force: float
+        :type epsilon_inner: float
+        :type epsilon_outer: float
 
-        @return True if an object has been grasped, false otherwise.
+        :return: True if an object has been grasped, false otherwise.
+        :rtype: bool
         """
         self._caller = "grasp_action"
 

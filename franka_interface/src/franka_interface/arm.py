@@ -82,6 +82,20 @@ class ArmInterface(object):
 
     """ 
     Interface Class for an arm of Franka Panda robot
+    Constructor.
+    
+    :type synchronous_pub: bool
+    :param synchronous_pub: designates the JointCommand Publisher
+        as Synchronous if True and Asynchronous if False.
+
+        Synchronous Publishing means that all joint_commands publishing to
+        the robot's joints will block until the message has been serialized
+        into a buffer and that buffer has been written to the transport
+        of every current Subscriber. This yields predicable and consistent
+        timing of messages being delivered from this Publisher. However,
+        when using this mode, it is possible for a blocking Subscriber to
+        prevent the joint_command functions from exiting. Unless you need exact
+        JointCommand timing, default to Asynchronous Publishing (False).
     """
 
     # Containers
@@ -104,20 +118,6 @@ class ArmInterface(object):
 
     def __init__(self, synchronous_pub=False):
         """
-        Constructor.
-        
-        @type synchronous_pub: bool
-        @param synchronous_pub: designates the JointCommand Publisher
-            as Synchronous if True and Asynchronous if False.
-
-            Synchronous Publishing means that all joint_commands publishing to
-            the robot's joints will block until the message has been serialized
-            into a buffer and that buffer has been written to the transport
-            of every current Subscriber. This yields predicable and consistent
-            timing of messages being delivered from this Publisher. However,
-            when using this mode, it is possible for a blocking Subscriber to
-            prevent the joint_command functions from exiting. Unless you need exact
-            JointCommand timing, default to Asynchronous Publishing (False).
 
         """
 
@@ -253,8 +253,8 @@ class ArmInterface(object):
         """
         Return the names of the joints for the specified limb.
 
-        @rtype: [str]
-        @return: ordered list of joint names from proximal to distal
+        :rtype: [str]
+        :return: ordered list of joint names from proximal to distal
         (i.e. shoulder to wrist).
         """
         return self._joint_names
@@ -305,8 +305,8 @@ class ArmInterface(object):
         """
         Return dict with all robot status information.
 
-        @rtype: dict
-        @return: ['robot_mode' (RobotMode object), 'robot_status' (bool), 'errors' (dict() of errors and their truth value), 'error_in_curr_status' (bool)]
+        :rtype: dict
+        :return: ['robot_mode' (RobotMode object), 'robot_status' (bool), 'errors' (dict() of errors and their truth value), 'error_in_curr_status' (bool)]
         """
         return {'robot_mode': self._robot_mode, 'robot_status': self._robot_mode_ok, 'errors': self._errors, 'error_in_current_state' : self.error_in_current_state()}
 
@@ -314,8 +314,8 @@ class ArmInterface(object):
         """
         Return True if the specified limb is in safe state (no collision, reflex, errors etc.).
 
-        @rtype: bool
-        @return: True if the arm is in safe state, False otherwise.
+        :rtype: bool
+        :return: True if the arm is in safe state, False otherwise.
         """
         return self._robot_mode_ok and not self.error_in_current_state()
 
@@ -323,8 +323,8 @@ class ArmInterface(object):
         """
         Return True if the specified limb has experienced an error.
 
-        @rtype: bool
-        @return: True if the arm has error, False otherwise.
+        :rtype: bool
+        :return: True if the arm has error, False otherwise.
         """
         return not all([e == False for e in self._errors.values()])
 
@@ -332,8 +332,8 @@ class ArmInterface(object):
         """
         Return list of error messages if there is error in robot state
 
-        @rtype: [str]
-        @return: list of names of current errors in robot state
+        :rtype: [str]
+        :return: list of names of current errors in robot state
         """
         return [e for e in self._errors if self._errors[e] == True] if self.error_in_current_state() else None
 
@@ -374,10 +374,10 @@ class ArmInterface(object):
         """
         Return the requested joint angle.
 
-        @type joint: str
-        @param joint: name of a joint
-        @rtype: float
-        @return: angle in radians of individual joint
+        :type joint: str
+        :param joint: name of a joint
+        :rtype: float
+        :return: angle in radians of individual joint
         """
         return self._joint_angle[joint]
 
@@ -385,8 +385,8 @@ class ArmInterface(object):
         """
         Return all joint angles.
 
-        @rtype: dict({str:float})
-        @return: unordered dict of joint name Keys to angle (rad) Values
+        :rtype: dict({str:float})
+        :return: unordered dict of joint name Keys to angle (rad) Values
         """
         return deepcopy(self._joint_angle)
 
@@ -394,8 +394,8 @@ class ArmInterface(object):
         """
         Return all joint angles.
 
-        @rtype: [double]
-        @return: joint angles (rad) orded by joint_names from proximal to distal
+        :rtype: [double]
+        :return: joint angles (rad) orded by joint_names from proximal to distal
         (i.e. shoulder to wrist).
         """
         return [self._joint_angle[name] for name in self._joint_names]
@@ -404,10 +404,10 @@ class ArmInterface(object):
         """
         Return the requested joint velocity.
 
-        @type joint: str
-        @param joint: name of a joint
-        @rtype: float
-        @return: velocity in radians/s of individual joint
+        :type joint: str
+        :param joint: name of a joint
+        :rtype: float
+        :return: velocity in radians/s of individual joint
         """
         return self._joint_velocity[joint]
 
@@ -415,19 +415,19 @@ class ArmInterface(object):
         """
         Return all joint velocities.
 
-        @rtype: dict({str:float})
-        @return: unordered dict of joint name Keys to velocity (rad/s) Values
+        :rtype: dict({str:float})
+        :return: unordered dict of joint name Keys to velocity (rad/s) Values
         """
         return deepcopy(self._joint_velocity)
 
     def joint_effort(self, joint):
         """
         Return the requested joint effort.
-_ns
-        @type joint: str
-        @param joint: name of a joint
-        @rtype: float
-        @return: effort in Nm of individual joint
+
+        :type joint: str
+        :param joint: name of a joint
+        :rtype: float
+        :return: effort in Nm of individual joint
         """
         return self._joint_effort[joint]
 
@@ -435,8 +435,8 @@ _ns
         """
         Return all joint efforts.
 
-        @rtype: dict({str:float})
-        @return: unordered dict of joint name Keys to effort (Nm) Values
+        :rtype: dict({str:float})
+        :return: unordered dict of joint name Keys to effort (Nm) Values
         """
         return deepcopy(self._joint_effort)
 
@@ -444,10 +444,8 @@ _ns
         """
         Return Cartesian endpoint pose {position, orientation}.
 
-        @rtype: dict({str:L{Limb.Point},str:L{Limb.Quaternion}})
-        @return: position and orientation as named tuples in a dict
-
-        C{pose = {'position': (x, y, z), 'orientation': (x, y, z, w)}}
+        :rtype: dict({str:L{Limb.Point},str:L{Limb.Quaternion}})
+        :return: position and orientation as named tuples in a dict
 
           - 'position': np.array of x, y, z
           - 'orientation': quaternion x,y,z,w in quaternion format
@@ -459,10 +457,8 @@ _ns
         """
         Return Cartesian endpoint twist {linear, angular}.
 
-        @rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
-        @return: linear and angular velocities as named tuples in a dict
-
-        C{twist = {'linear': (x, y, z), 'angular': (x, y, z)}}
+        :rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
+        :return: linear and angular velocities as named tuples in a dict
 
           - 'linear': np.array of x, y, z
           - 'angular': np.array of x, y, z (angular velocity along the axes)
@@ -473,10 +469,8 @@ _ns
         """
         Return Cartesian endpoint wrench {force, torque}.
 
-        @rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
-        @return: force and torque at endpoint as named tuples in a dict
-
-        C{wrench = {'force': (x, y, z), 'torque': (x, y, z)}}
+        :rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
+        :return: force and torque at endpoint as named tuples in a dict
 
           - 'force': Cartesian force on x,y,z axes in np.ndarray format
           - 'torque': Torque around x,y,z axes in np.ndarray format
@@ -487,8 +481,8 @@ _ns
         """
         Return Cartesian endpoint state for a given tip name
 
-        @rtype: TipState object
-        @return: pose, velocity, effort, effort_in_K_frame
+        :rtype: TipState object
+        :return: pose, velocity, effort, effort_in_K_frame
         """
         return deepcopy(self._tip_states)
         
@@ -496,7 +490,7 @@ _ns
         """
         Return joint inertia matrix (7,7)
         
-        @rtype: np.ndarray [7x7]
+        :rtype: np.ndarray [7x7]
         """
         return deepcopy(self._joint_inertia)
 
@@ -504,7 +498,7 @@ _ns
         """
         Return end-effector jacobian (6,7)
         
-        @rtype: np.ndarray [6x7]
+        :rtype: np.ndarray [6x7]
         """
         return deepcopy(self._jacobian)        
 
@@ -512,8 +506,8 @@ _ns
         """
         Set the timeout in seconds for the joint controller
 
-        @type timeout: float
-        @param timeout: timeout in seconds
+        :type timeout: float
+        :param timeout: timeout in seconds
         """
         self._pub_joint_cmd_timeout.publish(Float64(timeout))
 
@@ -528,8 +522,8 @@ _ns
         Once set, a speed ratio will persist until a new execution
         speed is set.
 
-        @type speed: float
-        @param speed: ratio of maximum joint speed for execution
+        :type speed: float
+        :param speed: ratio of maximum joint speed for execution
                       default= 0.3; range= [0.0-1.0]
         """
         if speed > 0.3:
@@ -542,8 +536,8 @@ _ns
         """
         Commands the joints of this limb to the specified positions.
 
-        @type positions: [float]
-        @param positions: ordered joint angles (from joint1 to joint7) to be commanded
+        :type positions: [float]
+        :param positions: ordered joint angles (from joint1 to joint7) to be commanded
         """
         self._command_msg.names = self._joint_names
         self._command_msg.position = [positions[j] for j in self._joint_names]
@@ -555,8 +549,8 @@ _ns
         """
         Commands the joints of this limb to the specified velocities.
 
-        @type velocities: dict({str:float})
-        @param velocities: joint_name:velocity command
+        :type velocities: dict({str:float})
+        :param velocities: joint_name:velocity command
         """
         self._command_msg.names = self._joint_names
         self._command_msg.velocity = [velocities[j] for j in self._joint_names]
@@ -568,8 +562,8 @@ _ns
         """
         Commands the joints of this limb to the specified torques.
 
-        @type torques: dict({str:float})
-        @param torques: joint_name:torque command
+        :type torques: dict({str:float})
+        :param torques: joint_name:torque command
         """
         self._command_msg.names = self._joint_names
         self._command_msg.effort = [torques[j] for j in self._joint_names]
@@ -585,10 +579,10 @@ _ns
                   K_p * (positions - curr_positions) + 
                   K_d * (velocities - curr_velocities)
 
-        @type positions: [float]
-        @param positions: desired joint positions as an ordered list corresponding to joints given by self.joint_names()
-        @type velocities: [float]
-        @param velocities: desired joint velocities as an ordered list corresponding to joints given by self.joint_names()
+        :type positions: [float]
+        :param positions: desired joint positions as an ordered list corresponding to joints given by self.joint_names()
+        :type velocities: [float]
+        :param velocities: desired joint velocities as an ordered list corresponding to joints given by self.joint_names()
         """
         self._command_msg.names = self._joint_names
         self._command_msg.position = positions
@@ -608,10 +602,10 @@ _ns
         Command the Limb joints to a predefined set of "neutral" joint angles.
         From rosparam /franka_control/neutral_pose.
 
-        @type timeout: float
-        @param timeout: seconds to wait for move to finish [15]
-        @type speed: float
-        @param speed: ratio of maximum joint speed for execution
+        :type timeout: float
+        :param timeout: seconds to wait for move to finish [15]
+        :type speed: float
+        :param speed: ratio of maximum joint speed for execution
                       default= 0.15; range= [0.0-1.0]
         """
         self.set_joint_position_speed(speed)
@@ -628,16 +622,16 @@ _ns
 
         This function uses a low-pass filter to smooth the movement.
 
-        @type positions: dict({str:float})
-        @param positions: joint_name:angle command
-        @type timeout: float
-        @param timeout: seconds to wait for move to finish [15]
-        @type threshold: float
-        @param threshold: position threshold in radians across each joint when
+        :type positions: dict({str:float})
+        :param positions: joint_name:angle command
+        :type timeout: float
+        :param timeout: seconds to wait for move to finish [15]
+        :type threshold: float
+        :param threshold: position threshold in radians across each joint when
         move is considered successful [0.008726646]
-        @param test: optional function returning True if motion must be aborted
-        @type use_moveit: bool
-        @param use_moveit: if set to True, and movegroup interface is available, 
+        :param test: optional function returning True if motion must be aborted
+        :type use_moveit: bool
+        :param use_moveit: if set to True, and movegroup interface is available, 
                         move to the joint positions using moveit planner.
         """
         if self._params._in_sim:
@@ -706,8 +700,8 @@ _ns
         """
         Reset EE frame to default. (defined by FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) 
 
-        @rtype: [bool, str]
-        @return: [success status of service request, error msg if any]
+        :rtype: [bool, str]
+        :return: [success status of service request, error msg if any]
         """
         if self._frames_interface:
 
@@ -743,10 +737,10 @@ _ns
         transformation matrix defining the new desired EE frame with respect to the flange frame.
         Motion controllers are stopped for switching
 
-        @type frame: [float (16,)] / np.ndarray (4x4) 
-        @param frame: transformation matrix of new EE frame wrt flange frame (column major)
-        @rtype: [bool, str]
-        @return: [success status of service request, error msg if any]
+        :type frame: [float (16,)] / np.ndarray (4x4) 
+        :param frame: transformation matrix of new EE frame wrt flange frame (column major)
+        :rtype: [bool, str]
+        :return: [success status of service request, error msg if any]
         """
         if self._frames_interface:
 
@@ -777,10 +771,10 @@ _ns
         Set new EE frame to the same frame as the link frame given by 'frame_name'
         Motion controllers are stopped for switching
 
-        @type frame_name: str 
-        @param frame_name: desired tf frame name in the tf tree
-        @rtype: [bool, str]
-        @return: [success status of service request, error msg if any]
+        :type frame_name: str 
+        :param frame_name: desired tf frame name in the tf tree
+        :rtype: [bool, str]
+        :return: [success status of service request, error msg if any]
         """
         if self._frames_interface:
             retval = True
@@ -809,12 +803,12 @@ _ns
         """
         Set Force Torque thresholds for deciding robot has collided.
 
-        @return True if service call successful, False otherwise
-        @rtype: bool
-        @param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
-        @type cartesian_forces: [float] size 6
-        @param joint_torques: Joint torque threshold for collision (robot motion stops if violated)
-        @type joint_torques: [float] size 7
+        :return: True if service call successful, False otherwise
+        :rtype: bool
+        :param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
+        :type cartesian_forces: [float] size 6
+        :param joint_torques: Joint torque threshold for collision (robot motion stops if violated)
+        :type joint_torques: [float] size 7
         """
         if self._collision_behaviour_interface:
             return self._collision_behaviour_interface.set_collision_threshold(joint_torques = joint_torques, cartesian_forces = cartesian_forces)

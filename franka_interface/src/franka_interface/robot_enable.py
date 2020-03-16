@@ -48,6 +48,9 @@ class RobotEnable(object):
     disable() - disable all joints
     reset()   - reset all joints, reset all jrcp faults, disable the robot
     stop()    - stop the robot, similar to hitting the e-stop button
+
+    :param robot_params: A RobotParams instance (optional)
+    :type robot_params: RobotParams
     """
 
     param_lock = Lock()
@@ -107,8 +110,8 @@ class RobotEnable(object):
         """
         Returns the last known robot state.
 
-        @rtype: intera_core_msgs/AssemblyState
-        @return: Returns the last received AssemblyState message
+        :rtype: str
+        :return: "Enabled"/"Disabled"
         """
         return "%sabled"%('en' if self._enabled else 'dis',)
 
