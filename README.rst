@@ -35,8 +35,12 @@ Continuous Integration Builds
 
 ROS Kinetic / Melodic: |Build Status|
 
-Dependencies
+
+Installation
 ------------
+
+Dependencies
+^^^^^^^^^^^^
 
 -  *libfranka* (``sudo apt install ros-$ROS_DISTRO-libfranka`` or
    `install from source`_).
@@ -48,9 +52,6 @@ Dependencies
    you modify the ``franka_interface/launch/interface.launch`` file and
    replace all occurences of ``franka_panda_description`` with
    ``franka_description`` (two occurences).
-
-Installation
-------------
 
 Once the above dependencies are installed, the package can be installed
 using catkin:
