@@ -15,6 +15,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -44,9 +45,9 @@
   <div class="section" id="python-api-documentation">
 <h1>2. Python API Documentation<a class="headerlink" href="#python-api-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-franka_interface">
-<span id="franka-interface"></span><h2>2.1.4. franka_interface<a class="headerlink" href="#module-franka_interface" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="module-franka_interface">
-<span id="arminterface"></span><h3>2.1.4. ArmInterface<a class="headerlink" href="#module-franka_interface" title="Permalink to this headline">¶</a></h3>
+<span id="franka-interface"></span><h2>2.1. franka_interface<a class="headerlink" href="#module-franka_interface" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="arminterface">
+<h3>2.1.1. ArmInterface<a class="headerlink" href="#arminterface" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Interface class that can monitor and control the robot</li>
 <li>Provides all required information about robot state and end-effector state</li>
@@ -57,7 +58,8 @@
 <dl class="class">
 <dt id="franka_interface.ArmInterface">
 <em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">ArmInterface</code><span class="sig-paren">(</span><em>synchronous_pub=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interface Class for an arm of Franka Panda robot
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Interface Class for an arm of Franka Panda robot
 Constructor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -80,7 +82,8 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 <dl class="class">
 <dt id="franka_interface.ArmInterface.RobotMode">
 <em class="property">class </em><code class="descname">RobotMode</code><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.RobotMode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.RobotMode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enum class for specifying and retrieving the current robot mode.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.IntEnum" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></a></p>
+<p>Enum class for specifying and retrieving the current robot mode.</p>
 </dd></dl>
 
 <dl class="method">
@@ -160,6 +163,52 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="franka_interface.ArmInterface.get_joint_limits">
+<code class="descname">get_joint_limits</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.get_joint_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.get_joint_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the joint limits (defined in the parameter server)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">franka_core_msgs.msg.JointLimits</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">JointLimits</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_interface.ArmInterface.get_movegroup_interface">
+<code class="descname">get_movegroup_interface</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.get_movegroup_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.get_movegroup_interface" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the movegroup interface instance associated with the robot.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#franka_moveit.PandaMoveGroupInterface" title="franka_moveit.PandaMoveGroupInterface">franka_moveit.PandaMoveGroupInterface</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_interface.ArmInterface.get_robot_params">
+<code class="descname">get_robot_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.get_robot_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.get_robot_params" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Useful parameters from the ROS parameter server.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#franka_interface.RobotParams" title="franka_interface.RobotParams">franka_interface.RobotParams</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="franka_interface.ArmInterface.get_robot_status">
 <code class="descname">get_robot_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.get_robot_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.get_robot_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return dict with all robot status information.</p>
@@ -173,6 +222,29 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_interface.ArmInterface.gravity_comp">
+<code class="descname">gravity_comp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.gravity_comp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.gravity_comp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return gravity compensation torques.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">7D joint torques compensating for gravity.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_interface.ArmInterface.has_collided">
+<code class="descname">has_collided</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.has_collided"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.has_collided" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if either joint collision or cartesian collision is detected. 
+Collision thresholds can be set using instance of <a class="reference internal" href="#franka_tools.CollisionBehaviourInterface" title="franka_tools.CollisionBehaviourInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">franka_tools.CollisionBehaviourInterface</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -283,11 +355,10 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">ordered list of joint names from proximal to distal</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">ordered list of joint names from proximal to distal (i.e. shoulder to wrist).</td>
 </tr>
 </tbody>
 </table>
-<p>(i.e. shoulder to wrist).</p>
 </dd></dl>
 
 <dl class="method">
@@ -300,11 +371,10 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[double]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">joint angles (rad) orded by joint_names from proximal to distal</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">joint angles (rad) orded by joint_names from proximal to distal (i.e. shoulder to wrist).</td>
 </tr>
 </tbody>
 </table>
-<p>(i.e. shoulder to wrist).</p>
 </dd></dl>
 
 <dl class="method">
@@ -354,18 +424,16 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>(</em><em>{str:float}</em><em>)</em>) – joint_name:angle command</li>
 <li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – seconds to wait for move to finish [15]</li>
-<li><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – position threshold in radians across each joint when</li>
+<li><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – position threshold in radians across each joint when
+move is considered successful [0.008726646]</li>
+<li><strong>test</strong> – optional function returning True if motion must be aborted</li>
+<li><strong>use_moveit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if set to True, and movegroup interface is available, 
+move to the joint positions using moveit planner.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>move is considered successful [0.008726646]
-:param test: optional function returning True if motion must be aborted
-:type use_moveit: bool
-:param use_moveit: if set to True, and movegroup interface is available,</p>
-<blockquote>
-<div>move to the joint positions using moveit planner.</div></blockquote>
 </dd></dl>
 
 <dl class="method">
@@ -519,14 +587,8 @@ default= 0.3; range= [0.0-1.0]</td>
 <dt id="franka_interface.ArmInterface.set_joint_positions_velocities">
 <code class="descname">set_joint_positions_velocities</code><span class="sig-paren">(</span><em>positions</em>, <em>velocities</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_joint_positions_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_joint_positions_velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Commands the joints of this limb using specified positions and velocities using impedance control.
-Command at time t is computed as</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>u_t = coriolis_factor * coriolis_t + </dt>
-<dd>K_p * (positions - curr_positions) + 
-K_d * (velocities - curr_velocities)</dd>
-</dl>
-</div></blockquote>
+Command at time t is computed as:</p>
+<p><span class="math notranslate nohighlight">\(u_t= coriolis\_factor * coriolis\_t + K\_p * (positions - curr\_positions) +  K\_d * (velocities - curr\_velocities)\)</span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -618,8 +680,8 @@ K_d * (velocities - curr_velocities)</dd>
 </dd></dl>
 
 </div>
-<div class="section" id="module-franka_interface">
-<span id="gripperinterface"></span><h3>2.1.4. GripperInterface<a class="headerlink" href="#module-franka_interface" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="gripperinterface">
+<h3>2.1.2. GripperInterface<a class="headerlink" href="#gripperinterface" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Interface class to monitor and control gripper</li>
 <li>Gripper open, close methods</li>
@@ -628,7 +690,8 @@ K_d * (velocities - curr_velocities)</dd>
 <dl class="class">
 <dt id="franka_interface.GripperInterface">
 <em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">GripperInterface</code><span class="sig-paren">(</span><em>gripper_joint_names=['panda_finger_joint1', 'panda_finger_joint2'], ns='franka_ros_interface', calibrate=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interface class for the gripper on the Franka Panda robot.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Interface class for the gripper on the Franka Panda robot.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -651,8 +714,16 @@ faked by catching the error thrown when trying to grasp a very small
 object with a very small force. Since the gripper will actually hit the
 object before it reaches the commanded width, we catch the feedback 
 and send the gripper stop command to stop it where it is.</p>
-<p>:return True if command was successful, False otherwise.
-:rtype bool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if command was successful, False otherwise.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -752,11 +823,10 @@ recieved from server</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">ordered list of joint names from proximal to distal</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">ordered list of joint names.</td>
 </tr>
 </tbody>
 </table>
-<p>(i.e. shoulder to wrist).</p>
 </dd></dl>
 
 <dl class="method">
@@ -950,15 +1020,16 @@ recieved from server</li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-franka_interface">
-<span id="robotenable"></span><h3>2.1.4. RobotEnable<a class="headerlink" href="#module-franka_interface" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="robotenable">
+<h3>2.1.3. RobotEnable<a class="headerlink" href="#robotenable" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Interface class to reset robot when in recoverable error (use <em>enable_robot.py</em> script in <em>scripts/</em>)</li>
 </ul>
 <dl class="class">
 <dt id="franka_interface.RobotEnable">
 <em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">RobotEnable</code><span class="sig-paren">(</span><em>robot_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/robot_enable.html#RobotEnable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.RobotEnable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class RobotEnable - simple control/status wrapper around robot state</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class RobotEnable - simple control/status wrapper around robot state</p>
 <p>enable()  - enable all joints
 disable() - disable all joints
 reset()   - reset all joints, reset all jrcp faults, disable the robot
@@ -1002,15 +1073,16 @@ stop()    - stop the robot, similar to hitting the e-stop button</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-franka_interface">
-<span id="robotparams"></span><h3>2.1.4. RobotParams<a class="headerlink" href="#module-franka_interface" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="robotparams">
+<h3>2.1.4. RobotParams<a class="headerlink" href="#robotparams" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Collects and stores all useful information about the robot from the ROS parameter server</li>
 </ul>
 <dl class="class">
 <dt id="franka_interface.RobotParams">
 <em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">RobotParams</code><a class="reference internal" href="_modules/franka_interface/robot_params.html#RobotParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.RobotParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interface class for essential ROS parameters on Intera robot.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Interface class for essential ROS parameters on Intera robot.</p>
 <dl class="method">
 <dt id="franka_interface.RobotParams.get_joint_names">
 <code class="descname">get_joint_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/robot_params.html#RobotParams.get_joint_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.RobotParams.get_joint_names" title="Permalink to this definition">¶</a></dt>
@@ -1050,9 +1122,9 @@ limb from ROS parameter.</p>
 </div>
 </div>
 <div class="section" id="module-franka_moveit">
-<span id="franka-moveit"></span><h2>2.2.2. franka_moveit<a class="headerlink" href="#module-franka_moveit" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="module-franka_moveit">
-<span id="pandamovegroupinterface"></span><h3>2.2.2. PandaMoveGroupInterface<a class="headerlink" href="#module-franka_moveit" title="Permalink to this headline">¶</a></h3>
+<span id="franka-moveit"></span><h2>2.2. franka_moveit<a class="headerlink" href="#module-franka_moveit" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pandamovegroupinterface">
+<h3>2.2.1. PandaMoveGroupInterface<a class="headerlink" href="#pandamovegroupinterface" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Provides interface to control and plan motions using MoveIt in ROS.</li>
 <li>Simple methods to plan and execute joint trajectories and cartesian path.</li>
@@ -1064,52 +1136,83 @@ limb from ROS parameter.</p>
 <dd><dl class="attribute">
 <dt id="franka_moveit.PandaMoveGroupInterface.arm_group">
 <code class="descname">arm_group</code><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.arm_group" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>&#64;return: The MoveGroupCommander instance of this object. This is an interface</dt>
-<dd>to one group of joints.  In this case the group is the joints in the Panda
-arm. This interface can be used to plan and execute motions on the Panda.</dd>
-</dl>
-<p>&#64;rtype: moveit_commander.MoveGroupCommander</p>
-<blockquote>
-<div>available_methods: <a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</a></div></blockquote>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The MoveGroupCommander instance of this object. This is an interface
+to one group of joints.  In this case the group is the joints in the Panda
+arm. This interface can be used to plan and execute motions on the Panda.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">moveit_commander.MoveGroupCommander<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">available_methods: 
+<a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</a></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_moveit.PandaMoveGroupInterface.close_gripper">
 <code class="descname">close_gripper</code><span class="sig-paren">(</span><em>wait=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.close_gripper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.close_gripper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Using named states defined in urdf.</p>
-<p>NOTE: If this named state is not found, your ros environment is
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If this named state is not found, your ros environment is
 probably not using the right panda_moveit_config package. Ensure
 that sourced package is from this repo –&gt;
 <a class="reference external" href="https://github.com/justagist/panda_moveit_config">https://github.com/justagist/panda_moveit_config</a></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_moveit.PandaMoveGroupInterface.go_to_joint_positions">
 <code class="descname">go_to_joint_positions</code><span class="sig-paren">(</span><em>positions</em>, <em>wait=True</em>, <em>tolerance=0.005</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.go_to_joint_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.go_to_joint_positions" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return: status of joint motion plan execution
-&#64;rtype: bool</p>
-<p>&#64;param positions: target joint positions (ordered)
-&#64;param wait: if True, function will wait for trajectory execution to complete
-&#64;param tolerance: maximum error in final position for each joint to consider</p>
-<blockquote>
-<div>task a success</div></blockquote>
-<p>&#64;type positions: [double]
-&#64;type wait: bool
-&#64;type tolerance: double</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">status of joint motion plan execution</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>positions</strong> (<em>[</em><em>double</em><em>]</em>) – target joint positions (ordered)</li>
+<li><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True, function will wait for trajectory execution to complete</li>
+<li><strong>tolerance</strong> (<em>double</em>) – maximum error in final position for each joint to consider
+task a success</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="franka_moveit.PandaMoveGroupInterface.gripper_group">
 <code class="descname">gripper_group</code><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.gripper_group" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>&#64;return: The MoveGroupCommander instance of this object. This is an interface</dt>
-<dd>to one group of joints.  In this case the group is the joints in the Panda
-arm. This interface can be used to plan and execute motions on the Panda.</dd>
-</dl>
-<p>&#64;rtype: moveit_commander.MoveGroupCommander</p>
-<blockquote>
-<div>available_methods: <a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</a></div></blockquote>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The MoveGroupCommander instance of this object. This is an interface
+to one group of joints.  In this case the group is the joints in the Panda
+arm. This interface can be used to plan and execute motions on the Panda.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">moveit_commander.MoveGroupCommander<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">available_methods: 
+<a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</a></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1122,67 +1225,117 @@ arm. This interface can be used to plan and execute motions on the Panda.</dd>
 <dt id="franka_moveit.PandaMoveGroupInterface.open_gripper">
 <code class="descname">open_gripper</code><span class="sig-paren">(</span><em>wait=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.open_gripper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.open_gripper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Using named states defined in urdf.</p>
-<p>NOTE: If this named state is not found, your ros environment is
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If this named state is not found, your ros environment is
 probably not using the right panda_moveit_config package. Ensure
 that sourced package is from this repo –&gt;
-<a class="reference external" href="https://github.com/justagist/panda_moveit_config">https://github.com/justagist/panda_moveit_config</a></p>
+<a class="reference external" href="https://github.com/justagist/panda_moveit_config">https://github.com/justagist/panda_moveit_config</a>.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_moveit.PandaMoveGroupInterface.plan_joint_path">
 <code class="descname">plan_joint_path</code><span class="sig-paren">(</span><em>joint_position</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.plan_joint_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.plan_joint_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return plan for executing joint trajectory</p>
+<dd><p>:return plan for executing joint trajectory</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="franka_moveit.PandaMoveGroupInterface.robot_state_interface">
 <code class="descname">robot_state_interface</code><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.robot_state_interface" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return: The RobotCommander instance of this object
-&#64;rype: moveit_commander.RobotCommander</p>
-<p>available methods: <a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html">http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html</a></p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The RobotCommander instance of this object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">moveit_commander.RobotCommander<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">available methods: 
+<a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html">http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html</a></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="franka_moveit.PandaMoveGroupInterface.scene">
 <code class="descname">scene</code><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.scene" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>&#64;return: The RobotCommander instance of this object. This is an interface</dt>
-<dd>to the world surrounding the robot</dd>
-</dl>
-<p>&#64;rype: moveit_commander.RobotCommander</p>
-<p>available_methods: <a class="reference external" href="http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html">http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html</a></p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The RobotCommander instance of this object. This is an interface
+to the world surrounding the robot</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">moveit_commander.RobotCommander<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">available_methods: 
+<a class="reference external" href="http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html">http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html</a></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_moveit.PandaMoveGroupInterface.set_velocity_scale">
 <code class="descname">set_velocity_scale</code><span class="sig-paren">(</span><em>value</em>, <em>group='arm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.set_velocity_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.set_velocity_scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the max velocity scale for executing planned motion.
-&#64;param value: scale value (allowed (0,1] )</p>
+:param value: scale value (allowed (0,1] )</p>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-franka_moveit">
-<span id="extendedplanningsceneinterface"></span><h3>2.2.2. ExtendedPlanningSceneInterface<a class="headerlink" href="#module-franka_moveit" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="extendedplanningsceneinterface">
+<h3>2.2.2. ExtendedPlanningSceneInterface<a class="headerlink" href="#extendedplanningsceneinterface" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Easily define scene for robot motion planning (MoveIt plans will avoid defined obstacles if possible).</li>
 </ul>
 <dl class="class">
 <dt id="franka_moveit.ExtendedPlanningSceneInterface">
 <em class="property">class </em><code class="descclassname">franka_moveit.</code><code class="descname">ExtendedPlanningSceneInterface</code><a class="reference internal" href="_modules/franka_moveit/extended_planning_scene_interface.html#ExtendedPlanningSceneInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.ExtendedPlanningSceneInterface" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">moveit_commander.planning_scene_interface.PlanningSceneInterface</span></code></p>
+<dl class="method">
 <dt id="franka_moveit.ExtendedPlanningSceneInterface.add_box">
 <code class="descname">add_box</code><span class="sig-paren">(</span><em>name</em>, <em>pose</em>, <em>size</em>, <em>timeout=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/extended_planning_scene_interface.html#ExtendedPlanningSceneInterface.add_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.ExtendedPlanningSceneInterface.add_box" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add object to scene and check if it is created.</p>
-<p>&#64;param name: name of object
-&#64;param pose: desired pose for the box
-&#64;param size: size of the box
-&#64;param timeout: time in sec to wait while checking if box is created</p>
-<p>&#64;type name: str
-&#64;type pose: geometry_msgs.msg.PoseStamped
-&#64;type size: [float] (len 3)
-&#64;type timeout: float</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of object</li>
+<li><strong>pose</strong> (<em>geometry_msgs.msg.PoseStamped</em>) – desired pose for the box</li>
+<li><strong>size</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>(</em><em>len 3</em><em>)</em>) – size of the box</li>
+<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – time in sec to wait while checking if box is created</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_moveit.ExtendedPlanningSceneInterface.remove_box">
+<code class="descname">remove_box</code><span class="sig-paren">(</span><em>box_name</em>, <em>timeout=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/extended_planning_scene_interface.html#ExtendedPlanningSceneInterface.remove_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.ExtendedPlanningSceneInterface.remove_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove box from scene.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>box_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of object</li>
+<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – time in sec to wait while checking if box is created</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -1190,9 +1343,9 @@ that sourced package is from this repo –&gt;
 </div>
 </div>
 <div class="section" id="module-franka_tools">
-<span id="franka-tools"></span><h2>2.3.5. franka_tools<a class="headerlink" href="#module-franka_tools" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="module-franka_tools">
-<span id="collisionbehaviourinterface"></span><h3>2.3.5. CollisionBehaviourInterface<a class="headerlink" href="#module-franka_tools" title="Permalink to this headline">¶</a></h3>
+<span id="franka-tools"></span><h2>2.3. franka_tools<a class="headerlink" href="#module-franka_tools" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="collisionbehaviourinterface">
+<h3>2.3.1. CollisionBehaviourInterface<a class="headerlink" href="#collisionbehaviourinterface" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Define collision and contact thresholds for the robot safety and contact detection.</li>
 </ul>
@@ -1204,63 +1357,113 @@ that sourced package is from this repo –&gt;
 <dl class="method">
 <dt id="franka_tools.CollisionBehaviourInterface.set_collision_threshold">
 <code class="descname">set_collision_threshold</code><span class="sig-paren">(</span><em>joint_torques=None</em>, <em>cartesian_forces=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/collision_behaviour_interface.html#CollisionBehaviourInterface.set_collision_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.CollisionBehaviourInterface.set_collision_threshold" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return True if service call successful, False otherwise
-&#64;rtype: bool
-&#64;param joint_torques: Joint torque threshold for collision (robot motion stops if violated)
-&#64;type joint_torques: [float] size 7
-&#64;param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
-&#64;type cartesian_forces: [float] size 6</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if service call successful, False otherwise</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>joint_torques</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 7</em>) – Joint torque threshold for collision (robot motion stops if violated)</li>
+<li><strong>cartesian_forces</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 6</em>) – Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.CollisionBehaviourInterface.set_contact_threshold">
 <code class="descname">set_contact_threshold</code><span class="sig-paren">(</span><em>joint_torques=None</em>, <em>cartesian_forces=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/collision_behaviour_interface.html#CollisionBehaviourInterface.set_contact_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.CollisionBehaviourInterface.set_contact_threshold" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return True if service call successful, False otherwise
-&#64;rtype: bool
-&#64;param joint_torques: Joint torque threshold for identifying as contact
-&#64;type joint_torques: [float] size 7
-&#64;param cartesian_forces: Cartesian force threshold for identifying as contact
-&#64;type cartesian_forces: [float] size 6</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if service call successful, False otherwise</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>joint_torques</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 7</em>) – Joint torque threshold for identifying as contact</li>
+<li><strong>cartesian_forces</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 6</em>) – Cartesian force threshold for identifying as contact</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.CollisionBehaviourInterface.set_force_threshold_for_collision">
 <code class="descname">set_force_threshold_for_collision</code><span class="sig-paren">(</span><em>cartesian_force_values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/collision_behaviour_interface.html#CollisionBehaviourInterface.set_force_threshold_for_collision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.CollisionBehaviourInterface.set_force_threshold_for_collision" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return True if service call successful, False otherwise
-&#64;rtype: bool
-&#64;param cartesian_force_values: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
-&#64;type cartesian_force_values: [float] size 6</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if service call successful, False otherwise</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cartesian_force_values</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 6</em>) – Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.CollisionBehaviourInterface.set_force_threshold_for_contact">
 <code class="descname">set_force_threshold_for_contact</code><span class="sig-paren">(</span><em>cartesian_force_values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/collision_behaviour_interface.html#CollisionBehaviourInterface.set_force_threshold_for_contact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.CollisionBehaviourInterface.set_force_threshold_for_contact" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return True if service call successful, False otherwise
-&#64;rtype: bool
-&#64;param cartesian_force_values: Cartesian force threshold for contact detection [x,y,z,R,P,Y]
-&#64;type cartesian_force_values: [float] size 6</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if service call successful, False otherwise</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cartesian_force_values</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 6</em>) – Cartesian force threshold for contact detection [x,y,z,R,P,Y]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.CollisionBehaviourInterface.set_ft_contact_collision_behaviour">
 <code class="descname">set_ft_contact_collision_behaviour</code><span class="sig-paren">(</span><em>torque_lower=None</em>, <em>torque_upper=None</em>, <em>force_lower=None</em>, <em>force_upper=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/collision_behaviour_interface.html#CollisionBehaviourInterface.set_ft_contact_collision_behaviour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.CollisionBehaviourInterface.set_ft_contact_collision_behaviour" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return True if service call successful, False otherwise
-&#64;rtype: bool
-&#64;param torque_lower: Joint torque threshold for contact detection
-&#64;type torque_lower: [float] size 7
-&#64;param torque_upper: Joint torque threshold for collision (robot motion stops if violated)
-&#64;type torque_upper: [float] size 7
-&#64;param force_lower: Cartesian force threshold for contact detection [x,y,z,R,P,Y]
-&#64;type force_lower: [float] size 6
-&#64;param force_upper: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
-&#64;type force_upper: [float] size 6</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if service call successful, False otherwise</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>torque_lower</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 7</em>) – Joint torque threshold for contact detection</li>
+<li><strong>torque_upper</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 7</em>) – Joint torque threshold for collision (robot motion stops if violated)</li>
+<li><strong>force_lower</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 6</em>) – Cartesian force threshold for contact detection [x,y,z,R,P,Y]</li>
+<li><strong>force_upper</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 6</em>) – Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-franka_tools">
-<span id="frankacontrollermanagerinterface"></span><h3>2.3.5. FrankaControllerManagerInterface<a class="headerlink" href="#module-franka_tools" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="frankacontrollermanagerinterface">
+<h3>2.3.2. FrankaControllerManagerInterface<a class="headerlink" href="#frankacontrollermanagerinterface" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>List, start, stop, load available controllers for the robot</li>
 <li>Get the current controller status (commands, set points, controller gains, etc.)</li>
@@ -1269,22 +1472,63 @@ that sourced package is from this repo –&gt;
 <dl class="class">
 <dt id="franka_tools.FrankaControllerManagerInterface">
 <em class="property">class </em><code class="descclassname">franka_tools.</code><code class="descname">FrankaControllerManagerInterface</code><span class="sig-paren">(</span><em>ns='franka_ros_interface'</em>, <em>synchronous_pub=False</em>, <em>sim=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>synchronous_pub</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – <p>designates the JointCommand Publisher
+as Synchronous if True and Asynchronous if False.</p>
+<p>Synchronous Publishing means that all joint_commands publishing to
+the robot’s joints will block until the message has been serialized
+into a buffer and that buffer has been written to the transport
+of every current Subscriber. This yields predicable and consistent
+timing of messages being delivered from this Publisher. However,
+when using this mode, it is possible for a blocking Subscriber to
+prevent the joint_command functions from exiting. Unless you need exact
+JointCommand timing, default to Asynchronous Publishing (False).</p>
+</li>
+<li><strong>ns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – base namespace of interface (‘frank_ros_interface’/’panda_simulator’)</li>
+<li><strong>sim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Flag specifying whether the robot is in simulation or not 
+(can be obtained from <a class="reference internal" href="#franka_interface.RobotParams" title="franka_interface.RobotParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">franka_interface.RobotParams</span></code></a> instance)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.controller_dict">
 <code class="descname">controller_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.controller_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.controller_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all controllers as dict</p>
-<p>&#64;return: name of the controller to be stopped
-&#64;rtype: dict {‘controller_name’: ControllerState}</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">name of the controller to be stopped</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict {‘controller_name’: ControllerState}</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.get_controller_config_client">
 <code class="descname">get_controller_config_client</code><span class="sig-paren">(</span><em>controller_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.get_controller_config_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.get_controller_config_client" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return The parameter configuration client object associated with the specified
-controller
-&#64;rtype ControllerParamConfigClient obj (if None, returns False)</p>
-<p>&#64;param controller_name: name of controller whose config client is required
-&#64;type controller_name: str</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The parameter configuration client object associated with the specified
+controller</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">ControllerParamConfigClient obj (if None, returns False)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controller_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of controller whose config client is required</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1298,152 +1542,264 @@ parameters for more info.</p>
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.get_current_controller_config_client">
 <code class="descname">get_current_controller_config_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.get_current_controller_config_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.get_current_controller_config_client" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return The parameter configuration client object associated with the currently
-active controller
-&#64;rtype ControllerParamConfigClient obj (if None, returns False)</p>
-<p>&#64;param controller_name: name of controller whose config client is required
-&#64;type controller_name: str</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The parameter configuration client object associated with the currently
+active controller</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">ControllerParamConfigClient obj (if None, returns False)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controller_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of controller whose config client is required</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.is_loaded">
 <code class="descname">is_loaded</code><span class="sig-paren">(</span><em>controller_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.is_loaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.is_loaded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given controller is loaded.</p>
-<p>&#64;type controller_name: str
-&#64;param controller_name: name of controller whose status is to be checked
-&#64;return: True if controller is loaded, False otherwise
-&#64;rtype: bool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controller_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of controller whose status is to be checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if controller is loaded, False otherwise</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.is_running">
 <code class="descname">is_running</code><span class="sig-paren">(</span><em>controller_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.is_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.is_running" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given controller is running.</p>
-<p>&#64;type controller_name: str
-&#64;param controller_name: name of controller whose status is to be checked
-&#64;return: True if controller is running, False otherwise
-&#64;rtype: bool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controller_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of controller whose status is to be checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if controller is running, False otherwise</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.list_active_controller_names">
 <code class="descname">list_active_controller_names</code><span class="sig-paren">(</span><em>only_motion_controllers=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.list_active_controller_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.list_active_controller_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return List of names active controllers associated to a controller manager
-namespace. 
-&#64;rtype [str]</p>
-<p>&#64;param only_motion_controller: if True, only motion controllers are returned
-&#64;type only_motion_controller: bool</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of names active controllers associated to a controller manager
+namespace.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>only_motion_controller</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True, only motion controllers are returned</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.list_active_controllers">
 <code class="descname">list_active_controllers</code><span class="sig-paren">(</span><em>only_motion_controllers=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.list_active_controllers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.list_active_controllers" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return List of  active controllers associated to a controller manager
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of  active controllers associated to a controller manager
 namespace. Contains both stopped/running controllers, as returned by
-the C{list_controllers} service, plus uninitialized controllers with
-configurations loaded in the parameter server.
-&#64;rtype [ControllerState obj]</p>
-<p>&#64;param only_motion_controller: if True, only motion controllers are returned
-&#64;type only_motion_controller: bool</p>
+the <cite>list_controllers</cite> service, plus uninitialized controllers with
+configurations loaded in the parameter server.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[ControllerState obj]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>only_motion_controller</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True, only motion controllers are returned</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.list_controller_names">
 <code class="descname">list_controller_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.list_controller_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.list_controller_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return List of names all controllers associated to a controller manager
-namespace. 
-&#64;rtype [str]</p>
-<p>&#64;param only_motion_controller: if True, only motion controllers are returned
-&#64;type only_motion_controller: bool</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of names all controllers associated to a controller manager
+namespace.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>only_motion_controller</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True, only motion controllers are returned</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.list_controller_types">
 <code class="descname">list_controller_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.list_controller_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.list_controller_types" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return List of controller types associated to a controller manager
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of controller types associated to a controller manager
 namespace. Contains both stopped/running/loaded controllers, as returned by
-the C{list_controller_types} service, plus uninitialized controllers with
-configurations loaded in the parameter server.
-&#64;rtype [str]</p>
+the <cite>list_controller_types</cite> service, plus uninitialized controllers with
+configurations loaded in the parameter server.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.list_controllers">
 <code class="descname">list_controllers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.list_controllers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.list_controllers" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return List of controllers associated to a controller manager
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of controllers associated to a controller manager
 namespace. Contains both stopped/running controllers, as returned by
-the C{list_controllers} service, plus uninitialized controllers with
-configurations loaded in the parameter server.
-&#64;rtype [ControllerState obj]</p>
+the <cite>list_controllers</cite> service, plus uninitialized controllers with
+configurations loaded in the parameter server.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[ControllerState obj]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.list_loaded_controllers">
 <code class="descname">list_loaded_controllers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.list_loaded_controllers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.list_loaded_controllers" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return List of controller types associated to a controller manager
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of controller types associated to a controller manager
 namespace. Contains all loaded controllers, as returned by
-the C{list_controller_types} service, plus uninitialized controllers with
-configurations loaded in the parameter server.
-&#64;rtype [str]</p>
+the <cite>list_controller_types</cite> service, plus uninitialized controllers with
+configurations loaded in the parameter server.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.list_motion_controllers">
 <code class="descname">list_motion_controllers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.list_motion_controllers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.list_motion_controllers" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return List of motion controllers associated to a controller manager
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of motion controllers associated to a controller manager
 namespace. Contains both stopped/running controllers, as returned by
-the C{list_controllers} service, plus uninitialized controllers with
-configurations loaded in the parameter server.
-&#64;rtype [ControllerState obj]</p>
+the <cite>list_controllers</cite> service, plus uninitialized controllers with
+configurations loaded in the parameter server.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[ControllerState obj]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.load_controller">
 <code class="descname">load_controller</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.load_controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.load_controller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the specified controller</p>
-<p>&#64;type name: str
-&#64;param name: name of the controller to be loaded</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the controller to be loaded</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.set_motion_controller">
 <code class="descname">set_motion_controller</code><span class="sig-paren">(</span><em>controller_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.set_motion_controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.set_motion_controller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the specified controller as the (only) motion controller</p>
-<p>&#64;return: name of currently active controller (can be used to switch back to this later)
-&#64;rtype: str
-&#64;type controller_name: str
-&#64;param controller_name: name of controller to start</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">name of currently active controller (can be used to switch back to this later)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controller_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of controller to start</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.start_controller">
 <code class="descname">start_controller</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.start_controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.start_controller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starts the specified controller</p>
-<p>&#64;type name: str
-&#64;param name: name of the controller to be started</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the controller to be started</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.stop_controller">
 <code class="descname">stop_controller</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.stop_controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.stop_controller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops the specified controller</p>
-<p>&#64;type name: str
-&#64;param name: name of the controller to be stopped</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the controller to be stopped</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.unload_controller">
 <code class="descname">unload_controller</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.unload_controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.unload_controller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unloads the specified controller</p>
-<p>&#64;type name: str
-&#64;param name: name of the controller to be unloaded</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the controller to be unloaded</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-franka_tools">
-<span id="controllerparamconfigclient"></span><h3>2.3.5. ControllerParamConfigClient<a class="headerlink" href="#module-franka_tools" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="controllerparamconfigclient">
+<h3>2.3.3. ControllerParamConfigClient<a class="headerlink" href="#controllerparamconfigclient" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Get and set the controller parameters (gains) for the active controller</li>
 </ul>
@@ -1451,103 +1807,173 @@ configurations loaded in the parameter server.
 <dt id="franka_tools.ControllerParamConfigClient">
 <em class="property">class </em><code class="descclassname">franka_tools.</code><code class="descname">ControllerParamConfigClient</code><span class="sig-paren">(</span><em>controller_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_param_config_client.html#ControllerParamConfigClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.ControllerParamConfigClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interface class for updating dynamically configurable paramters of a controller.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controller_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The name of the controller.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="franka_tools.ControllerParamConfigClient.get_config">
 <code class="descname">get_config</code><span class="sig-paren">(</span><em>timeout=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_param_config_client.html#ControllerParamConfigClient.get_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.ControllerParamConfigClient.get_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return the currently set values for all paramters from the server
-&#64;rtype: dict {str : float}</p>
-<p>&#64;param timeout: time to wait before giving up on service request
-&#64;type timeout: float</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the currently set values for all paramters from the server</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict {str : float}</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – time to wait before giving up on service request</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.ControllerParamConfigClient.get_controller_gains">
 <code class="descname">get_controller_gains</code><span class="sig-paren">(</span><em>timeout=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_param_config_client.html#ControllerParamConfigClient.get_controller_gains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.ControllerParamConfigClient.get_controller_gains" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return the currently set values for controller gains from the server
-&#64;rtype: ( [float], [float] )</p>
-<p>&#64;param timeout: time to wait before giving up on service request
-&#64;type timeout: float</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the currently set values for controller gains from the server</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">( [<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a>], [<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a>] )</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – time to wait before giving up on service request</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.ControllerParamConfigClient.get_joint_motion_smoothing_parameter">
 <code class="descname">get_joint_motion_smoothing_parameter</code><span class="sig-paren">(</span><em>timeout=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_param_config_client.html#ControllerParamConfigClient.get_joint_motion_smoothing_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.ControllerParamConfigClient.get_joint_motion_smoothing_parameter" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return the currently set value for the joint position smoothing parameter from 
-the server.
-&#64;rtype: float</p>
-<p>&#64;param timeout: time to wait before giving up on service request
-&#64;type timeout: float</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the currently set value for the joint position smoothing parameter from 
+the server.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – time to wait before giving up on service request</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.ControllerParamConfigClient.get_parameter_descriptions">
 <code class="descname">get_parameter_descriptions</code><span class="sig-paren">(</span><em>timeout=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_param_config_client.html#ControllerParamConfigClient.get_parameter_descriptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.ControllerParamConfigClient.get_parameter_descriptions" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return the description of each parameter as defined in the cfg
-file from the server.
-&#64;rtype: dict {str : str}</p>
-<p>&#64;param timeout: time to wait before giving up on service request
-&#64;type timeout: float</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the description of each parameter as defined in the cfg
+file from the server.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict {str : str}</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – time to wait before giving up on service request</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="franka_tools.ControllerParamConfigClient.is_running">
 <code class="descname">is_running</code><a class="headerlink" href="#franka_tools.ControllerParamConfigClient.is_running" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return True if client is running / server is unavailable; False otherwise
-&#64;rtype bool</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if client is running / server is unavailable; False otherwise</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.ControllerParamConfigClient.set_controller_gains">
 <code class="descname">set_controller_gains</code><span class="sig-paren">(</span><em>k_gains</em>, <em>d_gains=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_param_config_client.html#ControllerParamConfigClient.set_controller_gains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.ControllerParamConfigClient.set_controller_gains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the stiffness and damping parameters of the joints for the current controller.</p>
-<dl class="docutils">
-<dt>&#64;param k_gains: joint stiffness parameters (should be within limits specified in </dt>
-<dd>franka documentation; same is also set 
-in franka_ros_controllers/cfg/joint_controller_params.cfg)</dd>
-</dl>
-<p>&#64;type k_gains: [float]
-&#64;param d_gains: joint damping parameters (should be within limits specified in</p>
-<blockquote>
-<div>franka documentation; same is also set 
-in franka_ros_controllers/cfg/joint_controller_params.cfg)</div></blockquote>
-<p>&#64;type d_gains: [float]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>k_gains</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em>) – joint stiffness parameters (should be within limits specified in 
+franka documentation; same is also set 
+in franka_ros_controllers/cfg/joint_controller_params.cfg)</li>
+<li><strong>d_gains</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em>) – joint damping parameters (should be within limits specified in 
+franka documentation; same is also set 
+in franka_ros_controllers/cfg/joint_controller_params.cfg)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.ControllerParamConfigClient.set_joint_motion_smoothing_parameter">
 <code class="descname">set_joint_motion_smoothing_parameter</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_param_config_client.html#ControllerParamConfigClient.set_joint_motion_smoothing_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.ControllerParamConfigClient.set_joint_motion_smoothing_parameter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the joint motion smoothing parameter (only valid for 
-position_joint_position_controller).</p>
-<dl class="docutils">
-<dt>&#64;param value: smoothing factor (should be within limit set </dt>
-<dd>in franka_ros_controllers/cfg/joint_controller_params.cfg)</dd>
+<dd><dl class="docutils">
+<dt>Update the joint motion smoothing parameter (only valid for </dt>
+<dd>position_joint_position_controller).</dd>
 </dl>
-<p>&#64;type value: [float]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em>) – smoothing factor (should be within limit set 
+in franka_ros_controllers/cfg/joint_controller_params.cfg)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.ControllerParamConfigClient.start">
 <code class="descname">start</code><span class="sig-paren">(</span><em>timeout=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_param_config_client.html#ControllerParamConfigClient.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.ControllerParamConfigClient.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start the dynamic_reconfigure client</p>
-<p>&#64;param timeout: time to wait before giving up on service request
-&#64;type timeout: float</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – time to wait before giving up on service request</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.ControllerParamConfigClient.update_config">
 <code class="descname">update_config</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_param_config_client.html#ControllerParamConfigClient.update_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.ControllerParamConfigClient.update_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the config in the server using the provided keyword arguments.</p>
-<dl class="docutils">
-<dt>&#64;param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: These are keyword arguments matching the parameter names</dt>
-<dd>in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – These are keyword arguments matching the parameter names
+in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-franka_tools">
-<span id="frankaframesinterface"></span><h3>2.3.5. FrankaFramesInterface<a class="headerlink" href="#module-franka_tools" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="frankaframesinterface">
+<h3>2.3.4. FrankaFramesInterface<a class="headerlink" href="#frankaframesinterface" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Get and Set end-effector frame and stiffness frame of the robot easily</li>
 <li>Set the frames to known frames (such as links on the robot) directly</li>
@@ -1600,7 +2026,7 @@ position_joint_position_controller).</p>
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.reset_K_frame">
 <code class="descname">reset_K_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.reset_K_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.reset_K_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset K frame to default. (defined by <a href="#id3"><span class="problematic" id="id4">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
+<dd><p>Reset K frame to default. (defined by <a href="#id1"><span class="problematic" id="id2">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
 <p>&#64;rtype: bool
 &#64;return: success status of service request</p>
 </dd></dl>
@@ -1652,8 +2078,8 @@ Motion controllers are stopped for switching</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-franka_tools">
-<span id="jointtrajectoryactionclient"></span><h3>2.3.5. JointTrajectoryActionClient<a class="headerlink" href="#module-franka_tools" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="jointtrajectoryactionclient">
+<h3>2.3.5. JointTrajectoryActionClient<a class="headerlink" href="#jointtrajectoryactionclient" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Command robot to given joint position(s) smoothly. (Uses the FollowJointTrajectory service from ROS <em>control_msgs</em> package)</li>
 <li>Smoothly move to a desired (valid) pose without having to interpolate for smoothness (trajectory interpolation done internally)</li>
@@ -1661,7 +2087,8 @@ Motion controllers are stopped for switching</p>
 <dl class="class">
 <dt id="franka_tools.JointTrajectoryActionClient">
 <em class="property">class </em><code class="descclassname">franka_tools.</code><code class="descname">JointTrajectoryActionClient</code><span class="sig-paren">(</span><em>joint_names</em>, <em>ns='franka_ros_interface'</em>, <em>controller_name='position_joint_trajectory_controller'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/joint_trajectory_action_client.html#JointTrajectoryActionClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.JointTrajectoryActionClient" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd></dl>
 
 </div>
 </div>
@@ -1677,23 +2104,23 @@ Motion controllers are stopped for switching</p>
   <ul>
 <li><a class="reference internal" href="#">2. Python API Documentation</a><ul>
 <li><a class="reference internal" href="#module-franka_interface">2.1. franka_interface</a><ul>
-<li><a class="reference internal" href="#module-franka_interface">2.1.1. ArmInterface</a></li>
-<li><a class="reference internal" href="#module-franka_interface">2.1.2. GripperInterface</a></li>
-<li><a class="reference internal" href="#module-franka_interface">2.1.3. RobotEnable</a></li>
-<li><a class="reference internal" href="#module-franka_interface">2.1.4. RobotParams</a></li>
+<li><a class="reference internal" href="#arminterface">2.1.1. ArmInterface</a></li>
+<li><a class="reference internal" href="#gripperinterface">2.1.2. GripperInterface</a></li>
+<li><a class="reference internal" href="#robotenable">2.1.3. RobotEnable</a></li>
+<li><a class="reference internal" href="#robotparams">2.1.4. RobotParams</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-franka_moveit">2.2. franka_moveit</a><ul>
-<li><a class="reference internal" href="#module-franka_moveit">2.2.1. PandaMoveGroupInterface</a></li>
-<li><a class="reference internal" href="#module-franka_moveit">2.2.2. ExtendedPlanningSceneInterface</a></li>
+<li><a class="reference internal" href="#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a></li>
+<li><a class="reference internal" href="#extendedplanningsceneinterface">2.2.2. ExtendedPlanningSceneInterface</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-franka_tools">2.3. franka_tools</a><ul>
-<li><a class="reference internal" href="#module-franka_tools">2.3.1. CollisionBehaviourInterface</a></li>
-<li><a class="reference internal" href="#module-franka_tools">2.3.2. FrankaControllerManagerInterface</a></li>
-<li><a class="reference internal" href="#module-franka_tools">2.3.3. ControllerParamConfigClient</a></li>
-<li><a class="reference internal" href="#module-franka_tools">2.3.4. FrankaFramesInterface</a></li>
-<li><a class="reference internal" href="#module-franka_tools">2.3.5. JointTrajectoryActionClient</a></li>
+<li><a class="reference internal" href="#collisionbehaviourinterface">2.3.1. CollisionBehaviourInterface</a></li>
+<li><a class="reference internal" href="#frankacontrollermanagerinterface">2.3.2. FrankaControllerManagerInterface</a></li>
+<li><a class="reference internal" href="#controllerparamconfigclient">2.3.3. ControllerParamConfigClient</a></li>
+<li><a class="reference internal" href="#frankaframesinterface">2.3.4. FrankaFramesInterface</a></li>
+<li><a class="reference internal" href="#jointtrajectoryactionclient">2.3.5. JointTrajectoryActionClient</a></li>
 </ul>
 </li>
 </ul>

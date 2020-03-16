@@ -15,6 +15,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -80,6 +81,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interface class for updating dynamically configurable paramters of a controller.</span>
 
+<span class="sd">        :param controller_name: The name of the controller.</span>
+<span class="sd">        :type controller_name: str</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -92,8 +96,8 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return True if client is running / server is unavailable; False otherwise</span>
-<span class="sd">        @rtype bool</span>
+<span class="sd">        :return: True if client is running / server is unavailable; False otherwise</span>
+<span class="sd">        :rtype: bool</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span>
@@ -103,8 +107,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start the dynamic_reconfigure client</span>
 <span class="sd">        </span>
-<span class="sd">        @param timeout: time to wait before giving up on service request</span>
-<span class="sd">        @type timeout: float</span>
+<span class="sd">        :param timeout: time to wait before giving up on service request</span>
+<span class="sd">        :type timeout: float</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">service_name</span> <span class="o">=</span> <span class="s2">&quot;/</span><span class="si">{}</span><span class="s2">/arm/controller_parameters_config&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_controller_name</span><span class="p">)</span>
@@ -129,8 +133,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the config in the server using the provided keyword arguments.</span>
 <span class="sd">        </span>
-<span class="sd">        @param **kwargs: These are keyword arguments matching the parameter names</span>
-<span class="sd">                         in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</span>
+<span class="sd">        :param kwargs: These are keyword arguments matching the parameter names</span>
+<span class="sd">            in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">update_configuration</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -140,14 +144,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the stiffness and damping parameters of the joints for the current controller.</span>
 <span class="sd">        </span>
-<span class="sd">        @param k_gains: joint stiffness parameters (should be within limits specified in </span>
+<span class="sd">        :param k_gains: joint stiffness parameters (should be within limits specified in </span>
 <span class="sd">                        franka documentation; same is also set </span>
 <span class="sd">                        in franka_ros_controllers/cfg/joint_controller_params.cfg)</span>
-<span class="sd">        @type k_gains: [float]</span>
-<span class="sd">        @param d_gains: joint damping parameters (should be within limits specified in </span>
+<span class="sd">        :type k_gains: [float]</span>
+<span class="sd">        :param d_gains: joint damping parameters (should be within limits specified in </span>
 <span class="sd">                        franka documentation; same is also set </span>
 <span class="sd">                        in franka_ros_controllers/cfg/joint_controller_params.cfg)</span>
-<span class="sd">        @type d_gains: [float]</span>
+<span class="sd">        :type d_gains: [float]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">k_gains</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;ControllerParamConfigClient: k_gains argument should be of length 7!&quot;</span>
@@ -168,23 +172,23 @@
 <div class="viewcode-block" id="ControllerParamConfigClient.set_joint_motion_smoothing_parameter"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.set_joint_motion_smoothing_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_motion_smoothing_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the joint motion smoothing parameter (only valid for </span>
-<span class="sd">        position_joint_position_controller).</span>
+<span class="sd">            position_joint_position_controller).</span>
 <span class="sd">        </span>
-<span class="sd">        @param value: smoothing factor (should be within limit set </span>
+<span class="sd">        :param value: smoothing factor (should be within limit set </span>
 <span class="sd">                      in franka_ros_controllers/cfg/joint_controller_params.cfg)</span>
-<span class="sd">        @type value: [float]</span>
+<span class="sd">        :type value: [float]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="n">position_joint_delta_filter</span> <span class="o">=</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ControllerParamConfigClient.get_joint_motion_smoothing_parameter"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.get_joint_motion_smoothing_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_motion_smoothing_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return the currently set value for the joint position smoothing parameter from </span>
-<span class="sd">        the server.</span>
-<span class="sd">        @rtype: float</span>
+<span class="sd">        :return: the currently set value for the joint position smoothing parameter from </span>
+<span class="sd">            the server.</span>
+<span class="sd">        :rtype: float</span>
 <span class="sd">        </span>
-<span class="sd">        @param timeout: time to wait before giving up on service request</span>
-<span class="sd">        @type timeout: float</span>
+<span class="sd">        :param timeout: time to wait before giving up on service request</span>
+<span class="sd">        :type timeout: float</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)[</span><span class="s1">&#39;position_joint_delta_filter&#39;</span><span class="p">]</span></div>
@@ -192,22 +196,22 @@
 
 <div class="viewcode-block" id="ControllerParamConfigClient.get_config"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return the currently set values for all paramters from the server</span>
-<span class="sd">        @rtype: dict {str : float}</span>
+<span class="sd">        :return: the currently set values for all paramters from the server</span>
+<span class="sd">        :rtype: dict {str : float}</span>
 <span class="sd">        </span>
-<span class="sd">        @param timeout: time to wait before giving up on service request</span>
-<span class="sd">        @type timeout: float</span>
+<span class="sd">        :param timeout: time to wait before giving up on service request</span>
+<span class="sd">        :type timeout: float</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_configuration</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ControllerParamConfigClient.get_controller_gains"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.get_controller_gains">[docs]</a>    <span class="k">def</span> <span class="nf">get_controller_gains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return the currently set values for controller gains from the server</span>
-<span class="sd">        @rtype: ( [float], [float] )</span>
+<span class="sd">        :return: the currently set values for controller gains from the server</span>
+<span class="sd">        :rtype: ( [float], [float] )</span>
 <span class="sd">        </span>
-<span class="sd">        @param timeout: time to wait before giving up on service request</span>
-<span class="sd">        @type timeout: float</span>
+<span class="sd">        :param timeout: time to wait before giving up on service request</span>
+<span class="sd">        :type timeout: float</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)</span>
@@ -236,12 +240,12 @@
 
 <div class="viewcode-block" id="ControllerParamConfigClient.get_parameter_descriptions"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.get_parameter_descriptions">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameter_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return the description of each parameter as defined in the cfg</span>
-<span class="sd">        file from the server.</span>
-<span class="sd">        @rtype: dict {str : str}</span>
+<span class="sd">        :return: the description of each parameter as defined in the cfg</span>
+<span class="sd">            file from the server.</span>
+<span class="sd">        :rtype: dict {str : str}</span>
 <span class="sd">        </span>
-<span class="sd">        @param timeout: time to wait before giving up on service request</span>
-<span class="sd">        @type timeout: float</span>
+<span class="sd">        :param timeout: time to wait before giving up on service request</span>
+<span class="sd">        :type timeout: float</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_parameter_descriptions</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)</span></div></div>

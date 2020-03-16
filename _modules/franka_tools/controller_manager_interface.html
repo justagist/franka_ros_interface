@@ -15,6 +15,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -97,10 +98,10 @@
 <span class="sd">        &#39;/&#39;</span>
 <span class="sd">        &gt;&gt;&gt; _resolve_controller_ns(&#39;&#39;)</span>
 <span class="sd">        &#39;/&#39;</span>
-<span class="sd">    @param cm_ns Controller manager namespace (can be an empty string)</span>
-<span class="sd">    @type cm_ns str</span>
-<span class="sd">    @return Controllers namespace</span>
-<span class="sd">    @rtype str</span>
+<span class="sd">    :param cm_ns Controller manager namespace (can be an empty string)</span>
+<span class="sd">    :type cm_ns str</span>
+<span class="sd">    :return: Controllers namespace</span>
+<span class="sd">    :rtype: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ns</span> <span class="o">=</span> <span class="n">cm_ns</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ns</span><span class="p">:</span>
@@ -111,10 +112,10 @@
 <span class="k">def</span> <span class="nf">_append_ns</span><span class="p">(</span><span class="n">in_ns</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Append a sub-namespace (suffix) to the input namespace</span>
-<span class="sd">    @param in_ns Input namespace</span>
-<span class="sd">    @type in_ns str</span>
-<span class="sd">    @return Suffix namespace</span>
-<span class="sd">    @rtype str</span>
+<span class="sd">    :param in_ns Input namespace</span>
+<span class="sd">    :type in_ns str</span>
+<span class="sd">    :return: Suffix namespace</span>
+<span class="sd">    :rtype: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ns</span> <span class="o">=</span> <span class="n">in_ns</span>
     <span class="k">if</span> <span class="n">ns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
@@ -126,12 +127,12 @@
 <span class="k">def</span> <span class="nf">_rosparam_controller_type</span><span class="p">(</span><span class="n">ctrls_ns</span><span class="p">,</span> <span class="n">ctrl_name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a controller&#39;s type from its ROS parameter server configuration</span>
-<span class="sd">    @param ctrls_ns Namespace where controllers should be located</span>
-<span class="sd">    @type ctrls_ns str</span>
-<span class="sd">    @param ctrl_name Controller name</span>
-<span class="sd">    @type ctrl_name str</span>
-<span class="sd">    @return Controller type</span>
-<span class="sd">    @rtype str</span>
+<span class="sd">    :param ctrls_ns Namespace where controllers should be located</span>
+<span class="sd">    :type ctrls_ns str</span>
+<span class="sd">    :param ctrl_name Controller name</span>
+<span class="sd">    :type ctrl_name str</span>
+<span class="sd">    :return: Controller type</span>
+<span class="sd">    :rtype: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">type_param</span> <span class="o">=</span> <span class="n">_append_ns</span><span class="p">(</span><span class="n">ctrls_ns</span><span class="p">,</span> <span class="n">ctrl_name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/type&#39;</span>
     <span class="k">return</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">type_param</span><span class="p">)</span>   
@@ -154,6 +155,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">j</span><span class="o">.</span><span class="n">command</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">controller_state_msg</span><span class="o">.</span><span class="n">joint_controller_states</span><span class="p">])</span>
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface">[docs]</a><span class="k">class</span> <span class="nc">FrankaControllerManagerInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    :type synchronous_pub: bool</span>
+<span class="sd">    :param synchronous_pub: designates the JointCommand Publisher</span>
+<span class="sd">        as Synchronous if True and Asynchronous if False.</span>
+
+<span class="sd">        Synchronous Publishing means that all joint_commands publishing to</span>
+<span class="sd">        the robot&#39;s joints will block until the message has been serialized</span>
+<span class="sd">        into a buffer and that buffer has been written to the transport</span>
+<span class="sd">        of every current Subscriber. This yields predicable and consistent</span>
+<span class="sd">        timing of messages being delivered from this Publisher. However,</span>
+<span class="sd">        when using this mode, it is possible for a blocking Subscriber to</span>
+<span class="sd">        prevent the joint_command functions from exiting. Unless you need exact</span>
+<span class="sd">        JointCommand timing, default to Asynchronous Publishing (False).</span>
+
+<span class="sd">    :param ns: base namespace of interface (&#39;frank_ros_interface&#39;/&#39;panda_simulator&#39;)</span>
+<span class="sd">    :type ns: str</span>
+
+<span class="sd">    :param sim: Flag specifying whether the robot is in simulation or not </span>
+<span class="sd">        (can be obtained from :py:class:`franka_interface.RobotParams` instance)</span>
+<span class="sd">    :type sim: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="s2">&quot;franka_ros_interface&quot;</span><span class="p">,</span> <span class="n">synchronous_pub</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">sim</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 
@@ -217,9 +240,6 @@
 
 
     <span class="k">def</span> <span class="nf">_on_controller_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Callback function. The controller state is updated here, as well as the current active controller detected.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_controller_state</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">ControllerStateInfo</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_assert_one_active_controller</span><span class="p">()</span>
@@ -230,9 +250,6 @@
 
 
     <span class="k">def</span> <span class="nf">_assert_one_active_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Asserts that only one active motion controller.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ctrlr_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># if not self._in_sim:</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ctrlr_list</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;FrankaControllerManagerInterface: More than one motion controller active!&quot;</span>
@@ -244,8 +261,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Loads the specified controller</span>
 
-<span class="sd">        @type name: str</span>
-<span class="sd">        @param name: name of the controller to be loaded</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param name: name of the controller to be loaded</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_srv</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">LoadControllerRequest</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span></div>
 
@@ -253,8 +270,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unloads the specified controller</span>
 
-<span class="sd">        @type name: str</span>
-<span class="sd">        @param name: name of the controller to be unloaded</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param name: name of the controller to be unloaded</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unload_srv</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">UnloadControllerRequest</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span></div>
 
@@ -262,8 +279,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the specified controller</span>
 
-<span class="sd">        @type name: str</span>
-<span class="sd">        @param name: name of the controller to be started</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param name: name of the controller to be started</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;FrankaControllerManagerInterface: One motion controller already active: </span><span class="si">%s</span><span class="s2">. Stop this controller before activating another!&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span>
 
@@ -288,8 +305,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stops the specified controller</span>
 
-<span class="sd">        @type name: str</span>
-<span class="sd">        @param name: name of the controller to be stopped</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param name: name of the controller to be stopped</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">strict</span> <span class="o">=</span> <span class="n">SwitchControllerRequest</span><span class="o">.</span><span class="n">STRICT</span>
         <span class="n">req</span> <span class="o">=</span> <span class="n">SwitchControllerRequest</span><span class="p">(</span><span class="n">start_controllers</span><span class="o">=</span><span class="p">[],</span>
@@ -301,11 +318,11 @@
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface.list_loaded_controllers"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.list_loaded_controllers">[docs]</a>    <span class="k">def</span> <span class="nf">list_loaded_controllers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return List of controller types associated to a controller manager</span>
-<span class="sd">        namespace. Contains all loaded controllers, as returned by</span>
-<span class="sd">        the C{list_controller_types} service, plus uninitialized controllers with</span>
-<span class="sd">        configurations loaded in the parameter server.</span>
-<span class="sd">        @rtype [str]</span>
+<span class="sd">        :return: List of controller types associated to a controller manager</span>
+<span class="sd">            namespace. Contains all loaded controllers, as returned by</span>
+<span class="sd">            the `list_controller_types` service, plus uninitialized controllers with</span>
+<span class="sd">            configurations loaded in the parameter server.</span>
+<span class="sd">        :rtype: [str]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">req</span> <span class="o">=</span> <span class="n">ListControllersRequest</span><span class="p">()</span>
 
@@ -313,11 +330,11 @@
     
 <div class="viewcode-block" id="FrankaControllerManagerInterface.list_controller_types"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.list_controller_types">[docs]</a>    <span class="k">def</span> <span class="nf">list_controller_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return List of controller types associated to a controller manager</span>
-<span class="sd">        namespace. Contains both stopped/running/loaded controllers, as returned by</span>
-<span class="sd">        the C{list_controller_types} service, plus uninitialized controllers with</span>
-<span class="sd">        configurations loaded in the parameter server.</span>
-<span class="sd">        @rtype [str]</span>
+<span class="sd">        :return: List of controller types associated to a controller manager</span>
+<span class="sd">            namespace. Contains both stopped/running/loaded controllers, as returned by</span>
+<span class="sd">            the `list_controller_types` service, plus uninitialized controllers with</span>
+<span class="sd">            configurations loaded in the parameter server.</span>
+<span class="sd">        :rtype: [str]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">req</span> <span class="o">=</span> <span class="n">ListControllerTypesRequest</span><span class="p">()</span>
 
@@ -325,11 +342,11 @@
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface.list_controllers"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.list_controllers">[docs]</a>    <span class="k">def</span> <span class="nf">list_controllers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return List of controllers associated to a controller manager</span>
-<span class="sd">        namespace. Contains both stopped/running controllers, as returned by</span>
-<span class="sd">        the C{list_controllers} service, plus uninitialized controllers with</span>
-<span class="sd">        configurations loaded in the parameter server.</span>
-<span class="sd">        @rtype [ControllerState obj]</span>
+<span class="sd">        :return: List of controllers associated to a controller manager</span>
+<span class="sd">            namespace. Contains both stopped/running controllers, as returned by</span>
+<span class="sd">            the `list_controllers` service, plus uninitialized controllers with</span>
+<span class="sd">            configurations loaded in the parameter server.</span>
+<span class="sd">        :rtype: [ControllerState obj]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cm_ns</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -354,8 +371,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get all controllers as dict</span>
 
-<span class="sd">        @return: name of the controller to be stopped</span>
-<span class="sd">        @rtype: dict {&#39;controller_name&#39;: ControllerState}</span>
+<span class="sd">        :return: name of the controller to be stopped</span>
+<span class="sd">        :rtype: dict {&#39;controller_name&#39;: ControllerState}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_controllers</span><span class="p">()</span>
 
@@ -369,10 +386,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the specified controller as the (only) motion controller</span>
 <span class="sd">    </span>
-<span class="sd">        @return: name of currently active controller (can be used to switch back to this later)</span>
-<span class="sd">        @rtype: str</span>
-<span class="sd">        @type controller_name: str</span>
-<span class="sd">        @param controller_name: name of controller to start</span>
+<span class="sd">        :return: name of currently active controller (can be used to switch back to this later)</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :type controller_name: str</span>
+<span class="sd">        :param controller_name: name of controller to start</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">curr_ctrlr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_controller</span>
@@ -400,10 +417,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if the given controller is running.</span>
 
-<span class="sd">        @type controller_name: str</span>
-<span class="sd">        @param controller_name: name of controller whose status is to be checked</span>
-<span class="sd">        @return: True if controller is running, False otherwise</span>
-<span class="sd">        @rtype: bool</span>
+<span class="sd">        :type controller_name: str</span>
+<span class="sd">        :param controller_name: name of controller whose status is to be checked</span>
+<span class="sd">        :return: True if controller is running, False otherwise</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller_dict</span><span class="p">()</span>
 
@@ -415,10 +432,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if the given controller is loaded.</span>
 
-<span class="sd">        @type controller_name: str</span>
-<span class="sd">        @param controller_name: name of controller whose status is to be checked</span>
-<span class="sd">        @return: True if controller is loaded, False otherwise</span>
-<span class="sd">        @rtype: bool</span>
+<span class="sd">        :type controller_name: str</span>
+<span class="sd">        :param controller_name: name of controller whose status is to be checked</span>
+<span class="sd">        :return: True if controller is loaded, False otherwise</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller_dict</span><span class="p">()</span>
 
@@ -428,11 +445,11 @@
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface.list_motion_controllers"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.list_motion_controllers">[docs]</a>    <span class="k">def</span> <span class="nf">list_motion_controllers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return List of motion controllers associated to a controller manager</span>
-<span class="sd">        namespace. Contains both stopped/running controllers, as returned by</span>
-<span class="sd">        the C{list_controllers} service, plus uninitialized controllers with</span>
-<span class="sd">        configurations loaded in the parameter server.</span>
-<span class="sd">        @rtype [ControllerState obj]</span>
+<span class="sd">        :return: List of motion controllers associated to a controller manager</span>
+<span class="sd">            namespace. Contains both stopped/running controllers, as returned by</span>
+<span class="sd">            the `list_controllers` service, plus uninitialized controllers with</span>
+<span class="sd">            configurations loaded in the parameter server.</span>
+<span class="sd">        :rtype: [ControllerState obj]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">motion_controllers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_controllers</span><span class="p">():</span>
@@ -444,14 +461,14 @@
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface.list_active_controllers"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.list_active_controllers">[docs]</a>    <span class="k">def</span> <span class="nf">list_active_controllers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only_motion_controllers</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return List of  active controllers associated to a controller manager</span>
-<span class="sd">        namespace. Contains both stopped/running controllers, as returned by</span>
-<span class="sd">        the C{list_controllers} service, plus uninitialized controllers with</span>
-<span class="sd">        configurations loaded in the parameter server.</span>
-<span class="sd">        @rtype [ControllerState obj]</span>
+<span class="sd">        :return: List of  active controllers associated to a controller manager</span>
+<span class="sd">            namespace. Contains both stopped/running controllers, as returned by</span>
+<span class="sd">            the `list_controllers` service, plus uninitialized controllers with</span>
+<span class="sd">            configurations loaded in the parameter server.</span>
+<span class="sd">        :rtype: [ControllerState obj]</span>
 <span class="sd">        </span>
-<span class="sd">        @param only_motion_controller: if True, only motion controllers are returned</span>
-<span class="sd">        @type only_motion_controller: bool</span>
+<span class="sd">        :param only_motion_controller: if True, only motion controllers are returned</span>
+<span class="sd">        :type only_motion_controller: bool</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">only_motion_controllers</span><span class="p">:</span>
@@ -468,24 +485,24 @@
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface.list_active_controller_names"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.list_active_controller_names">[docs]</a>    <span class="k">def</span> <span class="nf">list_active_controller_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only_motion_controllers</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return List of names active controllers associated to a controller manager</span>
-<span class="sd">        namespace. </span>
-<span class="sd">        @rtype [str]</span>
+<span class="sd">        :return: List of names active controllers associated to a controller manager</span>
+<span class="sd">            namespace. </span>
+<span class="sd">        :rtype: [str]</span>
 <span class="sd">        </span>
-<span class="sd">        @param only_motion_controller: if True, only motion controllers are returned</span>
-<span class="sd">        @type only_motion_controller: bool</span>
+<span class="sd">        :param only_motion_controller: if True, only motion controllers are returned</span>
+<span class="sd">        :type only_motion_controller: bool</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span> <span class="o">=</span> <span class="n">only_motion_controllers</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface.get_controller_config_client"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.get_controller_config_client">[docs]</a>    <span class="k">def</span> <span class="nf">get_controller_config_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return The parameter configuration client object associated with the specified</span>
-<span class="sd">        controller</span>
-<span class="sd">        @rtype ControllerParamConfigClient obj (if None, returns False)</span>
+<span class="sd">        :return: The parameter configuration client object associated with the specified</span>
+<span class="sd">            controller</span>
+<span class="sd">        :rtype: ControllerParamConfigClient obj (if None, returns False)</span>
 <span class="sd">        </span>
-<span class="sd">        @param controller_name: name of controller whose config client is required</span>
-<span class="sd">        @type controller_name: str</span>
+<span class="sd">        :param controller_name: name of controller whose config client is required</span>
+<span class="sd">        :type controller_name: str</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">controller_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_config_clients</span><span class="p">:</span>
@@ -496,12 +513,12 @@
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface.get_current_controller_config_client"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.get_current_controller_config_client">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_controller_config_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return The parameter configuration client object associated with the currently</span>
-<span class="sd">        active controller</span>
-<span class="sd">        @rtype ControllerParamConfigClient obj (if None, returns False)</span>
+<span class="sd">        :return: The parameter configuration client object associated with the currently</span>
+<span class="sd">            active controller</span>
+<span class="sd">        :rtype: ControllerParamConfigClient obj (if None, returns False)</span>
 <span class="sd">        </span>
-<span class="sd">        @param controller_name: name of controller whose config client is required</span>
-<span class="sd">        @type controller_name: str</span>
+<span class="sd">        :param controller_name: name of controller whose config client is required</span>
+<span class="sd">        :type controller_name: str</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -513,12 +530,12 @@
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface.list_controller_names"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.list_controller_names">[docs]</a>    <span class="k">def</span> <span class="nf">list_controller_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return List of names all controllers associated to a controller manager</span>
-<span class="sd">        namespace. </span>
-<span class="sd">        @rtype [str]</span>
+<span class="sd">        :return: List of names all controllers associated to a controller manager</span>
+<span class="sd">            namespace. </span>
+<span class="sd">        :rtype: [str]</span>
 <span class="sd">        </span>
-<span class="sd">        @param only_motion_controller: if True, only motion controllers are returned</span>
-<span class="sd">        @type only_motion_controller: bool</span>
+<span class="sd">        :param only_motion_controller: if True, only motion controllers are returned</span>
+<span class="sd">        :type only_motion_controller: bool</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_controllers</span><span class="p">()]</span></div>

@@ -15,6 +15,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -79,10 +80,10 @@
 <span class="k">def</span> <span class="nf">all_close</span><span class="p">(</span><span class="n">goal</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience method for testing if a list of values are within a tolerance of their counterparts in another list</span>
-<span class="sd">    @param: goal       A list of floats, a Pose or a PoseStamped</span>
-<span class="sd">    @param: actual     A list of floats, a Pose or a PoseStamped</span>
-<span class="sd">    @param: tolerance  A float</span>
-<span class="sd">    @rtype: bool</span>
+<span class="sd">    :param: goal       A list of floats, a Pose or a PoseStamped</span>
+<span class="sd">    :param: actual     A list of floats, a Pose or a PoseStamped</span>
+<span class="sd">    :param: tolerance  A float</span>
+<span class="sd">    :rtype: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">goal</span><span class="p">)):</span>
@@ -149,61 +150,65 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">robot_state_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            @return: The RobotCommander instance of this object</span>
-<span class="sd">            @rype: moveit_commander.RobotCommander</span>
+<span class="sd">            :return: The RobotCommander instance of this object</span>
+<span class="sd">            :rtype: moveit_commander.RobotCommander</span>
 
-<span class="sd">            available methods: http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html</span>
+<span class="sd">                .. note:: available methods: </span>
+<span class="sd">                    http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot</span>
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">scene</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            @return: The RobotCommander instance of this object. This is an interface</span>
+<span class="sd">            :return: The RobotCommander instance of this object. This is an interface</span>
 <span class="sd">                    to the world surrounding the robot</span>
-<span class="sd">            @rype: moveit_commander.RobotCommander</span>
+<span class="sd">            :rtype: moveit_commander.RobotCommander</span>
 
-<span class="sd">            available_methods: http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html</span>
+<span class="sd">                .. note:: available_methods: </span>
+<span class="sd">                    http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scene</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">arm_group</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return: The MoveGroupCommander instance of this object. This is an interface</span>
+<span class="sd">        :return: The MoveGroupCommander instance of this object. This is an interface</span>
 <span class="sd">            to one group of joints.  In this case the group is the joints in the Panda</span>
 <span class="sd">            arm. This interface can be used to plan and execute motions on the Panda.</span>
-<span class="sd">        @rtype: moveit_commander.MoveGroupCommander</span>
+<span class="sd">        :rtype: moveit_commander.MoveGroupCommander</span>
 
-<span class="sd">            available_methods: http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</span>
+<span class="sd">            .. note:: available_methods: </span>
+<span class="sd">                http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm_group</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">gripper_group</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return: The MoveGroupCommander instance of this object. This is an interface</span>
+<span class="sd">        :return: The MoveGroupCommander instance of this object. This is an interface</span>
 <span class="sd">            to one group of joints.  In this case the group is the joints in the Panda</span>
 <span class="sd">            arm. This interface can be used to plan and execute motions on the Panda.</span>
-<span class="sd">        @rtype: moveit_commander.MoveGroupCommander</span>
+<span class="sd">        :rtype: moveit_commander.MoveGroupCommander</span>
 
-<span class="sd">            available_methods: http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</span>
+<span class="sd">            .. note:: available_methods: </span>
+<span class="sd">                http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gripper_group</span>
 
 <div class="viewcode-block" id="PandaMoveGroupInterface.go_to_joint_positions"><a class="viewcode-back" href="../../DOC.html#franka_moveit.PandaMoveGroupInterface.go_to_joint_positions">[docs]</a>    <span class="k">def</span> <span class="nf">go_to_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">wait</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">0.005</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            @return: status of joint motion plan execution</span>
-<span class="sd">            @rtype: bool</span>
+<span class="sd">            :return: status of joint motion plan execution</span>
+<span class="sd">            :rtype: bool</span>
 
-<span class="sd">            @param positions: target joint positions (ordered)</span>
-<span class="sd">            @param wait: if True, function will wait for trajectory execution to complete</span>
-<span class="sd">            @param tolerance: maximum error in final position for each joint to consider</span>
-<span class="sd">                              task a success</span>
+<span class="sd">            :param positions: target joint positions (ordered)</span>
+<span class="sd">            :param wait: if True, function will wait for trajectory execution to complete</span>
+<span class="sd">            :param tolerance: maximum error in final position for each joint to consider</span>
+<span class="sd">             task a success</span>
 
-<span class="sd">            @type positions: [double]</span>
-<span class="sd">            @type wait: bool</span>
-<span class="sd">            @type tolerance: double</span>
+<span class="sd">            :type positions: [double]</span>
+<span class="sd">            :type wait: bool</span>
+<span class="sd">            :type tolerance: double</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arm_group</span><span class="o">.</span><span class="n">clear_pose_targets</span><span class="p">()</span>
 
@@ -236,7 +241,7 @@
 <div class="viewcode-block" id="PandaMoveGroupInterface.set_velocity_scale"><a class="viewcode-back" href="../../DOC.html#franka_moveit.PandaMoveGroupInterface.set_velocity_scale">[docs]</a>    <span class="k">def</span> <span class="nf">set_velocity_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">group</span> <span class="o">=</span> <span class="s2">&quot;arm&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Set the max velocity scale for executing planned motion.</span>
-<span class="sd">            @param value: scale value (allowed (0,1] )</span>
+<span class="sd">            :param value: scale value (allowed (0,1] )</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">group</span> <span class="o">==</span> <span class="s2">&quot;arm&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_arm_group</span><span class="o">.</span><span class="n">set_max_velocity_scaling_factor</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -248,7 +253,7 @@
 
 <div class="viewcode-block" id="PandaMoveGroupInterface.plan_joint_path"><a class="viewcode-back" href="../../DOC.html#franka_moveit.PandaMoveGroupInterface.plan_joint_path">[docs]</a>    <span class="k">def</span> <span class="nf">plan_joint_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_position</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return plan for executing joint trajectory</span>
+<span class="sd">        :return plan for executing joint trajectory</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm_group</span><span class="o">.</span><span class="n">plan</span><span class="p">(</span><span class="n">joint_position</span><span class="p">)</span></div>
 
@@ -263,10 +268,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Using named states defined in urdf.</span>
 
-<span class="sd">            NOTE: If this named state is not found, your ros environment is</span>
-<span class="sd">            probably not using the right panda_moveit_config package. Ensure</span>
-<span class="sd">            that sourced package is from this repo --&gt;</span>
-<span class="sd">            https://github.com/justagist/panda_moveit_config</span>
+<span class="sd">            .. note:: If this named state is not found, your ros environment is</span>
+<span class="sd">                probably not using the right panda_moveit_config package. Ensure</span>
+<span class="sd">                that sourced package is from this repo --&gt;</span>
+<span class="sd">                https://github.com/justagist/panda_moveit_config</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gripper_group</span><span class="o">.</span><span class="n">set_named_target</span><span class="p">(</span><span class="s2">&quot;close&quot;</span><span class="p">)</span>
@@ -276,10 +281,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Using named states defined in urdf.</span>
 
-<span class="sd">            NOTE: If this named state is not found, your ros environment is</span>
-<span class="sd">            probably not using the right panda_moveit_config package. Ensure</span>
-<span class="sd">            that sourced package is from this repo --&gt;</span>
-<span class="sd">            https://github.com/justagist/panda_moveit_config</span>
+<span class="sd">            .. note:: If this named state is not found, your ros environment is</span>
+<span class="sd">                probably not using the right panda_moveit_config package. Ensure</span>
+<span class="sd">                that sourced package is from this repo --&gt;</span>
+<span class="sd">                https://github.com/justagist/panda_moveit_config.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gripper_group</span><span class="o">.</span><span class="n">set_named_target</span><span class="p">(</span><span class="s2">&quot;open&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gripper_group</span><span class="o">.</span><span class="n">go</span><span class="p">(</span><span class="n">wait</span> <span class="o">=</span> <span class="n">wait</span><span class="p">)</span></div>

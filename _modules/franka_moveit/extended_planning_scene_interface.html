@@ -15,6 +15,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -80,15 +81,15 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add object to scene and check if it is created.</span>
 
-<span class="sd">        @param name: name of object</span>
-<span class="sd">        @param pose: desired pose for the box</span>
-<span class="sd">        @param size: size of the box</span>
-<span class="sd">        @param timeout: time in sec to wait while checking if box is created </span>
+<span class="sd">        :param name: name of object</span>
+<span class="sd">        :param pose: desired pose for the box</span>
+<span class="sd">        :param size: size of the box</span>
+<span class="sd">        :param timeout: time in sec to wait while checking if box is created </span>
 
-<span class="sd">        @type name: str</span>
-<span class="sd">        @type pose: geometry_msgs.msg.PoseStamped</span>
-<span class="sd">        @type size: [float] (len 3)</span>
-<span class="sd">        @type timeout: float</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :type pose: geometry_msgs.msg.PoseStamped</span>
+<span class="sd">        :type size: [float] (len 3)</span>
+<span class="sd">        :type timeout: float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">moveit_commander</span><span class="o">.</span><span class="n">PlanningSceneInterface</span><span class="o">.</span><span class="n">add_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">pose</span> <span class="o">=</span> <span class="n">pose</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
@@ -112,11 +113,20 @@
             <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">remove_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="ExtendedPlanningSceneInterface.remove_box"><a class="viewcode-back" href="../../DOC.html#franka_moveit.ExtendedPlanningSceneInterface.remove_box">[docs]</a>    <span class="k">def</span> <span class="nf">remove_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove box from scene.</span>
 
+<span class="sd">        :param box_name: name of object</span>
+<span class="sd">        :param timeout: time in sec to wait while checking if box is created </span>
+
+<span class="sd">        :type box_name: str</span>
+<span class="sd">        :type timeout: float</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_world_object</span><span class="p">(</span><span class="n">box_name</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_state_update</span><span class="p">(</span><span class="n">object_name</span> <span class="o">=</span> <span class="n">box_name</span><span class="p">,</span> <span class="n">object_is_attached</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">object_is_known</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_state_update</span><span class="p">(</span><span class="n">object_name</span> <span class="o">=</span> <span class="n">box_name</span><span class="p">,</span> <span class="n">object_is_attached</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">object_is_known</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div></div>
 
 
 

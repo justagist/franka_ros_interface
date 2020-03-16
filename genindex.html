@@ -16,6 +16,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -130,13 +131,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_tools.FrankaFramesInterface.frames_are_same">frames_are_same() (franka_tools.FrankaFramesInterface method)</a>
 </li>
-      <li><a href="DOC.html#module-franka_interface">franka_interface (module)</a>, <a href="DOC.html#module-franka_interface">[1]</a>, <a href="DOC.html#module-franka_interface">[2]</a>, <a href="DOC.html#module-franka_interface">[3]</a>, <a href="DOC.html#module-franka_interface">[4]</a>
+      <li><a href="DOC.html#module-franka_interface">franka_interface (module)</a>, <a href="index.html#module-franka_interface">[1]</a>
 </li>
-      <li><a href="DOC.html#module-franka_moveit">franka_moveit (module)</a>, <a href="DOC.html#module-franka_moveit">[1]</a>, <a href="DOC.html#module-franka_moveit">[2]</a>
+      <li><a href="DOC.html#module-franka_moveit">franka_moveit (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="DOC.html#module-franka_tools">franka_tools (module)</a>, <a href="DOC.html#module-franka_tools">[1]</a>, <a href="DOC.html#module-franka_tools">[2]</a>, <a href="DOC.html#module-franka_tools">[3]</a>, <a href="DOC.html#module-franka_tools">[4]</a>, <a href="DOC.html#module-franka_tools">[5]</a>
+      <li><a href="DOC.html#module-franka_tools">franka_tools (module)</a>
 </li>
       <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface">FrankaControllerManagerInterface (class in franka_tools)</a>
 </li>
@@ -160,23 +161,31 @@
 </li>
       <li><a href="DOC.html#franka_tools.FrankaFramesInterface.get_EE_frame">get_EE_frame() (franka_tools.FrankaFramesInterface method)</a>
 </li>
+      <li><a href="DOC.html#franka_interface.ArmInterface.get_joint_limits">get_joint_limits() (franka_interface.ArmInterface method)</a>
+</li>
       <li><a href="DOC.html#franka_tools.ControllerParamConfigClient.get_joint_motion_smoothing_parameter">get_joint_motion_smoothing_parameter() (franka_tools.ControllerParamConfigClient method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.RobotParams.get_joint_names">get_joint_names() (franka_interface.RobotParams method)</a>
 </li>
+      <li><a href="DOC.html#franka_tools.FrankaFramesInterface.get_K_frame">get_K_frame() (franka_tools.FrankaFramesInterface method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="DOC.html#franka_tools.FrankaFramesInterface.get_K_frame">get_K_frame() (franka_tools.FrankaFramesInterface method)</a>
+      <li><a href="DOC.html#franka_interface.ArmInterface.get_movegroup_interface">get_movegroup_interface() (franka_interface.ArmInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_tools.ControllerParamConfigClient.get_parameter_descriptions">get_parameter_descriptions() (franka_tools.ControllerParamConfigClient method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.RobotParams.get_robot_name">get_robot_name() (franka_interface.RobotParams method)</a>
+</li>
+      <li><a href="DOC.html#franka_interface.ArmInterface.get_robot_params">get_robot_params() (franka_interface.ArmInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.ArmInterface.get_robot_status">get_robot_status() (franka_interface.ArmInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.go_to_joint_positions">go_to_joint_positions() (franka_moveit.PandaMoveGroupInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.GripperInterface.grasp">grasp() (franka_interface.GripperInterface method)</a>
+</li>
+      <li><a href="DOC.html#franka_interface.ArmInterface.gravity_comp">gravity_comp() (franka_interface.ArmInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.gripper_group">gripper_group (franka_moveit.PandaMoveGroupInterface attribute)</a>
 </li>
@@ -187,6 +196,10 @@
 
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_interface.ArmInterface.has_collided">has_collided() (franka_interface.ArmInterface method)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_interface.GripperInterface.home_joints">home_joints() (franka_interface.GripperInterface method)</a>
 </li>
@@ -336,16 +349,18 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_moveit.ExtendedPlanningSceneInterface.remove_box">remove_box() (franka_moveit.ExtendedPlanningSceneInterface method)</a>
+</li>
       <li><a href="DOC.html#franka_interface.ArmInterface.reset_EE_frame">reset_EE_frame() (franka_interface.ArmInterface method)</a>
 
       <ul>
         <li><a href="DOC.html#franka_tools.FrankaFramesInterface.reset_EE_frame">(franka_tools.FrankaFramesInterface method)</a>
 </li>
       </ul></li>
-      <li><a href="DOC.html#franka_tools.FrankaFramesInterface.reset_K_frame">reset_K_frame() (franka_tools.FrankaFramesInterface method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_tools.FrankaFramesInterface.reset_K_frame">reset_K_frame() (franka_tools.FrankaFramesInterface method)</a>
+</li>
       <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.robot_state_interface">robot_state_interface (franka_moveit.PandaMoveGroupInterface attribute)</a>
 </li>
       <li><a href="DOC.html#franka_interface.RobotEnable">RobotEnable (class in franka_interface)</a>

@@ -6,12 +6,17 @@
 Welcome to franka_ros_interface's documentation!
 ================================================
 
+franka_ros_interface
+--------------------
+.. automodule:: franka_interface
+   :show-inheritance:
+
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 3
    :caption: Contents:
    :numbered:
 
-   readme_link
+   Introduction<readme_link>
    DOC
 
 Indices and tables

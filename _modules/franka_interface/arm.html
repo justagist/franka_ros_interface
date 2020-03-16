@@ -15,6 +15,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -280,23 +281,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_robot_state_subscriber</span><span class="o">.</span><span class="n">unregister</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_command_publisher</span><span class="o">.</span><span class="n">unregister</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">get_movegroup_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span>
+<div class="viewcode-block" id="ArmInterface.get_movegroup_interface"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.get_movegroup_interface">[docs]</a>    <span class="k">def</span> <span class="nf">get_movegroup_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: the movegroup interface instance associated with the robot.</span>
+<span class="sd">        :rtype: franka_moveit.PandaMoveGroupInterface</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span></div>
 
+<div class="viewcode-block" id="ArmInterface.get_robot_params"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.get_robot_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_robot_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: Useful parameters from the ROS parameter server.</span>
+<span class="sd">        :rtype: franka_interface.RobotParams</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span></div>
 
-    <span class="k">def</span> <span class="nf">get_robot_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span>
+<div class="viewcode-block" id="ArmInterface.get_joint_limits"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.get_joint_limits">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the joint limits (defined in the parameter server)</span>
 
-    <span class="k">def</span> <span class="nf">get_joint_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_limits</span>
+<span class="sd">        :rtype: franka_core_msgs.msg.JointLimits</span>
+<span class="sd">        :return: JointLimits</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_limits</span></div>
 
 <div class="viewcode-block" id="ArmInterface.joint_names"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_names">[docs]</a>    <span class="k">def</span> <span class="nf">joint_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the names of the joints for the specified limb.</span>
 
 <span class="sd">        :rtype: [str]</span>
-<span class="sd">        :return: ordered list of joint names from proximal to distal</span>
-<span class="sd">        (i.e. shoulder to wrist).</span>
+<span class="sd">        :return: ordered list of joint names from proximal to distal (i.e. shoulder to wrist).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span></div>
 
@@ -339,8 +352,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">message_converter</span><span class="o">.</span><span class="n">convert_ros_message_to_dictionary</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">current_errors</span><span class="p">)</span>
 
 
-    <span class="k">def</span> <span class="nf">gravity_comp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gravity</span>
+<div class="viewcode-block" id="ArmInterface.gravity_comp"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.gravity_comp">[docs]</a>    <span class="k">def</span> <span class="nf">gravity_comp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return gravity compensation torques.</span>
+
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        :return: 7D joint torques compensating for gravity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gravity</span></div>
 
 <div class="viewcode-block" id="ArmInterface.get_robot_status"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.get_robot_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_robot_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -436,8 +455,7 @@
 <span class="sd">        Return all joint angles.</span>
 
 <span class="sd">        :rtype: [double]</span>
-<span class="sd">        :return: joint angles (rad) orded by joint_names from proximal to distal</span>
-<span class="sd">        (i.e. shoulder to wrist).</span>
+<span class="sd">        :return: joint angles (rad) orded by joint_names from proximal to distal (i.e. shoulder to wrist).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span></div>
 
@@ -615,10 +633,10 @@
 <div class="viewcode-block" id="ArmInterface.set_joint_positions_velocities"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_joint_positions_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_positions_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commands the joints of this limb using specified positions and velocities using impedance control.</span>
-<span class="sd">        Command at time t is computed as </span>
-<span class="sd">            u_t = coriolis_factor * coriolis_t + </span>
-<span class="sd">                  K_p * (positions - curr_positions) + </span>
-<span class="sd">                  K_d * (velocities - curr_velocities)</span>
+<span class="sd">        Command at time t is computed as:</span>
+
+<span class="sd">        :math:`u_t= coriolis\_factor * coriolis\_t + K\_p * (positions - curr\_positions) +  K\_d * (velocities - curr\_velocities)`</span>
+
 
 <span class="sd">        :type positions: [float]</span>
 <span class="sd">        :param positions: desired joint positions as an ordered list corresponding to joints given by self.joint_names()</span>
@@ -633,9 +651,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_command_publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">has_collided</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
-        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_collision</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_collision</span><span class="p">)</span>
+<div class="viewcode-block" id="ArmInterface.has_collided"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.has_collided">[docs]</a>    <span class="k">def</span> <span class="nf">has_collided</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns true if either joint collision or cartesian collision is detected. </span>
+<span class="sd">        Collision thresholds can be set using instance of :py:class:`franka_tools.CollisionBehaviourInterface`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_collision</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_collision</span><span class="p">)</span></div>
         
 
 <div class="viewcode-block" id="ArmInterface.move_to_neutral"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.move_to_neutral">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_neutral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.15</span><span class="p">):</span>
@@ -647,7 +668,7 @@
 <span class="sd">        :param timeout: seconds to wait for move to finish [15]</span>
 <span class="sd">        :type speed: float</span>
 <span class="sd">        :param speed: ratio of maximum joint speed for execution</span>
-<span class="sd">                      default= 0.15; range= [0.0-1.0]</span>
+<span class="sd">         default= 0.15; range= [0.0-1.0]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_joint_position_speed</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_to_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_neutral_pose_joints</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_neutral_pose_joints</span><span class="p">)</span></div>
@@ -669,11 +690,11 @@
 <span class="sd">        :param timeout: seconds to wait for move to finish [15]</span>
 <span class="sd">        :type threshold: float</span>
 <span class="sd">        :param threshold: position threshold in radians across each joint when</span>
-<span class="sd">        move is considered successful [0.008726646]</span>
+<span class="sd">         move is considered successful [0.008726646]</span>
 <span class="sd">        :param test: optional function returning True if motion must be aborted</span>
 <span class="sd">        :type use_moveit: bool</span>
 <span class="sd">        :param use_moveit: if set to True, and movegroup interface is available, </span>
-<span class="sd">                        move to the joint positions using moveit planner.</span>
+<span class="sd">         move to the joint positions using moveit planner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.&quot;</span><span class="p">)</span>

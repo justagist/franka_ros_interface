@@ -216,7 +216,7 @@ table.modindextable td {
 /* -- general body styles --------------------------------------------------- */
 
 div.body {
-    min-width: 70%;
+    min-width: 80%;
     max-width: 800px;
 }
 
