@@ -103,8 +103,8 @@ class RobotParams(object):
         Return the names of the joints for the specified
         limb from ROS parameter.
 
-        @rtype: list [str]
-        @return: ordered list of joint names from proximal to distal
+        :rtype: list [str]
+        :return: ordered list of joint names from proximal to distal
                  (i.e. shoulder to wrist). joint names for limb
         """
         joint_names = list()
@@ -132,8 +132,8 @@ class RobotParams(object):
         """
         Return the name of class of robot from ROS parameter.
 
-        @rtype: str
-        @return: name of the robot
+        :rtype: str
+        :return: name of the robot
         """
         robot_name = None
         try:
