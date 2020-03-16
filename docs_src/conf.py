@@ -136,7 +136,7 @@ latex_elements = {
     'fncychap': r'\usepackage[Bjornstrup]{fncychap}',
     'printindex': r'\footnotesize\raggedright\printindex',
 }
-latex_show_urls = 'footnote'
+# latex_show_urls = 'footnote'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).

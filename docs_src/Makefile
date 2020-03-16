@@ -7,7 +7,7 @@ SPHINXBUILD   = sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = ../docs_build
 PDFBUILDDIR   = /tmp
-PDF           = ../documentation1.pdf
+PDF           = ../documentation.pdf
 
 # Put it first so that "make" without argument is like "make help".
 help:
