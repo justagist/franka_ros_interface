@@ -160,7 +160,7 @@ Python API
 ^^^^^^^^^^
 Most of the above services and topics are wrapped using simple Python
 classes or utility functions, providing more control and simplicity.
-See `Python Documentation`_.
+See `Python API Documentation`_.
 Refer induvidual Python files in *franka_interface* and *franka_tools*
 directories for more details.
 
@@ -201,6 +201,8 @@ License
 .. _Related Packages: #related-packages
 .. _Environments: #the-frankash-environments
 .. _install from source: https://frankaemika.github.io/docs/installation_linux.html#building-from-source
+
+.. _Python API Documentation: https://justagist.github.io/franka_ros_interface/DOC.html
 
 .. |Build Status| image:: https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master
    :target: https://travis-ci.org/justagist/franka_ros_interface

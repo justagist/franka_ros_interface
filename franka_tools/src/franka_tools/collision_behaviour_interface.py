@@ -55,16 +55,16 @@ class CollisionBehaviourInterface:
 
     def set_ft_contact_collision_behaviour(self, torque_lower = None, torque_upper = None, force_lower = None, force_upper = None):
         """
-        @return True if service call successful, False otherwise
-        @rtype: bool
-        @param torque_lower: Joint torque threshold for contact detection
-        @type torque_lower: [float] size 7
-        @param torque_upper: Joint torque threshold for collision (robot motion stops if violated)
-        @type torque_upper: [float] size 7
-        @param force_lower: Cartesian force threshold for contact detection [x,y,z,R,P,Y]
-        @type force_lower: [float] size 6
-        @param force_upper: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
-        @type force_upper: [float] size 6
+        :return: True if service call successful, False otherwise
+        :rtype: bool
+        :param torque_lower: Joint torque threshold for contact detection
+        :type torque_lower: [float] size 7
+        :param torque_upper: Joint torque threshold for collision (robot motion stops if violated)
+        :type torque_upper: [float] size 7
+        :param force_lower: Cartesian force threshold for contact detection [x,y,z,R,P,Y]
+        :type force_lower: [float] size 6
+        :param force_upper: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
+        :type force_upper: [float] size 6
         """
 
         if torque_lower is None:
@@ -90,40 +90,40 @@ class CollisionBehaviourInterface:
 
     def set_force_threshold_for_contact(self, cartesian_force_values):
         """
-        @return True if service call successful, False otherwise
-        @rtype: bool
-        @param cartesian_force_values: Cartesian force threshold for contact detection [x,y,z,R,P,Y]
-        @type cartesian_force_values: [float] size 6
+        :return: True if service call successful, False otherwise
+        :rtype: bool
+        :param cartesian_force_values: Cartesian force threshold for contact detection [x,y,z,R,P,Y]
+        :type cartesian_force_values: [float] size 6
         """
         return self.set_ft_contact_collision_behaviour(force_lower = cartesian_force_values)
 
     def set_force_threshold_for_collision(self, cartesian_force_values):
         """
-        @return True if service call successful, False otherwise
-        @rtype: bool
-        @param cartesian_force_values: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
-        @type cartesian_force_values: [float] size 6
+        :return: True if service call successful, False otherwise
+        :rtype: bool
+        :param cartesian_force_values: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
+        :type cartesian_force_values: [float] size 6
         """
         return self.set_ft_contact_collision_behaviour(force_upper = cartesian_force_values)
 
     def set_collision_threshold(self, joint_torques = None, cartesian_forces = None):
         """
-        @return True if service call successful, False otherwise
-        @rtype: bool
-        @param joint_torques: Joint torque threshold for collision (robot motion stops if violated)
-        @type joint_torques: [float] size 7
-        @param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
-        @type cartesian_forces: [float] size 6
+        :return: True if service call successful, False otherwise
+        :rtype: bool
+        :param joint_torques: Joint torque threshold for collision (robot motion stops if violated)
+        :type joint_torques: [float] size 7
+        :param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
+        :type cartesian_forces: [float] size 6
         """
         return self.set_ft_contact_collision_behaviour(torque_upper = joint_torques, force_upper = cartesian_forces)
 
     def set_contact_threshold(self, joint_torques = None, cartesian_forces = None):
         """
-        @return True if service call successful, False otherwise
-        @rtype: bool
-        @param joint_torques: Joint torque threshold for identifying as contact
-        @type joint_torques: [float] size 7
-        @param cartesian_forces: Cartesian force threshold for identifying as contact
-        @type cartesian_forces: [float] size 6
+        :return: True if service call successful, False otherwise
+        :rtype: bool
+        :param joint_torques: Joint torque threshold for identifying as contact
+        :type joint_torques: [float] size 7
+        :param cartesian_forces: Cartesian force threshold for identifying as contact
+        :type cartesian_forces: [float] size 6
         """
         return self.set_ft_contact_collision_behaviour(torque_lower = joint_torques, force_lower = cartesian_forces)

@@ -39,15 +39,15 @@ class ExtendedPlanningSceneInterface(moveit_commander.PlanningSceneInterface):
         """
         Add object to scene and check if it is created.
 
-        @param name: name of object
-        @param pose: desired pose for the box
-        @param size: size of the box
-        @param timeout: time in sec to wait while checking if box is created 
+        :param name: name of object
+        :param pose: desired pose for the box
+        :param size: size of the box
+        :param timeout: time in sec to wait while checking if box is created 
 
-        @type name: str
-        @type pose: geometry_msgs.msg.PoseStamped
-        @type size: [float] (len 3)
-        @type timeout: float
+        :type name: str
+        :type pose: geometry_msgs.msg.PoseStamped
+        :type size: [float] (len 3)
+        :type timeout: float
         """
 
         moveit_commander.PlanningSceneInterface.add_box(self, name = name, pose = pose, size=size)
@@ -72,7 +72,16 @@ class ExtendedPlanningSceneInterface(moveit_commander.PlanningSceneInterface):
         return False
 
     def remove_box(self, box_name, timeout=5):
+        """
+        Remove box from scene.
 
+        :param box_name: name of object
+        :param timeout: time in sec to wait while checking if box is created 
+
+        :type box_name: str
+        :type timeout: float
+
+        """
         self.remove_world_object(box_name)
 
         return self._wait_for_state_update(object_name = box_name, object_is_attached=False, object_is_known=False, timeout=timeout)

@@ -240,13 +240,26 @@ class ArmInterface(object):
         self._joint_command_publisher.unregister()
 
     def get_movegroup_interface(self):
+        """
+        :return: the movegroup interface instance associated with the robot.
+        :rtype: franka_moveit.PandaMoveGroupInterface
+        """
         return self._movegroup_interface
 
-
     def get_robot_params(self):
+        """
+        :return: Useful parameters from the ROS parameter server.
+        :rtype: franka_interface.RobotParams
+        """
         return self._params
 
     def get_joint_limits(self):
+        """
+        Return the joint limits (defined in the parameter server)
+
+        :rtype: franka_core_msgs.msg.JointLimits
+        :return: JointLimits
+        """
         return self._joint_limits
 
     def joint_names(self):
@@ -254,8 +267,7 @@ class ArmInterface(object):
         Return the names of the joints for the specified limb.
 
         :rtype: [str]
-        :return: ordered list of joint names from proximal to distal
-        (i.e. shoulder to wrist).
+        :return: ordered list of joint names from proximal to distal (i.e. shoulder to wrist).
         """
         return self._joint_names
 
@@ -299,6 +311,12 @@ class ArmInterface(object):
 
 
     def gravity_comp(self):
+        """
+        Return gravity compensation torques.
+
+        :rtype: np.ndarray
+        :return: 7D joint torques compensating for gravity.
+        """
         return self._gravity
 
     def get_robot_status(self):
@@ -395,8 +413,7 @@ class ArmInterface(object):
         Return all joint angles.
 
         :rtype: [double]
-        :return: joint angles (rad) orded by joint_names from proximal to distal
-        (i.e. shoulder to wrist).
+        :return: joint angles (rad) orded by joint_names from proximal to distal (i.e. shoulder to wrist).
         """
         return [self._joint_angle[name] for name in self._joint_names]
 
@@ -574,10 +591,10 @@ class ArmInterface(object):
     def set_joint_positions_velocities(self, positions, velocities):
         """
         Commands the joints of this limb using specified positions and velocities using impedance control.
-        Command at time t is computed as 
-            u_t = coriolis_factor * coriolis_t + 
-                  K_p * (positions - curr_positions) + 
-                  K_d * (velocities - curr_velocities)
+        Command at time t is computed as:
+
+        :math:`u_t= coriolis\_factor * coriolis\_t + K\_p * (positions - curr\_positions) +  K\_d * (velocities - curr\_velocities)`
+
 
         :type positions: [float]
         :param positions: desired joint positions as an ordered list corresponding to joints given by self.joint_names()
@@ -593,7 +610,10 @@ class ArmInterface(object):
 
 
     def has_collided(self):
-
+        """
+        Returns true if either joint collision or cartesian collision is detected. 
+        Collision thresholds can be set using instance of :py:class:`franka_tools.CollisionBehaviourInterface`.
+        """
         return any(self._joint_collision) or any(self._cartesian_collision)
         
 
@@ -606,7 +626,7 @@ class ArmInterface(object):
         :param timeout: seconds to wait for move to finish [15]
         :type speed: float
         :param speed: ratio of maximum joint speed for execution
-                      default= 0.15; range= [0.0-1.0]
+         default= 0.15; range= [0.0-1.0]
         """
         self.set_joint_position_speed(speed)
         self.move_to_joint_positions(self._neutral_pose_joints, timeout) if not self._params._in_sim else self.set_joint_positions(self._neutral_pose_joints)
@@ -628,11 +648,11 @@ class ArmInterface(object):
         :param timeout: seconds to wait for move to finish [15]
         :type threshold: float
         :param threshold: position threshold in radians across each joint when
-        move is considered successful [0.008726646]
+         move is considered successful [0.008726646]
         :param test: optional function returning True if motion must be aborted
         :type use_moveit: bool
         :param use_moveit: if set to True, and movegroup interface is available, 
-                        move to the joint positions using moveit planner.
+         move to the joint positions using moveit planner.
         """
         if self._params._in_sim:
             rospy.logwarn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")

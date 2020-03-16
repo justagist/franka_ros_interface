@@ -153,8 +153,7 @@ class GripperInterface(object):
         Return the names of the joints for the specified limb.
 
         :rtype: [str]
-        :return: ordered list of joint names from proximal to distal
-        (i.e. shoulder to wrist).
+        :return: ordered list of joint names.
         """
         return self._joint_names
 
@@ -267,7 +266,7 @@ class GripperInterface(object):
         This is needed to estimate the maximum grasping width.
 
         :param wait_for_result: if True, this method will block till response is 
-                                    recieved from server
+         recieved from server
         :type wait_for_result: bool
        
         :return: success
@@ -305,8 +304,8 @@ class GripperInterface(object):
         object before it reaches the commanded width, we catch the feedback 
         and send the gripper stop command to stop it where it is.
 
-        :return True if command was successful, False otherwise.
-        :rtype bool
+        :return: True if command was successful, False otherwise.
+        :rtype: bool
         """
         def cb( _, result):
             if not result.success:
