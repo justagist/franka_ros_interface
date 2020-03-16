@@ -57,7 +57,26 @@
 <dl class="class">
 <dt id="franka_interface.ArmInterface">
 <em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">ArmInterface</code><span class="sig-paren">(</span><em>synchronous_pub=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interface Class for an arm of Franka Panda robot</p>
+<dd><p>Interface Class for an arm of Franka Panda robot
+Constructor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>synchronous_pub</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – <p>designates the JointCommand Publisher
+as Synchronous if True and Asynchronous if False.</p>
+<p>Synchronous Publishing means that all joint_commands publishing to
+the robot’s joints will block until the message has been serialized
+into a buffer and that buffer has been written to the transport
+of every current Subscriber. This yields predicable and consistent
+timing of messages being delivered from this Publisher. However,
+when using this mode, it is possible for a blocking Subscriber to
+prevent the joint_command functions from exiting. Unless you need exact
+JointCommand timing, default to Asynchronous Publishing (False).</p>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="class">
 <dt id="franka_interface.ArmInterface.RobotMode">
 <em class="property">class </em><code class="descname">RobotMode</code><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.RobotMode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.RobotMode" title="Permalink to this definition">¶</a></dt>
@@ -68,152 +87,258 @@
 <dt id="franka_interface.ArmInterface.endpoint_effort">
 <code class="descname">endpoint_effort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.endpoint_effort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.endpoint_effort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Cartesian endpoint wrench {force, torque}.</p>
-<p>&#64;rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
-&#64;return: force and torque at endpoint as named tuples in a dict</p>
-<p>C{wrench = {‘force’: (x, y, z), ‘torque’: (x, y, z)}}</p>
-<blockquote>
-<div><ul class="simple">
-<li>‘force’: Cartesian force on x,y,z axes in np.ndarray format</li>
-<li>‘torque’: Torque around x,y,z axes in np.ndarray format</li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:L{Limb.Point},str:L{Limb.Point}})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">force and torque at endpoint as named tuples in a dict<ul class="simple">
+<li>’force’: Cartesian force on x,y,z axes in np.ndarray format</li>
+<li>’torque’: Torque around x,y,z axes in np.ndarray format</li>
 </ul>
-</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.endpoint_pose">
 <code class="descname">endpoint_pose</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.endpoint_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.endpoint_pose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Cartesian endpoint pose {position, orientation}.</p>
-<p>&#64;rtype: dict({str:L{Limb.Point},str:L{Limb.Quaternion}})
-&#64;return: position and orientation as named tuples in a dict</p>
-<p>C{pose = {‘position’: (x, y, z), ‘orientation’: (x, y, z, w)}}</p>
-<blockquote>
-<div><ul class="simple">
-<li>‘position’: np.array of x, y, z</li>
-<li>‘orientation’: quaternion x,y,z,w in quaternion format</li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:L{Limb.Point},str:L{Limb.Quaternion}})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">position and orientation as named tuples in a dict<ul class="simple">
+<li>’position’: np.array of x, y, z</li>
+<li>’orientation’: quaternion x,y,z,w in quaternion format</li>
 </ul>
-</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.endpoint_velocity">
 <code class="descname">endpoint_velocity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.endpoint_velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.endpoint_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Cartesian endpoint twist {linear, angular}.</p>
-<p>&#64;rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
-&#64;return: linear and angular velocities as named tuples in a dict</p>
-<p>C{twist = {‘linear’: (x, y, z), ‘angular’: (x, y, z)}}</p>
-<blockquote>
-<div><ul class="simple">
-<li>‘linear’: np.array of x, y, z</li>
-<li>‘angular’: np.array of x, y, z (angular velocity along the axes)</li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:L{Limb.Point},str:L{Limb.Point}})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">linear and angular velocities as named tuples in a dict<ul class="simple">
+<li>’linear’: np.array of x, y, z</li>
+<li>’angular’: np.array of x, y, z (angular velocity along the axes)</li>
 </ul>
-</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.error_in_current_state">
 <code class="descname">error_in_current_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.error_in_current_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.error_in_current_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if the specified limb has experienced an error.</p>
-<p>&#64;rtype: bool
-&#64;return: True if the arm has error, False otherwise.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the arm has error, False otherwise.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.get_robot_status">
 <code class="descname">get_robot_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.get_robot_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.get_robot_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return dict with all robot status information.</p>
-<p>&#64;rtype: dict
-&#64;return: [‘robot_mode’ (RobotMode object), ‘robot_status’ (bool), ‘errors’ (dict() of errors and their truth value), ‘error_in_curr_status’ (bool)]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[‘robot_mode’ (RobotMode object), ‘robot_status’ (bool), ‘errors’ (dict() of errors and their truth value), ‘error_in_curr_status’ (bool)]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.in_safe_state">
 <code class="descname">in_safe_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.in_safe_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.in_safe_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if the specified limb is in safe state (no collision, reflex, errors etc.).</p>
-<p>&#64;rtype: bool
-&#64;return: True if the arm is in safe state, False otherwise.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the arm is in safe state, False otherwise.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.joint_angle">
 <code class="descname">joint_angle</code><span class="sig-paren">(</span><em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.joint_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.joint_angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the requested joint angle.</p>
-<p>&#64;type joint: str
-&#64;param joint: name of a joint
-&#64;rtype: float
-&#64;return: angle in radians of individual joint</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of a joint</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">angle in radians of individual joint</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.joint_angles">
 <code class="descname">joint_angles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.joint_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.joint_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint angles.</p>
-<p>&#64;rtype: dict({str:float})
-&#64;return: unordered dict of joint name Keys to angle (rad) Values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:float})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">unordered dict of joint name Keys to angle (rad) Values</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.joint_effort">
 <code class="descname">joint_effort</code><span class="sig-paren">(</span><em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.joint_effort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.joint_effort" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div>Return the requested joint effort.</div></blockquote>
-<dl class="docutils">
-<dt>_ns</dt>
-<dd>&#64;type joint: str
-&#64;param joint: name of a joint
-&#64;rtype: float
-&#64;return: effort in Nm of individual joint</dd>
-</dl>
+<dd><p>Return the requested joint effort.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of a joint</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">effort in Nm of individual joint</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.joint_efforts">
 <code class="descname">joint_efforts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.joint_efforts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.joint_efforts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint efforts.</p>
-<p>&#64;rtype: dict({str:float})
-&#64;return: unordered dict of joint name Keys to effort (Nm) Values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:float})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">unordered dict of joint name Keys to effort (Nm) Values</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.joint_inertia_matrix">
 <code class="descname">joint_inertia_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.joint_inertia_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.joint_inertia_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return joint inertia matrix (7,7)</p>
-<p>&#64;rtype: np.ndarray [7x7]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray [7x7]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.joint_names">
 <code class="descname">joint_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.joint_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.joint_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the names of the joints for the specified limb.</p>
-<p>&#64;rtype: [str]
-&#64;return: ordered list of joint names from proximal to distal
-(i.e. shoulder to wrist).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">ordered list of joint names from proximal to distal</td>
+</tr>
+</tbody>
+</table>
+<p>(i.e. shoulder to wrist).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.joint_ordered_angles">
 <code class="descname">joint_ordered_angles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.joint_ordered_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.joint_ordered_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint angles.</p>
-<p>&#64;rtype: [double]
-&#64;return: joint angles (rad) orded by joint_names from proximal to distal
-(i.e. shoulder to wrist).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[double]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">joint angles (rad) orded by joint_names from proximal to distal</td>
+</tr>
+</tbody>
+</table>
+<p>(i.e. shoulder to wrist).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.joint_velocities">
 <code class="descname">joint_velocities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.joint_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.joint_velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint velocities.</p>
-<p>&#64;rtype: dict({str:float})
-&#64;return: unordered dict of joint name Keys to velocity (rad/s) Values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:float})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">unordered dict of joint name Keys to velocity (rad/s) Values</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.joint_velocity">
 <code class="descname">joint_velocity</code><span class="sig-paren">(</span><em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.joint_velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.joint_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the requested joint velocity.</p>
-<p>&#64;type joint: str
-&#64;param joint: name of a joint
-&#64;rtype: float
-&#64;return: velocity in radians/s of individual joint</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of a joint</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">velocity in radians/s of individual joint</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -222,16 +347,23 @@
 <dd><p>(Blocking) Commands the limb to the provided positions.</p>
 <p>Waits until the reported joint state matches that specified.</p>
 <p>This function uses a low-pass filter to smooth the movement.</p>
-<p>&#64;type positions: dict({str:float})
-&#64;param positions: joint_name:angle command
-&#64;type timeout: float
-&#64;param timeout: seconds to wait for move to finish [15]
-&#64;type threshold: float
-&#64;param threshold: position threshold in radians across each joint when
-move is considered successful [0.008726646]
-&#64;param test: optional function returning True if motion must be aborted
-&#64;type use_moveit: bool
-&#64;param use_moveit: if set to True, and movegroup interface is available,</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>(</em><em>{str:float}</em><em>)</em>) – joint_name:angle command</li>
+<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – seconds to wait for move to finish [15]</li>
+<li><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – position threshold in radians across each joint when</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>move is considered successful [0.008726646]
+:param test: optional function returning True if motion must be aborted
+:type use_moveit: bool
+:param use_moveit: if set to True, and movegroup interface is available,</p>
 <blockquote>
 <div>move to the joint positions using moveit planner.</div></blockquote>
 </dd></dl>
@@ -241,20 +373,35 @@ move is considered successful [0.008726646]
 <code class="descname">move_to_neutral</code><span class="sig-paren">(</span><em>timeout=15.0</em>, <em>speed=0.15</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.move_to_neutral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.move_to_neutral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Command the Limb joints to a predefined set of “neutral” joint angles.
 From rosparam /franka_control/neutral_pose.</p>
-<p>&#64;type timeout: float
-&#64;param timeout: seconds to wait for move to finish [15]
-&#64;type speed: float
-&#64;param speed: ratio of maximum joint speed for execution</p>
-<blockquote>
-<div>default= 0.15; range= [0.0-1.0]</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – seconds to wait for move to finish [15]</li>
+<li><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – ratio of maximum joint speed for execution
+default= 0.15; range= [0.0-1.0]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.reset_EE_frame">
 <code class="descname">reset_EE_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.reset_EE_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.reset_EE_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset EE frame to default. (defined by FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above)</p>
-<p>&#64;rtype: [bool, str]
-&#64;return: [success status of service request, error msg if any]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[success status of service request, error msg if any]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -263,10 +410,18 @@ From rosparam /franka_control/neutral_pose.</p>
 <dd><p>Set new EE frame based on the transformation given by ‘frame’, which is the 
 transformation matrix defining the new desired EE frame with respect to the flange frame.
 Motion controllers are stopped for switching</p>
-<p>&#64;type frame: [float (16,)] / np.ndarray (4x4) 
-&#64;param frame: transformation matrix of new EE frame wrt flange frame (column major)
-&#64;rtype: [bool, str]
-&#64;return: [success status of service request, error msg if any]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>16</em><em>,</em><em>)</em><em>] </em><em>/ np.ndarray</em><em> (</em><em>4x4</em><em>)</em>) – transformation matrix of new EE frame wrt flange frame (column major)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">[success status of service request, error msg if any]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -274,30 +429,56 @@ Motion controllers are stopped for switching</p>
 <code class="descname">set_EE_frame_to_link</code><span class="sig-paren">(</span><em>frame_name</em>, <em>timeout=5.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_EE_frame_to_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_EE_frame_to_link" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set new EE frame to the same frame as the link frame given by ‘frame_name’
 Motion controllers are stopped for switching</p>
-<p>&#64;type frame_name: str 
-&#64;param frame_name: desired tf frame name in the tf tree
-&#64;rtype: [bool, str]
-&#64;return: [success status of service request, error msg if any]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – desired tf frame name in the tf tree</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">[success status of service request, error msg if any]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.set_collision_threshold">
 <code class="descname">set_collision_threshold</code><span class="sig-paren">(</span><em>cartesian_forces=None</em>, <em>joint_torques=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_collision_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_collision_threshold" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set Force Torque thresholds for deciding robot has collided.</p>
-<p>&#64;return True if service call successful, False otherwise
-&#64;rtype: bool
-&#64;param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)
-&#64;type cartesian_forces: [float] size 6
-&#64;param joint_torques: Joint torque threshold for collision (robot motion stops if violated)
-&#64;type joint_torques: [float] size 7</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if service call successful, False otherwise</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cartesian_forces</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 6</em>) – Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)</li>
+<li><strong>joint_torques</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>] </em><em>size 7</em>) – Joint torque threshold for collision (robot motion stops if violated)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.set_command_timeout">
 <code class="descname">set_command_timeout</code><span class="sig-paren">(</span><em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_command_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_command_timeout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the timeout in seconds for the joint controller</p>
-<p>&#64;type timeout: float
-&#64;param timeout: timeout in seconds</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – timeout in seconds</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -309,18 +490,29 @@ during joint position control execution. The default ratio
 is <cite>0.3</cite>, and can be set anywhere from [0.0-1.0] (clipped).
 Once set, a speed ratio will persist until a new execution
 speed is set.</p>
-<p>&#64;type speed: float
-&#64;param speed: ratio of maximum joint speed for execution</p>
-<blockquote>
-<div>default= 0.3; range= [0.0-1.0]</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – ratio of maximum joint speed for execution
+default= 0.3; range= [0.0-1.0]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.set_joint_positions">
 <code class="descname">set_joint_positions</code><span class="sig-paren">(</span><em>positions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_joint_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_joint_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Commands the joints of this limb to the specified positions.</p>
-<p>&#64;type positions: [float]
-&#64;param positions: ordered joint angles (from joint1 to joint7) to be commanded</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>positions</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em>) – ordered joint angles (from joint1 to joint7) to be commanded</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -335,49 +527,92 @@ Command at time t is computed as</p>
 K_d * (velocities - curr_velocities)</dd>
 </dl>
 </div></blockquote>
-<p>&#64;type positions: [float]
-&#64;param positions: desired joint positions as an ordered list corresponding to joints given by self.joint_names()
-&#64;type velocities: [float]
-&#64;param velocities: desired joint velocities as an ordered list corresponding to joints given by self.joint_names()</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>positions</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em>) – desired joint positions as an ordered list corresponding to joints given by self.joint_names()</li>
+<li><strong>velocities</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em>) – desired joint velocities as an ordered list corresponding to joints given by self.joint_names()</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.set_joint_torques">
 <code class="descname">set_joint_torques</code><span class="sig-paren">(</span><em>torques</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_joint_torques"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_joint_torques" title="Permalink to this definition">¶</a></dt>
 <dd><p>Commands the joints of this limb to the specified torques.</p>
-<p>&#64;type torques: dict({str:float})
-&#64;param torques: joint_name:torque command</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>torques</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>(</em><em>{str:float}</em><em>)</em>) – joint_name:torque command</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.set_joint_velocities">
 <code class="descname">set_joint_velocities</code><span class="sig-paren">(</span><em>velocities</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_joint_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_joint_velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Commands the joints of this limb to the specified velocities.</p>
-<p>&#64;type velocities: dict({str:float})
-&#64;param velocities: joint_name:velocity command</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>(</em><em>{str:float}</em><em>)</em>) – joint_name:velocity command</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.tip_states">
 <code class="descname">tip_states</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.tip_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.tip_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Cartesian endpoint state for a given tip name</p>
-<p>&#64;rtype: TipState object
-&#64;return: pose, velocity, effort, effort_in_K_frame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">TipState object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">pose, velocity, effort, effort_in_K_frame</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.what_errors">
 <code class="descname">what_errors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.what_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.what_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return list of error messages if there is error in robot state</p>
-<p>&#64;rtype: [str]
-&#64;return: list of names of current errors in robot state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of names of current errors in robot state</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.zero_jacobian">
 <code class="descname">zero_jacobian</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.zero_jacobian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.zero_jacobian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return end-effector jacobian (6,7)</p>
-<p>&#64;rtype: np.ndarray [6x7]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray [6x7]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -394,6 +629,19 @@ K_d * (velocities - curr_velocities)</dd>
 <dt id="franka_interface.GripperInterface">
 <em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">GripperInterface</code><span class="sig-paren">(</span><em>gripper_joint_names=['panda_finger_joint1', 'panda_finger_joint2'], ns='franka_ros_interface', calibrate=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interface class for the gripper on the Franka Panda robot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>gripper_joint_names</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>]</em>) – Names of the finger joints</li>
+<li><strong>ns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – base namespace of interface (‘frank_ros_interface’/’panda_simulator’)</li>
+<li><strong>calibrate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Attempts to calibrate the gripper when initializing class (defaults True)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="franka_interface.GripperInterface.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.close" title="Permalink to this definition">¶</a></dt>
@@ -403,8 +651,8 @@ faked by catching the error thrown when trying to grasp a very small
 object with a very small force. Since the gripper will actually hit the
 object before it reaches the commanded width, we catch the feedback 
 and send the gripper stop command to stop it where it is.</p>
-<p>&#64;return True if command was successful, False otherwise.
-&#64;rtype bool</p>
+<p>:return True if command was successful, False otherwise.
+:rtype bool</p>
 </dd></dl>
 
 <dl class="method">
@@ -413,23 +661,30 @@ and send the gripper stop command to stop it where it is.</p>
 <dd><p>Grasps an object.</p>
 <p>An object is considered grasped if the distance $d$ between the gripper fingers satisfies
 $(      ext{width} -    ext{epsilon_inner}) &lt; d &lt; (     ext{width} +    ext{epsilon_outer})$.</p>
-<p>&#64;param width        : Size of the object to grasp. [m]
-&#64;param speed        : Closing speed. [m/s]
-&#64;param force        : Grasping force. [N]
-&#64;param epsilon_inner: Maximum tolerated deviation when the actual grasped width is smaller</p>
-<blockquote>
-<div>than the commanded grasp width.</div></blockquote>
-<dl class="docutils">
-<dt>&#64;param epsilon_outer: Maximum tolerated deviation when the actual grasped width is wider</dt>
-<dd>than the commanded grasp width.</dd>
-</dl>
-<p>&#64;param cb           : Optional callback function to use when the service call is done</p>
-<p>&#64;type width         : float
-&#64;type speed         : float
-&#64;type force         : float
-&#64;type epsilon_inner : float
-&#64;type epsilon_outer : float</p>
-<p>&#64;return True if an object has been grasped, false otherwise.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Size of the object to grasp. [m]</li>
+<li><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Closing speed. [m/s]</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Grasping force. [N]</li>
+<li><strong>epsilon_inner</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum tolerated deviation when the actual grasped width is smaller
+than the commanded grasp width.</li>
+<li><strong>epsilon_outer</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum tolerated deviation when the actual grasped width is wider
+than the commanded grasp width.</li>
+<li><strong>cb</strong> – Optional callback function to use when the service call is done</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if an object has been grasped, false otherwise.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -438,140 +693,258 @@ $(      ext{width} -    ext{epsilon_inner}) &lt; d &lt; (     ext{width} +    ex
 <dd><p>Performs homing of the gripper.</p>
 <p>After changing the gripper fingers, a homing needs to be done.
 This is needed to estimate the maximum grasping width.</p>
-<dl class="docutils">
-<dt>&#64;param wait_for_result <span class="classifier-delimiter">:</span> <span class="classifier">if True, this method will block till response is </span></dt>
-<dd>recieved from server</dd>
-</dl>
-<p>&#64;type wait_for_result   : bool</p>
-<p>&#64;return success
-&#64;rtype bool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wait_for_result</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True, this method will block till response is 
+recieved from server</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">success</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_effort">
 <code class="descname">joint_effort</code><span class="sig-paren">(</span><em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_effort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_effort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the requested joint effort.</p>
-<p>&#64;param joint    : name of a joint
-&#64;type joint     : str</p>
-<p>&#64;rtype: float
-&#64;return: effort in Nm of individual joint</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of a joint</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">effort in Nm of individual joint</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_efforts">
 <code class="descname">joint_efforts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_efforts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_efforts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint efforts.</p>
-<p>&#64;rtype: dict({str:float})
-&#64;return: unordered dict of joint name Keys to effort (Nm) Values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:float})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">unordered dict of joint name Keys to effort (Nm) Values</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_names">
 <code class="descname">joint_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the names of the joints for the specified limb.</p>
-<p>&#64;rtype: [str]
-&#64;return: ordered list of joint names from proximal to distal
-(i.e. shoulder to wrist).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">ordered list of joint names from proximal to distal</td>
+</tr>
+</tbody>
+</table>
+<p>(i.e. shoulder to wrist).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_ordered_efforts">
 <code class="descname">joint_ordered_efforts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_ordered_efforts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_ordered_efforts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint efforts.</p>
-<p>&#64;rtype: [double]
-&#64;return: joint efforts ordered by joint_names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[double]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">joint efforts ordered by joint_names.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_ordered_positions">
 <code class="descname">joint_ordered_positions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_ordered_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_ordered_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint positions.</p>
-<p>&#64;rtype: [double]
-&#64;return: joint positions ordered by joint_names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[double]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">joint positions ordered by joint_names.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_ordered_velocities">
 <code class="descname">joint_ordered_velocities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_ordered_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_ordered_velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint velocities.</p>
-<p>&#64;rtype: [double]
-&#64;return: joint velocities ordered by joint_names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[double]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">joint velocities ordered by joint_names.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_position">
 <code class="descname">joint_position</code><span class="sig-paren">(</span><em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the requested joint position.</p>
-<p>&#64;param joint    : name of a joint
-&#64;type joint     : str</p>
-<p>&#64;rtype: float
-&#64;return: position individual joint</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of a joint</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">position individual joint</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_positions">
 <code class="descname">joint_positions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint positions.</p>
-<p>&#64;rtype: dict({str:float})
-&#64;return: unordered dict of joint name Keys to pos</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:float})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">unordered dict of joint name Keys to pos</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_velocities">
 <code class="descname">joint_velocities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all joint velocities.</p>
-<p>&#64;rtype: dict({str:float})
-&#64;return: unordered dict of joint name Keys to velocity (rad/s) Values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:float})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">unordered dict of joint name Keys to velocity (rad/s) Values</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.joint_velocity">
 <code class="descname">joint_velocity</code><span class="sig-paren">(</span><em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.joint_velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.joint_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the requested joint velocity.</p>
-<p>&#64;param joint    : name of a joint
-&#64;type joint     : str</p>
-<p>&#64;rtype: float
-&#64;return: velocity in radians/s of individual joint</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of a joint</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">velocity in radians/s of individual joint</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.move_joints">
 <code class="descname">move_joints</code><span class="sig-paren">(</span><em>width</em>, <em>speed=None</em>, <em>wait_for_result=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.move_joints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.move_joints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Moves the gripper fingers to a specified width.</p>
-<p>&#64;param width            : Intended opening width. [m]
-&#64;param speed            : Closing speed. [m/s]
-&#64;param wait_for_result  : if True, this method will block till response is</p>
-<blockquote>
-<div>recieved from server</div></blockquote>
-<p>&#64;type width             : float
-&#64;type speed             : float
-&#64;type wait_for_result   : bool</p>
-<p>&#64;return True if command was successful, False otherwise.
-&#64;rtype bool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Intended opening width. [m]</li>
+<li><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Closing speed. [m/s]</li>
+<li><strong>wait_for_result</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True, this method will block till response is 
+recieved from server</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if command was successful, False otherwise.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.open">
 <code class="descname">open</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.open" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open gripper to max possible width.</p>
-<p>&#64;return True if command was successful, False otherwise.
-&#64;rtype bool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if command was successful, False otherwise.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.set_velocity">
 <code class="descname">set_velocity</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.set_velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.set_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set default value for gripper joint motions. Used for move and grasp commands.</p>
-<p>&#64;param value  : speed value [m/s]
-&#64;type value   : float</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – speed value [m/s]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.GripperInterface.stop_action">
 <code class="descname">stop_action</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface.stop_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface.stop_action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops a currently running gripper move or grasp.</p>
-<p>&#64;return True if command was successful, False otherwise.
-&#64;rtype bool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if command was successful, False otherwise.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -590,6 +963,14 @@ This is needed to estimate the maximum grasping width.</p>
 disable() - disable all joints
 reset()   - reset all joints, reset all jrcp faults, disable the robot
 stop()    - stop the robot, similar to hitting the e-stop button</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>robot_params</strong> (<a class="reference internal" href="#franka_interface.RobotParams" title="franka_interface.RobotParams"><em>RobotParams</em></a>) – A RobotParams instance (optional)</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="franka_interface.RobotEnable.disable">
 <code class="descname">disable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/robot_enable.html#RobotEnable.disable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.RobotEnable.disable" title="Permalink to this definition">¶</a></dt>
@@ -606,8 +987,16 @@ stop()    - stop the robot, similar to hitting the e-stop button</p>
 <dt id="franka_interface.RobotEnable.state">
 <code class="descname">state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/robot_enable.html#RobotEnable.state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.RobotEnable.state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the last known robot state.</p>
-<p>&#64;rtype: intera_core_msgs/AssemblyState
-&#64;return: Returns the last received AssemblyState message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">“Enabled”/”Disabled”</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -627,18 +1016,33 @@ stop()    - stop the robot, similar to hitting the e-stop button</p>
 <code class="descname">get_joint_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/robot_params.html#RobotParams.get_joint_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.RobotParams.get_joint_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the names of the joints for the specified
 limb from ROS parameter.</p>
-<p>&#64;rtype: list [str]
-&#64;return: ordered list of joint names from proximal to distal</p>
-<blockquote>
-<div>(i.e. shoulder to wrist). joint names for limb</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a> [<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">ordered list of joint names from proximal to distal
+(i.e. shoulder to wrist). joint names for limb</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_interface.RobotParams.get_robot_name">
 <code class="descname">get_robot_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/robot_params.html#RobotParams.get_robot_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.RobotParams.get_robot_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of class of robot from ROS parameter.</p>
-<p>&#64;rtype: str
-&#64;return: name of the robot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">name of the robot</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

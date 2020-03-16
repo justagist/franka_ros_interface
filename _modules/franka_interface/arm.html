@@ -123,6 +123,20 @@
 
     <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    Interface Class for an arm of Franka Panda robot</span>
+<span class="sd">    Constructor.</span>
+<span class="sd">    </span>
+<span class="sd">    :type synchronous_pub: bool</span>
+<span class="sd">    :param synchronous_pub: designates the JointCommand Publisher</span>
+<span class="sd">        as Synchronous if True and Asynchronous if False.</span>
+
+<span class="sd">        Synchronous Publishing means that all joint_commands publishing to</span>
+<span class="sd">        the robot&#39;s joints will block until the message has been serialized</span>
+<span class="sd">        into a buffer and that buffer has been written to the transport</span>
+<span class="sd">        of every current Subscriber. This yields predicable and consistent</span>
+<span class="sd">        timing of messages being delivered from this Publisher. However,</span>
+<span class="sd">        when using this mode, it is possible for a blocking Subscriber to</span>
+<span class="sd">        prevent the joint_command functions from exiting. Unless you need exact</span>
+<span class="sd">        JointCommand timing, default to Asynchronous Publishing (False).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Containers</span>
@@ -145,20 +159,6 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">synchronous_pub</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Constructor.</span>
-<span class="sd">        </span>
-<span class="sd">        @type synchronous_pub: bool</span>
-<span class="sd">        @param synchronous_pub: designates the JointCommand Publisher</span>
-<span class="sd">            as Synchronous if True and Asynchronous if False.</span>
-
-<span class="sd">            Synchronous Publishing means that all joint_commands publishing to</span>
-<span class="sd">            the robot&#39;s joints will block until the message has been serialized</span>
-<span class="sd">            into a buffer and that buffer has been written to the transport</span>
-<span class="sd">            of every current Subscriber. This yields predicable and consistent</span>
-<span class="sd">            timing of messages being delivered from this Publisher. However,</span>
-<span class="sd">            when using this mode, it is possible for a blocking Subscriber to</span>
-<span class="sd">            prevent the joint_command functions from exiting. Unless you need exact</span>
-<span class="sd">            JointCommand timing, default to Asynchronous Publishing (False).</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -294,8 +294,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the names of the joints for the specified limb.</span>
 
-<span class="sd">        @rtype: [str]</span>
-<span class="sd">        @return: ordered list of joint names from proximal to distal</span>
+<span class="sd">        :rtype: [str]</span>
+<span class="sd">        :return: ordered list of joint names from proximal to distal</span>
 <span class="sd">        (i.e. shoulder to wrist).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span></div>
@@ -346,8 +346,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return dict with all robot status information.</span>
 
-<span class="sd">        @rtype: dict</span>
-<span class="sd">        @return: [&#39;robot_mode&#39; (RobotMode object), &#39;robot_status&#39; (bool), &#39;errors&#39; (dict() of errors and their truth value), &#39;error_in_curr_status&#39; (bool)]</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        :return: [&#39;robot_mode&#39; (RobotMode object), &#39;robot_status&#39; (bool), &#39;errors&#39; (dict() of errors and their truth value), &#39;error_in_curr_status&#39; (bool)]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;robot_mode&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="p">,</span> <span class="s1">&#39;robot_status&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode_ok</span><span class="p">,</span> <span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">,</span> <span class="s1">&#39;error_in_current_state&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_in_current_state</span><span class="p">()}</span></div>
 
@@ -355,8 +355,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if the specified limb is in safe state (no collision, reflex, errors etc.).</span>
 
-<span class="sd">        @rtype: bool</span>
-<span class="sd">        @return: True if the arm is in safe state, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :return: True if the arm is in safe state, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode_ok</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_in_current_state</span><span class="p">()</span></div>
 
@@ -364,8 +364,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if the specified limb has experienced an error.</span>
 
-<span class="sd">        @rtype: bool</span>
-<span class="sd">        @return: True if the arm has error, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :return: True if the arm has error, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">e</span> <span class="o">==</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span></div>
 
@@ -373,8 +373,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of error messages if there is error in robot state</span>
 
-<span class="sd">        @rtype: [str]</span>
-<span class="sd">        @return: list of names of current errors in robot state</span>
+<span class="sd">        :rtype: [str]</span>
+<span class="sd">        :return: list of names of current errors in robot state</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_in_current_state</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span></div>
 
@@ -415,10 +415,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the requested joint angle.</span>
 
-<span class="sd">        @type joint: str</span>
-<span class="sd">        @param joint: name of a joint</span>
-<span class="sd">        @rtype: float</span>
-<span class="sd">        @return: angle in radians of individual joint</span>
+<span class="sd">        :type joint: str</span>
+<span class="sd">        :param joint: name of a joint</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        :return: angle in radians of individual joint</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="n">joint</span><span class="p">]</span></div>
 
@@ -426,8 +426,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint angles.</span>
 
-<span class="sd">        @rtype: dict({str:float})</span>
-<span class="sd">        @return: unordered dict of joint name Keys to angle (rad) Values</span>
+<span class="sd">        :rtype: dict({str:float})</span>
+<span class="sd">        :return: unordered dict of joint name Keys to angle (rad) Values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">)</span></div>
 
@@ -435,8 +435,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint angles.</span>
 
-<span class="sd">        @rtype: [double]</span>
-<span class="sd">        @return: joint angles (rad) orded by joint_names from proximal to distal</span>
+<span class="sd">        :rtype: [double]</span>
+<span class="sd">        :return: joint angles (rad) orded by joint_names from proximal to distal</span>
 <span class="sd">        (i.e. shoulder to wrist).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span></div>
@@ -445,10 +445,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the requested joint velocity.</span>
 
-<span class="sd">        @type joint: str</span>
-<span class="sd">        @param joint: name of a joint</span>
-<span class="sd">        @rtype: float</span>
-<span class="sd">        @return: velocity in radians/s of individual joint</span>
+<span class="sd">        :type joint: str</span>
+<span class="sd">        :param joint: name of a joint</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        :return: velocity in radians/s of individual joint</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="p">[</span><span class="n">joint</span><span class="p">]</span></div>
 
@@ -456,19 +456,19 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint velocities.</span>
 
-<span class="sd">        @rtype: dict({str:float})</span>
-<span class="sd">        @return: unordered dict of joint name Keys to velocity (rad/s) Values</span>
+<span class="sd">        :rtype: dict({str:float})</span>
+<span class="sd">        :return: unordered dict of joint name Keys to velocity (rad/s) Values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArmInterface.joint_effort"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_effort">[docs]</a>    <span class="k">def</span> <span class="nf">joint_effort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the requested joint effort.</span>
-<span class="sd">_ns</span>
-<span class="sd">        @type joint: str</span>
-<span class="sd">        @param joint: name of a joint</span>
-<span class="sd">        @rtype: float</span>
-<span class="sd">        @return: effort in Nm of individual joint</span>
+
+<span class="sd">        :type joint: str</span>
+<span class="sd">        :param joint: name of a joint</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        :return: effort in Nm of individual joint</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_effort</span><span class="p">[</span><span class="n">joint</span><span class="p">]</span></div>
 
@@ -476,8 +476,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint efforts.</span>
 
-<span class="sd">        @rtype: dict({str:float})</span>
-<span class="sd">        @return: unordered dict of joint name Keys to effort (Nm) Values</span>
+<span class="sd">        :rtype: dict({str:float})</span>
+<span class="sd">        :return: unordered dict of joint name Keys to effort (Nm) Values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_effort</span><span class="p">)</span></div>
 
@@ -485,10 +485,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint pose {position, orientation}.</span>
 
-<span class="sd">        @rtype: dict({str:L{Limb.Point},str:L{Limb.Quaternion}})</span>
-<span class="sd">        @return: position and orientation as named tuples in a dict</span>
-
-<span class="sd">        C{pose = {&#39;position&#39;: (x, y, z), &#39;orientation&#39;: (x, y, z, w)}}</span>
+<span class="sd">        :rtype: dict({str:L{Limb.Point},str:L{Limb.Quaternion}})</span>
+<span class="sd">        :return: position and orientation as named tuples in a dict</span>
 
 <span class="sd">          - &#39;position&#39;: np.array of x, y, z</span>
 <span class="sd">          - &#39;orientation&#39;: quaternion x,y,z,w in quaternion format</span>
@@ -500,10 +498,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint twist {linear, angular}.</span>
 
-<span class="sd">        @rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})</span>
-<span class="sd">        @return: linear and angular velocities as named tuples in a dict</span>
-
-<span class="sd">        C{twist = {&#39;linear&#39;: (x, y, z), &#39;angular&#39;: (x, y, z)}}</span>
+<span class="sd">        :rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})</span>
+<span class="sd">        :return: linear and angular velocities as named tuples in a dict</span>
 
 <span class="sd">          - &#39;linear&#39;: np.array of x, y, z</span>
 <span class="sd">          - &#39;angular&#39;: np.array of x, y, z (angular velocity along the axes)</span>
@@ -514,10 +510,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint wrench {force, torque}.</span>
 
-<span class="sd">        @rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})</span>
-<span class="sd">        @return: force and torque at endpoint as named tuples in a dict</span>
-
-<span class="sd">        C{wrench = {&#39;force&#39;: (x, y, z), &#39;torque&#39;: (x, y, z)}}</span>
+<span class="sd">        :rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})</span>
+<span class="sd">        :return: force and torque at endpoint as named tuples in a dict</span>
 
 <span class="sd">          - &#39;force&#39;: Cartesian force on x,y,z axes in np.ndarray format</span>
 <span class="sd">          - &#39;torque&#39;: Torque around x,y,z axes in np.ndarray format</span>
@@ -528,8 +522,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint state for a given tip name</span>
 
-<span class="sd">        @rtype: TipState object</span>
-<span class="sd">        @return: pose, velocity, effort, effort_in_K_frame</span>
+<span class="sd">        :rtype: TipState object</span>
+<span class="sd">        :return: pose, velocity, effort, effort_in_K_frame</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tip_states</span><span class="p">)</span></div>
         
@@ -537,7 +531,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return joint inertia matrix (7,7)</span>
 <span class="sd">        </span>
-<span class="sd">        @rtype: np.ndarray [7x7]</span>
+<span class="sd">        :rtype: np.ndarray [7x7]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_inertia</span><span class="p">)</span></div>
 
@@ -545,7 +539,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return end-effector jacobian (6,7)</span>
 <span class="sd">        </span>
-<span class="sd">        @rtype: np.ndarray [6x7]</span>
+<span class="sd">        :rtype: np.ndarray [6x7]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span><span class="p">)</span>        </div>
 
@@ -553,8 +547,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the timeout in seconds for the joint controller</span>
 
-<span class="sd">        @type timeout: float</span>
-<span class="sd">        @param timeout: timeout in seconds</span>
+<span class="sd">        :type timeout: float</span>
+<span class="sd">        :param timeout: timeout in seconds</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pub_joint_cmd_timeout</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">Float64</span><span class="p">(</span><span class="n">timeout</span><span class="p">))</span></div>
 
@@ -569,8 +563,8 @@
 <span class="sd">        Once set, a speed ratio will persist until a new execution</span>
 <span class="sd">        speed is set.</span>
 
-<span class="sd">        @type speed: float</span>
-<span class="sd">        @param speed: ratio of maximum joint speed for execution</span>
+<span class="sd">        :type speed: float</span>
+<span class="sd">        :param speed: ratio of maximum joint speed for execution</span>
 <span class="sd">                      default= 0.3; range= [0.0-1.0]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">speed</span> <span class="o">&gt;</span> <span class="mf">0.3</span><span class="p">:</span>
@@ -583,8 +577,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commands the joints of this limb to the specified positions.</span>
 
-<span class="sd">        @type positions: [float]</span>
-<span class="sd">        @param positions: ordered joint angles (from joint1 to joint7) to be commanded</span>
+<span class="sd">        :type positions: [float]</span>
+<span class="sd">        :param positions: ordered joint angles (from joint1 to joint7) to be commanded</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="n">positions</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span>
@@ -596,8 +590,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commands the joints of this limb to the specified velocities.</span>
 
-<span class="sd">        @type velocities: dict({str:float})</span>
-<span class="sd">        @param velocities: joint_name:velocity command</span>
+<span class="sd">        :type velocities: dict({str:float})</span>
+<span class="sd">        :param velocities: joint_name:velocity command</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="p">[</span><span class="n">velocities</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span>
@@ -609,8 +603,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commands the joints of this limb to the specified torques.</span>
 
-<span class="sd">        @type torques: dict({str:float})</span>
-<span class="sd">        @param torques: joint_name:torque command</span>
+<span class="sd">        :type torques: dict({str:float})</span>
+<span class="sd">        :param torques: joint_name:torque command</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">effort</span> <span class="o">=</span> <span class="p">[</span><span class="n">torques</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span>
@@ -626,10 +620,10 @@
 <span class="sd">                  K_p * (positions - curr_positions) + </span>
 <span class="sd">                  K_d * (velocities - curr_velocities)</span>
 
-<span class="sd">        @type positions: [float]</span>
-<span class="sd">        @param positions: desired joint positions as an ordered list corresponding to joints given by self.joint_names()</span>
-<span class="sd">        @type velocities: [float]</span>
-<span class="sd">        @param velocities: desired joint velocities as an ordered list corresponding to joints given by self.joint_names()</span>
+<span class="sd">        :type positions: [float]</span>
+<span class="sd">        :param positions: desired joint positions as an ordered list corresponding to joints given by self.joint_names()</span>
+<span class="sd">        :type velocities: [float]</span>
+<span class="sd">        :param velocities: desired joint velocities as an ordered list corresponding to joints given by self.joint_names()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">positions</span>
@@ -649,10 +643,10 @@
 <span class="sd">        Command the Limb joints to a predefined set of &quot;neutral&quot; joint angles.</span>
 <span class="sd">        From rosparam /franka_control/neutral_pose.</span>
 
-<span class="sd">        @type timeout: float</span>
-<span class="sd">        @param timeout: seconds to wait for move to finish [15]</span>
-<span class="sd">        @type speed: float</span>
-<span class="sd">        @param speed: ratio of maximum joint speed for execution</span>
+<span class="sd">        :type timeout: float</span>
+<span class="sd">        :param timeout: seconds to wait for move to finish [15]</span>
+<span class="sd">        :type speed: float</span>
+<span class="sd">        :param speed: ratio of maximum joint speed for execution</span>
 <span class="sd">                      default= 0.15; range= [0.0-1.0]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_joint_position_speed</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
@@ -669,16 +663,16 @@
 
 <span class="sd">        This function uses a low-pass filter to smooth the movement.</span>
 
-<span class="sd">        @type positions: dict({str:float})</span>
-<span class="sd">        @param positions: joint_name:angle command</span>
-<span class="sd">        @type timeout: float</span>
-<span class="sd">        @param timeout: seconds to wait for move to finish [15]</span>
-<span class="sd">        @type threshold: float</span>
-<span class="sd">        @param threshold: position threshold in radians across each joint when</span>
+<span class="sd">        :type positions: dict({str:float})</span>
+<span class="sd">        :param positions: joint_name:angle command</span>
+<span class="sd">        :type timeout: float</span>
+<span class="sd">        :param timeout: seconds to wait for move to finish [15]</span>
+<span class="sd">        :type threshold: float</span>
+<span class="sd">        :param threshold: position threshold in radians across each joint when</span>
 <span class="sd">        move is considered successful [0.008726646]</span>
-<span class="sd">        @param test: optional function returning True if motion must be aborted</span>
-<span class="sd">        @type use_moveit: bool</span>
-<span class="sd">        @param use_moveit: if set to True, and movegroup interface is available, </span>
+<span class="sd">        :param test: optional function returning True if motion must be aborted</span>
+<span class="sd">        :type use_moveit: bool</span>
+<span class="sd">        :param use_moveit: if set to True, and movegroup interface is available, </span>
 <span class="sd">                        move to the joint positions using moveit planner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span><span class="p">:</span>
@@ -747,8 +741,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset EE frame to default. (defined by FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) </span>
 
-<span class="sd">        @rtype: [bool, str]</span>
-<span class="sd">        @return: [success status of service request, error msg if any]</span>
+<span class="sd">        :rtype: [bool, str]</span>
+<span class="sd">        :return: [success status of service request, error msg if any]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
 
@@ -784,10 +778,10 @@
 <span class="sd">        transformation matrix defining the new desired EE frame with respect to the flange frame.</span>
 <span class="sd">        Motion controllers are stopped for switching</span>
 
-<span class="sd">        @type frame: [float (16,)] / np.ndarray (4x4) </span>
-<span class="sd">        @param frame: transformation matrix of new EE frame wrt flange frame (column major)</span>
-<span class="sd">        @rtype: [bool, str]</span>
-<span class="sd">        @return: [success status of service request, error msg if any]</span>
+<span class="sd">        :type frame: [float (16,)] / np.ndarray (4x4) </span>
+<span class="sd">        :param frame: transformation matrix of new EE frame wrt flange frame (column major)</span>
+<span class="sd">        :rtype: [bool, str]</span>
+<span class="sd">        :return: [success status of service request, error msg if any]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
 
@@ -818,10 +812,10 @@
 <span class="sd">        Set new EE frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
 <span class="sd">        Motion controllers are stopped for switching</span>
 
-<span class="sd">        @type frame_name: str </span>
-<span class="sd">        @param frame_name: desired tf frame name in the tf tree</span>
-<span class="sd">        @rtype: [bool, str]</span>
-<span class="sd">        @return: [success status of service request, error msg if any]</span>
+<span class="sd">        :type frame_name: str </span>
+<span class="sd">        :param frame_name: desired tf frame name in the tf tree</span>
+<span class="sd">        :rtype: [bool, str]</span>
+<span class="sd">        :return: [success status of service request, error msg if any]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
             <span class="n">retval</span> <span class="o">=</span> <span class="kc">True</span>
@@ -850,12 +844,12 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set Force Torque thresholds for deciding robot has collided.</span>
 
-<span class="sd">        @return True if service call successful, False otherwise</span>
-<span class="sd">        @rtype: bool</span>
-<span class="sd">        @param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)</span>
-<span class="sd">        @type cartesian_forces: [float] size 6</span>
-<span class="sd">        @param joint_torques: Joint torque threshold for collision (robot motion stops if violated)</span>
-<span class="sd">        @type joint_torques: [float] size 7</span>
+<span class="sd">        :return: True if service call successful, False otherwise</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :param cartesian_forces: Cartesian force threshold for collision detection [x,y,z,R,P,Y] (robot motion stops if violated)</span>
+<span class="sd">        :type cartesian_forces: [float] size 6</span>
+<span class="sd">        :param joint_torques: Joint torque threshold for collision (robot motion stops if violated)</span>
+<span class="sd">        :type joint_torques: [float] size 7</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collision_behaviour_interface</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collision_behaviour_interface</span><span class="o">.</span><span class="n">set_collision_threshold</span><span class="p">(</span><span class="n">joint_torques</span> <span class="o">=</span> <span class="n">joint_torques</span><span class="p">,</span> <span class="n">cartesian_forces</span> <span class="o">=</span> <span class="n">cartesian_forces</span><span class="p">)</span>

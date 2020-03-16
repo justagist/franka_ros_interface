@@ -89,6 +89,9 @@
 <span class="sd">    disable() - disable all joints</span>
 <span class="sd">    reset()   - reset all joints, reset all jrcp faults, disable the robot</span>
 <span class="sd">    stop()    - stop the robot, similar to hitting the e-stop button</span>
+
+<span class="sd">    :param robot_params: A RobotParams instance (optional)</span>
+<span class="sd">    :type robot_params: RobotParams</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">param_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
@@ -148,8 +151,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the last known robot state.</span>
 
-<span class="sd">        @rtype: intera_core_msgs/AssemblyState</span>
-<span class="sd">        @return: Returns the last received AssemblyState message</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :return: &quot;Enabled&quot;/&quot;Disabled&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">abled&quot;</span><span class="o">%</span><span class="p">(</span><span class="s1">&#39;en&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="k">else</span> <span class="s1">&#39;dis&#39;</span><span class="p">,)</span></div>
 

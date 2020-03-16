@@ -88,20 +88,21 @@
 <div class="viewcode-block" id="GripperInterface"><a class="viewcode-back" href="../../DOC.html#franka_interface.GripperInterface">[docs]</a><span class="k">class</span> <span class="nc">GripperInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface class for the gripper on the Franka Panda robot.</span>
+
+
+<span class="sd">    :param gripper_joint_names: Names of the finger joints</span>
+<span class="sd">    :param ns: base namespace of interface (&#39;frank_ros_interface&#39;/&#39;panda_simulator&#39;)</span>
+<span class="sd">    :param calibrate: Attempts to calibrate the gripper when initializing class (defaults True)</span>
+
+<span class="sd">    :type calibrate: bool</span>
+<span class="sd">    :type gripper_joint_names: [str]</span>
+<span class="sd">    :type ns: str</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gripper_joint_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;panda_finger_joint1&#39;</span><span class="p">,</span> <span class="s1">&#39;panda_finger_joint2&#39;</span><span class="p">],</span> <span class="n">ns</span> <span class="o">=</span> <span class="s1">&#39;franka_ros_interface&#39;</span><span class="p">,</span> <span class="n">calibrate</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
-
-<span class="sd">        @param gripper_joint_names    : Names of the finger joints</span>
-<span class="sd">        @param ns                     : base namespace of interface (&#39;frank_ros_interface&#39;/&#39;panda_simulator&#39;)</span>
-<span class="sd">        @param calibrate              : Attempts to calibrate the gripper when initializing class (defaults True)</span>
-
-<span class="sd">        @type calibrate               : bool</span>
-<span class="sd">        @type gripper_joint_names     : [str]</span>
-<span class="sd">        @type ns                      : str</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;/franka_gripper&#39;</span>
@@ -172,8 +173,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set default value for gripper joint motions. Used for move and grasp commands.</span>
 <span class="sd">       </span>
-<span class="sd">        @param value  : speed value [m/s]</span>
-<span class="sd">        @type value   : float</span>
+<span class="sd">        :param value: speed value [m/s]</span>
+<span class="sd">        :type value: float</span>
 <span class="sd">       </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">MIN_WIDTH</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_WIDTH</span><span class="p">,</span> <span class="s2">&quot;GripperInterface: Invalid speed request for gripper joints. Should be within </span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MIN_WIDTH</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_WIDTH</span><span class="p">)</span>
@@ -192,8 +193,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the names of the joints for the specified limb.</span>
 
-<span class="sd">        @rtype: [str]</span>
-<span class="sd">        @return: ordered list of joint names from proximal to distal</span>
+<span class="sd">        :rtype: [str]</span>
+<span class="sd">        :return: ordered list of joint names from proximal to distal</span>
 <span class="sd">        (i.e. shoulder to wrist).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span></div>
@@ -202,11 +203,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the requested joint position.</span>
 
-<span class="sd">        @param joint    : name of a joint</span>
-<span class="sd">        @type joint     : str</span>
+<span class="sd">        :param joint: name of a joint</span>
+<span class="sd">        :type joint: str</span>
 
-<span class="sd">        @rtype: float</span>
-<span class="sd">        @return: position individual joint</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        :return: position individual joint</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_positions</span><span class="p">[</span><span class="n">joint</span><span class="p">]</span></div>
 
@@ -214,8 +215,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint positions.</span>
 
-<span class="sd">        @rtype: dict({str:float})</span>
-<span class="sd">        @return: unordered dict of joint name Keys to pos</span>
+<span class="sd">        :rtype: dict({str:float})</span>
+<span class="sd">        :return: unordered dict of joint name Keys to pos</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_positions</span><span class="p">)</span></div>
 
@@ -223,8 +224,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint positions.</span>
 
-<span class="sd">        @rtype: [double]</span>
-<span class="sd">        @return: joint positions ordered by joint_names.</span>
+<span class="sd">        :rtype: [double]</span>
+<span class="sd">        :return: joint positions ordered by joint_names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_positions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span></div>
 
@@ -232,11 +233,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the requested joint velocity.</span>
 
-<span class="sd">        @param joint    : name of a joint</span>
-<span class="sd">        @type joint     : str</span>
+<span class="sd">        :param joint: name of a joint</span>
+<span class="sd">        :type joint: str</span>
 
-<span class="sd">        @rtype: float</span>
-<span class="sd">        @return: velocity in radians/s of individual joint</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        :return: velocity in radians/s of individual joint</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="p">[</span><span class="n">joint</span><span class="p">]</span></div>
 
@@ -244,8 +245,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint velocities.</span>
 
-<span class="sd">        @rtype: dict({str:float})</span>
-<span class="sd">        @return: unordered dict of joint name Keys to velocity (rad/s) Values</span>
+<span class="sd">        :rtype: dict({str:float})</span>
+<span class="sd">        :return: unordered dict of joint name Keys to velocity (rad/s) Values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="p">)</span></div>
 
@@ -253,8 +254,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint velocities.</span>
 
-<span class="sd">        @rtype: [double]</span>
-<span class="sd">        @return: joint velocities ordered by joint_names.</span>
+<span class="sd">        :rtype: [double]</span>
+<span class="sd">        :return: joint velocities ordered by joint_names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span></div>
 
@@ -263,11 +264,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the requested joint effort.</span>
 
-<span class="sd">        @param joint    : name of a joint</span>
-<span class="sd">        @type joint     : str</span>
+<span class="sd">        :param joint: name of a joint</span>
+<span class="sd">        :type joint: str</span>
 
-<span class="sd">        @rtype: float</span>
-<span class="sd">        @return: effort in Nm of individual joint</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        :return: effort in Nm of individual joint</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_effort</span><span class="p">[</span><span class="n">joint</span><span class="p">]</span></div>
 
@@ -275,8 +276,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint efforts.</span>
 
-<span class="sd">        @rtype: dict({str:float})</span>
-<span class="sd">        @return: unordered dict of joint name Keys to effort (Nm) Values</span>
+<span class="sd">        :rtype: dict({str:float})</span>
+<span class="sd">        :return: unordered dict of joint name Keys to effort (Nm) Values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_effort</span><span class="p">)</span></div>
 
@@ -284,8 +285,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint efforts.</span>
 
-<span class="sd">        @rtype: [double]</span>
-<span class="sd">        @return: joint efforts ordered by joint_names.</span>
+<span class="sd">        :rtype: [double]</span>
+<span class="sd">        :return: joint efforts ordered by joint_names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_effort</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span></div>
 
@@ -306,12 +307,12 @@
 <span class="sd">        After changing the gripper fingers, a homing needs to be done.</span>
 <span class="sd">        This is needed to estimate the maximum grasping width.</span>
 
-<span class="sd">        @param wait_for_result  : if True, this method will block till response is </span>
+<span class="sd">        :param wait_for_result: if True, this method will block till response is </span>
 <span class="sd">                                    recieved from server</span>
-<span class="sd">        @type wait_for_result   : bool</span>
+<span class="sd">        :type wait_for_result: bool</span>
 <span class="sd">       </span>
-<span class="sd">        @return success</span>
-<span class="sd">        @rtype bool      </span>
+<span class="sd">        :return: success</span>
+<span class="sd">        :rtype: bool      </span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caller</span> <span class="o">=</span> <span class="s2">&quot;home_joints&quot;</span>
@@ -330,8 +331,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Open gripper to max possible width.</span>
 
-<span class="sd">        @return True if command was successful, False otherwise.</span>
-<span class="sd">        @rtype bool</span>
+<span class="sd">        :return: True if command was successful, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caller</span> <span class="o">=</span> <span class="s2">&quot;open gripper&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_joints</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span></div>
@@ -345,8 +346,8 @@
 <span class="sd">        object before it reaches the commanded width, we catch the feedback </span>
 <span class="sd">        and send the gripper stop command to stop it where it is.</span>
 
-<span class="sd">        @return True if command was successful, False otherwise.</span>
-<span class="sd">        @rtype bool</span>
+<span class="sd">        :return True if command was successful, False otherwise.</span>
+<span class="sd">        :rtype bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">cb</span><span class="p">(</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
@@ -361,17 +362,17 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Moves the gripper fingers to a specified width.</span>
 <span class="sd">       </span>
-<span class="sd">        @param width            : Intended opening width. [m]</span>
-<span class="sd">        @param speed            : Closing speed. [m/s]</span>
-<span class="sd">        @param wait_for_result  : if True, this method will block till response is </span>
+<span class="sd">        :param width: Intended opening width. [m]</span>
+<span class="sd">        :param speed: Closing speed. [m/s]</span>
+<span class="sd">        :param wait_for_result: if True, this method will block till response is </span>
 <span class="sd">                                    recieved from server</span>
 
-<span class="sd">        @type width             : float</span>
-<span class="sd">        @type speed             : float</span>
-<span class="sd">        @type wait_for_result   : bool</span>
+<span class="sd">        :type width: float</span>
+<span class="sd">        :type speed: float</span>
+<span class="sd">        :type wait_for_result: bool</span>
 <span class="sd">       </span>
-<span class="sd">        @return True if command was successful, False otherwise.</span>
-<span class="sd">        @rtype bool</span>
+<span class="sd">        :return: True if command was successful, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caller</span> <span class="o">=</span> <span class="s2">&quot;move_joints&quot;</span>
 
@@ -394,8 +395,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stops a currently running gripper move or grasp.</span>
 <span class="sd">       </span>
-<span class="sd">        @return True if command was successful, False otherwise.</span>
-<span class="sd">        @rtype bool</span>
+<span class="sd">        :return: True if command was successful, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caller</span> <span class="o">=</span> <span class="s2">&quot;stop_action&quot;</span>
 
@@ -413,22 +414,23 @@
 <span class="sd">        An object is considered grasped if the distance $d$ between the gripper fingers satisfies</span>
 <span class="sd">        $(\text{width} - \text{epsilon_inner}) &lt; d &lt; (\text{width} + \text{epsilon_outer})$.</span>
 <span class="sd">       </span>
-<span class="sd">        @param width        : Size of the object to grasp. [m]</span>
-<span class="sd">        @param speed        : Closing speed. [m/s]</span>
-<span class="sd">        @param force        : Grasping force. [N]</span>
-<span class="sd">        @param epsilon_inner: Maximum tolerated deviation when the actual grasped width is smaller</span>
+<span class="sd">        :param width: Size of the object to grasp. [m]</span>
+<span class="sd">        :param speed: Closing speed. [m/s]</span>
+<span class="sd">        :param force: Grasping force. [N]</span>
+<span class="sd">        :param epsilon_inner: Maximum tolerated deviation when the actual grasped width is smaller</span>
 <span class="sd">                                than the commanded grasp width.</span>
-<span class="sd">        @param epsilon_outer: Maximum tolerated deviation when the actual grasped width is wider</span>
+<span class="sd">        :param epsilon_outer: Maximum tolerated deviation when the actual grasped width is wider</span>
 <span class="sd">                                than the commanded grasp width.</span>
-<span class="sd">        @param cb           : Optional callback function to use when the service call is done</span>
+<span class="sd">        :param cb: Optional callback function to use when the service call is done</span>
 
-<span class="sd">        @type width         : float</span>
-<span class="sd">        @type speed         : float</span>
-<span class="sd">        @type force         : float</span>
-<span class="sd">        @type epsilon_inner : float</span>
-<span class="sd">        @type epsilon_outer : float</span>
+<span class="sd">        :type width: float</span>
+<span class="sd">        :type speed: float</span>
+<span class="sd">        :type force: float</span>
+<span class="sd">        :type epsilon_inner: float</span>
+<span class="sd">        :type epsilon_outer: float</span>
 
-<span class="sd">        @return True if an object has been grasped, false otherwise.</span>
+<span class="sd">        :return: True if an object has been grasped, false otherwise.</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caller</span> <span class="o">=</span> <span class="s2">&quot;grasp_action&quot;</span>
 
