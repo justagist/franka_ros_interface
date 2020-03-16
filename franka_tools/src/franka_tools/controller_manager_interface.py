@@ -56,10 +56,10 @@ def _resolve_controllers_ns(cm_ns):
         '/'
         >>> _resolve_controller_ns('')
         '/'
-    @param cm_ns Controller manager namespace (can be an empty string)
-    @type cm_ns str
-    @return Controllers namespace
-    @rtype str
+    :param cm_ns Controller manager namespace (can be an empty string)
+    :type cm_ns str
+    :return: Controllers namespace
+    :rtype: str
     """
     ns = cm_ns.rsplit('/', 1)[0]
     if not ns:
@@ -70,10 +70,10 @@ def _resolve_controllers_ns(cm_ns):
 def _append_ns(in_ns, suffix):
     """
     Append a sub-namespace (suffix) to the input namespace
-    @param in_ns Input namespace
-    @type in_ns str
-    @return Suffix namespace
-    @rtype str
+    :param in_ns Input namespace
+    :type in_ns str
+    :return: Suffix namespace
+    :rtype: str
     """
     ns = in_ns
     if ns[-1] != '/':
@@ -85,12 +85,12 @@ def _append_ns(in_ns, suffix):
 def _rosparam_controller_type(ctrls_ns, ctrl_name):
     """
     Get a controller's type from its ROS parameter server configuration
-    @param ctrls_ns Namespace where controllers should be located
-    @type ctrls_ns str
-    @param ctrl_name Controller name
-    @type ctrl_name str
-    @return Controller type
-    @rtype str
+    :param ctrls_ns Namespace where controllers should be located
+    :type ctrls_ns str
+    :param ctrl_name Controller name
+    :type ctrl_name str
+    :return: Controller type
+    :rtype: str
     """
     type_param = _append_ns(ctrls_ns, ctrl_name) + '/type'
     return rospy.get_param(type_param)   
@@ -113,6 +113,28 @@ class ControllerStateInfo:
         self.command = np.asarray([j.command for j in controller_state_msg.joint_controller_states])
 
 class FrankaControllerManagerInterface(object):
+    """
+    
+    :type synchronous_pub: bool
+    :param synchronous_pub: designates the JointCommand Publisher
+        as Synchronous if True and Asynchronous if False.
+
+        Synchronous Publishing means that all joint_commands publishing to
+        the robot's joints will block until the message has been serialized
+        into a buffer and that buffer has been written to the transport
+        of every current Subscriber. This yields predicable and consistent
+        timing of messages being delivered from this Publisher. However,
+        when using this mode, it is possible for a blocking Subscriber to
+        prevent the joint_command functions from exiting. Unless you need exact
+        JointCommand timing, default to Asynchronous Publishing (False).
+
+    :param ns: base namespace of interface ('frank_ros_interface'/'panda_simulator')
+    :type ns: str
+
+    :param sim: Flag specifying whether the robot is in simulation or not 
+        (can be obtained from :py:class:`franka_interface.RobotParams` instance)
+    :type sim: bool
+    """
 
     def __init__(self, ns="franka_ros_interface", synchronous_pub = False, sim = False):
 
@@ -176,9 +198,6 @@ class FrankaControllerManagerInterface(object):
 
 
     def _on_controller_state(self, msg):
-        """
-        Callback function. The controller state is updated here, as well as the current active controller detected.
-        """
         self._controller_state = deepcopy(ControllerStateInfo(msg))
 
         self._assert_one_active_controller()
@@ -189,9 +208,6 @@ class FrankaControllerManagerInterface(object):
 
 
     def _assert_one_active_controller(self):
-        """
-        Asserts that only one active motion controller.
-        """
         ctrlr_list = self.list_active_controllers(only_motion_controllers=True)
         # if not self._in_sim:
         assert len(ctrlr_list) <= 1, "FrankaControllerManagerInterface: More than one motion controller active!"
@@ -203,8 +219,8 @@ class FrankaControllerManagerInterface(object):
         """
         Loads the specified controller
 
-        @type name: str
-        @param name: name of the controller to be loaded
+        :type name: str
+        :param name: name of the controller to be loaded
         """
         self._load_srv.call(LoadControllerRequest(name=name))
 
@@ -212,8 +228,8 @@ class FrankaControllerManagerInterface(object):
         """
         Unloads the specified controller
 
-        @type name: str
-        @param name: name of the controller to be unloaded
+        :type name: str
+        :param name: name of the controller to be unloaded
         """
         self._unload_srv.call(UnloadControllerRequest(name=name))
 
@@ -221,8 +237,8 @@ class FrankaControllerManagerInterface(object):
         """
         Starts the specified controller
 
-        @type name: str
-        @param name: name of the controller to be started
+        :type name: str
+        :param name: name of the controller to be started
         """
         assert len(self.list_active_controllers(only_motion_controllers=True)) == 0, "FrankaControllerManagerInterface: One motion controller already active: %s. Stop this controller before activating another!"%self._current_controller
 
@@ -247,8 +263,8 @@ class FrankaControllerManagerInterface(object):
         """
         Stops the specified controller
 
-        @type name: str
-        @param name: name of the controller to be stopped
+        :type name: str
+        :param name: name of the controller to be stopped
         """
         strict = SwitchControllerRequest.STRICT
         req = SwitchControllerRequest(start_controllers=[],
@@ -260,11 +276,11 @@ class FrankaControllerManagerInterface(object):
 
     def list_loaded_controllers(self):
         """
-        @return List of controller types associated to a controller manager
-        namespace. Contains all loaded controllers, as returned by
-        the C{list_controller_types} service, plus uninitialized controllers with
-        configurations loaded in the parameter server.
-        @rtype [str]
+        :return: List of controller types associated to a controller manager
+            namespace. Contains all loaded controllers, as returned by
+            the `list_controller_types` service, plus uninitialized controllers with
+            configurations loaded in the parameter server.
+        :rtype: [str]
         """
         req = ListControllersRequest()
 
@@ -272,11 +288,11 @@ class FrankaControllerManagerInterface(object):
     
     def list_controller_types(self):
         """
-        @return List of controller types associated to a controller manager
-        namespace. Contains both stopped/running/loaded controllers, as returned by
-        the C{list_controller_types} service, plus uninitialized controllers with
-        configurations loaded in the parameter server.
-        @rtype [str]
+        :return: List of controller types associated to a controller manager
+            namespace. Contains both stopped/running/loaded controllers, as returned by
+            the `list_controller_types` service, plus uninitialized controllers with
+            configurations loaded in the parameter server.
+        :rtype: [str]
         """
         req = ListControllerTypesRequest()
 
@@ -284,11 +300,11 @@ class FrankaControllerManagerInterface(object):
 
     def list_controllers(self):
         """
-        @return List of controllers associated to a controller manager
-        namespace. Contains both stopped/running controllers, as returned by
-        the C{list_controllers} service, plus uninitialized controllers with
-        configurations loaded in the parameter server.
-        @rtype [ControllerState obj]
+        :return: List of controllers associated to a controller manager
+            namespace. Contains both stopped/running controllers, as returned by
+            the `list_controllers` service, plus uninitialized controllers with
+            configurations loaded in the parameter server.
+        :rtype: [ControllerState obj]
         """
         if not self._cm_ns:
             return []
@@ -313,8 +329,8 @@ class FrankaControllerManagerInterface(object):
         """
         Get all controllers as dict
 
-        @return: name of the controller to be stopped
-        @rtype: dict {'controller_name': ControllerState}
+        :return: name of the controller to be stopped
+        :rtype: dict {'controller_name': ControllerState}
         """
         controllers = self.list_controllers()
 
@@ -328,10 +344,10 @@ class FrankaControllerManagerInterface(object):
         """
         Set the specified controller as the (only) motion controller
     
-        @return: name of currently active controller (can be used to switch back to this later)
-        @rtype: str
-        @type controller_name: str
-        @param controller_name: name of controller to start
+        :return: name of currently active controller (can be used to switch back to this later)
+        :rtype: str
+        :type controller_name: str
+        :param controller_name: name of controller to start
         """
 
         curr_ctrlr = self.current_controller
@@ -359,10 +375,10 @@ class FrankaControllerManagerInterface(object):
         """
         Check if the given controller is running.
 
-        @type controller_name: str
-        @param controller_name: name of controller whose status is to be checked
-        @return: True if controller is running, False otherwise
-        @rtype: bool
+        :type controller_name: str
+        :param controller_name: name of controller whose status is to be checked
+        :return: True if controller is running, False otherwise
+        :rtype: bool
         """
         controllers = self.controller_dict()
 
@@ -374,10 +390,10 @@ class FrankaControllerManagerInterface(object):
         """
         Check if the given controller is loaded.
 
-        @type controller_name: str
-        @param controller_name: name of controller whose status is to be checked
-        @return: True if controller is loaded, False otherwise
-        @rtype: bool
+        :type controller_name: str
+        :param controller_name: name of controller whose status is to be checked
+        :return: True if controller is loaded, False otherwise
+        :rtype: bool
         """
         controllers = self.controller_dict()
 
@@ -387,11 +403,11 @@ class FrankaControllerManagerInterface(object):
 
     def list_motion_controllers(self):
         """
-        @return List of motion controllers associated to a controller manager
-        namespace. Contains both stopped/running controllers, as returned by
-        the C{list_controllers} service, plus uninitialized controllers with
-        configurations loaded in the parameter server.
-        @rtype [ControllerState obj]
+        :return: List of motion controllers associated to a controller manager
+            namespace. Contains both stopped/running controllers, as returned by
+            the `list_controllers` service, plus uninitialized controllers with
+            configurations loaded in the parameter server.
+        :rtype: [ControllerState obj]
         """
         motion_controllers = []
         for controller in self.list_controllers():
@@ -403,14 +419,14 @@ class FrankaControllerManagerInterface(object):
 
     def list_active_controllers(self, only_motion_controllers = False):
         """
-        @return List of  active controllers associated to a controller manager
-        namespace. Contains both stopped/running controllers, as returned by
-        the C{list_controllers} service, plus uninitialized controllers with
-        configurations loaded in the parameter server.
-        @rtype [ControllerState obj]
+        :return: List of  active controllers associated to a controller manager
+            namespace. Contains both stopped/running controllers, as returned by
+            the `list_controllers` service, plus uninitialized controllers with
+            configurations loaded in the parameter server.
+        :rtype: [ControllerState obj]
         
-        @param only_motion_controller: if True, only motion controllers are returned
-        @type only_motion_controller: bool
+        :param only_motion_controller: if True, only motion controllers are returned
+        :type only_motion_controller: bool
 
         """
         if only_motion_controllers:
@@ -427,24 +443,24 @@ class FrankaControllerManagerInterface(object):
 
     def list_active_controller_names(self, only_motion_controllers = False):
         """
-        @return List of names active controllers associated to a controller manager
-        namespace. 
-        @rtype [str]
+        :return: List of names active controllers associated to a controller manager
+            namespace. 
+        :rtype: [str]
         
-        @param only_motion_controller: if True, only motion controllers are returned
-        @type only_motion_controller: bool
+        :param only_motion_controller: if True, only motion controllers are returned
+        :type only_motion_controller: bool
 
         """
         return [c.name for c in self.list_active_controllers(only_motion_controllers = only_motion_controllers)]
 
     def get_controller_config_client(self, controller_name):
         """
-        @return The parameter configuration client object associated with the specified
-        controller
-        @rtype ControllerParamConfigClient obj (if None, returns False)
+        :return: The parameter configuration client object associated with the specified
+            controller
+        :rtype: ControllerParamConfigClient obj (if None, returns False)
         
-        @param controller_name: name of controller whose config client is required
-        @type controller_name: str
+        :param controller_name: name of controller whose config client is required
+        :type controller_name: str
 
         """
         if controller_name in self._param_config_clients:
@@ -455,12 +471,12 @@ class FrankaControllerManagerInterface(object):
 
     def get_current_controller_config_client(self):
         """
-        @return The parameter configuration client object associated with the currently
-        active controller
-        @rtype ControllerParamConfigClient obj (if None, returns False)
+        :return: The parameter configuration client object associated with the currently
+            active controller
+        :rtype: ControllerParamConfigClient obj (if None, returns False)
         
-        @param controller_name: name of controller whose config client is required
-        @type controller_name: str
+        :param controller_name: name of controller whose config client is required
+        :type controller_name: str
 
         """
         if self._current_controller is None:
@@ -472,12 +488,12 @@ class FrankaControllerManagerInterface(object):
 
     def list_controller_names(self):
         """
-        @return List of names all controllers associated to a controller manager
-        namespace. 
-        @rtype [str]
+        :return: List of names all controllers associated to a controller manager
+            namespace. 
+        :rtype: [str]
         
-        @param only_motion_controller: if True, only motion controllers are returned
-        @type only_motion_controller: bool
+        :param only_motion_controller: if True, only motion controllers are returned
+        :type only_motion_controller: bool
 
         """
         return [c.name for c in self.list_controllers()]

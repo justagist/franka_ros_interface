@@ -194,7 +194,7 @@ License
 .. _franka_ros: https://frankaemika.github.io/docs/franka_ros.html
 .. _this paper: https://hal.inria.fr/hal-02265293/document
 
-.. _Python Documentation: https://justagist.github.io/franka_ros_interface
+.. _Python Documentation: https://justagist.github.io/franka_ros_interface/DOC.html
 
 .. _FCI documentation: https://frankaemika.github.io/docs/installation_linux.html
 .. _franka_panda_description: https://github.com/justagist/franka_panda_description

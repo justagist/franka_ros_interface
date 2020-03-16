@@ -38,10 +38,10 @@ from extended_planning_scene_interface import ExtendedPlanningSceneInterface
 def all_close(goal, actual, tolerance):
     """
     Convenience method for testing if a list of values are within a tolerance of their counterparts in another list
-    @param: goal       A list of floats, a Pose or a PoseStamped
-    @param: actual     A list of floats, a Pose or a PoseStamped
-    @param: tolerance  A float
-    @rtype: bool
+    :param: goal       A list of floats, a Pose or a PoseStamped
+    :param: actual     A list of floats, a Pose or a PoseStamped
+    :param: tolerance  A float
+    :rtype: bool
     """
     if type(goal) is list:
         for index in range(len(goal)):
@@ -108,61 +108,65 @@ class PandaMoveGroupInterface:
     @property
     def robot_state_interface(self):
         """
-            @return: The RobotCommander instance of this object
-            @rype: moveit_commander.RobotCommander
+            :return: The RobotCommander instance of this object
+            :rtype: moveit_commander.RobotCommander
 
-            available methods: http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html
+                .. note:: available methods: 
+                    http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html
         """
         return self._robot
     
     @property
     def scene(self):
         """
-            @return: The RobotCommander instance of this object. This is an interface
+            :return: The RobotCommander instance of this object. This is an interface
                     to the world surrounding the robot
-            @rype: moveit_commander.RobotCommander
+            :rtype: moveit_commander.RobotCommander
 
-            available_methods: http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html
+                .. note:: available_methods: 
+                    http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html
         """
         return self._scene
 
     @property
     def arm_group(self):
         """
-        @return: The MoveGroupCommander instance of this object. This is an interface
+        :return: The MoveGroupCommander instance of this object. This is an interface
             to one group of joints.  In this case the group is the joints in the Panda
             arm. This interface can be used to plan and execute motions on the Panda.
-        @rtype: moveit_commander.MoveGroupCommander
+        :rtype: moveit_commander.MoveGroupCommander
 
-            available_methods: http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html
+            .. note:: available_methods: 
+                http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html
         """
         return self._arm_group
 
     @property
     def gripper_group(self):
         """
-        @return: The MoveGroupCommander instance of this object. This is an interface
+        :return: The MoveGroupCommander instance of this object. This is an interface
             to one group of joints.  In this case the group is the joints in the Panda
             arm. This interface can be used to plan and execute motions on the Panda.
-        @rtype: moveit_commander.MoveGroupCommander
+        :rtype: moveit_commander.MoveGroupCommander
 
-            available_methods: http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html
+            .. note:: available_methods: 
+                http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html
         """
         return self._gripper_group
 
     def go_to_joint_positions(self, positions, wait = True, tolerance = 0.005):
         """
-            @return: status of joint motion plan execution
-            @rtype: bool
+            :return: status of joint motion plan execution
+            :rtype: bool
 
-            @param positions: target joint positions (ordered)
-            @param wait: if True, function will wait for trajectory execution to complete
-            @param tolerance: maximum error in final position for each joint to consider
-                              task a success
+            :param positions: target joint positions (ordered)
+            :param wait: if True, function will wait for trajectory execution to complete
+            :param tolerance: maximum error in final position for each joint to consider
+             task a success
 
-            @type positions: [double]
-            @type wait: bool
-            @type tolerance: double
+            :type positions: [double]
+            :type wait: bool
+            :type tolerance: double
         """
         self._arm_group.clear_pose_targets()
 
@@ -195,7 +199,7 @@ class PandaMoveGroupInterface:
     def set_velocity_scale(self, value, group = "arm"):
         """
             Set the max velocity scale for executing planned motion.
-            @param value: scale value (allowed (0,1] )
+            :param value: scale value (allowed (0,1] )
         """
         if group == "arm":
             self._arm_group.set_max_velocity_scaling_factor(value)
@@ -207,7 +211,7 @@ class PandaMoveGroupInterface:
 
     def plan_joint_path(self, joint_position):
         """
-        @return plan for executing joint trajectory
+        :return plan for executing joint trajectory
         """
         return self._arm_group.plan(joint_position)
 
@@ -222,10 +226,10 @@ class PandaMoveGroupInterface:
         """
             Using named states defined in urdf.
 
-            NOTE: If this named state is not found, your ros environment is
-            probably not using the right panda_moveit_config package. Ensure
-            that sourced package is from this repo -->
-            https://github.com/justagist/panda_moveit_config
+            .. note:: If this named state is not found, your ros environment is
+                probably not using the right panda_moveit_config package. Ensure
+                that sourced package is from this repo -->
+                https://github.com/justagist/panda_moveit_config
 
         """
         self._gripper_group.set_named_target("close")
@@ -235,10 +239,10 @@ class PandaMoveGroupInterface:
         """
             Using named states defined in urdf.
 
-            NOTE: If this named state is not found, your ros environment is
-            probably not using the right panda_moveit_config package. Ensure
-            that sourced package is from this repo -->
-            https://github.com/justagist/panda_moveit_config
+            .. note:: If this named state is not found, your ros environment is
+                probably not using the right panda_moveit_config package. Ensure
+                that sourced package is from this repo -->
+                https://github.com/justagist/panda_moveit_config.
         """
         self._gripper_group.set_named_target("open")
         return self._gripper_group.go(wait = wait)
