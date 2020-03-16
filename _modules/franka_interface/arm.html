@@ -7,29 +7,35 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>franka_interface.arm &#8212; franka_ros_interface 0.0.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-   
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="../../search.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">franka_ros_interface 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <h1>Source code for franka_interface.arm</h1><div class="highlight"><pre>
@@ -113,14 +119,14 @@
     
     
 
-<div class="viewcode-block" id="ArmInterface"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface">[docs]</a><span class="k">class</span> <span class="nc">ArmInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface">[docs]</a><span class="k">class</span> <span class="nc">ArmInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    Interface Class for an arm of Franka Panda robot</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Containers</span>
-<div class="viewcode-block" id="ArmInterface.RobotMode"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.RobotMode">[docs]</a>    <span class="nd">@enum</span><span class="o">.</span><span class="n">unique</span>
+<div class="viewcode-block" id="ArmInterface.RobotMode"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.RobotMode">[docs]</a>    <span class="nd">@enum</span><span class="o">.</span><span class="n">unique</span>
     <span class="k">class</span> <span class="nc">RobotMode</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Enum class for specifying and retrieving the current robot mode.</span>
@@ -284,7 +290,7 @@
     <span class="k">def</span> <span class="nf">get_joint_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_limits</span>
 
-<div class="viewcode-block" id="ArmInterface.joint_names"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.joint_names">[docs]</a>    <span class="k">def</span> <span class="nf">joint_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.joint_names"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_names">[docs]</a>    <span class="k">def</span> <span class="nf">joint_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the names of the joints for the specified limb.</span>
 
@@ -336,7 +342,7 @@
     <span class="k">def</span> <span class="nf">gravity_comp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gravity</span>
 
-<div class="viewcode-block" id="ArmInterface.get_robot_status"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.get_robot_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_robot_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.get_robot_status"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.get_robot_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_robot_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return dict with all robot status information.</span>
 
@@ -345,7 +351,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;robot_mode&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="p">,</span> <span class="s1">&#39;robot_status&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode_ok</span><span class="p">,</span> <span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">,</span> <span class="s1">&#39;error_in_current_state&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_in_current_state</span><span class="p">()}</span></div>
 
-<div class="viewcode-block" id="ArmInterface.in_safe_state"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.in_safe_state">[docs]</a>    <span class="k">def</span> <span class="nf">in_safe_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.in_safe_state"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.in_safe_state">[docs]</a>    <span class="k">def</span> <span class="nf">in_safe_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if the specified limb is in safe state (no collision, reflex, errors etc.).</span>
 
@@ -354,7 +360,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode_ok</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_in_current_state</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ArmInterface.error_in_current_state"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.error_in_current_state">[docs]</a>    <span class="k">def</span> <span class="nf">error_in_current_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.error_in_current_state"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.error_in_current_state">[docs]</a>    <span class="k">def</span> <span class="nf">error_in_current_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if the specified limb has experienced an error.</span>
 
@@ -363,7 +369,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">e</span> <span class="o">==</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span></div>
 
-<div class="viewcode-block" id="ArmInterface.what_errors"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.what_errors">[docs]</a>    <span class="k">def</span> <span class="nf">what_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.what_errors"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.what_errors">[docs]</a>    <span class="k">def</span> <span class="nf">what_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of error messages if there is error in robot state</span>
 
@@ -405,7 +411,7 @@
 
 
 
-<div class="viewcode-block" id="ArmInterface.joint_angle"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.joint_angle">[docs]</a>    <span class="k">def</span> <span class="nf">joint_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.joint_angle"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_angle">[docs]</a>    <span class="k">def</span> <span class="nf">joint_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the requested joint angle.</span>
 
@@ -416,7 +422,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="n">joint</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ArmInterface.joint_angles"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.joint_angles">[docs]</a>    <span class="k">def</span> <span class="nf">joint_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.joint_angles"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_angles">[docs]</a>    <span class="k">def</span> <span class="nf">joint_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint angles.</span>
 
@@ -425,7 +431,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.joint_ordered_angles"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.joint_ordered_angles">[docs]</a>    <span class="k">def</span> <span class="nf">joint_ordered_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.joint_ordered_angles"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_ordered_angles">[docs]</a>    <span class="k">def</span> <span class="nf">joint_ordered_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint angles.</span>
 
@@ -435,7 +441,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ArmInterface.joint_velocity"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.joint_velocity">[docs]</a>    <span class="k">def</span> <span class="nf">joint_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.joint_velocity"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_velocity">[docs]</a>    <span class="k">def</span> <span class="nf">joint_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the requested joint velocity.</span>
 
@@ -446,7 +452,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="p">[</span><span class="n">joint</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ArmInterface.joint_velocities"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.joint_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">joint_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.joint_velocities"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">joint_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint velocities.</span>
 
@@ -455,7 +461,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.joint_effort"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.joint_effort">[docs]</a>    <span class="k">def</span> <span class="nf">joint_effort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.joint_effort"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_effort">[docs]</a>    <span class="k">def</span> <span class="nf">joint_effort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the requested joint effort.</span>
 <span class="sd">_ns</span>
@@ -466,7 +472,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_effort</span><span class="p">[</span><span class="n">joint</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ArmInterface.joint_efforts"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.joint_efforts">[docs]</a>    <span class="k">def</span> <span class="nf">joint_efforts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.joint_efforts"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_efforts">[docs]</a>    <span class="k">def</span> <span class="nf">joint_efforts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all joint efforts.</span>
 
@@ -475,7 +481,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_effort</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.endpoint_pose"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.endpoint_pose">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.endpoint_pose"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.endpoint_pose">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint pose {position, orientation}.</span>
 
@@ -490,7 +496,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_pose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.endpoint_velocity"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.endpoint_velocity">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.endpoint_velocity"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.endpoint_velocity">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint twist {linear, angular}.</span>
 
@@ -504,7 +510,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_velocity</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.endpoint_effort"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.endpoint_effort">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_effort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.endpoint_effort"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.endpoint_effort">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_effort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint wrench {force, torque}.</span>
 
@@ -518,7 +524,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_effort</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.tip_states"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.tip_states">[docs]</a>    <span class="k">def</span> <span class="nf">tip_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.tip_states"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.tip_states">[docs]</a>    <span class="k">def</span> <span class="nf">tip_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint state for a given tip name</span>
 
@@ -527,7 +533,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tip_states</span><span class="p">)</span></div>
         
-<div class="viewcode-block" id="ArmInterface.joint_inertia_matrix"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.joint_inertia_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">joint_inertia_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.joint_inertia_matrix"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_inertia_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">joint_inertia_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return joint inertia matrix (7,7)</span>
 <span class="sd">        </span>
@@ -535,7 +541,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_inertia</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.zero_jacobian"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.zero_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">zero_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.zero_jacobian"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.zero_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">zero_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return end-effector jacobian (6,7)</span>
 <span class="sd">        </span>
@@ -543,7 +549,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span><span class="p">)</span>        </div>
 
-<div class="viewcode-block" id="ArmInterface.set_command_timeout"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.set_command_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">set_command_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_command_timeout"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_command_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">set_command_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the timeout in seconds for the joint controller</span>
 
@@ -553,7 +559,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pub_joint_cmd_timeout</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">Float64</span><span class="p">(</span><span class="n">timeout</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="ArmInterface.set_joint_position_speed"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.set_joint_position_speed">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_position_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_joint_position_speed"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_joint_position_speed">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_position_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set ratio of max joint speed to use during joint position moves (only for move_to_joint_positions).</span>
 
@@ -573,7 +579,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span><span class="o">.</span><span class="n">set_velocity_scale</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_speed_ratio</span> <span class="o">=</span> <span class="n">speed</span></div>
 
-<div class="viewcode-block" id="ArmInterface.set_joint_positions"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.set_joint_positions">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_joint_positions"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_joint_positions">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commands the joints of this limb to the specified positions.</span>
 
@@ -586,7 +592,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_command_publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.set_joint_velocities"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.set_joint_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocities</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_joint_velocities"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_joint_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocities</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commands the joints of this limb to the specified velocities.</span>
 
@@ -599,7 +605,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_command_publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.set_joint_torques"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.set_joint_torques">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_torques</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">torques</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_joint_torques"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_joint_torques">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_torques</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">torques</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commands the joints of this limb to the specified torques.</span>
 
@@ -612,7 +618,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_command_publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.set_joint_positions_velocities"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.set_joint_positions_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_positions_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_joint_positions_velocities"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_joint_positions_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_positions_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commands the joints of this limb using specified positions and velocities using impedance control.</span>
 <span class="sd">        Command at time t is computed as </span>
@@ -638,7 +644,7 @@
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_collision</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_collision</span><span class="p">)</span>
         
 
-<div class="viewcode-block" id="ArmInterface.move_to_neutral"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.move_to_neutral">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_neutral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.15</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.move_to_neutral"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.move_to_neutral">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_neutral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.15</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Command the Limb joints to a predefined set of &quot;neutral&quot; joint angles.</span>
 <span class="sd">        From rosparam /franka_control/neutral_pose.</span>
@@ -653,7 +659,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">move_to_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_neutral_pose_joints</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_neutral_pose_joints</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ArmInterface.move_to_joint_positions"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.move_to_joint_positions">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+<div class="viewcode-block" id="ArmInterface.move_to_joint_positions"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.move_to_joint_positions">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
                                 <span class="n">threshold</span><span class="o">=</span><span class="mf">0.00085</span><span class="p">,</span>
                                 <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_moveit</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -737,7 +743,7 @@
             
 
 
-<div class="viewcode-block" id="ArmInterface.reset_EE_frame"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.reset_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">reset_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.reset_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.reset_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">reset_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset EE frame to default. (defined by FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) </span>
 
@@ -772,7 +778,7 @@
             <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="ArmInterface.set_EE_frame"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.set_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set new EE frame based on the transformation given by &#39;frame&#39;, which is the </span>
 <span class="sd">        transformation matrix defining the new desired EE frame with respect to the flange frame.</span>
@@ -807,7 +813,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Frames changing not available in simulated environment&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.set_EE_frame_to_link"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.set_EE_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_EE_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_EE_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set new EE frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
 <span class="sd">        Motion controllers are stopped for switching</span>
@@ -840,7 +846,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Frames changing not available in simulated environment&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.set_collision_threshold"><a class="viewcode-back" href="../../index.html#franka_interface.ArmInterface.set_collision_threshold">[docs]</a>    <span class="k">def</span> <span class="nf">set_collision_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cartesian_forces</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">joint_torques</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_collision_threshold"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_collision_threshold">[docs]</a>    <span class="k">def</span> <span class="nf">set_collision_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cartesian_forces</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">joint_torques</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set Force Torque thresholds for deciding robot has collided.</span>
 
@@ -876,31 +882,10 @@
 </pre></div>
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">franka_ros_interface</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <div class="searchformwrapper">
@@ -913,29 +898,26 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2020, Saif Sidhik.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">franka_ros_interface 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Saif Sidhik.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
   </body>
 </html>

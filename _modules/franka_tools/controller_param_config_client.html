@@ -7,29 +7,35 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>franka_tools.controller_param_config_client &#8212; franka_ros_interface 0.0.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-   
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="../../search.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">franka_ros_interface 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <h1>Source code for franka_tools.controller_param_config_client</h1><div class="highlight"><pre>
@@ -70,7 +76,7 @@
 <span class="n">D_GAINS_KW</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;j1_d&#39;</span><span class="p">,</span><span class="s1">&#39;j2_d&#39;</span><span class="p">,</span><span class="s1">&#39;j3_d&#39;</span><span class="p">,</span><span class="s1">&#39;j4_d&#39;</span><span class="p">,</span><span class="s1">&#39;j5_d&#39;</span><span class="p">,</span><span class="s1">&#39;j6_d&#39;</span><span class="p">,</span><span class="s1">&#39;j7_d&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="ControllerParamConfigClient"><a class="viewcode-back" href="../../index.html#franka_tools.ControllerParamConfigClient">[docs]</a><span class="k">class</span> <span class="nc">ControllerParamConfigClient</span><span class="p">:</span>
+<div class="viewcode-block" id="ControllerParamConfigClient"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient">[docs]</a><span class="k">class</span> <span class="nc">ControllerParamConfigClient</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interface class for updating dynamically configurable paramters of a controller.</span>
 
@@ -93,7 +99,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span>
     
 
-<div class="viewcode-block" id="ControllerParamConfigClient.start"><a class="viewcode-back" href="../../index.html#franka_tools.ControllerParamConfigClient.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerParamConfigClient.start"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start the dynamic_reconfigure client</span>
 <span class="sd">        </span>
@@ -119,7 +125,7 @@
         <span class="n">rospy</span><span class="o">.</span><span class="n">logdebug</span><span class="p">(</span><span class="s2">&quot;ControllerParamConfigClient: </span><span class="si">{controller_name}</span><span class="s2"> config set to </span><span class="se">\n\t</span><span class="s2">Smoothing Param: </span><span class="si">{smoothing_param}</span><span class="s2"> </span><span class="se">\n\t</span><span class="s2">Joint Stiffness: </span><span class="si">{K_gains}</span><span class="s2"> </span><span class="se">\n\t</span><span class="s2">Joint Damping: </span><span class="si">{D_gains}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">controller_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_controller_name</span><span class="p">,</span> <span class="n">smoothing_param</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;position_joint_delta_filter&#39;</span><span class="p">],</span> <span class="n">K_gains</span> <span class="o">=</span> <span class="n">k_gains</span><span class="p">,</span> <span class="n">D_gains</span> <span class="o">=</span> <span class="n">d_gains</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="ControllerParamConfigClient.update_config"><a class="viewcode-back" href="../../index.html#franka_tools.ControllerParamConfigClient.update_config">[docs]</a>    <span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerParamConfigClient.update_config"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.update_config">[docs]</a>    <span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the config in the server using the provided keyword arguments.</span>
 <span class="sd">        </span>
@@ -130,7 +136,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">update_configuration</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ControllerParamConfigClient.set_controller_gains"><a class="viewcode-back" href="../../index.html#franka_tools.ControllerParamConfigClient.set_controller_gains">[docs]</a>    <span class="k">def</span> <span class="nf">set_controller_gains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k_gains</span><span class="p">,</span> <span class="n">d_gains</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerParamConfigClient.set_controller_gains"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.set_controller_gains">[docs]</a>    <span class="k">def</span> <span class="nf">set_controller_gains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k_gains</span><span class="p">,</span> <span class="n">d_gains</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the stiffness and damping parameters of the joints for the current controller.</span>
 <span class="sd">        </span>
@@ -159,7 +165,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ControllerParamConfigClient.set_joint_motion_smoothing_parameter"><a class="viewcode-back" href="../../index.html#franka_tools.ControllerParamConfigClient.set_joint_motion_smoothing_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_motion_smoothing_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerParamConfigClient.set_joint_motion_smoothing_parameter"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.set_joint_motion_smoothing_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_motion_smoothing_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the joint motion smoothing parameter (only valid for </span>
 <span class="sd">        position_joint_position_controller).</span>
@@ -171,7 +177,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="n">position_joint_delta_filter</span> <span class="o">=</span> <span class="n">value</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ControllerParamConfigClient.get_joint_motion_smoothing_parameter"><a class="viewcode-back" href="../../index.html#franka_tools.ControllerParamConfigClient.get_joint_motion_smoothing_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_motion_smoothing_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerParamConfigClient.get_joint_motion_smoothing_parameter"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.get_joint_motion_smoothing_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_motion_smoothing_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        @return the currently set value for the joint position smoothing parameter from </span>
 <span class="sd">        the server.</span>
@@ -184,7 +190,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)[</span><span class="s1">&#39;position_joint_delta_filter&#39;</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="ControllerParamConfigClient.get_config"><a class="viewcode-back" href="../../index.html#franka_tools.ControllerParamConfigClient.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerParamConfigClient.get_config"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        @return the currently set values for all paramters from the server</span>
 <span class="sd">        @rtype: dict {str : float}</span>
@@ -195,7 +201,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_configuration</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ControllerParamConfigClient.get_controller_gains"><a class="viewcode-back" href="../../index.html#franka_tools.ControllerParamConfigClient.get_controller_gains">[docs]</a>    <span class="k">def</span> <span class="nf">get_controller_gains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerParamConfigClient.get_controller_gains"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.get_controller_gains">[docs]</a>    <span class="k">def</span> <span class="nf">get_controller_gains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        @return the currently set values for controller gains from the server</span>
 <span class="sd">        @rtype: ( [float], [float] )</span>
@@ -228,7 +234,7 @@
                 
 
 
-<div class="viewcode-block" id="ControllerParamConfigClient.get_parameter_descriptions"><a class="viewcode-back" href="../../index.html#franka_tools.ControllerParamConfigClient.get_parameter_descriptions">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameter_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="ControllerParamConfigClient.get_parameter_descriptions"><a class="viewcode-back" href="../../DOC.html#franka_tools.ControllerParamConfigClient.get_parameter_descriptions">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameter_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        @return the description of each parameter as defined in the cfg</span>
 <span class="sd">        file from the server.</span>
@@ -249,31 +255,10 @@
 </pre></div>
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">franka_ros_interface</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <div class="searchformwrapper">
@@ -286,29 +271,26 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2020, Saif Sidhik.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">franka_ros_interface 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Saif Sidhik.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
   </body>
 </html>
