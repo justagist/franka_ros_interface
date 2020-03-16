@@ -35,8 +35,12 @@ Continuous Integration Builds
 
 ROS Kinetic / Melodic: |Build Status|
 
-Dependencies
+
+Installation
 ------------
+
+Dependencies
+^^^^^^^^^^^^
 
 -  *libfranka* (``sudo apt install ros-$ROS_DISTRO-libfranka`` or
    `install from source`_).
@@ -48,9 +52,6 @@ Dependencies
    you modify the ``franka_interface/launch/interface.launch`` file and
    replace all occurences of ``franka_panda_description`` with
    ``franka_description`` (two occurences).
-
-Installation
-------------
 
 Once the above dependencies are installed, the package can be installed
 using catkin:
@@ -160,7 +161,7 @@ Python API
 ^^^^^^^^^^
 Most of the above services and topics are wrapped using simple Python
 classes or utility functions, providing more control and simplicity.
-See `Python Documentation`_.
+See `Python API Documentation`_.
 Refer induvidual Python files in *franka_interface* and *franka_tools*
 directories for more details.
 
@@ -194,13 +195,15 @@ License
 .. _franka_ros: https://frankaemika.github.io/docs/franka_ros.html
 .. _this paper: https://hal.inria.fr/hal-02265293/document
 
-.. _Python Documentation: https://justagist.github.io/franka_ros_interface/DOC.html
+.. _Python Documentation: https://justagist.github.io/franka_ros_interface
 
 .. _FCI documentation: https://frankaemika.github.io/docs/installation_linux.html
 .. _franka_panda_description: https://github.com/justagist/franka_panda_description
 .. _Related Packages: #related-packages
 .. _Environments: #the-frankash-environments
 .. _install from source: https://frankaemika.github.io/docs/installation_linux.html#building-from-source
+
+.. _Python API Documentation: https://justagist.github.io/franka_ros_interface/DOC.html
 
 .. |Build Status| image:: https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master
    :target: https://travis-ci.org/justagist/franka_ros_interface
