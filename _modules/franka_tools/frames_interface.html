@@ -38,6 +38,7 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -251,7 +252,7 @@
 
 <span class="sd">        Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class (panda_robot package: https://github.com/justagist/panda_robot ).</span>
 
-<span class="sd">        Note that all controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).</span>
+<span class="sd">        .. note: All controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -266,10 +267,10 @@
 <span class="sd">        Set new EE frame based on the transformation given by &#39;frame&#39;, which is the </span>
 <span class="sd">        transformation matrix defining the new desired EE frame with respect to the flange frame.</span>
 
-<span class="sd">        @type frame: [float (16,)] / np.ndarray (4x4) </span>
-<span class="sd">        @param frame: transformation matrix of new EE frame wrt flange frame (column major)</span>
-<span class="sd">        @rtype: bool</span>
-<span class="sd">        @return: success status of service request</span>
+<span class="sd">        :type frame: [float (16,)] / np.ndarray (4x4) </span>
+<span class="sd">        :param frame: transformation matrix of new EE frame wrt flange frame (column major)</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :return: success status of service request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assert_frame_validity</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 
@@ -299,8 +300,16 @@
 
         <span class="k">return</span> <span class="n">frame</span>
 
-    <span class="k">def</span> <span class="nf">get_link_tf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="s1">&#39;/panda_link8&#39;</span><span class="p">):</span>
-
+<div class="viewcode-block" id="FrankaFramesInterface.get_link_tf"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.get_link_tf">[docs]</a>    <span class="k">def</span> <span class="nf">get_link_tf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="s1">&#39;/panda_link8&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get :math:`4\times 4` transformation matrix of a frame with respect to another.</span>
+<span class="sd">        :return: :math:`4\times 4` transformation matrix</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        :param frame_name: Name of the child frame from the TF tree</span>
+<span class="sd">        :type frame_name: str</span>
+<span class="sd">        :param parent: Name of parent frame (default: &#39;/panda_link8&#39;)</span>
+<span class="sd">        :type parent: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">listener</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">TransformListener</span><span class="p">()</span>
         <span class="n">err</span> <span class="o">=</span> <span class="s2">&quot;FrankaFramesInterface: Error while looking up transform from Flange frame to link frame </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">frame_name</span>
         <span class="k">def</span> <span class="nf">body</span><span class="p">():</span>
@@ -324,25 +333,30 @@
         <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">rot</span>
         <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">trans_mat</span>
+        <span class="k">return</span> <span class="n">trans_mat</span></div>
 
 <div class="viewcode-block" id="FrankaFramesInterface.frames_are_same"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.frames_are_same">[docs]</a>    <span class="k">def</span> <span class="nf">frames_are_same</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame1</span><span class="p">,</span> <span class="n">frame2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @return True if two transformation matrices are equal</span>
-<span class="sd">        @rtype: bool</span>
-<span class="sd">        @param frame1: 4x4 transformation matrix representing frame1</span>
-<span class="sd">        @type frame1: np.ndarray (shape 4x4), or list (flattened column major 4x4)</span>
-<span class="sd">        @param frame2: 4x4 transformation matrix representing frame2</span>
-<span class="sd">        @type frame2: np.ndarray (shape 4x4), or list (flattened column major 4x4)</span>
+<span class="sd">        :return: True if two transformation matrices are equal</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :param frame1: 4x4 transformation matrix representing frame1</span>
+<span class="sd">        :type frame1: np.ndarray (shape: [4,4]), or list (flattened column major 4x4)</span>
+<span class="sd">        :param frame2: 4x4 transformation matrix representing frame2</span>
+<span class="sd">        :type frame2: np.ndarray (shape: [4,4]), or list (flattened column major 4x4)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frame1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assert_frame_validity</span><span class="p">(</span><span class="n">frame1</span><span class="p">)</span>
         <span class="n">frame2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assert_frame_validity</span><span class="p">(</span><span class="n">frame2</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frame1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frame2</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">EE_frame_already_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames_are_same</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span><span class="p">)</span>
+<div class="viewcode-block" id="FrankaFramesInterface.EE_frame_already_set"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.EE_frame_already_set">[docs]</a>    <span class="k">def</span> <span class="nf">EE_frame_already_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: True if the requested frame is already the current EE frame</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :param frame: 4x4 transformation matrix representing frame</span>
+<span class="sd">        :type frame: np.ndarray (shape: [4,4]), or list (flattened column major 4x4)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames_are_same</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FrankaFramesInterface.set_EE_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_EE_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
@@ -350,10 +364,10 @@
 <span class="sd">        Set new EE frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
 <span class="sd">        Motion controllers are stopped for switching</span>
 
-<span class="sd">        @type frame_name: str </span>
-<span class="sd">        @param frame_name: desired tf frame name in the tf tree</span>
-<span class="sd">        @rtype: [bool, str]</span>
-<span class="sd">        @return: [success status of service request, error msg if any]</span>
+<span class="sd">        :type frame_name: str </span>
+<span class="sd">        :param frame_name: desired tf frame name in the tf tree</span>
+<span class="sd">        :rtype: [bool, str]</span>
+<span class="sd">        :return: [success status of service request, error msg if any]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_link_tf</span><span class="p">(</span><span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span></div>
@@ -364,10 +378,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get current EE frame transformation matrix in flange frame</span>
 <span class="sd">        </span>
-<span class="sd">        @type as_mat: bool</span>
-<span class="sd">        @param as_mat: if True, return np array, else as list</span>
-<span class="sd">        @rtype: [float (16,)] / np.ndarray (4x4) </span>
-<span class="sd">        @return: transformation matrix of EE frame wrt flange frame (column major)</span>
+<span class="sd">        :type as_mat: bool</span>
+<span class="sd">        :param as_mat: if True, return np array, else as list</span>
+<span class="sd">        :rtype: [float (16,)] / np.ndarray (4x4) </span>
+<span class="sd">        :return: transformation matrix of EE frame wrt flange frame (column major)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">as_mat</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
 
@@ -375,8 +389,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset EE frame to default. (defined by DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) </span>
 
-<span class="sd">        @rtype: bool</span>
-<span class="sd">        @return: success status of service request</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :return: success status of service request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_EE_frame</span><span class="p">(</span><span class="n">frame</span> <span class="o">=</span> <span class="n">DEFAULT_TRANSFORMATIONS</span><span class="o">.</span><span class="n">EE_FRAME</span><span class="p">)</span></div>
 
@@ -403,10 +417,10 @@
 <span class="sd">        Set new K frame based on the transformation given by &#39;frame&#39;, which is the </span>
 <span class="sd">        transformation matrix defining the new desired K frame with respect to the EE frame.</span>
 
-<span class="sd">        @type frame: [float (16,)] / np.ndarray (4x4) </span>
-<span class="sd">        @param frame: transformation matrix of new K frame wrt EE frame</span>
-<span class="sd">        @rtype: bool</span>
-<span class="sd">        @return: success status of service request</span>
+<span class="sd">        :type frame: [float (16,)] / np.ndarray (4x4) </span>
+<span class="sd">        :param frame: transformation matrix of new K frame wrt EE frame</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :return: success status of service request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assert_frame_validity</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 
@@ -417,10 +431,10 @@
 <span class="sd">        Set new K frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
 <span class="sd">        Motion controllers are stopped for switching</span>
 
-<span class="sd">        @type frame_name: str </span>
-<span class="sd">        @param frame_name: desired tf frame name in the tf tree</span>
-<span class="sd">        @rtype: [bool, str]</span>
-<span class="sd">        @return: [success status of service request, error msg if any]</span>
+<span class="sd">        :type frame_name: str </span>
+<span class="sd">        :param frame_name: desired tf frame name in the tf tree</span>
+<span class="sd">        :rtype: [bool, str]</span>
+<span class="sd">        :return: [success status of service request, error msg if any]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">trans</span> <span class="o">=</span> <span class="kc">False</span>
@@ -453,10 +467,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get current K frame transformation matrix in EE frame</span>
 <span class="sd">        </span>
-<span class="sd">        @type as_mat: bool</span>
-<span class="sd">        @param as_mat: if True, return np array, else as list</span>
-<span class="sd">        @rtype: [float (16,)] / np.ndarray (4x4) </span>
-<span class="sd">        @return: transformation matrix of K frame wrt EE frame</span>
+<span class="sd">        :type as_mat: bool</span>
+<span class="sd">        :param as_mat: if True, return np array, else as list</span>
+<span class="sd">        :rtype: [float (16,)] / np.ndarray (4x4) </span>
+<span class="sd">        :return: transformation matrix of K frame wrt EE frame</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">as_mat</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
 
@@ -464,8 +478,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset K frame to default. (defined by DEFAULT_K_ FRAME global variable defined above) </span>
 
-<span class="sd">        @rtype: bool</span>
-<span class="sd">        @return: success status of service request</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        :return: success status of service request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_K_frame</span><span class="p">(</span><span class="n">frame</span> <span class="o">=</span> <span class="n">DEFAULT_TRANSFORMATIONS</span><span class="o">.</span><span class="n">K_FRAME</span><span class="p">)</span></div>

@@ -38,6 +38,7 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -712,25 +713,59 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">joint_velocity_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: Name of joint velocity controller (defined in franka_ros_controllers, </span>
+<span class="sd">            and specified in robot_config.yaml)</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/velocity_joint_velocity_controller&quot;</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">joint_position_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: Name of joint position controller (defined in franka_ros_controllers, </span>
+<span class="sd">            and specified in robot_config.yaml)</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/position_joint_position_controller&quot;</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">joint_torque_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: Name of joint torque controller (defined in franka_ros_controllers, </span>
+<span class="sd">            and specified in robot_config.yaml)</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/effort_joint_torque_controller&quot;</span>    
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">joint_impedance_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: Name of joint impedance controller (defined in franka_ros_controllers, </span>
+<span class="sd">            and specified in robot_config.yaml)</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/effort_joint_impedance_controller&quot;</span>   
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">effort_joint_position_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: Name of effort joint position controller (defined in franka_ros_controllers, </span>
+<span class="sd">            and specified in robot_config.yaml)</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/effort_joint_position_controller&quot;</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">joint_trajectory_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: Name of joint trajectory controller (defined in franka_ros_controllers, </span>
+<span class="sd">            and specified in robot_config.yaml). Exposes trajectory following service.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;position_joint_trajectory_controller&quot;</span> 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">current_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: Name of currently active joint controller.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;FrankaControllerManagerInterface: No active controller!&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span></div>

@@ -38,6 +38,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -1678,6 +1679,37 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="franka_tools.FrankaControllerManagerInterface.current_controller">
+<code class="descname">current_controller</code><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.current_controller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of currently active joint controller.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="franka_tools.FrankaControllerManagerInterface.effort_joint_position_controller">
+<code class="descname">effort_joint_position_controller</code><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.effort_joint_position_controller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of effort joint position controller (defined in franka_ros_controllers, 
+and specified in robot_config.yaml)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="franka_tools.FrankaControllerManagerInterface.get_controller_config_client">
 <code class="descname">get_controller_config_client</code><span class="sig-paren">(</span><em>controller_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/controller_manager_interface.html#FrankaControllerManagerInterface.get_controller_config_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.get_controller_config_client" title="Permalink to this definition">¶</a></dt>
@@ -1753,6 +1785,86 @@ active controller</td>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if controller is running, False otherwise</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="franka_tools.FrankaControllerManagerInterface.joint_impedance_controller">
+<code class="descname">joint_impedance_controller</code><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.joint_impedance_controller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint impedance controller (defined in franka_ros_controllers, 
+and specified in robot_config.yaml)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="franka_tools.FrankaControllerManagerInterface.joint_position_controller">
+<code class="descname">joint_position_controller</code><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.joint_position_controller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint position controller (defined in franka_ros_controllers, 
+and specified in robot_config.yaml)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="franka_tools.FrankaControllerManagerInterface.joint_torque_controller">
+<code class="descname">joint_torque_controller</code><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.joint_torque_controller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint torque controller (defined in franka_ros_controllers, 
+and specified in robot_config.yaml)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="franka_tools.FrankaControllerManagerInterface.joint_trajectory_controller">
+<code class="descname">joint_trajectory_controller</code><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.joint_trajectory_controller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint trajectory controller (defined in franka_ros_controllers, 
+and specified in robot_config.yaml). Exposes trajectory following service.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="franka_tools.FrankaControllerManagerInterface.joint_velocity_controller">
+<code class="descname">joint_velocity_controller</code><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.joint_velocity_controller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint velocity controller (defined in franka_ros_controllers, 
+and specified in robot_config.yaml)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -2148,52 +2260,124 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 <em class="property">class </em><code class="descclassname">franka_tools.</code><code class="descname">FrankaFramesInterface</code><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper class to retrieve and set EE frames</p>
 <p>Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class (panda_robot package: <a class="reference external" href="https://github.com/justagist/panda_robot">https://github.com/justagist/panda_robot</a> ).</p>
-<p>Note that all controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).</p>
+<dl class="method">
+<dt id="franka_tools.FrankaFramesInterface.EE_frame_already_set">
+<code class="descname">EE_frame_already_set</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.EE_frame_already_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.EE_frame_already_set" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the requested frame is already the current EE frame</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>np.ndarray</em><em> (</em><em>shape:</em><em> [</em><em>4</em><em>,</em><em>4</em><em>]</em><em>)</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> (</em><em>flattened column major 4x4</em><em>)</em>) – 4x4 transformation matrix representing frame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.frames_are_same">
 <code class="descname">frames_are_same</code><span class="sig-paren">(</span><em>frame1</em>, <em>frame2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.frames_are_same"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.frames_are_same" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#64;return True if two transformation matrices are equal
-&#64;rtype: bool
-&#64;param frame1: 4x4 transformation matrix representing frame1
-&#64;type frame1: np.ndarray (shape 4x4), or list (flattened column major 4x4)
-&#64;param frame2: 4x4 transformation matrix representing frame2
-&#64;type frame2: np.ndarray (shape 4x4), or list (flattened column major 4x4)</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if two transformation matrices are equal</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>frame1</strong> (<em>np.ndarray</em><em> (</em><em>shape:</em><em> [</em><em>4</em><em>,</em><em>4</em><em>]</em><em>)</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> (</em><em>flattened column major 4x4</em><em>)</em>) – 4x4 transformation matrix representing frame1</li>
+<li><strong>frame2</strong> (<em>np.ndarray</em><em> (</em><em>shape:</em><em> [</em><em>4</em><em>,</em><em>4</em><em>]</em><em>)</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> (</em><em>flattened column major 4x4</em><em>)</em>) – 4x4 transformation matrix representing frame2</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.get_EE_frame">
 <code class="descname">get_EE_frame</code><span class="sig-paren">(</span><em>as_mat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.get_EE_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.get_EE_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get current EE frame transformation matrix in flange frame</p>
-<p>&#64;type as_mat: bool
-&#64;param as_mat: if True, return np array, else as list
-&#64;rtype: [float (16,)] / np.ndarray (4x4) 
-&#64;return: transformation matrix of EE frame wrt flange frame (column major)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>as_mat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True, return np array, else as list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a> (16,)] / np.ndarray (4x4)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">transformation matrix of EE frame wrt flange frame (column major)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.get_K_frame">
 <code class="descname">get_K_frame</code><span class="sig-paren">(</span><em>as_mat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.get_K_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.get_K_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get current K frame transformation matrix in EE frame</p>
-<p>&#64;type as_mat: bool
-&#64;param as_mat: if True, return np array, else as list
-&#64;rtype: [float (16,)] / np.ndarray (4x4) 
-&#64;return: transformation matrix of K frame wrt EE frame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>as_mat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True, return np array, else as list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a> (16,)] / np.ndarray (4x4)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">transformation matrix of K frame wrt EE frame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_tools.FrankaFramesInterface.get_link_tf">
+<code class="descname">get_link_tf</code><span class="sig-paren">(</span><em>frame_name</em>, <em>timeout=5.0</em>, <em>parent='/panda_link8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.get_link_tf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.get_link_tf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get <span class="math notranslate nohighlight">\(4    imes 4\)</span> transformation matrix of a frame with respect to another.
+:return: <span class="math notranslate nohighlight">\(4       imes 4\)</span> transformation matrix
+:rtype: np.ndarray
+:param frame_name: Name of the child frame from the TF tree
+:type frame_name: str
+:param parent: Name of parent frame (default: ‘/panda_link8’)
+:type parent: str</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.reset_EE_frame">
 <code class="descname">reset_EE_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.reset_EE_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.reset_EE_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset EE frame to default. (defined by DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above)</p>
-<p>&#64;rtype: bool
-&#64;return: success status of service request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">success status of service request</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.reset_K_frame">
 <code class="descname">reset_K_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.reset_K_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.reset_K_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset K frame to default. (defined by <a href="#id1"><span class="problematic" id="id2">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
-<p>&#64;rtype: bool
-&#64;return: success status of service request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">success status of service request</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2201,10 +2385,18 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 <code class="descname">set_EE_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.set_EE_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.set_EE_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set new EE frame based on the transformation given by ‘frame’, which is the 
 transformation matrix defining the new desired EE frame with respect to the flange frame.</p>
-<p>&#64;type frame: [float (16,)] / np.ndarray (4x4) 
-&#64;param frame: transformation matrix of new EE frame wrt flange frame (column major)
-&#64;rtype: bool
-&#64;return: success status of service request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>16</em><em>,</em><em>)</em><em>] </em><em>/ np.ndarray</em><em> (</em><em>4x4</em><em>)</em>) – transformation matrix of new EE frame wrt flange frame (column major)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">success status of service request</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2212,10 +2404,18 @@ transformation matrix defining the new desired EE frame with respect to the flan
 <code class="descname">set_EE_frame_to_link</code><span class="sig-paren">(</span><em>frame_name</em>, <em>timeout=5.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.set_EE_frame_to_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.set_EE_frame_to_link" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set new EE frame to the same frame as the link frame given by ‘frame_name’
 Motion controllers are stopped for switching</p>
-<p>&#64;type frame_name: str 
-&#64;param frame_name: desired tf frame name in the tf tree
-&#64;rtype: [bool, str]
-&#64;return: [success status of service request, error msg if any]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – desired tf frame name in the tf tree</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">[success status of service request, error msg if any]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2223,10 +2423,18 @@ Motion controllers are stopped for switching</p>
 <code class="descname">set_K_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.set_K_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.set_K_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set new K frame based on the transformation given by ‘frame’, which is the 
 transformation matrix defining the new desired K frame with respect to the EE frame.</p>
-<p>&#64;type frame: [float (16,)] / np.ndarray (4x4) 
-&#64;param frame: transformation matrix of new K frame wrt EE frame
-&#64;rtype: bool
-&#64;return: success status of service request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>16</em><em>,</em><em>)</em><em>] </em><em>/ np.ndarray</em><em> (</em><em>4x4</em><em>)</em>) – transformation matrix of new K frame wrt EE frame</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">success status of service request</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2234,10 +2442,18 @@ transformation matrix defining the new desired K frame with respect to the EE fr
 <code class="descname">set_K_frame_to_link</code><span class="sig-paren">(</span><em>frame_name</em>, <em>timeout=5.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.set_K_frame_to_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.set_K_frame_to_link" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set new K frame to the same frame as the link frame given by ‘frame_name’
 Motion controllers are stopped for switching</p>
-<p>&#64;type frame_name: str 
-&#64;param frame_name: desired tf frame name in the tf tree
-&#64;rtype: [bool, str]
-&#64;return: [success status of service request, error msg if any]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – desired tf frame name in the tf tree</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">[success status of service request, error msg if any]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -2253,6 +2469,9 @@ Motion controllers are stopped for switching</p>
 <dt id="franka_tools.JointTrajectoryActionClient">
 <em class="property">class </em><code class="descclassname">franka_tools.</code><code class="descname">JointTrajectoryActionClient</code><span class="sig-paren">(</span><em>joint_names</em>, <em>ns='franka_ros_interface'</em>, <em>controller_name='position_joint_trajectory_controller'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/joint_trajectory_action_client.html#JointTrajectoryActionClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.JointTrajectoryActionClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>To use this class, the currently active controller for the franka robot should be
+the “joint_position_trajectory_controller”. This can be set using instance of
+<a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface" title="franka_tools.FrankaControllerManagerInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">franka_tools.FrankaControllerManagerInterface</span></code></a>.</p>
 </dd></dl>
 
 </div>

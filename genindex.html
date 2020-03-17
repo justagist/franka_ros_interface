@@ -39,6 +39,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -253,13 +254,15 @@
 </li>
       <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.close_gripper">close_gripper() (franka_moveit.PandaMoveGroupInterface method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_tools.CollisionBehaviourInterface">CollisionBehaviourInterface (class in franka_tools)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.controller_dict">controller_dict() (franka_tools.FrankaControllerManagerInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_tools.ControllerParamConfigClient">ControllerParamConfigClient (class in franka_tools)</a>
+</li>
+      <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.current_controller">current_controller (franka_tools.FrankaControllerManagerInterface attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -275,14 +278,18 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_tools.FrankaFramesInterface.EE_frame_already_set">EE_frame_already_set() (franka_tools.FrankaFramesInterface method)</a>
+</li>
+      <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.effort_joint_position_controller">effort_joint_position_controller (franka_tools.FrankaControllerManagerInterface attribute)</a>
+</li>
       <li><a href="DOC.html#franka_interface.RobotEnable.enable">enable() (franka_interface.RobotEnable method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.ArmInterface.endpoint_effort">endpoint_effort() (franka_interface.ArmInterface method)</a>
 </li>
-      <li><a href="DOC.html#franka_interface.ArmInterface.endpoint_pose">endpoint_pose() (franka_interface.ArmInterface method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_interface.ArmInterface.endpoint_pose">endpoint_pose() (franka_interface.ArmInterface method)</a>
+</li>
       <li><a href="DOC.html#franka_interface.ArmInterface.endpoint_velocity">endpoint_velocity() (franka_interface.ArmInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.ArmInterface.error_in_current_state">error_in_current_state() (franka_interface.ArmInterface method)</a>
@@ -337,6 +344,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_tools.FrankaFramesInterface.get_link_tf">get_link_tf() (franka_tools.FrankaFramesInterface method)</a>
+</li>
       <li><a href="DOC.html#franka_interface.ArmInterface.get_movegroup_interface">get_movegroup_interface() (franka_interface.ArmInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_tools.ControllerParamConfigClient.get_parameter_descriptions">get_parameter_descriptions() (franka_tools.ControllerParamConfigClient method)</a>
@@ -407,6 +416,8 @@
         <li><a href="DOC.html#franka_interface.GripperInterface.joint_efforts">(franka_interface.GripperInterface method)</a>
 </li>
       </ul></li>
+      <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.joint_impedance_controller">joint_impedance_controller (franka_tools.FrankaControllerManagerInterface attribute)</a>
+</li>
       <li><a href="DOC.html#franka_interface.ArmInterface.joint_inertia_matrix">joint_inertia_matrix() (franka_interface.ArmInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.ArmInterface.joint_names">joint_names() (franka_interface.ArmInterface method)</a>
@@ -417,17 +428,23 @@
       </ul></li>
       <li><a href="DOC.html#franka_interface.ArmInterface.joint_ordered_angles">joint_ordered_angles() (franka_interface.ArmInterface method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_interface.GripperInterface.joint_ordered_efforts">joint_ordered_efforts() (franka_interface.GripperInterface method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_interface.GripperInterface.joint_ordered_positions">joint_ordered_positions() (franka_interface.GripperInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.GripperInterface.joint_ordered_velocities">joint_ordered_velocities() (franka_interface.GripperInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.GripperInterface.joint_position">joint_position() (franka_interface.GripperInterface method)</a>
 </li>
+      <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.joint_position_controller">joint_position_controller (franka_tools.FrankaControllerManagerInterface attribute)</a>
+</li>
       <li><a href="DOC.html#franka_interface.GripperInterface.joint_positions">joint_positions() (franka_interface.GripperInterface method)</a>
+</li>
+      <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.joint_torque_controller">joint_torque_controller (franka_tools.FrankaControllerManagerInterface attribute)</a>
+</li>
+      <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.joint_trajectory_controller">joint_trajectory_controller (franka_tools.FrankaControllerManagerInterface attribute)</a>
 </li>
       <li><a href="DOC.html#franka_interface.ArmInterface.joint_velocities">joint_velocities() (franka_interface.ArmInterface method)</a>
 
@@ -441,6 +458,8 @@
         <li><a href="DOC.html#franka_interface.GripperInterface.joint_velocity">(franka_interface.GripperInterface method)</a>
 </li>
       </ul></li>
+      <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.joint_velocity_controller">joint_velocity_controller (franka_tools.FrankaControllerManagerInterface attribute)</a>
+</li>
       <li><a href="DOC.html#franka_tools.JointTrajectoryActionClient">JointTrajectoryActionClient (class in franka_tools)</a>
 </li>
   </ul></td>
