@@ -505,25 +505,59 @@ class FrankaControllerManagerInterface(object):
     """
     @property
     def joint_velocity_controller(self):
+        """
+        :return: Name of joint velocity controller (defined in franka_ros_controllers, 
+            and specified in robot_config.yaml)
+        :rtype: str
+        """
         return self._ns[1:] + "/velocity_joint_velocity_controller"
     @property
     def joint_position_controller(self):
+        """
+        :return: Name of joint position controller (defined in franka_ros_controllers, 
+            and specified in robot_config.yaml)
+        :rtype: str
+        """
         return self._ns[1:] + "/position_joint_position_controller"
     @property
     def joint_torque_controller(self):
+        """
+        :return: Name of joint torque controller (defined in franka_ros_controllers, 
+            and specified in robot_config.yaml)
+        :rtype: str
+        """
         return self._ns[1:] + "/effort_joint_torque_controller"    
     @property
     def joint_impedance_controller(self):
+        """
+        :return: Name of joint impedance controller (defined in franka_ros_controllers, 
+            and specified in robot_config.yaml)
+        :rtype: str
+        """
         return self._ns[1:] + "/effort_joint_impedance_controller"   
     @property
     def effort_joint_position_controller(self):
+        """
+        :return: Name of effort joint position controller (defined in franka_ros_controllers, 
+            and specified in robot_config.yaml)
+        :rtype: str
+        """
         return self._ns[1:] + "/effort_joint_position_controller"
     @property
     def joint_trajectory_controller(self):
+        """
+        :return: Name of joint trajectory controller (defined in franka_ros_controllers, 
+            and specified in robot_config.yaml). Exposes trajectory following service.
+        :rtype: str
+        """
         return "position_joint_trajectory_controller" 
 
     @property
     def current_controller(self):
+        """
+        :return: Name of currently active joint controller.
+        :rtype: str
+        """
         if not self._current_controller:
             rospy.logwarn("FrankaControllerManagerInterface: No active controller!")
         return self._current_controller

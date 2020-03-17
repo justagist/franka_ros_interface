@@ -38,6 +38,11 @@ from trajectory_msgs.msg import (
 
 
 class JointTrajectoryActionClient(object):
+    """
+    To use this class, the currently active controller for the franka robot should be
+    the "joint_position_trajectory_controller". This can be set using instance of
+    :py:class:`franka_tools.FrankaControllerManagerInterface`.
+    """
     def __init__(self, joint_names, ns = "franka_ros_interface", controller_name = "position_joint_trajectory_controller"):
         self._joint_names = joint_names
 
