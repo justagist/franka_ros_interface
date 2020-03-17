@@ -1686,9 +1686,9 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of currently active joint controller.</td>
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the name of currently active controller.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -1701,10 +1701,13 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of effort joint position controller (defined in franka_ros_controllers, 
-and specified in robot_config.yaml)</td>
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the name of effort-based joint position controller 
+(defined in franka_ros_controllers, and specified 
+in robot_config.yaml). Can be used for changing 
+motion controller using 
+<a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface.set_motion_controller" title="franka_tools.FrankaControllerManagerInterface.set_motion_controller"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FrankaControllerManagerInterface.set_motion_controller()</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -1797,10 +1800,13 @@ active controller</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint impedance controller (defined in franka_ros_controllers, 
-and specified in robot_config.yaml)</td>
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the name of joint impedance controller 
+(defined in franka_ros_controllers, and specified 
+in robot_config.yaml). Can be used for changing 
+motion controller using 
+<a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface.set_motion_controller" title="franka_tools.FrankaControllerManagerInterface.set_motion_controller"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FrankaControllerManagerInterface.set_motion_controller()</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -1813,10 +1819,13 @@ and specified in robot_config.yaml)</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint position controller (defined in franka_ros_controllers, 
-and specified in robot_config.yaml)</td>
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the name of joint position controller 
+(defined in franka_ros_controllers, and specified 
+in robot_config.yaml). Can be used for changing 
+motion controller using 
+<a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface.set_motion_controller" title="franka_tools.FrankaControllerManagerInterface.set_motion_controller"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FrankaControllerManagerInterface.set_motion_controller()</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -1829,10 +1838,13 @@ and specified in robot_config.yaml)</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint torque controller (defined in franka_ros_controllers, 
-and specified in robot_config.yaml)</td>
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the name of joint torque controller 
+(defined in franka_ros_controllers, and specified 
+in robot_config.yaml). Can be used for changing 
+motion controller using 
+<a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface.set_motion_controller" title="franka_tools.FrankaControllerManagerInterface.set_motion_controller"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FrankaControllerManagerInterface.set_motion_controller()</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -1845,10 +1857,14 @@ and specified in robot_config.yaml)</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint trajectory controller (defined in franka_ros_controllers, 
-and specified in robot_config.yaml). Exposes trajectory following service.</td>
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the name of joint trajectory controller 
+(defined in franka_ros_controllers, and specified 
+in robot_config.yaml). Can be used for changing 
+motion controller using 
+<a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface.set_motion_controller" title="franka_tools.FrankaControllerManagerInterface.set_motion_controller"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FrankaControllerManagerInterface.set_motion_controller()</span></code></a>.
+This controller exposes trajectory following service.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -1861,10 +1877,13 @@ and specified in robot_config.yaml). Exposes trajectory following service.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Name of joint velocity controller (defined in franka_ros_controllers, 
-and specified in robot_config.yaml)</td>
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the name of joint velocity controller 
+(defined in franka_ros_controllers, and specified 
+in robot_config.yaml). Can be used for changing 
+motion controller using 
+<a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface.set_motion_controller" title="franka_tools.FrankaControllerManagerInterface.set_motion_controller"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FrankaControllerManagerInterface.set_motion_controller()</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
