@@ -13,6 +13,7 @@ Go to `Project Source Code`_.
    :caption: Contents:
    :numbered:
 
+   Introduction<readme_link>
    DOC
 
 Indices and tables
