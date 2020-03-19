@@ -39,7 +39,7 @@ import numpy as np
 from copy import deepcopy
 from rospy_message_converter import message_converter
 
-from franka_core_msgs.msg import JointCommand, RobotState, EndPointState, ImpedanceStiffness
+from franka_core_msgs.msg import JointCommand, RobotState, EndPointState, CartImpedanceStiffness, JointImpedanceStiffness, TorqueCmd, ConfigurationCmd
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
 from geometry_msgs.msg import PoseStamped, Wrench
@@ -177,8 +177,6 @@ class ArmInterface(object):
             latch=True,
             queue_size=10)
 
-
-
         self._robot_state_subscriber = rospy.Subscriber(
             self._ns + '/custom_franka_state_controller/robot_state',
             RobotState,
@@ -202,11 +200,18 @@ class ArmInterface(object):
             tcp_nodelay=True)
 
         # Cartesian Impedance Controller Publishers
-        self._impedance_pose_publisher = rospy.Publisher("equilibrium_pose", PoseStamped, queue_size=10)
-        self._cartesian_stiffness_publisher = rospy.Publisher("impedance_stiffness", ImpedanceStiffness, queue_size=10)
+        self._cartesian_impedance_pose_publisher = rospy.Publisher("equilibrium_pose", PoseStamped, queue_size=10)
+        self._cartesian_stiffness_publisher = rospy.Publisher("impedance_stiffness", CartImpedanceStiffness, queue_size=10)
 
         # Force Control Publisher
         self._force_controller_publisher = rospy.Publisher("wrench_target", Wrench, queue_size=10)
+
+        # Torque Control Publisher
+        self._torque_controller_publisher = rospy.Publisher("torque_target", TorqueCmd, queue_size=20)
+
+        # Joint Impedance Controller Publishers
+        #self._joint_impedance_configuration_publisher = rospy.Publisher("equilibrium_configuration", ConfigurationCmd, queue_size=10)
+        #self._joint_stiffness_publisher = rospy.Publisher("joint_impedance_stiffness", JointImpedanceStiffness, queue_size=10) 
 
         rospy.on_shutdown(self._clean_shutdown)
 
@@ -240,15 +245,18 @@ class ArmInterface(object):
             q.append(q_dict[i])
         return q
 
-
     def _clean_shutdown(self):
         self._joint_state_sub.unregister()
         self._cartesian_state_sub.unregister()
         self._pub_joint_cmd_timeout.unregister()
         self._robot_state_subscriber.unregister()
         self._joint_command_publisher.unregister()
-        self._impedance_pose_publisher.unregister()
+        self._cartesian_impedance_pose_publisher.unregister()
         self._cartesian_stiffness_publisher.unregister()
+        self._force_controller_publisher.unregister()
+        self._torque_controller_publisher.unregister()
+        #self._joint_impedance_configuration_publisher.unregister()
+        #self._joint_stiffness_publisher.unregister()
 
     def get_robot_params(self):
         return self._params
@@ -881,13 +889,22 @@ _ns
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
 
+'''
+        # Torque Control Publisher
+        self._torque_controller_publisher = rospy.Publisher("torque_target", TorqueCmd, queue_size=20)
+
+        # Joint Impedance Controller Publishers
+        self._joint_impedance_configuration_publisher = rospy.Publisher("equilibrium_configuration", ConfigurationCmd, queue_size=10)
+        self._joint_stiffness_publisher = rospy.Publisher("joint_impedance_stiffness", JointImpedanceStiffness, queue_size=10)
+
+'''
     def set_cart_impedance_pose(self, pose, stiffness=None):
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.cartesian_impedance_controller else False
         if switch_ctrl:
             self.switchToController(self._ctrl_manager.cartesian_impedance_controller)
 
         if stiffness is not None:
-            stiffness_gains = ImpedanceStiffness()
+            stiffness_gains = CartImpedanceStiffness()
             stiffness_gains.x = stiffness[0]
             stiffness_gains.y = stiffness[1]
             stiffness_gains.z = stiffness[2]
@@ -904,7 +921,30 @@ _ns
         marker_pose.pose.orientation.y = pose['orientation'].y
         marker_pose.pose.orientation.z = pose['orientation'].z
         marker_pose.pose.orientation.w = pose['orientation'].w
-        self._impedance_pose_publisher.publish(marker_pose)
+        self._cartesian_impedance_pose_publisher.publish(marker_pose)
+'''
+    def set_joint_impedance_config(self, q, stiffness=None):
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_impedance_controller else False
+        if switch_ctrl:
+            self.switchToController(self._ctrl_manager.joint_impedance_controller)
+
+        if stiffness is not None:
+            stiffness_gains = JointImpedanceStiffness()
+            stiffness_gains = stiffness
+            self._joint_stiffness_publisher.publish(stiffness_gains)
+
+        marker_pose = ConfigurationCmd()
+        marker_pose.q = q
+        self._joint_impedance_pose_publisher.publish(marker_pose)
+'''
+    def set_torque(self, tau):
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.torque_controller else False
+        if switch_ctrl:
+            self.switchToController(self._ctrl_manager.torque_controller)
+
+        torque = TorqueCmd()
+        torque.torque = tau
+        self._torque_controller_publisher.publish(torque)
 
     def execute_cart_impedance_traj(self, poses, stiffness=None, timing=None):
         if timing is None:
@@ -913,7 +953,15 @@ _ns
         for i in xrange(len(poses)):
             self.set_cart_impedance_pose(poses[i], stiffness)
             rospy.sleep(timing)
+'''
+    def execute_joint_impedance_traj(self, qs, stiffness=None, timing=None):
+        if timing is None:
+            timing = 0.5
 
+        for i in xrange(len(qs)):
+            self.set_joint_impedance_pose(qs[i], stiffness)
+            rospy.sleep(timing)
+'''
     def exert_force(self, target_wrench):
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.force_controller else False
         if switch_ctrl:

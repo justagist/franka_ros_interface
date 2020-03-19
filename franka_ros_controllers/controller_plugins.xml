@@ -34,8 +34,8 @@
       Controller for commanding joint velocity of the Franka arm using internal joint velocity controller
     </description>
   </class>
-  <class name="franka_ros_controllers/ForceExampleController"
-         type="franka_ros_controllers::ForceExampleController"
+  <class name="franka_ros_controllers/ForceController"
+         type="franka_ros_controllers::ForceController"
          base_class_type="controller_interface::ControllerBase">
     <description>
       Controller for commanding forces to be exerted by the Franka Arm
@@ -46,6 +46,13 @@
          base_class_type="controller_interface::ControllerBase">
     <description>
       REWRITE - Controller for commanding forces to be exerted by the Franka Arm
+    </description>
+  </class>
+  <class name="franka_ros_controllers/NewTorqueController"
+         type="franka_ros_controllers::NewTorqueController"
+         base_class_type="controller_interface::ControllerBase">
+    <description>
+      Controller for commanding torques to be exerted by the Franka Arm
     </description>
   </class>
 </library>

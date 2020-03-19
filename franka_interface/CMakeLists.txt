@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   realtime_tools
   roscpp
   rospy
+  std_msgs
 )
 
 find_package(Eigen3 REQUIRED)

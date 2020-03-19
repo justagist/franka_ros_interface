@@ -42,7 +42,10 @@ void MotionControllerInterface::init(ros::NodeHandle& nh,
         torque_controller_name_ = "effort_joint_torque_controller";
     }
   if (!nh.getParam("/controllers_config/force_controller", force_controller_name_)) {
-        torque_controller_name_ = "force_example_controller";
+        torque_controller_name_ = "force_controller";
+    }
+  if (!nh.getParam("/controllers_config/newtorque_controller", newtorque_controller_name_)) {
+        newtorque_controller_name_ = "newtorque_controller";
     }
   if (!nh.getParam("/controllers_config/impedance_controller", impedance_controller_name_)) {
         impedance_controller_name_ = "effort_joint_impedance_controller";

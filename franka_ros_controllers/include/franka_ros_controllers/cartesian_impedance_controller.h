@@ -18,7 +18,7 @@
 #include <franka_ros_controllers/compliance_paramConfig.h>
 #include <franka_hw/franka_model_interface.h>
 #include <franka_hw/franka_state_interface.h>
-#include <franka_core_msgs/ImpedanceStiffness.h>
+#include <franka_core_msgs/CartImpedanceStiffness.h>
 
 namespace franka_ros_controllers {
 
@@ -62,7 +62,7 @@ class CartesianImpedanceController : public controller_interface::MultiInterface
 
   // Stiffness subscriber 
   ros::Subscriber stiffness_params_;
-  void stiffnessParamCallback(const franka_core_msgs::ImpedanceStiffness& msg);
+  void stiffnessParamCallback(const franka_core_msgs::CartImpedanceStiffness& msg);
 };
 
 }  // namespace franka_ros_controllers

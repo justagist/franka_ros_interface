@@ -19,7 +19,10 @@ add_message_files( DIRECTORY msg
         EndPointState.msg
         JointLimits.msg
         JointControllerStates.msg
-        ImpedanceStiffness.msg
+        CartImpedanceStiffness.msg
+        JointImpedanceStiffness.msg
+        TorqueCmd.msg
+        ConfigurationCmd.msg
 )
 
 # add_service_files( DIRECTORY srv

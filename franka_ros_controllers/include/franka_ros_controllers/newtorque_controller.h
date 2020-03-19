@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include <franka_core_msgs/JointLimits.h>
 #include <geometry_msgs/Wrench.h>
 #include <controller_interface/multi_interface_controller.h>
 #include <dynamic_reconfigure/server.h>
@@ -18,10 +19,11 @@
 #include <Eigen/Core>
 
 #include <franka_ros_controllers/desired_mass_paramConfig.h>
+#include <franka_core_msgs/TorqueCmd.h>
 
 namespace franka_ros_controllers {
 
-class ForceExampleController : public controller_interface::MultiInterfaceController<
+class NewTorqueController : public controller_interface::MultiInterfaceController<
                                    franka_hw::FrankaModelInterface,
                                    hardware_interface::EffortJointInterface,
                                    franka_hw::FrankaStateInterface> {
@@ -35,15 +37,15 @@ class ForceExampleController : public controller_interface::MultiInterfaceContro
   Eigen::Matrix<double, 7, 1> saturateTorqueRate(
       const Eigen::Matrix<double, 7, 1>& tau_d_calculated,
       const Eigen::Matrix<double, 7, 1>& tau_J_d);  // NOLINT (readability-identifier-naming)
+  bool checkTorqueLimits(std::vector<double> torques);
 
   std::unique_ptr<franka_hw::FrankaModelHandle> model_handle_;
   std::unique_ptr<franka_hw::FrankaStateHandle> state_handle_;
   std::vector<hardware_interface::JointHandle> joint_handles_;
+  franka_core_msgs::JointLimits joint_limits_;
 
-  //double desired_mass_{0.0};
-  //double target_mass_{0.0};
-  Eigen::Matrix<double, 6, 1> desired_mass_;
-  Eigen::Matrix<double, 6, 1> target_mass_;
+  Eigen::Matrix<double, 7, 1> desired_torque_;
+  Eigen::Matrix<double, 7, 1> target_torque_;
   double k_p_{0.0};
   double k_i_{0.0};
   double target_k_p_{0.0};
@@ -54,8 +56,8 @@ class ForceExampleController : public controller_interface::MultiInterfaceContro
   static constexpr double kDeltaTauMax{1.0};
 
   // Stiffness subscriber 
-  ros::Subscriber force_params_;
-  void forceParamCallback(const geometry_msgs::Wrench& msg);
+  ros::Subscriber torque_params_;
+  void torqueParamCallback(const franka_core_msgs::TorqueCmdConstPtr& msg);
 
 };
 

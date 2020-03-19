@@ -488,7 +488,10 @@ class FrankaControllerManagerInterface(object):
         return self._ns[1:] + "/effort_joint_position_controller"
     @property
     def force_controller(self):
-        return self._ns[1:] + "/force_example_controller"
+        return self._ns[1:] + "/force_controller"
+    @property
+    def newtorque_controller(self):
+        return self._ns[1:] + "/newtorque_controller"
     @property
     def cartesian_impedance_controller(self):
         return self._ns[1:] + "/cartesian_impedance_controller"

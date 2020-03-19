@@ -221,7 +221,7 @@ Eigen::Matrix<double, 7, 1> CartesianImpedanceController::saturateTorqueRate(
 }
 
 void CartesianImpedanceController::stiffnessParamCallback(
-     const franka_core_msgs::ImpedanceStiffness& msg) {
+     const franka_core_msgs::CartImpedanceStiffness& msg) {
 
   cartesian_stiffness_target_.setIdentity();
   cartesian_damping_target_.setIdentity(); // Damping ratio = 1
