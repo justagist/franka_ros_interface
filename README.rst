@@ -13,6 +13,8 @@ coordinate frames, etc. Provides almost complete sim-to-real /
 real-to-sim transfer of code with the `panda_simulator`_
 package.
 
+Documentation Page: https://justagist.github.io/franka_ros_interface
+
 Features
 --------
 
