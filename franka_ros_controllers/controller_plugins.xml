@@ -48,11 +48,4 @@
       REWRITE - Controller for commanding forces to be exerted by the Franka Arm
     </description>
   </class>
-  <class name="franka_ros_controllers/NewTorqueController"
-         type="franka_ros_controllers::NewTorqueController"
-         base_class_type="controller_interface::ControllerBase">
-    <description>
-      Controller for commanding torques to be exerted by the Franka Arm
-    </description>
-  </class>
 </library>

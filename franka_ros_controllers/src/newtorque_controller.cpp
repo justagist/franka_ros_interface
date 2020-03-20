@@ -37,12 +37,14 @@ bool NewTorqueController::init(hardware_interface::RobotHW* robot_hw,
   }*/
 
 
+
   if (!node_handle.getParam("/robot_config/joint_names", joint_limits_.joint_names) || joint_limits_.joint_names.size() != 7) {
     ROS_ERROR(
         "TorqueController: Invalid or no joint_names parameters provided, aborting "
         "controller init!");
     return false;
   }
+
 
   std::map<std::string, double> torque_limit_map;
   if (!node_handle.getParam("/robot_config/joint_config/joint_effort_limit", torque_limit_map))
@@ -94,17 +96,19 @@ bool NewTorqueController::init(hardware_interface::RobotHW* robot_hw,
     ROS_ERROR_STREAM("TorqueController: Error getting effort joint interface from hardware");
     return false;
   }
-  for (size_t i = 0; i < 7; ++i) {
+  ROS_WARN("TorqueController: foop");
+  /*for (size_t i = 0; i < 7; ++i) {
     try {
       joint_handles_.push_back(effort_joint_interface->getHandle(joint_names[i]));
+      ROS_WARN("TorqueController: fooiiip");
     } catch (const hardware_interface::HardwareInterfaceException& ex) {
       ROS_ERROR_STREAM("TorqueController: Exception getting joint handles: " << ex.what());
       return false;
     }
-  }
+  }*/
 
+  ROS_WARN("TorqueController: foo");
   // Initialize
-  //target_mass_ = 0.0;
   target_torque_.setZero();
   desired_torque_.setZero();
   return true;

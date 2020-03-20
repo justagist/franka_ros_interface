@@ -94,4 +94,3 @@ controllers_config:
     force_controller: "franka_ros_interface/force_controller"
     trajectory_controller: "position_joint_trajectory_controller"
     default_controlller: "position_joint_trajectory_controller"
-    newtorque_controller: "franka_ros_interface/newtorque_controller" 

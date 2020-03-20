@@ -889,15 +889,6 @@ _ns
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
 
-'''
-        # Torque Control Publisher
-        self._torque_controller_publisher = rospy.Publisher("torque_target", TorqueCmd, queue_size=20)
-
-        # Joint Impedance Controller Publishers
-        self._joint_impedance_configuration_publisher = rospy.Publisher("equilibrium_configuration", ConfigurationCmd, queue_size=10)
-        self._joint_stiffness_publisher = rospy.Publisher("joint_impedance_stiffness", JointImpedanceStiffness, queue_size=10)
-
-'''
     def set_cart_impedance_pose(self, pose, stiffness=None):
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.cartesian_impedance_controller else False
         if switch_ctrl:
@@ -922,7 +913,7 @@ _ns
         marker_pose.pose.orientation.z = pose['orientation'].z
         marker_pose.pose.orientation.w = pose['orientation'].w
         self._cartesian_impedance_pose_publisher.publish(marker_pose)
-'''
+    '''
     def set_joint_impedance_config(self, q, stiffness=None):
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_impedance_controller else False
         if switch_ctrl:
@@ -936,11 +927,11 @@ _ns
         marker_pose = ConfigurationCmd()
         marker_pose.q = q
         self._joint_impedance_pose_publisher.publish(marker_pose)
-'''
+    '''
     def set_torque(self, tau):
-        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.torque_controller else False
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.newtorque_controller else False
         if switch_ctrl:
-            self.switchToController(self._ctrl_manager.torque_controller)
+            self.switchToController(self._ctrl_manager.newtorque_controller)
 
         torque = TorqueCmd()
         torque.torque = tau
@@ -953,15 +944,7 @@ _ns
         for i in xrange(len(poses)):
             self.set_cart_impedance_pose(poses[i], stiffness)
             rospy.sleep(timing)
-'''
-    def execute_joint_impedance_traj(self, qs, stiffness=None, timing=None):
-        if timing is None:
-            timing = 0.5
 
-        for i in xrange(len(qs)):
-            self.set_joint_impedance_pose(qs[i], stiffness)
-            rospy.sleep(timing)
-'''
     def exert_force(self, target_wrench):
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.force_controller else False
         if switch_ctrl:
