@@ -135,12 +135,12 @@ ji_controller:
         - panda_joint6
         - panda_joint7
     k_gains: # if changing the default values, remember to change in the cfg file as well
-        - 1200.0
-        - 1000.0
-        - 1000.0
-        - 800.0
-        - 300.0
-        - 200.0
+        - 120.0
+        - 100.0
+        - 100.0
+        - 80.0
+        - 30.0
+        - 20.0
         - 50.0
     d_gains:
         - 50.0

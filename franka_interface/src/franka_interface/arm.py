@@ -211,7 +211,7 @@ class ArmInterface(object):
 
         # Joint Impedance Controller Publishers
         self._ji_publisher = rospy.Publisher("ji_position_velocity", JICmd, queue_size=20)
-        #self._joint_stiffness_publisher = rospy.Publisher("joint_impedance_stiffness", JointImpedanceStiffness, queue_size=10) 
+        self._joint_stiffness_publisher = rospy.Publisher("joint_impedance_stiffness", JointImpedanceStiffness, queue_size=10) 
 
         rospy.on_shutdown(self._clean_shutdown)
 
@@ -256,8 +256,7 @@ class ArmInterface(object):
         self._force_controller_publisher.unregister()
         self._torque_controller_publisher.unregister()
         self._ji_publisher.unregister()
-        #self._joint_impedance_configuration_publisher.unregister()
-        #self._joint_stiffness_publisher.unregister()
+        self._joint_stiffness_publisher.unregister()
 
     def get_robot_params(self):
         return self._params
@@ -920,10 +919,10 @@ _ns
         if switch_ctrl:
             self.switchToController(self._ctrl_manager.ji_controller)
 
-        #if stiffness is not None:
-        #    stiffness_gains = JointImpedanceStiffness()
-        #    stiffness_gains = stiffness
-        #    self._joint_stiffness_publisher.publish(stiffness_gains)
+        if stiffness is not None:
+            stiffness_gains = JointImpedanceStiffness()
+            stiffness_gains = stiffness
+            self._joint_stiffness_publisher.publish(stiffness_gains)
 
         marker_pose = JICmd()
         marker_pose.position = q
