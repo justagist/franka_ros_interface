@@ -55,6 +55,7 @@ add_library(franka_ros_controllers
   src/velocity_joint_velocity_controller.cpp
   src/force_controller.cpp
   src/cartesian_impedance_controller.cpp
+  src/ji_controller.cpp
 )
 
 add_dependencies(franka_ros_controllers

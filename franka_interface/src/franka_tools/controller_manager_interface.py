@@ -490,6 +490,9 @@ class FrankaControllerManagerInterface(object):
     def force_controller(self):
         return self._ns[1:] + "/force_controller"
     @property
+    def ji_controller(self):
+        return self._ns[1:] + "/ji_controller"
+    @property
     def cartesian_impedance_controller(self):
         return self._ns[1:] + "/cartesian_impedance_controller"
     @property

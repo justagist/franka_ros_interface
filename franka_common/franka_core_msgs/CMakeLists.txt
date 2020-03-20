@@ -22,7 +22,7 @@ add_message_files( DIRECTORY msg
         CartImpedanceStiffness.msg
         JointImpedanceStiffness.msg
         TorqueCmd.msg
-        ConfigurationCmd.msg
+        JICmd.msg
 )
 
 # add_service_files( DIRECTORY srv

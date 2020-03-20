@@ -39,7 +39,7 @@ import numpy as np
 from copy import deepcopy
 from rospy_message_converter import message_converter
 
-from franka_core_msgs.msg import JointCommand, RobotState, EndPointState, CartImpedanceStiffness, JointImpedanceStiffness, TorqueCmd, ConfigurationCmd
+from franka_core_msgs.msg import JointCommand, RobotState, EndPointState, CartImpedanceStiffness, JointImpedanceStiffness, TorqueCmd, JICmd
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
 from geometry_msgs.msg import PoseStamped, Wrench
@@ -210,7 +210,7 @@ class ArmInterface(object):
         self._torque_controller_publisher = rospy.Publisher("torque_target", TorqueCmd, queue_size=20)
 
         # Joint Impedance Controller Publishers
-        #self._joint_impedance_configuration_publisher = rospy.Publisher("equilibrium_configuration", ConfigurationCmd, queue_size=10)
+        self._ji_publisher = rospy.Publisher("ji_position_velocity", JICmd, queue_size=20)
         #self._joint_stiffness_publisher = rospy.Publisher("joint_impedance_stiffness", JointImpedanceStiffness, queue_size=10) 
 
         rospy.on_shutdown(self._clean_shutdown)
@@ -255,6 +255,7 @@ class ArmInterface(object):
         self._cartesian_stiffness_publisher.unregister()
         self._force_controller_publisher.unregister()
         self._torque_controller_publisher.unregister()
+        self._ji_publisher.unregister()
         #self._joint_impedance_configuration_publisher.unregister()
         #self._joint_stiffness_publisher.unregister()
 
@@ -913,21 +914,22 @@ _ns
         marker_pose.pose.orientation.z = pose['orientation'].z
         marker_pose.pose.orientation.w = pose['orientation'].w
         self._cartesian_impedance_pose_publisher.publish(marker_pose)
-    '''
+    
     def set_joint_impedance_config(self, q, stiffness=None):
-        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_impedance_controller else False
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.ji_controller else False
         if switch_ctrl:
-            self.switchToController(self._ctrl_manager.joint_impedance_controller)
+            self.switchToController(self._ctrl_manager.ji_controller)
 
-        if stiffness is not None:
-            stiffness_gains = JointImpedanceStiffness()
-            stiffness_gains = stiffness
-            self._joint_stiffness_publisher.publish(stiffness_gains)
+        #if stiffness is not None:
+        #    stiffness_gains = JointImpedanceStiffness()
+        #    stiffness_gains = stiffness
+        #    self._joint_stiffness_publisher.publish(stiffness_gains)
 
-        marker_pose = ConfigurationCmd()
-        marker_pose.q = q
-        self._joint_impedance_pose_publisher.publish(marker_pose)
-    '''
+        marker_pose = JICmd()
+        marker_pose.position = q
+        marker_pose.velocity = [0.005]*7
+        self._ji_publisher.publish(marker_pose)
+   
     def set_torque(self, tau):
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.newtorque_controller else False
         if switch_ctrl:
