@@ -92,4 +92,4 @@ controllers_config:
     impedance_controller: "franka_ros_interface/effort_joint_impedance_controller"
     velocity_controller: "franka_ros_interface/velocity_joint_velocity_controller"
     trajectory_controller: "position_joint_trajectory_controller"
-    default_controlller: "position_joint_trajectory_controller" 
+    default_controller: "position_joint_trajectory_controller" 

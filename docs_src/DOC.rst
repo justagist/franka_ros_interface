@@ -66,12 +66,17 @@ PandaMoveGroupInterface
    :members:
    :show-inheritance: 
 
+Helper Functions
+~~~~~~~~~~~~~~~~
+.. automodule:: franka_moveit.utils
+   :members: create_pose_msg
+
 ExtendedPlanningSceneInterface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Easily define scene for robot motion planning (MoveIt plans will avoid defined obstacles if possible).  
 
-.. autoclass:: ExtendedPlanningSceneInterface
+.. autoclass:: franka_moveit.ExtendedPlanningSceneInterface
    :members:
    :show-inheritance: 
 

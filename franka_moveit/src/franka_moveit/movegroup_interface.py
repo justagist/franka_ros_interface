@@ -108,49 +108,47 @@ class PandaMoveGroupInterface:
     @property
     def robot_state_interface(self):
         """
-            :return: The RobotCommander instance of this object
-            :rtype: moveit_commander.RobotCommander
-
-                .. note:: available methods: 
-                    http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html
+            :getter: The RobotCommander instance of this object
+            :type: moveit_commander.RobotCommander
+        
+            .. note:: For available methods for RobotCommander, refer `RobotCommander <http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html>`_.
+                
         """
         return self._robot
     
     @property
     def scene(self):
         """
-            :return: The RobotCommander instance of this object. This is an interface
+            :getter: The PlanningSceneInterface instance for this robot. This is an interface
                     to the world surrounding the robot
-            :rtype: moveit_commander.RobotCommander
+            :type: franka_moveit.ExtendedPlanningSceneInterface
 
-                .. note:: available_methods: 
-                    http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html
+            .. note:: For other available methods for planning scene interface, refer `PlanningSceneInterface <http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html>`_. 
+
         """
         return self._scene
 
     @property
     def arm_group(self):
         """
-        :return: The MoveGroupCommander instance of this object. This is an interface
+        :getter: The MoveGroupCommander instance of this object. This is an interface
             to one group of joints.  In this case the group is the joints in the Panda
             arm. This interface can be used to plan and execute motions on the Panda.
-        :rtype: moveit_commander.MoveGroupCommander
+        :type: moveit_commander.MoveGroupCommander
 
-            .. note:: available_methods: 
-                http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html
+        .. note:: For available methods for movegroup, refer `MoveGroupCommander <http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html>`_. 
         """
         return self._arm_group
 
     @property
     def gripper_group(self):
         """
-        :return: The MoveGroupCommander instance of this object. This is an interface
+        :getter: The MoveGroupCommander instance of this object. This is an interface
             to one group of joints.  In this case the group is the joints in the Panda
             arm. This interface can be used to plan and execute motions on the Panda.
-        :rtype: moveit_commander.MoveGroupCommander
+        :type: moveit_commander.MoveGroupCommander
 
-            .. note:: available_methods: 
-                http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html
+        .. note:: For available methods for movegroup, refer `MoveGroupCommander <http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html>`_. 
         """
         return self._gripper_group
 
@@ -188,6 +186,14 @@ class PandaMoveGroupInterface:
         return True
 
     def plan_cartesian_path(self, poses):
+        """
+            Plan cartesian path using the provided list of poses.
+
+            :param poses: The cartesian poses to be achieved in sequence. 
+                (Use :func:`franka_moveit.utils.create_pose_msg` for creating pose messages easily)
+            :type poses: [geomentry_msgs.msg.Pose] 
+
+        """
         waypoints = []
         for pose in poses:
             waypoints.append(copy.deepcopy(pose))
@@ -199,7 +205,9 @@ class PandaMoveGroupInterface:
     def set_velocity_scale(self, value, group = "arm"):
         """
             Set the max velocity scale for executing planned motion.
+            
             :param value: scale value (allowed (0,1] )
+            :type value: float
         """
         if group == "arm":
             self._arm_group.set_max_velocity_scaling_factor(value)
@@ -211,20 +219,17 @@ class PandaMoveGroupInterface:
 
     def plan_joint_path(self, joint_position):
         """
-        :return plan for executing joint trajectory
+        :return: plan for executing joint trajectory
+
+        :param joint_position: target joint positions
+        :type joint_position: [float]*7
         """
         return self._arm_group.plan(joint_position)
 
-    def go_to_poses(self, poses):
-        plan, _ = self.plan_cartesian_path(poses)
-        raise NotImplementedError
-        """
-            
-        """
 
     def close_gripper(self, wait = False):
         """
-            Using named states defined in urdf.
+            Close gripper. (Using named states defined in urdf.)
 
             .. note:: If this named state is not found, your ros environment is
                 probably not using the right panda_moveit_config package. Ensure
@@ -237,7 +242,7 @@ class PandaMoveGroupInterface:
 
     def open_gripper(self, wait = False):
         """
-            Using named states defined in urdf.
+            Open gripper. (Using named states defined in urdf)
 
             .. note:: If this named state is not found, your ros environment is
                 probably not using the right panda_moveit_config package. Ensure
@@ -248,7 +253,13 @@ class PandaMoveGroupInterface:
         return self._gripper_group.go(wait = wait)
 
     def display_trajectory(self, plan):
+        """
+        Display planned trajectory in RViz. Rviz should be open and Trajectory
+        display should be listening to the appropriate trajectory topic.
 
+        :param plan: the plan to be executed (from :func:`plan_joint_path` or
+            :py:meth:`plan_cartesian_path`)
+        """
         display_trajectory = moveit_msgs.msg.DisplayTrajectory()
         display_trajectory.trajectory_start = self._robot.get_current_state()
         display_trajectory.trajectory.append(plan)
@@ -258,11 +269,24 @@ class PandaMoveGroupInterface:
     def move_to_neutral(self, wait = True):
         """
             Send arm group to neutral pose defined using named state in urdf.
+
+            :param wait: If True, will wait till target is reached
+            :type wait: bool
         """
         self._arm_group.set_named_target("ready")
         return self._arm_group.go(wait = wait)
 
     def execute_plan(self, plan, group = "arm", wait = True):
+        """
+            Execute the planned trajectory 
+
+            :param plan: The plan to be executed (from :py:meth:`plan_joint_path` or
+                :py:meth:`plan_cartesian_path`)
+            :param group: The name of the move group (default "arm" for robot; use "hand" 
+                for gripper group)
+            :type group: str
+            :param wait: If True, will wait till plan is executed
+        """
         if group == "arm":
             self._arm_group.execute(plan, wait = wait)
         elif group == "gripper":

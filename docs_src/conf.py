@@ -101,8 +101,8 @@ html_theme_options = {
     'prev_next_buttons_location': 'bottom',
     'style_external_links': True,
     'style_nav_header_background': 'black',
-    "sidebarwidth":"20%",
-    "body_min_width":"80%",
+    "sidebarwidth":"50%",
+    # "body_min_width":"10%",
     # Toc options
     'collapse_navigation': False,
     'sticky_navigation': True,

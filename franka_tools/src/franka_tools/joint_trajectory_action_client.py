@@ -62,6 +62,21 @@ class JointTrajectoryActionClient(object):
         self.clear()
 
     def add_point(self, positions, time, velocities = None):
+        """
+        Add a waypoint to the trajectory.
+
+        :param positions: target joint positions
+        :type positions: [float]*7
+        :param time: target time in seconds from the start of trajectory 
+            to reach the specified goal 
+        :type time: float
+        :param velocities: goal velocities for joints (give atleast 0.0001)
+        :type velocities: [float]*7
+
+        .. note:: Velocities should be greater than zero (done by default) for
+            smooth motion.
+
+        """
         point = JointTrajectoryPoint()
         point.positions = copy(positions)
         if velocities is None:
@@ -72,19 +87,37 @@ class JointTrajectoryActionClient(object):
         self._goal.trajectory.points.append(point)
 
     def start(self):
+        """
+        Execute previously defined trajectory.
+        """
         self._goal.trajectory.header.stamp = rospy.Time.now()
         self._client.send_goal(self._goal)
 
     def stop(self):
+        """
+        Stop currently executing trajectory.
+        """
         self._client.cancel_goal()
 
     def wait(self, timeout=15.0):
+        """
+        Wait for trajectory execution result.
+
+        :param timeout: timeout before cancelling wait
+        :type timeout: float
+        """
         self._client.wait_for_result(timeout=rospy.Duration(timeout))
 
     def result(self):
+        """
+        Get result from trajectory action server
+        """
         return self._client.get_result()
 
     def clear(self):
+        """
+        Clear all waypoints from the current trajectory definition.
+        """
         self._goal = FollowJointTrajectoryGoal()
         self._goal.goal_time_tolerance = self._goal_time_tolerance
         self._goal.trajectory.joint_names = self._joint_names
