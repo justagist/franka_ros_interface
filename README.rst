@@ -1,6 +1,10 @@
 Franka ROS Interface |Build Status|
 ===================================
 
+.. image:: https://api.codacy.com/project/badge/Grade/a0f60d14672245a3831c20c09f2c9b1f
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&utm_medium=referral&utm_content=justagist/franka_ros_interface&utm_campaign=Badge_Grade_Dashboard
+
 |License|
 
 A ROS API for the Franka Emika Panda robot, extending the `franka_ros`_ to expose more information about the robot, and
