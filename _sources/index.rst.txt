@@ -9,7 +9,7 @@ Franka ROS Interface
 Go to `Project Source Code`_.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    :caption: Contents:
    :numbered:
 

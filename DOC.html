@@ -130,7 +130,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-franka_moveit">2.2. franka_moveit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-franka_moveit.utils">2.2.1.1. Helper Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#extendedplanningsceneinterface">2.2.2. ExtendedPlanningSceneInterface</a></li>
 </ul>
 </li>
@@ -743,7 +746,7 @@ default= 0.3; range= [0.0-1.0]</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>positions</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em>) – ordered joint angles (from joint1 to joint7) to be commanded</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>(</em><em>{str:float}</em>) – dict of {‘joint_name’:joint_position,}</td>
 </tr>
 </tbody>
 </table>
@@ -772,12 +775,12 @@ Command at time t is computed as:</p>
 <dl class="method">
 <dt id="franka_interface.ArmInterface.set_joint_torques">
 <code class="descname">set_joint_torques</code><span class="sig-paren">(</span><em>torques</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_joint_torques"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_joint_torques" title="Permalink to this definition">¶</a></dt>
-<dd><p>Commands the joints of this limb to the specified torques.</p>
+<dd><p>Commands the joints of this limb with the specified torques.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>torques</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>(</em><em>{str:float}</em><em>)</em>) – joint_name:torque command</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>torques</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>(</em><em>{str:float}</em><em>)</em>) – dict of {‘joint_name’:joint_torque,}</td>
 </tr>
 </tbody>
 </table>
@@ -791,7 +794,7 @@ Command at time t is computed as:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>(</em><em>{str:float}</em><em>)</em>) – joint_name:velocity command</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>(</em><em>{str:float}</em><em>)</em>) – dict of {‘joint_name’:joint_velocity,}</td>
 </tr>
 </tbody>
 </table>
@@ -1306,25 +1309,24 @@ limb from ROS parameter.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The MoveGroupCommander instance of this object. This is an interface
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">The MoveGroupCommander instance of this object. This is an interface
 to one group of joints.  In this case the group is the joints in the Panda
 arm. This interface can be used to plan and execute motions on the Panda.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">moveit_commander.MoveGroupCommander<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">available_methods: 
-<a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</a></p>
-</div>
-</td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">moveit_commander.MoveGroupCommander</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For available methods for movegroup, refer <a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">MoveGroupCommander</a>.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_moveit.PandaMoveGroupInterface.close_gripper">
 <code class="descname">close_gripper</code><span class="sig-paren">(</span><em>wait=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.close_gripper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.close_gripper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using named states defined in urdf.</p>
+<dd><p>Close gripper. (Using named states defined in urdf.)</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If this named state is not found, your ros environment is
@@ -1332,6 +1334,43 @@ probably not using the right panda_moveit_config package. Ensure
 that sourced package is from this repo –&gt;
 <a class="reference external" href="https://github.com/justagist/panda_moveit_config">https://github.com/justagist/panda_moveit_config</a></p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_moveit.PandaMoveGroupInterface.display_trajectory">
+<code class="descname">display_trajectory</code><span class="sig-paren">(</span><em>plan</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.display_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.display_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display planned trajectory in RViz. Rviz should be open and Trajectory
+display should be listening to the appropriate trajectory topic.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plan</strong> – the plan to be executed (from <a class="reference internal" href="#franka_moveit.PandaMoveGroupInterface.plan_joint_path" title="franka_moveit.PandaMoveGroupInterface.plan_joint_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">plan_joint_path()</span></code></a> or
+<a class="reference internal" href="#franka_moveit.PandaMoveGroupInterface.plan_cartesian_path" title="franka_moveit.PandaMoveGroupInterface.plan_cartesian_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plan_cartesian_path()</span></code></a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_moveit.PandaMoveGroupInterface.execute_plan">
+<code class="descname">execute_plan</code><span class="sig-paren">(</span><em>plan</em>, <em>group='arm'</em>, <em>wait=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.execute_plan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.execute_plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the planned trajectory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>plan</strong> – The plan to be executed (from <a class="reference internal" href="#franka_moveit.PandaMoveGroupInterface.plan_joint_path" title="franka_moveit.PandaMoveGroupInterface.plan_joint_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plan_joint_path()</span></code></a> or
+<a class="reference internal" href="#franka_moveit.PandaMoveGroupInterface.plan_cartesian_path" title="franka_moveit.PandaMoveGroupInterface.plan_cartesian_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plan_cartesian_path()</span></code></a>)</li>
+<li><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The name of the move group (default “arm” for robot; use “hand” 
+for gripper group)</li>
+<li><strong>wait</strong> – If True, will wait till plan is executed</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1366,31 +1405,38 @@ task a success</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The MoveGroupCommander instance of this object. This is an interface
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">The MoveGroupCommander instance of this object. This is an interface
 to one group of joints.  In this case the group is the joints in the Panda
 arm. This interface can be used to plan and execute motions on the Panda.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">moveit_commander.MoveGroupCommander<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">available_methods: 
-<a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html</a></p>
-</div>
-</td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">moveit_commander.MoveGroupCommander</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For available methods for movegroup, refer <a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html">MoveGroupCommander</a>.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_moveit.PandaMoveGroupInterface.move_to_neutral">
 <code class="descname">move_to_neutral</code><span class="sig-paren">(</span><em>wait=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.move_to_neutral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.move_to_neutral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send arm group to neutral pose defined using named state in urdf.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – If True, will wait till target is reached</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_moveit.PandaMoveGroupInterface.open_gripper">
 <code class="descname">open_gripper</code><span class="sig-paren">(</span><em>wait=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.open_gripper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.open_gripper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using named states defined in urdf.</p>
+<dd><p>Open gripper. (Using named states defined in urdf)</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If this named state is not found, your ros environment is
@@ -1401,9 +1447,33 @@ that sourced package is from this repo –&gt;
 </dd></dl>
 
 <dl class="method">
+<dt id="franka_moveit.PandaMoveGroupInterface.plan_cartesian_path">
+<code class="descname">plan_cartesian_path</code><span class="sig-paren">(</span><em>poses</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.plan_cartesian_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.plan_cartesian_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plan cartesian path using the provided list of poses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>poses</strong> (<em>[</em><em>geomentry_msgs.msg.Pose</em><em>]</em>) – The cartesian poses to be achieved in sequence. 
+(Use <a class="reference internal" href="#franka_moveit.utils.create_pose_msg" title="franka_moveit.utils.create_pose_msg"><code class="xref py py-func docutils literal notranslate"><span class="pre">franka_moveit.utils.create_pose_msg()</span></code></a> for creating pose messages easily)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="franka_moveit.PandaMoveGroupInterface.plan_joint_path">
 <code class="descname">plan_joint_path</code><span class="sig-paren">(</span><em>joint_position</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.plan_joint_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.plan_joint_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>:return plan for executing joint trajectory</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">plan for executing joint trajectory</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joint_position</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em><em>*7</em>) – target joint positions</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -1413,17 +1483,16 @@ that sourced package is from this repo –&gt;
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The RobotCommander instance of this object</td>
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">The RobotCommander instance of this object</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">moveit_commander.RobotCommander<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">available methods: 
-<a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html">http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html</a></p>
-</div>
-</td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">moveit_commander.RobotCommander</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For available methods for RobotCommander, refer <a class="reference external" href="http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html">RobotCommander</a>.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -1433,29 +1502,62 @@ that sourced package is from this repo –&gt;
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The RobotCommander instance of this object. This is an interface
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">The PlanningSceneInterface instance for this robot. This is an interface
 to the world surrounding the robot</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">moveit_commander.RobotCommander<div class="admonition note">
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#franka_moveit.ExtendedPlanningSceneInterface" title="franka_moveit.ExtendedPlanningSceneInterface">franka_moveit.ExtendedPlanningSceneInterface</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">available_methods: 
-<a class="reference external" href="http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html">http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html</a></p>
+<p class="last">For other available methods for planning scene interface, refer <a class="reference external" href="http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html">PlanningSceneInterface</a>.</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_moveit.PandaMoveGroupInterface.set_velocity_scale">
+<code class="descname">set_velocity_scale</code><span class="sig-paren">(</span><em>value</em>, <em>group='arm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.set_velocity_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.set_velocity_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the max velocity scale for executing planned motion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – scale value (allowed (0,1] )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="module-franka_moveit.utils">
+<span id="helper-functions"></span><h4>2.2.1.1. Helper Functions<a class="headerlink" href="#module-franka_moveit.utils" title="Permalink to this headline">¶</a></h4>
+<dl class="function">
+<dt id="franka_moveit.utils.create_pose_msg">
+<code class="descclassname">franka_moveit.utils.</code><code class="descname">create_pose_msg</code><span class="sig-paren">(</span><em>position</em>, <em>orientation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/utils.html#create_pose_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.utils.create_pose_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Pose message using the provided position and orientation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Pose message for the give end-effector position and orientation</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">geometry_msgs.msg.Pose</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>position</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em><em>*3</em>) – End-effector position in base frame of the robot</li>
+<li><strong>orientation</strong> (<em>quaternion.quaternion /</em><em> [</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em><em>*4:</em><em> (</em><em>w</em><em>,</em><em>x</em><em>,</em><em>y</em><em>,</em><em>z</em><em>)</em>) – orientation quaternion of end-effector in base frame</li>
+</ul>
 </td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="franka_moveit.PandaMoveGroupInterface.set_velocity_scale">
-<code class="descname">set_velocity_scale</code><span class="sig-paren">(</span><em>value</em>, <em>group='arm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.set_velocity_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.set_velocity_scale" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the max velocity scale for executing planned motion.
-:param value: scale value (allowed (0,1] )</p>
-</dd></dl>
-
-</dd></dl>
-
+</div>
 </div>
 <div class="section" id="extendedplanningsceneinterface">
 <h3>2.2.2. ExtendedPlanningSceneInterface<a class="headerlink" href="#extendedplanningsceneinterface" title="Permalink to this headline">¶</a></h3>
@@ -1466,6 +1568,10 @@ to the world surrounding the robot</td>
 <dt id="franka_moveit.ExtendedPlanningSceneInterface">
 <em class="property">class </em><code class="descclassname">franka_moveit.</code><code class="descname">ExtendedPlanningSceneInterface</code><a class="reference internal" href="_modules/franka_moveit/extended_planning_scene_interface.html#ExtendedPlanningSceneInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.ExtendedPlanningSceneInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">moveit_commander.planning_scene_interface.PlanningSceneInterface</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For other available methods for planning scene interface, refer <a class="reference external" href="http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html">PlanningSceneInterface</a>.</p>
+</div>
 <dl class="method">
 <dt id="franka_moveit.ExtendedPlanningSceneInterface.add_box">
 <code class="descname">add_box</code><span class="sig-paren">(</span><em>name</em>, <em>pose</em>, <em>size</em>, <em>timeout=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/extended_planning_scene_interface.html#ExtendedPlanningSceneInterface.add_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.ExtendedPlanningSceneInterface.add_box" title="Permalink to this definition">¶</a></dt>
@@ -2386,7 +2492,7 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.reset_K_frame">
 <code class="descname">reset_K_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.reset_K_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.reset_K_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset K frame to default. (defined by <a href="#id1"><span class="problematic" id="id2">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
+<dd><p>Reset K frame to default. (defined by <a href="#id3"><span class="problematic" id="id4">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2491,6 +2597,69 @@ Motion controllers are stopped for switching</p>
 <p>To use this class, the currently active controller for the franka robot should be
 the “joint_position_trajectory_controller”. This can be set using instance of
 <a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface" title="franka_tools.FrankaControllerManagerInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">franka_tools.FrankaControllerManagerInterface</span></code></a>.</p>
+<dl class="method">
+<dt id="franka_tools.JointTrajectoryActionClient.add_point">
+<code class="descname">add_point</code><span class="sig-paren">(</span><em>positions</em>, <em>time</em>, <em>velocities=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/joint_trajectory_action_client.html#JointTrajectoryActionClient.add_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.JointTrajectoryActionClient.add_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a waypoint to the trajectory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>positions</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em><em>*7</em>) – target joint positions</li>
+<li><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – target time in seconds from the start of trajectory 
+to reach the specified goal</li>
+<li><strong>velocities</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>]</em><em>*7</em>) – goal velocities for joints (give atleast 0.0001)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Velocities should be greater than zero (done by default) for
+smooth motion.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_tools.JointTrajectoryActionClient.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/joint_trajectory_action_client.html#JointTrajectoryActionClient.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.JointTrajectoryActionClient.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear all waypoints from the current trajectory definition.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_tools.JointTrajectoryActionClient.result">
+<code class="descname">result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/joint_trajectory_action_client.html#JointTrajectoryActionClient.result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.JointTrajectoryActionClient.result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get result from trajectory action server</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_tools.JointTrajectoryActionClient.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/joint_trajectory_action_client.html#JointTrajectoryActionClient.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.JointTrajectoryActionClient.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute previously defined trajectory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_tools.JointTrajectoryActionClient.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/joint_trajectory_action_client.html#JointTrajectoryActionClient.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.JointTrajectoryActionClient.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop currently executing trajectory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_tools.JointTrajectoryActionClient.wait">
+<code class="descname">wait</code><span class="sig-paren">(</span><em>timeout=15.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/joint_trajectory_action_client.html#JointTrajectoryActionClient.wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.JointTrajectoryActionClient.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for trajectory execution result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – timeout before cancelling wait</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>

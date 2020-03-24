@@ -129,7 +129,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../DOC.html#module-franka_moveit">2.2. franka_moveit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../DOC.html#module-franka_moveit.utils">2.2.1.1. Helper Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../DOC.html#extendedplanningsceneinterface">2.2.2. ExtendedPlanningSceneInterface</a></li>
 </ul>
 </li>
@@ -269,7 +272,22 @@
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">add_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="JointTrajectoryActionClient.add_point"><a class="viewcode-back" href="../../DOC.html#franka_tools.JointTrajectoryActionClient.add_point">[docs]</a>    <span class="k">def</span> <span class="nf">add_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a waypoint to the trajectory.</span>
+
+<span class="sd">        :param positions: target joint positions</span>
+<span class="sd">        :type positions: [float]*7</span>
+<span class="sd">        :param time: target time in seconds from the start of trajectory </span>
+<span class="sd">            to reach the specified goal </span>
+<span class="sd">        :type time: float</span>
+<span class="sd">        :param velocities: goal velocities for joints (give atleast 0.0001)</span>
+<span class="sd">        :type velocities: [float]*7</span>
+
+<span class="sd">        .. note:: Velocities should be greater than zero (done by default) for</span>
+<span class="sd">            smooth motion.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">point</span> <span class="o">=</span> <span class="n">JointTrajectoryPoint</span><span class="p">()</span>
         <span class="n">point</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">velocities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -277,25 +295,43 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">point</span><span class="o">.</span><span class="n">velocities</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">velocities</span><span class="p">)</span>
         <span class="n">point</span><span class="o">.</span><span class="n">time_from_start</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_goal</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_goal</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="JointTrajectoryActionClient.start"><a class="viewcode-back" href="../../DOC.html#franka_tools.JointTrajectoryActionClient.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute previously defined trajectory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_goal</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">send_goal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_goal</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">send_goal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_goal</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">cancel_goal</span><span class="p">()</span>
+<div class="viewcode-block" id="JointTrajectoryActionClient.stop"><a class="viewcode-back" href="../../DOC.html#franka_tools.JointTrajectoryActionClient.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop currently executing trajectory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">cancel_goal</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">15.0</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">wait_for_result</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">rospy</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">timeout</span><span class="p">))</span>
+<div class="viewcode-block" id="JointTrajectoryActionClient.wait"><a class="viewcode-back" href="../../DOC.html#franka_tools.JointTrajectoryActionClient.wait">[docs]</a>    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">15.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wait for trajectory execution result.</span>
 
-    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span>
+<span class="sd">        :param timeout: timeout before cancelling wait</span>
+<span class="sd">        :type timeout: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">wait_for_result</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">rospy</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">timeout</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="JointTrajectoryActionClient.result"><a class="viewcode-back" href="../../DOC.html#franka_tools.JointTrajectoryActionClient.result">[docs]</a>    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get result from trajectory action server</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="JointTrajectoryActionClient.clear"><a class="viewcode-back" href="../../DOC.html#franka_tools.JointTrajectoryActionClient.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear all waypoints from the current trajectory definition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_goal</span> <span class="o">=</span> <span class="n">FollowJointTrajectoryGoal</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_goal</span><span class="o">.</span><span class="n">goal_time_tolerance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_goal_time_tolerance</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_goal</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">joint_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_goal</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">joint_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span></div></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

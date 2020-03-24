@@ -130,7 +130,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_moveit">2.2. franka_moveit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="DOC.html#module-franka_moveit.utils">2.2.1.1. Helper Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="DOC.html#extendedplanningsceneinterface">2.2.2. ExtendedPlanningSceneInterface</a></li>
 </ul>
 </li>
@@ -236,10 +239,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_moveit.ExtendedPlanningSceneInterface.add_box">add_box() (franka_moveit.ExtendedPlanningSceneInterface method)</a>
 </li>
-      <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.arm_group">arm_group (franka_moveit.PandaMoveGroupInterface attribute)</a>
+      <li><a href="DOC.html#franka_tools.JointTrajectoryActionClient.add_point">add_point() (franka_tools.JointTrajectoryActionClient method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.arm_group">arm_group (franka_moveit.PandaMoveGroupInterface attribute)</a>
+</li>
       <li><a href="DOC.html#franka_interface.ArmInterface">ArmInterface (class in franka_interface)</a>
 </li>
       <li><a href="DOC.html#franka_interface.ArmInterface.RobotMode">ArmInterface.RobotMode (class in franka_interface)</a>
@@ -250,6 +255,8 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_tools.JointTrajectoryActionClient.clear">clear() (franka_tools.JointTrajectoryActionClient method)</a>
+</li>
       <li><a href="DOC.html#franka_interface.GripperInterface.close">close() (franka_interface.GripperInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.close_gripper">close_gripper() (franka_moveit.PandaMoveGroupInterface method)</a>
@@ -262,6 +269,8 @@
 </li>
       <li><a href="DOC.html#franka_tools.ControllerParamConfigClient">ControllerParamConfigClient (class in franka_tools)</a>
 </li>
+      <li><a href="DOC.html#franka_moveit.utils.create_pose_msg">create_pose_msg() (in module franka_moveit.utils)</a>
+</li>
       <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.current_controller">current_controller (franka_tools.FrankaControllerManagerInterface attribute)</a>
 </li>
   </ul></td>
@@ -271,6 +280,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_interface.RobotEnable.disable">disable() (franka_interface.RobotEnable method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.display_trajectory">display_trajectory() (franka_moveit.PandaMoveGroupInterface method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -294,6 +307,8 @@
 </li>
       <li><a href="DOC.html#franka_interface.ArmInterface.error_in_current_state">error_in_current_state() (franka_interface.ArmInterface method)</a>
 </li>
+      <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.execute_plan">execute_plan() (franka_moveit.PandaMoveGroupInterface method)</a>
+</li>
       <li><a href="DOC.html#franka_moveit.ExtendedPlanningSceneInterface">ExtendedPlanningSceneInterface (class in franka_moveit)</a>
 </li>
   </ul></td>
@@ -310,6 +325,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#module-franka_moveit.utils">franka_moveit.utils (module)</a>
+</li>
       <li><a href="DOC.html#module-franka_tools">franka_tools (module)</a>
 </li>
       <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface">FrankaControllerManagerInterface (class in franka_tools)</a>
@@ -526,6 +543,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.plan_cartesian_path">plan_cartesian_path() (franka_moveit.PandaMoveGroupInterface method)</a>
+</li>
       <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.plan_joint_path">plan_joint_path() (franka_moveit.PandaMoveGroupInterface method)</a>
 </li>
   </ul></td>
@@ -542,9 +561,11 @@
         <li><a href="DOC.html#franka_tools.FrankaFramesInterface.reset_EE_frame">(franka_tools.FrankaFramesInterface method)</a>
 </li>
       </ul></li>
+      <li><a href="DOC.html#franka_tools.FrankaFramesInterface.reset_K_frame">reset_K_frame() (franka_tools.FrankaFramesInterface method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="DOC.html#franka_tools.FrankaFramesInterface.reset_K_frame">reset_K_frame() (franka_tools.FrankaFramesInterface method)</a>
+      <li><a href="DOC.html#franka_tools.JointTrajectoryActionClient.result">result() (franka_tools.JointTrajectoryActionClient method)</a>
 </li>
       <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.robot_state_interface">robot_state_interface (franka_moveit.PandaMoveGroupInterface attribute)</a>
 </li>
@@ -592,10 +613,10 @@
 </li>
       <li><a href="DOC.html#franka_tools.ControllerParamConfigClient.set_joint_motion_smoothing_parameter">set_joint_motion_smoothing_parameter() (franka_tools.ControllerParamConfigClient method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_interface.ArmInterface.set_joint_position_speed">set_joint_position_speed() (franka_interface.ArmInterface method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_interface.ArmInterface.set_joint_positions">set_joint_positions() (franka_interface.ArmInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.ArmInterface.set_joint_positions_velocities">set_joint_positions_velocities() (franka_interface.ArmInterface method)</a>
@@ -615,10 +636,16 @@
       <li><a href="DOC.html#franka_moveit.PandaMoveGroupInterface.set_velocity_scale">set_velocity_scale() (franka_moveit.PandaMoveGroupInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_tools.ControllerParamConfigClient.start">start() (franka_tools.ControllerParamConfigClient method)</a>
+
+      <ul>
+        <li><a href="DOC.html#franka_tools.JointTrajectoryActionClient.start">(franka_tools.JointTrajectoryActionClient method)</a>
 </li>
+      </ul></li>
       <li><a href="DOC.html#franka_tools.FrankaControllerManagerInterface.start_controller">start_controller() (franka_tools.FrankaControllerManagerInterface method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.RobotEnable.state">state() (franka_interface.RobotEnable method)</a>
+</li>
+      <li><a href="DOC.html#franka_tools.JointTrajectoryActionClient.stop">stop() (franka_tools.JointTrajectoryActionClient method)</a>
 </li>
       <li><a href="DOC.html#franka_interface.GripperInterface.stop_action">stop_action() (franka_interface.GripperInterface method)</a>
 </li>
@@ -649,6 +676,10 @@
 
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DOC.html#franka_tools.JointTrajectoryActionClient.wait">wait() (franka_tools.JointTrajectoryActionClient method)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DOC.html#franka_interface.ArmInterface.what_errors">what_errors() (franka_interface.ArmInterface method)</a>
 </li>

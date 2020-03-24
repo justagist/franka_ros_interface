@@ -129,7 +129,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../DOC.html#module-franka_moveit">2.2. franka_moveit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../DOC.html#module-franka_moveit.utils">2.2.1.1. Helper Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../DOC.html#extendedplanningsceneinterface">2.2.2. ExtendedPlanningSceneInterface</a></li>
 </ul>
 </li>
@@ -761,8 +764,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commands the joints of this limb to the specified positions.</span>
 
-<span class="sd">        :type positions: [float]</span>
-<span class="sd">        :param positions: ordered joint angles (from joint1 to joint7) to be commanded</span>
+<span class="sd">        :type positions: dict({str:float}</span>
+<span class="sd">        :param positions: dict of {&#39;joint_name&#39;:joint_position,}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="n">positions</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span>
@@ -775,7 +778,7 @@
 <span class="sd">        Commands the joints of this limb to the specified velocities.</span>
 
 <span class="sd">        :type velocities: dict({str:float})</span>
-<span class="sd">        :param velocities: joint_name:velocity command</span>
+<span class="sd">        :param velocities: dict of {&#39;joint_name&#39;:joint_velocity,}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="p">[</span><span class="n">velocities</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span>
@@ -785,10 +788,10 @@
 
 <div class="viewcode-block" id="ArmInterface.set_joint_torques"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_joint_torques">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_torques</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">torques</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Commands the joints of this limb to the specified torques.</span>
+<span class="sd">        Commands the joints of this limb with the specified torques.</span>
 
 <span class="sd">        :type torques: dict({str:float})</span>
-<span class="sd">        :param torques: joint_name:torque command</span>
+<span class="sd">        :param torques: dict of {&#39;joint_name&#39;:joint_torque,}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">effort</span> <span class="o">=</span> <span class="p">[</span><span class="n">torques</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">]</span>

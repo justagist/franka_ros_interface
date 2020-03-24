@@ -129,7 +129,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../DOC.html#module-franka_moveit">2.2. franka_moveit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../DOC.html#module-franka_moveit.utils">2.2.1.1. Helper Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../DOC.html#extendedplanningsceneinterface">2.2.2. ExtendedPlanningSceneInterface</a></li>
 </ul>
 </li>
@@ -237,7 +240,9 @@
 <span class="kn">from</span> <span class="nn">std_msgs.msg</span> <span class="kn">import</span> <span class="n">String</span>
 
 <div class="viewcode-block" id="ExtendedPlanningSceneInterface"><a class="viewcode-back" href="../../DOC.html#franka_moveit.ExtendedPlanningSceneInterface">[docs]</a><span class="k">class</span> <span class="nc">ExtendedPlanningSceneInterface</span><span class="p">(</span><span class="n">moveit_commander</span><span class="o">.</span><span class="n">PlanningSceneInterface</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. note:: For other available methods for planning scene interface, refer `PlanningSceneInterface &lt;http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html&gt;`_.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">moveit_commander</span><span class="o">.</span><span class="n">PlanningSceneInterface</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
