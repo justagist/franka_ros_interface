@@ -1046,14 +1046,20 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;No CollisionBehaviourInterface object found!&quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">get_controller_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.get_controller_manager"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.get_controller_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_controller_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: the controller manager interface associated with the robot.</span>
+<span class="sd">        :rtype: franka_tools.FrankaControllerManagerInterface</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span></div>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span>
 
-
-    <span class="k">def</span> <span class="nf">get_frames_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span></div>
+<div class="viewcode-block" id="ArmInterface.get_frames_interface"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.get_frames_interface">[docs]</a>    <span class="k">def</span> <span class="nf">get_frames_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: the frames changer interface instance associated with the robot.</span>
+<span class="sd">        :rtype: franka_tools.FrankaFramesInterface</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span></div></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

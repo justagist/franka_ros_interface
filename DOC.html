@@ -332,6 +332,36 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="franka_interface.ArmInterface.get_controller_manager">
+<code class="descname">get_controller_manager</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.get_controller_manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.get_controller_manager" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the controller manager interface associated with the robot.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface" title="franka_tools.FrankaControllerManagerInterface">franka_tools.FrankaControllerManagerInterface</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_interface.ArmInterface.get_frames_interface">
+<code class="descname">get_frames_interface</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.get_frames_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.get_frames_interface" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the frames changer interface instance associated with the robot.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#franka_tools.FrankaFramesInterface" title="franka_tools.FrankaFramesInterface">franka_tools.FrankaFramesInterface</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="franka_interface.ArmInterface.get_joint_limits">
 <code class="descname">get_joint_limits</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.get_joint_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.get_joint_limits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the joint limits (defined in the parameter server)</p>
