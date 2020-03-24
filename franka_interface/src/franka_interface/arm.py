@@ -553,8 +553,8 @@ class ArmInterface(object):
         """
         Commands the joints of this limb to the specified positions.
 
-        :type positions: [float]
-        :param positions: ordered joint angles (from joint1 to joint7) to be commanded
+        :type positions: dict({str:float}
+        :param positions: dict of {'joint_name':joint_position,}
         """
         self._command_msg.names = self._joint_names
         self._command_msg.position = [positions[j] for j in self._joint_names]
@@ -567,7 +567,7 @@ class ArmInterface(object):
         Commands the joints of this limb to the specified velocities.
 
         :type velocities: dict({str:float})
-        :param velocities: joint_name:velocity command
+        :param velocities: dict of {'joint_name':joint_velocity,}
         """
         self._command_msg.names = self._joint_names
         self._command_msg.velocity = [velocities[j] for j in self._joint_names]
@@ -577,10 +577,10 @@ class ArmInterface(object):
 
     def set_joint_torques(self, torques):
         """
-        Commands the joints of this limb to the specified torques.
+        Commands the joints of this limb with the specified torques.
 
         :type torques: dict({str:float})
-        :param torques: joint_name:torque command
+        :param torques: dict of {'joint_name':joint_torque,}
         """
         self._command_msg.names = self._joint_names
         self._command_msg.effort = [torques[j] for j in self._joint_names]

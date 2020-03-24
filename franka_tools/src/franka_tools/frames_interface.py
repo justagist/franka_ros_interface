@@ -44,7 +44,7 @@ class FrankaFramesInterface():
 
         Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class (panda_robot package: https://github.com/justagist/panda_robot ).
 
-        Note that all controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).
+        .. note: All controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).
 
     """
 
@@ -59,10 +59,10 @@ class FrankaFramesInterface():
         Set new EE frame based on the transformation given by 'frame', which is the 
         transformation matrix defining the new desired EE frame with respect to the flange frame.
 
-        @type frame: [float (16,)] / np.ndarray (4x4) 
-        @param frame: transformation matrix of new EE frame wrt flange frame (column major)
-        @rtype: bool
-        @return: success status of service request
+        :type frame: [float (16,)] / np.ndarray (4x4) 
+        :param frame: transformation matrix of new EE frame wrt flange frame (column major)
+        :rtype: bool
+        :return: success status of service request
         """
         frame = self._assert_frame_validity(frame)
 
@@ -93,7 +93,15 @@ class FrankaFramesInterface():
         return frame
 
     def get_link_tf(self, frame_name, timeout = 5.0, parent = '/panda_link8'):
-
+        """
+        Get :math:`4\times 4` transformation matrix of a frame with respect to another.
+        :return: :math:`4\times 4` transformation matrix
+        :rtype: np.ndarray
+        :param frame_name: Name of the child frame from the TF tree
+        :type frame_name: str
+        :param parent: Name of parent frame (default: '/panda_link8')
+        :type parent: str
+        """
         listener = tf.TransformListener()
         err = "FrankaFramesInterface: Error while looking up transform from Flange frame to link frame %s"%frame_name
         def body():
@@ -121,12 +129,12 @@ class FrankaFramesInterface():
 
     def frames_are_same(self, frame1, frame2):
         """
-        @return True if two transformation matrices are equal
-        @rtype: bool
-        @param frame1: 4x4 transformation matrix representing frame1
-        @type frame1: np.ndarray (shape 4x4), or list (flattened column major 4x4)
-        @param frame2: 4x4 transformation matrix representing frame2
-        @type frame2: np.ndarray (shape 4x4), or list (flattened column major 4x4)
+        :return: True if two transformation matrices are equal
+        :rtype: bool
+        :param frame1: 4x4 transformation matrix representing frame1
+        :type frame1: np.ndarray (shape: [4,4]), or list (flattened column major 4x4)
+        :param frame2: 4x4 transformation matrix representing frame2
+        :type frame2: np.ndarray (shape: [4,4]), or list (flattened column major 4x4)
         """
         frame1 = self._assert_frame_validity(frame1)
         frame2 = self._assert_frame_validity(frame2)
@@ -134,7 +142,12 @@ class FrankaFramesInterface():
         return np.array_equal(np.asarray(frame1), np.asarray(frame2))
 
     def EE_frame_already_set(self, frame):
-
+        """
+        :return: True if the requested frame is already the current EE frame
+        :rtype: bool
+        :param frame: 4x4 transformation matrix representing frame
+        :type frame: np.ndarray (shape: [4,4]), or list (flattened column major 4x4)
+        """
         return self.frames_are_same(frame, self._current_EE_frame_transformation)
 
 
@@ -143,10 +156,10 @@ class FrankaFramesInterface():
         Set new EE frame to the same frame as the link frame given by 'frame_name'
         Motion controllers are stopped for switching
 
-        @type frame_name: str 
-        @param frame_name: desired tf frame name in the tf tree
-        @rtype: [bool, str]
-        @return: [success status of service request, error msg if any]
+        :type frame_name: str 
+        :param frame_name: desired tf frame name in the tf tree
+        :rtype: [bool, str]
+        :return: [success status of service request, error msg if any]
         """
 
         return self.set_EE_frame(self.get_link_tf(frame_name, timeout))
@@ -157,10 +170,10 @@ class FrankaFramesInterface():
         """
         Get current EE frame transformation matrix in flange frame
         
-        @type as_mat: bool
-        @param as_mat: if True, return np array, else as list
-        @rtype: [float (16,)] / np.ndarray (4x4) 
-        @return: transformation matrix of EE frame wrt flange frame (column major)
+        :type as_mat: bool
+        :param as_mat: if True, return np array, else as list
+        :rtype: [float (16,)] / np.ndarray (4x4) 
+        :return: transformation matrix of EE frame wrt flange frame (column major)
         """
         return self._current_EE_frame_transformation if not as_mat else np.asarray(self._current_EE_frame_transformation).reshape(4,4,order='F')
 
@@ -168,8 +181,8 @@ class FrankaFramesInterface():
         """
         Reset EE frame to default. (defined by DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) 
 
-        @rtype: bool
-        @return: success status of service request
+        :rtype: bool
+        :return: success status of service request
         """
         return self.set_EE_frame(frame = DEFAULT_TRANSFORMATIONS.EE_FRAME)
 
@@ -196,10 +209,10 @@ class FrankaFramesInterface():
         Set new K frame based on the transformation given by 'frame', which is the 
         transformation matrix defining the new desired K frame with respect to the EE frame.
 
-        @type frame: [float (16,)] / np.ndarray (4x4) 
-        @param frame: transformation matrix of new K frame wrt EE frame
-        @rtype: bool
-        @return: success status of service request
+        :type frame: [float (16,)] / np.ndarray (4x4) 
+        :param frame: transformation matrix of new K frame wrt EE frame
+        :rtype: bool
+        :return: success status of service request
         """
         frame = self._assert_frame_validity(frame)
 
@@ -210,10 +223,10 @@ class FrankaFramesInterface():
         Set new K frame to the same frame as the link frame given by 'frame_name'
         Motion controllers are stopped for switching
 
-        @type frame_name: str 
-        @param frame_name: desired tf frame name in the tf tree
-        @rtype: [bool, str]
-        @return: [success status of service request, error msg if any]
+        :type frame_name: str 
+        :param frame_name: desired tf frame name in the tf tree
+        :rtype: [bool, str]
+        :return: [success status of service request, error msg if any]
         """
 
         trans = False
@@ -246,10 +259,10 @@ class FrankaFramesInterface():
         """
         Get current K frame transformation matrix in EE frame
         
-        @type as_mat: bool
-        @param as_mat: if True, return np array, else as list
-        @rtype: [float (16,)] / np.ndarray (4x4) 
-        @return: transformation matrix of K frame wrt EE frame
+        :type as_mat: bool
+        :param as_mat: if True, return np array, else as list
+        :rtype: [float (16,)] / np.ndarray (4x4) 
+        :return: transformation matrix of K frame wrt EE frame
         """
         return self._current_K_frame_transformation if not as_mat else np.asarray(self._current_K_frame_transformation).reshape(4,4,order='F')
 
@@ -257,8 +270,8 @@ class FrankaFramesInterface():
         """
         Reset K frame to default. (defined by DEFAULT_K_ FRAME global variable defined above) 
 
-        @rtype: bool
-        @return: success status of service request
+        :rtype: bool
+        :return: success status of service request
         """
 
         return self.set_K_frame(frame = DEFAULT_TRANSFORMATIONS.K_FRAME)

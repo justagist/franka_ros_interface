@@ -505,25 +505,78 @@ class FrankaControllerManagerInterface(object):
     """
     @property
     def joint_velocity_controller(self):
+        """
+        :getter: Returns the name of joint velocity controller 
+            (defined in franka_ros_controllers, and specified 
+            in robot_config.yaml). Can be used for changing 
+            motion controller using 
+            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.
+        :type: str
+        """
         return self._ns[1:] + "/velocity_joint_velocity_controller"
     @property
     def joint_position_controller(self):
+        """
+        :getter: Returns the name of joint position controller 
+            (defined in franka_ros_controllers, and specified 
+            in robot_config.yaml). Can be used for changing 
+            motion controller using 
+            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.
+        :type: str
+        """
         return self._ns[1:] + "/position_joint_position_controller"
     @property
     def joint_torque_controller(self):
+        """
+        :getter: Returns the name of joint torque controller 
+            (defined in franka_ros_controllers, and specified 
+            in robot_config.yaml). Can be used for changing 
+            motion controller using 
+            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.
+        :type: str
+        """
         return self._ns[1:] + "/effort_joint_torque_controller"    
     @property
     def joint_impedance_controller(self):
+        """
+        :getter: Returns the name of joint impedance controller 
+            (defined in franka_ros_controllers, and specified 
+            in robot_config.yaml). Can be used for changing 
+            motion controller using 
+            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.
+        :type: str
+        """
         return self._ns[1:] + "/effort_joint_impedance_controller"   
     @property
     def effort_joint_position_controller(self):
+        """
+        :getter: Returns the name of effort-based joint position controller 
+            (defined in franka_ros_controllers, and specified 
+            in robot_config.yaml). Can be used for changing 
+            motion controller using 
+            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.
+        :type: str
+        """
         return self._ns[1:] + "/effort_joint_position_controller"
     @property
     def joint_trajectory_controller(self):
+        """
+        :getter: Returns the name of joint trajectory controller 
+            (defined in franka_ros_controllers, and specified 
+            in robot_config.yaml). Can be used for changing 
+            motion controller using 
+            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.
+            This controller exposes trajectory following service.
+        :type: str
+        """
         return "position_joint_trajectory_controller" 
 
     @property
     def current_controller(self):
+        """
+        :getter: Returns the name of currently active controller.
+        :type: str
+        """
         if not self._current_controller:
             rospy.logwarn("FrankaControllerManagerInterface: No active controller!")
         return self._current_controller
