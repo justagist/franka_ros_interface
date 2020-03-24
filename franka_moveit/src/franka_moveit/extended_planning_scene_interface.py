@@ -29,7 +29,9 @@ import moveit_commander
 from std_msgs.msg import String
 
 class ExtendedPlanningSceneInterface(moveit_commander.PlanningSceneInterface):
-
+    """
+    .. note:: For other available methods for planning scene interface, refer `PlanningSceneInterface <http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html>`_.
+    """
     def __init__(self):
 
         moveit_commander.PlanningSceneInterface.__init__(self)

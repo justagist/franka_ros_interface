@@ -111,21 +111,20 @@ class PandaMoveGroupInterface:
             :getter: The RobotCommander instance of this object
             :type: moveit_commander.RobotCommander
         
-
-            .. note:: available methods: 
-                http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html
+            .. note:: For available methods for RobotCommander, refer `RobotCommander <http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1robot_1_1RobotCommander.html>`_.
+                
         """
         return self._robot
     
     @property
     def scene(self):
         """
-            :getter: The RobotCommander instance of this object. This is an interface
+            :getter: The PlanningSceneInterface instance for this robot. This is an interface
                     to the world surrounding the robot
-            :type: moveit_commander.RobotCommander
+            :type: franka_moveit.ExtendedPlanningSceneInterface
 
-            .. note:: available_methods: 
-                http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html
+            .. note:: For other available methods for planning scene interface, refer `PlanningSceneInterface <http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html>`_. 
+
         """
         return self._scene
 
@@ -137,8 +136,7 @@ class PandaMoveGroupInterface:
             arm. This interface can be used to plan and execute motions on the Panda.
         :type: moveit_commander.MoveGroupCommander
 
-            .. note:: available_methods: 
-                http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html
+        .. note:: For available methods for movegroup, refer `MoveGroupCommander <http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html>`_. 
         """
         return self._arm_group
 
@@ -150,8 +148,7 @@ class PandaMoveGroupInterface:
             arm. This interface can be used to plan and execute motions on the Panda.
         :type: moveit_commander.MoveGroupCommander
 
-            .. note:: available_methods: 
-                http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html
+        .. note:: For available methods for movegroup, refer `MoveGroupCommander <http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html>`_. 
         """
         return self._gripper_group
 
@@ -193,7 +190,7 @@ class PandaMoveGroupInterface:
             Plan cartesian path using the provided list of poses.
 
             :param poses: The cartesian poses to be achieved in sequence. 
-                (Use :func:franka_moveit.utils.create_pose_stamped_msg for creating pose messages easily)
+                (Use :func:`franka_moveit.utils.create_pose_msg` for creating pose messages easily)
             :type poses: [geomentry_msgs.msg.Pose] 
 
         """
@@ -208,6 +205,7 @@ class PandaMoveGroupInterface:
     def set_velocity_scale(self, value, group = "arm"):
         """
             Set the max velocity scale for executing planned motion.
+            
             :param value: scale value (allowed (0,1] )
             :type value: float
         """

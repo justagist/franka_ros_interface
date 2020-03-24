@@ -2,7 +2,7 @@
 import geometry_msgs.msg
 import quaternion
 
-def create_pose_stamped_msg(position, orientation):
+def create_pose_msg(position, orientation):
     """
         Create Pose message using the provided position and orientation
 
