@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">>
   <name>franka_interface</name>
-  <version>0.0.1</version>
+  <version>1.0.0</version>
   <description>
     ROS/Python interface classes for control of
     Franka Panda robot through franka-ros and libfranka.

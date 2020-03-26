@@ -59,7 +59,7 @@ class GripperInterface(object):
 
     """
 
-    def __init__(self, gripper_joint_names = ['panda_finger_joint1', 'panda_finger_joint2'], ns = 'franka_ros_interface', calibrate = False):
+    def __init__(self, gripper_joint_names = ['panda_finger_joint1', 'panda_finger_joint2'], calibrate = False, **kwargs):
         """
         Constructor.
         """
@@ -93,7 +93,6 @@ class GripperInterface(object):
         if not franka_dataflow.wait_for(lambda: len(self._joint_positions.keys()) > 0, timeout=2.0, timeout_msg=("FrankaGripper: Failed to get gripper joint positions. Assuming no gripper attached to robot."), raise_on_error = False ):
             return 
         self._exists = True
-
 
         self._gripper_speed = 0.05
 
