@@ -11,8 +11,8 @@ Panels:
         - /MotionPlanning1/Planned Path1
         - /PlanningScene1
         - /PlanningScene1/Scene Geometry1
-      Splitter Ratio: 0.742560029
-    Tree Height: 460
+      Splitter Ratio: 0.7425600290298462
+    Tree Height: 126
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -22,6 +22,8 @@ Panels:
     Splitter Ratio: 0.5
   - Class: rviz_visual_tools/RvizVisualToolsGui
     Name: RvizVisualToolsGui
+Preferences:
+  PromptSaveOnExit: true
 Toolbars:
   toolButtonStyle: 2
 Visualization Manager:
@@ -33,7 +35,7 @@ Visualization Manager:
       Color: 160; 160; 164
       Enabled: true
       Line Style:
-        Line Width: 0.0299999993
+        Line Width: 0.029999999329447746
         Value: Lines
       Name: Grid
       Normal Cell Count: 0
@@ -64,6 +66,7 @@ Visualization Manager:
       MoveIt_Goal_Tolerance: 0
       MoveIt_Planning_Attempts: 10
       MoveIt_Planning_Time: 5
+      MoveIt_Use_Cartesian_Path: false
       MoveIt_Use_Constraint_Aware_IK: true
       MoveIt_Warehouse_Host: 127.0.0.1
       MoveIt_Warehouse_Port: 33829
@@ -86,16 +89,6 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          panda_hand:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          panda_leftfinger:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
           panda_link0:
             Alpha: 1
             Show Axes: false
@@ -140,11 +133,10 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          panda_rightfinger:
+          world:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
         Loop Animation: false
         Robot Alpha: 0.5
         Robot Color: 150; 50; 150
@@ -160,7 +152,7 @@ Visualization Manager:
         Show Manipulability: false
         Show Manipulability Index: false
         Show Weight Limit: false
-        TextHeight: 0.0799999982
+        TextHeight: 0.07999999821186066
       Planning Request:
         Colliding Link Color: 255; 0; 0
         Goal State Alpha: 1
@@ -176,9 +168,9 @@ Visualization Manager:
       Planning Scene Topic: /planning_scene
       Robot Description: robot_description
       Scene Geometry:
-        Scene Alpha: 0.899999976
+        Scene Alpha: 0.8999999761581421
         Scene Color: 50; 230; 50
-        Scene Display Time: 0.200000003
+        Scene Display Time: 0.20000000298023224
         Show Scene Geometry: false
         Voxel Coloring: Z-Axis
         Voxel Rendering: Occupied Voxels
@@ -190,16 +182,6 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          panda_hand:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          panda_leftfinger:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
           panda_link0:
             Alpha: 1
             Show Axes: false
@@ -244,11 +226,10 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          panda_rightfinger:
+          world:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
         Robot Alpha: 1
         Show Robot Collision: false
         Show Robot Visual: true
@@ -263,7 +244,7 @@ Visualization Manager:
       Scene Geometry:
         Scene Alpha: 1
         Scene Color: 170; 255; 255
-        Scene Display Time: 0.200000003
+        Scene Display Time: 0.20000000298023224
         Show Scene Geometry: true
         Voxel Coloring: Z-Axis
         Voxel Rendering: Occupied Voxels
@@ -275,16 +256,6 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          panda_hand:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          panda_leftfinger:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
           panda_link0:
             Alpha: 1
             Show Axes: false
@@ -329,11 +300,10 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          panda_rightfinger:
+          world:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
         Robot Alpha: 1
         Show Robot Collision: false
         Show Robot Visual: true
@@ -355,30 +325,30 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 2.82759404
+      Distance: 2.827594041824341
       Enable Stereo Rendering:
-        Stereo Eye Separation: 0.0599999987
+        Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.113567002
-        Y: 0.105920002
-        Z: 2.23518001e-07
+        X: 0.11356700211763382
+        Y: 0.10592000186443329
+        Z: 2.2351800055275817e-7
       Focal Shape Fixed Size: true
-      Focal Shape Size: 0.0500000007
+      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
-      Near Clip Distance: 0.00999999978
-      Pitch: 0.274796903
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.27479690313339233
       Target Frame: panda_link0
       Value: XYOrbit (rviz)
-      Yaw: 5.81995487
+      Yaw: 5.819954872131348
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1176
+  Height: 759
   Help:
     collapsed: false
   Hide Left Dock: false
@@ -387,11 +357,11 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000027400000444fc020000000dfb000000100044006900730070006c006100790073010000003a0000025a000000c600fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000026d000000b50000009e00fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb0000002e004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d00200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067010000029a000001e40000016b00fffffffb00000024005200760069007a00560069007300750061006c0054006f006f006c007300470075006900000004bd0000008d0000003e00fffffffb000000120020002d00200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067010000034f000001fb0000000000000000fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000308000001760000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000003e00ffffff000005060000044400000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000010000000000000274000002a1fc020000000dfb000000100044006900730070006c006100790073010000003b0000010d000000c700fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000026d000000b5000000a000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb0000002e004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d00200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067010000014e0000018e0000018300fffffffb00000024005200760069007a00560069007300750061006c0054006f006f006c007300470075006900000004bd0000008d0000003f00fffffffb000000120020002d00200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067010000034f000001fb0000000000000000fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000308000001760000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000003f00ffffff00000326000002a100000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   RvizVisualToolsGui:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1920
-  X: 1920
-  Y: 24
+  Width: 1440
+  X: 297
+  Y: 101
