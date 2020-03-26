@@ -42,7 +42,7 @@ class ExtendedPlanningSceneInterface(moveit_commander.PlanningSceneInterface):
         Add object to scene and check if it is created.
 
         :param name: name of object
-        :param pose: desired pose for the box
+        :param pose: desired pose for the box (Use :py:func:`franka_moveit.utils.create_pose_stamped_msg`)
         :param size: size of the box
         :param timeout: time in sec to wait while checking if box is created 
 

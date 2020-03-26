@@ -31,4 +31,25 @@ def create_pose_msg(position, orientation):
         pose.orientation.w = orientation[0]
 
     return pose
+
+def create_pose_stamped_msg(position, orientation, frame = "world"):
+    """
+        Create PoseStamped message using the provided position and orientation
+
+        :return: Pose message for the give end-effector position and orientation
+        :rtype: geometry_msgs.msg.Pose
+        :param position: End-effector position in base frame of the robot
+        :type position: [float]*3
+        :param orientation: orientation quaternion of end-effector in base frame
+        :type orientation: quaternion.quaternion / [float]*4: (w,x,y,z)
+        :param frame: Name of the parent frame
+        :type frame: str
+    """
+    pose = geometry_msgs.msg.PoseStamped()
+
+    pose.header.frame_id = frame
+
+    pose.pose = create_pose_msg(position, orientation)
+
+    return pose
     
