@@ -1,1 +1,0 @@
-.. include:: ../.shared/instructions.rst
