@@ -223,14 +223,12 @@ class ArmInterface(object):
                                  timeout_msg=err_msg, timeout=5.0)
 
         try:
-            self._movegroup_interface = PandaMoveGroupInterface() if not self._params._in_sim else None
+            self._movegroup_interface = PandaMoveGroupInterface()
         except:
             rospy.loginfo("MoveGroup was not found! This is okay if moveit service is not required!")
             self._movegroup_interface = None
 
         self.set_joint_position_speed(self._speed_ratio)
-
-
 
     def _clean_shutdown(self):
         self._joint_state_sub.unregister()
@@ -494,6 +492,18 @@ class ArmInterface(object):
         """
         return deepcopy(self._cartesian_effort)
 
+    def exit_control_mode(self, timeout=0.2):
+        """
+        Clean exit from advanced control modes (joint torque or velocity).
+
+        Resets control to joint position mode with current positions.
+
+        @type timeout: float
+        @param timeout: control timeout in seconds [0.2]
+        """
+        self.set_command_timeout(timeout)
+        self.set_joint_positions(self.joint_angles())
+
     def tip_states(self):
         """
         Return Cartesian endpoint state for a given tip name
@@ -629,7 +639,7 @@ class ArmInterface(object):
          default= 0.15; range= [0.0-1.0]
         """
         self.set_joint_position_speed(speed)
-        self.move_to_joint_positions(self._neutral_pose_joints, timeout) if not self._params._in_sim else self.set_joint_positions(self._neutral_pose_joints)
+        self.move_to_joint_positions(self._neutral_pose_joints, timeout)
 
 
     def move_to_joint_positions(self, positions, timeout=10.0,
@@ -637,10 +647,10 @@ class ArmInterface(object):
                                 test=None, use_moveit = True):
         """
         (Blocking) Commands the limb to the provided positions.
-
         Waits until the reported joint state matches that specified.
-
-        This function uses a low-pass filter to smooth the movement.
+        This function uses a low-pass filter using JointTrajectoryService 
+        to smooth the movement or optionally uses MoveIt! to plan and 
+        execute a trajectory.
 
         :type positions: dict({str:float})
         :param positions: joint_name:angle command
@@ -648,35 +658,35 @@ class ArmInterface(object):
         :param timeout: seconds to wait for move to finish [15]
         :type threshold: float
         :param threshold: position threshold in radians across each joint when
-         move is considered successful [0.008726646]
+         move is considered successful [0.00085]
         :param test: optional function returning True if motion must be aborted
         :type use_moveit: bool
         :param use_moveit: if set to True, and movegroup interface is available, 
          move to the joint positions using moveit planner.
-        """
-        if self._params._in_sim:
-            rospy.logwarn("ArmInterface: move_to_joint_positions not implemented for simulation. Use set_joint_positions instead.")
-            self.set_joint_positions(positions)
-            return
 
+        .. versionadded:: 1.0.0
+            Method is now fully supported in `simulation  <http://github.com/justagist/panda_simulator>`_.
+
+        """
 
         curr_controller = self._ctrl_manager.set_motion_controller(self._ctrl_manager.joint_trajectory_controller)
 
-        # If move_group interface is available, just use that.
-        if self._movegroup_interface:
+        if use_moveit and self._movegroup_interface:
             self._movegroup_interface.go_to_joint_positions([positions[n] for n in self._joint_names], tolerance = threshold)
         
         else:
+            if use_moveit:
+                rospy.logwarn("ArmInterface: MoveGroupInterface was not found! Using JointTrajectoryActionClient instead.")
             min_traj_dur = 0.5
-            traj_client = JointTrajectoryActionClient(joint_names = self.joint_names(), ns = self._ns)
+            traj_client = JointTrajectoryActionClient(joint_names = self.joint_names())
             traj_client.clear()
 
             dur = []
             for j in range(len(self._joint_names)):
                 dur.append(max(abs(positions[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
 
+            traj_client.add_point(positions = [self._joint_angle[n] for n in self._joint_names], time = 0.0001)
             traj_client.add_point(positions = [positions[n] for n in self._joint_names], time = max(dur)/self._speed_ratio)
-
 
             def genf(joint, angle):
                 def joint_diff():
@@ -698,7 +708,7 @@ class ArmInterface(object):
             # traj_client.wait(timeout = timeout)
 
             franka_dataflow.wait_for(
-                test=lambda: test_collision() or \
+                test=lambda: test_collision() or traj_client.result() is not None or \
                              (callable(test) and test() == True) or \
                              (all(diff() < threshold for diff in diffs)),
                 timeout=timeout,
@@ -706,14 +716,15 @@ class ArmInterface(object):
                 rate=100,
                 raise_on_error=False
                 )
+            res = traj_client.result()
+            if res is not None and res.error_code:
+                rospy.loginfo("Trajectory Server Message: {}".format(res))
 
         rospy.sleep(0.5)
 
         self._ctrl_manager.set_motion_controller(curr_controller)
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
-
-            
 
 
     def reset_EE_frame(self):
@@ -836,12 +847,18 @@ class ArmInterface(object):
             rospy.logwarn("No CollisionBehaviourInterface object found!")
 
     def get_controller_manager(self):
-
+        """
+        :return: the FrankaControllerManagerInterface instance associated with the robot.
+        :rtype: franka_tools.FrankaControllerManagerInterface
+        """
         return self._ctrl_manager
 
 
     def get_frames_interface(self):
-
+        """
+        :return: the FrankaFramesInterface instance associated with the robot.
+        :rtype: franka_tools.FrankaFramesInterface
+        """
         return self._frames_interface
 
 

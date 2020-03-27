@@ -58,7 +58,12 @@ def all_close(goal, actual, tolerance):
 
 
 class PandaMoveGroupInterface:
+    """
+    Interface class for using MoveIt! and movegroup.
 
+    .. versionadded:: 1.0.0
+        Method is now fully supported in `simulation  <http://github.com/justagist/panda_simulator>`_.
+    """
     def __init__(self):
 
         try:
@@ -84,7 +89,7 @@ class PandaMoveGroupInterface:
             rospy.get_param("/franka_gripper/robot_ip")
             self._gripper_group = moveit_commander.MoveGroupCommander("hand")
         except KeyError:
-            rospy.loginfo(("FrankaGripper: could not detect gripper."))
+            rospy.loginfo(("PandaMoveGroupInterface: could not detect gripper."))
             self._gripper_group = None
         except (socket.error, socket.gaierror):
             print ("Failed to connect to the ROS parameter server!\n"

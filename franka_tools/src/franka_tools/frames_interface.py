@@ -46,6 +46,8 @@ class FrankaFramesInterface():
 
         .. note: All controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).
 
+        .. note: Not available in `simulation  <http://github.com/justagist/panda_simulator>`_.
+
     """
 
     def __init__(self):

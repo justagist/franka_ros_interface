@@ -6,14 +6,14 @@
 Franka ROS Interface
 ====================
 
-Go to `Project Source Code`_.
+.. include:: ../.shared/intro.rst
 
 .. toctree::
    :maxdepth: 4
    :caption: Contents:
    :numbered:
 
-   Introduction<readme_link>
+   Setup Instructions<instructions_link>
    DOC
 
 Indices and tables
@@ -25,4 +25,4 @@ Indices and tables
 
 Go to `Project Source Code`_.
 
-.. _Project Source Code: https://github.com/justagist/franka_ros_interface
+.. include:: ../.shared/links.rst

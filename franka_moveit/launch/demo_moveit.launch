@@ -37,7 +37,7 @@
     <arg name="start_moveit" value="true"/>
   </include>
 
-  <node name="topic_remap" pkg="topic_tools" type="relay" args="/franka_ros_interface/franka_gripper /franka_gripper"/>
+  <!-- <node name="topic_remap" pkg="topic_tools" type="relay" args="/franka_ros_interface/franka_gripper /franka_gripper"/> -->
 
 <arg unless="$(arg debug)" name="launch_prefix" value="" />
   <arg     if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />

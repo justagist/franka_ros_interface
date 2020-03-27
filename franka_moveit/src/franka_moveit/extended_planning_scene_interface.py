@@ -30,7 +30,12 @@ from std_msgs.msg import String
 
 class ExtendedPlanningSceneInterface(moveit_commander.PlanningSceneInterface):
     """
+    Planning scene interface for MoveIt! constraint-aware planning.
+
     .. note:: For other available methods for planning scene interface, refer `PlanningSceneInterface <http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html>`_.
+
+    .. versionadded:: 1.0.0
+        Method is now fully supported in `simulation  <http://github.com/justagist/panda_simulator>`_.
     """
     def __init__(self):
 
@@ -42,7 +47,7 @@ class ExtendedPlanningSceneInterface(moveit_commander.PlanningSceneInterface):
         Add object to scene and check if it is created.
 
         :param name: name of object
-        :param pose: desired pose for the box
+        :param pose: desired pose for the box (Use :py:func:`franka_moveit.utils.create_pose_stamped_msg`)
         :param size: size of the box
         :param timeout: time in sec to wait while checking if box is created 
 

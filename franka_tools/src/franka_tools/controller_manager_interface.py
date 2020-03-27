@@ -350,7 +350,7 @@ class FrankaControllerManagerInterface(object):
         :param controller_name: name of controller to start
         """
 
-        curr_ctrlr = self.current_controller
+        curr_ctrlr = self._current_controller
         switch_ctrl = (curr_ctrlr != controller_name)
 
         if switch_ctrl:
@@ -569,6 +569,8 @@ class FrankaControllerManagerInterface(object):
             This controller exposes trajectory following service.
         :type: str
         """
+        if self._in_sim:
+            return self.joint_position_controller
         return "position_joint_trajectory_controller" 
 
     @property

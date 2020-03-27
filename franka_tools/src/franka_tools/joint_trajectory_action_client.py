@@ -42,8 +42,12 @@ class JointTrajectoryActionClient(object):
     To use this class, the currently active controller for the franka robot should be
     the "joint_position_trajectory_controller". This can be set using instance of
     :py:class:`franka_tools.FrankaControllerManagerInterface`.
+
+    .. versionadded:: 1.0.0
+        Method is now fully supported in `simulation  <http://github.com/justagist/panda_simulator>`_.
+        
     """
-    def __init__(self, joint_names, ns = "franka_ros_interface", controller_name = "position_joint_trajectory_controller"):
+    def __init__(self, joint_names, controller_name = "position_joint_trajectory_controller"):
         self._joint_names = joint_names
 
         self._client = actionlib.SimpleActionClient("/%s/follow_joint_trajectory"%(controller_name),

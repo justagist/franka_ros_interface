@@ -14,17 +14,17 @@ from franka_moveit.utils import create_pose_stamped_msg
 objects = [
            {
            'name': 'box1',
-           'pose': create_pose_stamped_msg(position = [0,0,0], orientation = [1,0,0,0], frame = 'world'),
+           'pose': create_pose_stamped_msg(position = [0,0,0], orientation = [1,0,0,0], frame = "world"), 
            'size': [0.1,0.1,0.1]
            } ,
            {
            'name': 'box2',
-           'pose': create_pose_stamped_msg(position = [0.5,0,0], orientation = [1,0,0,0], frame = 'world'),
+           'pose': create_pose_stamped_msg(position = [0.5,0,0], orientation = [1,0,0,0], frame = "world"),
            'size': [0.2,0.2,0.2]
            },
            {
            'name': 'box3',
-           'pose': create_pose_stamped_msg(position = [0.4,-0.2,0.5], orientation = [1,0,0,0], frame = 'world'),
+           'pose': create_pose_stamped_msg(position = [0.4,-0.2,0.5], orientation = [1,0,0,0], frame = "world"),
            'size': [0.1,0.1,0.1]
            }
             ]
