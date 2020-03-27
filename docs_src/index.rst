@@ -21,8 +21,7 @@ package.
 
 Documentation Page: https://justagist.github.io/franka_ros_interface
 
-Features
---------
+**Features**
 
 -  Low-level *controllers* (joint position, velocity, torque, impedance)
    available that can be controlled through ROS topics (including
