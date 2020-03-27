@@ -19,7 +19,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>franka_moveit.utils &mdash; Franka ROS Interface 0.0.1 documentation</title>
+  <title>franka_moveit.utils &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                0.0.1
+                1.0.0
               </div>
             
           
@@ -98,26 +98,24 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme_link.html">1. Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#features">1.1. Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#continuous-integration-builds">1.2. Continuous Integration Builds</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#installation">1.3. Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#dependencies">1.3.1. Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">1. Setup Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">1.1. Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">1.1.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#building-franka-ros-interface">1.1.2. Building <em>franka_ros_interface</em></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#usage">1.4. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#the-franka-sh-environments">1.4.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#some-useful-ros-topics">1.4.2. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../readme_link.html#published-topics">1.4.2.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../readme_link.html#subscribed-topics">1.4.2.2. Subscribed Topics:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">1.2. Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">1.2.1. The <em>franka.sh</em> environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">1.2.2. Some useful ROS topics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">1.2.2.1. Published Topics:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">1.2.2.2. Subscribed Topics:</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#ros-services">1.4.3. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#python-api">1.4.4. Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">1.2.3. ROS Services:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">1.2.4. Python API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#related-packages">1.5. Related Packages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#license">1.6. License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">1.3. Related Packages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../DOC.html">2. Python API Documentation</a><ul>
@@ -240,6 +238,27 @@
         <span class="n">pose</span><span class="o">.</span><span class="n">orientation</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">orientation</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">pose</span><span class="o">.</span><span class="n">orientation</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">orientation</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">pose</span><span class="o">.</span><span class="n">orientation</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">orientation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">pose</span></div>
+
+<div class="viewcode-block" id="create_pose_stamped_msg"><a class="viewcode-back" href="../../DOC.html#franka_moveit.utils.create_pose_stamped_msg">[docs]</a><span class="k">def</span> <span class="nf">create_pose_stamped_msg</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create PoseStamped message using the provided position and orientation</span>
+
+<span class="sd">        :return: Pose message for the give end-effector position and orientation</span>
+<span class="sd">        :rtype: geometry_msgs.msg.Pose</span>
+<span class="sd">        :param position: End-effector position in base frame of the robot</span>
+<span class="sd">        :type position: [float]*3</span>
+<span class="sd">        :param orientation: orientation quaternion of end-effector in base frame</span>
+<span class="sd">        :type orientation: quaternion.quaternion / [float]*4: (w,x,y,z)</span>
+<span class="sd">        :param frame: Name of the parent frame</span>
+<span class="sd">        :type frame: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pose</span> <span class="o">=</span> <span class="n">geometry_msgs</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">PoseStamped</span><span class="p">()</span>
+
+    <span class="n">pose</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">=</span> <span class="n">frame</span>
+
+    <span class="n">pose</span><span class="o">.</span><span class="n">pose</span> <span class="o">=</span> <span class="n">create_pose_msg</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">orientation</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pose</span></div>
     

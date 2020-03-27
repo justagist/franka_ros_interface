@@ -69,7 +69,7 @@ PandaMoveGroupInterface
 Helper Functions
 ~~~~~~~~~~~~~~~~
 .. automodule:: franka_moveit.utils
-   :members: create_pose_msg
+   :members: create_pose_msg, create_pose_stamped_msg
 
 ExtendedPlanningSceneInterface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -78,7 +78,7 @@ ExtendedPlanningSceneInterface
 
 .. autoclass:: franka_moveit.ExtendedPlanningSceneInterface
    :members:
-   :show-inheritance: 
+   :show-inheritance:
 
 franka_tools
 ------------
@@ -93,7 +93,7 @@ CollisionBehaviourInterface
 
 .. autoclass:: CollisionBehaviourInterface
    :members:
-   :show-inheritance: 
+   :show-inheritance:
 
 FrankaControllerManagerInterface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -104,7 +104,7 @@ FrankaControllerManagerInterface
 
 .. autoclass:: FrankaControllerManagerInterface
    :members:
-   :show-inheritance: 
+   :show-inheritance:
 
 ControllerParamConfigClient
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -19,14 +19,14 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1. Franka ROS Interface &mdash; Franka ROS Interface 0.0.1 documentation</title>
+  <title>1. Installation &mdash; Franka ROS Interface 0.0.1 documentation</title>
   
 
   
   
   
   
-    <link rel="canonical" href="justagist.github.io/franka_ros_interface/readme_link.html"/>
+    <link rel="canonical" href="justagist.github.io/franka_ros_interface/readme.html"/>
   
 
   
@@ -49,7 +49,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2. Python API Documentation" href="DOC.html" />
+    <link rel="next" title="4. Python API Documentation" href="DOC.html" />
     <link rel="prev" title="Franka ROS Interface" href="index.html" /> 
 </head>
 
@@ -100,50 +100,44 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#features">1.1. Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#continuous-integration-builds">1.2. Continuous Integration Builds</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation">1.3. Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#dependencies">1.3.1. Dependencies</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">1.1. Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">1.4. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#the-franka-sh-environments">1.4.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#some-useful-ros-topics">1.4.2. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#published-topics">1.4.2.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#subscribed-topics">1.4.2.2. Subscribed Topics:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#usage">2. Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-franka-sh-environments">2.1. The <em>franka.sh</em> environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#some-useful-ros-topics">2.2. Some useful ROS topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#published-topics">2.2.1. Published Topics:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#subscribed-topics">2.2.2. Subscribed Topics:</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#ros-services">1.4.3. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#python-api">1.4.4. Python API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ros-services">2.3. ROS Services:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-api">2.4. Python API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#related-packages">1.5. Related Packages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#license">1.6. License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#related-packages">3. Related Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DOC.html">4. Python API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_interface">4.1. franka_interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#arminterface">4.1.1. ArmInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#gripperinterface">4.1.2. GripperInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#robotenable">4.1.3. RobotEnable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#robotparams">4.1.4. RobotParams</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="DOC.html">2. Python API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_interface">2.1. franka_interface</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#arminterface">2.1.1. ArmInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#gripperinterface">2.1.2. GripperInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#robotenable">2.1.3. RobotEnable</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#robotparams">2.1.4. RobotParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_moveit">4.2. franka_moveit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#pandamovegroupinterface">4.2.1. PandaMoveGroupInterface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="DOC.html#module-franka_moveit.utils">4.2.1.1. Helper Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_moveit">2.2. franka_moveit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="DOC.html#module-franka_moveit.utils">2.2.1.1. Helper Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#extendedplanningsceneinterface">4.2.2. ExtendedPlanningSceneInterface</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#extendedplanningsceneinterface">2.2.2. ExtendedPlanningSceneInterface</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_tools">2.3. franka_tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#collisionbehaviourinterface">2.3.1. CollisionBehaviourInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#frankacontrollermanagerinterface">2.3.2. FrankaControllerManagerInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#controllerparamconfigclient">2.3.3. ControllerParamConfigClient</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#frankaframesinterface">2.3.4. FrankaFramesInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#jointtrajectoryactionclient">2.3.5. JointTrajectoryActionClient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_tools">4.3. franka_tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#collisionbehaviourinterface">4.3.1. CollisionBehaviourInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#frankacontrollermanagerinterface">4.3.2. FrankaControllerManagerInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#controllerparamconfigclient">4.3.3. ControllerParamConfigClient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#frankaframesinterface">4.3.4. FrankaFramesInterface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DOC.html#jointtrajectoryactionclient">4.3.5. JointTrajectoryActionClient</a></li>
 </ul>
 </li>
 </ul>
@@ -193,13 +187,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>1. Franka ROS Interface  </li>
+      <li>1. Installation</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/readme_link.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/readme.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -212,46 +206,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="franka-ros-interface-build-status-code-quality">
-<h1>1. Franka ROS Interface <a class="reference external" href="https://travis-ci.org/justagist/franka_ros_interface"><img alt="Build Status" src="https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master" /></a> <a class="reference external" href="https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=justagist/franka_ros_interface&amp;amp;utm_campaign=Badge_Grade"><img alt="Code Quality" src="https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e" /></a><a class="headerlink" href="#franka-ros-interface-build-status-code-quality" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a></p>
-<p>(<em>Version 1.0.0</em>)</p>
-<p>A ROS API for the Franka Emika Panda robot, extending the <a class="reference external" href="https://frankaemika.github.io/docs/franka_ros.html">franka_ros</a> to expose more information about the robot, and
-providing low level control of the robot using ROS and Python API.</p>
-<p>Provides controlling and managing the Franka Emika Panda robot (real and
-simulated). Contains exposed controllers for the robot (joint position,
-velocity, torque), interfaces for the gripper, controller manager,
-coordinate frames, etc, MoveIt! and Trajectory Action Client interfaces.
-Provides almost complete sim-to-real /
-real-to-sim transfer of code with the <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a>
-package.</p>
-<p>Documentation Page: <a class="reference external" href="https://justagist.github.io/franka_ros_interface">https://justagist.github.io/franka_ros_interface</a></p>
-<div class="section" id="features">
-<h2>1.1. Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Low-level <em>controllers</em> (joint position, velocity, torque, impedance)
-available that can be controlled through ROS topics (including
-position control for gripper).</li>
-<li>Real-time <em>robot state</em> (end-effector state, joint state, controller
-state, etc.) available through ROS topics.</li>
-<li>Python API to monitor and control the robot using any of the
-available controllers.</li>
-<li>Python API for managing controllers, coordinate frames, controlling
-and monitoring the gripper.</li>
-<li>The <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a> package (which is Gazebo-based
-simulator for the robot) can also be controlled using this package
-(ROS and Python interface), providing almost complete sim-to-real
-transfer of code.</li>
-</ul>
-</div>
-<div class="section" id="continuous-integration-builds">
-<h2>1.2. Continuous Integration Builds<a class="headerlink" href="#continuous-integration-builds" title="Permalink to this headline">¶</a></h2>
-<p>ROS Kinetic / Melodic: <a class="reference external" href="https://travis-ci.org/justagist/franka_ros_interface"><img alt="Build Status" src="https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master" /></a></p>
-</div>
-<div class="section" id="installation">
-<h2>1.3. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="installation">
+<h1>1. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="dependencies">
-<h3>1.3.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<h2>1.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><em>libfranka</em> (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">ros-$ROS_DISTRO-libfranka</span></code> or
 <a class="reference external" href="https://frankaemika.github.io/docs/installation_linux.html#building-from-source">install from source</a>).</li>
@@ -281,7 +239,7 @@ $ source devel/setup.bash
 </div>
 </div>
 <div class="section" id="usage">
-<h2>1.4. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h1>2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <p>The ‘driver’ node can be started by running (can only be used if run in
 ‘master’ environment - see <a class="reference external" href="#the-frankash-environments">Environments</a> section below):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ roslaunch franka_interface interface.launch # (use argument load_gripper:=false for starting without gripper)
@@ -293,7 +251,7 @@ topics and services (see below too find out about some of the available
 topics and services), or using the provided Python API (see
 <em>franka_interface</em> and <em>franka_tools</em> directories).</p>
 <div class="section" id="the-franka-sh-environments">
-<span id="the-frankash-environments"></span><h3>1.4.1. The <em>franka.sh</em> environments<a class="headerlink" href="#the-franka-sh-environments" title="Permalink to this headline">¶</a></h3>
+<span id="the-frankash-environments"></span><h2>2.1. The <em>franka.sh</em> environments<a class="headerlink" href="#the-franka-sh-environments" title="Permalink to this headline">¶</a></h2>
 <p>Once the values are correctly modified in the <code class="docutils literal notranslate"><span class="pre">franka.sh</span></code> file, different environments can be
 set for controlling the robot by sourcing this file.</p>
 <ul class="simple">
@@ -313,9 +271,9 @@ same network.</li>
 </ul>
 </div>
 <div class="section" id="some-useful-ros-topics">
-<h3>1.4.2. Some useful ROS topics<a class="headerlink" href="#some-useful-ros-topics" title="Permalink to this headline">¶</a></h3>
+<h2>2.2. Some useful ROS topics<a class="headerlink" href="#some-useful-ros-topics" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="published-topics">
-<h4>1.4.2.1. Published Topics:<a class="headerlink" href="#published-topics" title="Permalink to this headline">¶</a></h4>
+<h3>2.2.1. Published Topics:<a class="headerlink" href="#published-topics" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="50%" />
@@ -351,7 +309,7 @@ efforts of gripper joints</td>
 </table>
 </div>
 <div class="section" id="subscribed-topics">
-<h4>1.4.2.2. Subscribed Topics:<a class="headerlink" href="#subscribed-topics" title="Permalink to this headline">¶</a></h4>
+<h3>2.2.2. Subscribed Topics:<a class="headerlink" href="#subscribed-topics" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="50%" />
@@ -380,7 +338,7 @@ configurable), command timeout, etc. are also available.</p>
 </div>
 </div>
 <div class="section" id="ros-services">
-<h3>1.4.3. ROS Services:<a class="headerlink" href="#ros-services" title="Permalink to this headline">¶</a></h3>
+<h2>2.3. ROS Services:<a class="headerlink" href="#ros-services" title="Permalink to this headline">¶</a></h2>
 <p>Controller manager service can be used to switch between all available
 controllers (joint position, velocity, effort). Gripper joints can be
 controlled using the ROS ActionClient. Other services for changing
@@ -388,7 +346,7 @@ coordinate frames, adding gripper load configuration, etc. are also
 available.</p>
 </div>
 <div class="section" id="python-api">
-<h3>1.4.4. Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h3>
+<h2>2.4. Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h2>
 <p>Most of the above services and topics are wrapped using simple Python
 classes or utility functions, providing more control and simplicity.
 See <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API Documentation</a>.
@@ -397,7 +355,7 @@ directories for more details.</p>
 </div>
 </div>
 <div class="section" id="related-packages">
-<h2>1.5. Related Packages<a class="headerlink" href="#related-packages" title="Permalink to this headline">¶</a></h2>
+<h1>3. Related Packages<a class="headerlink" href="#related-packages" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a> : A Gazebo simulator for the Franka Emika Panda
 robot with ROS interface, providing exposed controllers and real-time
@@ -415,11 +373,6 @@ arm (as estimated in <a class="reference external" href="https://hal.inria.fr/ha
 control definitions required for the <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a> package.</li>
 </ul>
 </div>
-<div class="section" id="license">
-<h2>1.6. License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a></p>
-</div>
-</div>
 
 
            </div>
@@ -429,7 +382,7 @@ control definitions required for the <a class="reference external" href="https:/
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="DOC.html" class="btn btn-neutral float-right" title="2. Python API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="DOC.html" class="btn btn-neutral float-right" title="4. Python API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Franka ROS Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

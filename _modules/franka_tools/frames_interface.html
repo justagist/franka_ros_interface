@@ -19,7 +19,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>franka_tools.frames_interface &mdash; Franka ROS Interface 0.0.1 documentation</title>
+  <title>franka_tools.frames_interface &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                0.0.1
+                1.0.0
               </div>
             
           
@@ -98,26 +98,24 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme_link.html">1. Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#features">1.1. Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#continuous-integration-builds">1.2. Continuous Integration Builds</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#installation">1.3. Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#dependencies">1.3.1. Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">1. Setup Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">1.1. Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">1.1.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#building-franka-ros-interface">1.1.2. Building <em>franka_ros_interface</em></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#usage">1.4. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#the-franka-sh-environments">1.4.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#some-useful-ros-topics">1.4.2. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../readme_link.html#published-topics">1.4.2.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../readme_link.html#subscribed-topics">1.4.2.2. Subscribed Topics:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">1.2. Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">1.2.1. The <em>franka.sh</em> environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">1.2.2. Some useful ROS topics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">1.2.2.1. Published Topics:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">1.2.2.2. Subscribed Topics:</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#ros-services">1.4.3. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#python-api">1.4.4. Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">1.2.3. ROS Services:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">1.2.4. Python API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#related-packages">1.5. Related Packages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#license">1.6. License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">1.3. Related Packages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../DOC.html">2. Python API Documentation</a><ul>
@@ -256,6 +254,8 @@
 <span class="sd">        Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class (panda_robot package: https://github.com/justagist/panda_robot ).</span>
 
 <span class="sd">        .. note: All controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).</span>
+
+<span class="sd">        .. note: Not available in `simulation  &lt;http://github.com/justagist/panda_simulator&gt;`_.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
