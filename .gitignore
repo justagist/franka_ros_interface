@@ -43,7 +43,6 @@ catkin_generated
 devel
 
 cpp
-# docs_src
 docs_build
 msg_gen
 srv_gen

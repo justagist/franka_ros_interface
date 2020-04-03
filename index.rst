@@ -3,152 +3,47 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to franka_ros_interface's documentation!
-================================================
+Franka ROS Interface
+====================
+
+(*Version 1.0.0*)
+
+A ROS API for the Franka Emika Panda robot, extending the `franka_ros`_ to expose more information about the robot, and
+additionally providing low level control of the robot using ROS and `Python API <Python API Documentation_>`_.
+
+Provides controlling and managing the Franka Emika Panda robot (real and
+simulated). Contains exposed controllers for the robot (joint position,
+velocity, torque), interfaces for the gripper, controller manager,
+coordinate frames, etc, MoveIt! and Trajectory Action Client interfaces. 
+Provides almost complete sim-to-real /
+real-to-sim transfer of code with the `panda_simulator`_
+package.
+
+**Features**
+
+-  Low-level *controllers* (joint position, velocity, torque, impedance)
+   available that can be controlled through ROS topics (including
+   position control for gripper).
+-  Real-time *robot state* (end-effector state, joint state, controller
+   state, etc.) available through ROS topics.
+-  Python API to monitor and control the robot using any of the
+   available controllers.
+-  Python API for managing controllers, coordinate frames, controlling
+   and monitoring the gripper.
+-  The `panda_simulator`_ package (which is Gazebo-based
+   simulator for the robot) can also be controlled using this package
+   (ROS and Python interface), providing almost complete sim-to-real
+   transfer of code.
+
+Go to `Project Source Code`_.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
+   :numbered:
 
-
-franka_interface
-================
-.. automodule:: franka_interface
-   :members:
-
-ArmInterface
-------------
-.. automodule:: franka_interface
-   :members:
-   
-- Interface class that can monitor and control the robot 
-- Provides all required information about robot state and end-effector state
-- Joint positions, velocities, and effort can be directly controlled and monitored using available methods
-- Smooth interpolation of joint positions possible
-- End-effector and Stiffness frames can be directly set (uses FrankaFramesInterface from *franka_ros_interface/franka_tools*)
-
-
-.. autoclass:: ArmInterface
-   :members: 
-
-GripperInterface
-----------------
-.. automodule:: franka_interface
-   :members:
-
-- Interface class to monitor and control gripper
-- Gripper open, close methods
-- Grasp, move joints methods 
-
-.. autoclass:: GripperInterface
-   :members: 
-
-RobotEnable
------------
-.. automodule:: franka_interface
-   :members:
-
-- Interface class to reset robot when in recoverable error (use *enable_robot.py* script in *scripts/*)
-
-.. autoclass:: RobotEnable
-   :members: 
-
-RobotParams
------------
-.. automodule:: franka_interface
-   :members:
-
-- Collects and stores all useful information about the robot from the ROS parameter server
-
-.. autoclass:: RobotParams
-   :members: 
-
-franka_moveit
-=============
-.. automodule:: franka_moveit
-   :members:
-
-PandaMoveGroupInterface
------------------------
-.. automodule:: franka_moveit
-   :members:
-
-- Provides interface to control and plan motions using MoveIt in ROS.
-- Simple methods to plan and execute joint trajectories and cartesian path.
-- Provides easy reset and environment definition functionalities (See ExtendedPlanningSceneInterface below).
-
-.. autoclass:: PandaMoveGroupInterface
-   :members: 
-
-ExtendedPlanningSceneInterface
-------------------------------
-.. automodule:: franka_moveit
-   :members:
-
-- Easily define scene for robot motion planning (MoveIt plans will avoid defined obstacles if possible).  
-
-.. autoclass:: ExtendedPlanningSceneInterface
-   :members: 
-
-franka_tools
-============
-.. automodule:: franka_tools
-   :members:
-
-CollisionBehaviourInterface
----------------------------
-.. automodule:: franka_tools
-   :members:
-
-- Define collision and contact thresholds for the robot safety and contact detection.
-
-.. autoclass:: CollisionBehaviourInterface
-   :members: 
-
-FrankaControllerManagerInterface
---------------------------------
-.. automodule:: franka_tools
-   :members:
-
-- List, start, stop, load available controllers for the robot
-- Get the current controller status (commands, set points, controller gains, etc.)
-- Update controller parameters through *ControllerParamConfigClient* (see below)
-
-.. autoclass:: FrankaControllerManagerInterface
-   :members: 
-
-ControllerParamConfigClient
----------------------------
-.. automodule:: franka_tools
-   :members:
-
-- Get and set the controller parameters (gains) for the active controller
-
-.. autoclass:: ControllerParamConfigClient
-   :members: 
-
-FrankaFramesInterface
----------------------
-.. automodule:: franka_tools
-   :members:
-
-- Get and Set end-effector frame and stiffness frame of the robot easily
-- Set the frames to known frames (such as links on the robot) directly
-
-.. autoclass:: FrankaFramesInterface
-   :members: 
-
-JointTrajectoryActionClient
----------------------------
-.. automodule:: franka_tools
-   :members:
-
-- Command robot to given joint position(s) smoothly. (Uses the FollowJointTrajectory service from ROS *control_msgs* package)
-- Smoothly move to a desired (valid) pose without having to interpolate for smoothness (trajectory interpolation done internally)
-
-.. autoclass:: JointTrajectoryActionClient
-   :members: 
-
+   Setup Instructions<instructions>
+   DOC
 
 Indices and tables
 ==================
@@ -156,3 +51,32 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Go to `Project Source Code`_.
+
+.. _panda_simulator: https://github.com/justagist/panda_simulator
+.. _panda_robot: https://github.com/justagist/panda_robot
+.. _KDL library: http://wiki.ros.org/kdl
+.. _franka_panda_description: https://github.com/justagist/franka_panda_description
+.. _franka_ros: https://frankaemika.github.io/docs/franka_ros.html
+.. _this paper: https://hal.inria.fr/hal-02265293/document
+
+.. _Python Documentation: https://justagist.github.io/franka_ros_interface
+
+.. _FCI documentation: https://frankaemika.github.io/docs/installation_linux.html
+.. _franka_panda_description: https://github.com/justagist/franka_panda_description
+.. _Related Packages: #related-packages
+.. _Environments: #the-frankash-environments
+.. _install from source: https://frankaemika.github.io/docs/installation_linux.html#building-from-source
+
+.. _Python API Documentation: https://justagist.github.io/franka_ros_interface/DOC.html
+.. _Project Source Code: https://github.com/justagist/franka_ros_interface
+
+.. |Build Status| image:: https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master
+   :target: https://travis-ci.org/justagist/franka_ros_interface
+.. |License| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+   :target: https://opensource.org/licenses/Apache-2.0
+.. |Code Quality| image:: https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e    
+   :target: https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade
+
+
