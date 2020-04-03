@@ -36,12 +36,9 @@ from franka_core_msgs.msg import JointControllerStates
 
 from franka_tools import ControllerParamConfigClient
 
-from controller_manager_msgs.utils\
-    import ControllerLister, ControllerManagerLister,\
-    get_rosparam_controller_names
+from controller_manager_msgs.utils import ( ControllerLister, 
+                                get_rosparam_controller_names)
 
-from rospy_message_converter import message_converter
- 
 def _resolve_controllers_ns(cm_ns):
     """
     Resolve the namespace containing controller configurations from that of

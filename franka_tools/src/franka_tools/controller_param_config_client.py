@@ -178,20 +178,20 @@ class ControllerParamConfigClient:
 
         k_gains = []
 
-        for i in range(len(K_GAINS_KW)):
-            if K_GAINS_KW[i] in config:
-                k_gains.append(config[K_GAINS_KW[i]])
+        for k_val_ in K_GAINS_KW:
+            if k_val_ in config:
+                k_gains.append(config[k_val_])
             else:
-                rospy.logwarn("ControllerParamConfigClient: Could not find K gain {} in server".format(K_GAINS_KW[i]))
+                rospy.logwarn("ControllerParamConfigClient: Could not find K gain {} in server".format(k_val_))
                 return False, False
 
         d_gains = []
 
-        for i in range(len(D_GAINS_KW)):
-            if D_GAINS_KW[i] in config:
-                d_gains.append(config[D_GAINS_KW[i]])
+        for d_val_ in D_GAINS_KW:
+            if d_val_ in config:
+                d_gains.append(config[d_val_])
             else:
-                rospy.logwarn("ControllerParamConfigClient: Could not find D gain {} in server".format(D_GAINS_KW[i]))
+                rospy.logwarn("ControllerParamConfigClient: Could not find D gain {} in server".format(d_val_))
                 return k_gains, False
 
         return k_gains, d_gains

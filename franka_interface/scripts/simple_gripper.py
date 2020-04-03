@@ -46,12 +46,9 @@
 import rospy
 import argparse
 import actionlib
-from actionlib_msgs.msg import GoalStatus
 
 from franka_interface import GripperInterface
-
-from franka_gripper.msg import ( MoveAction,
-                                 StopAction, StopGoal )
+from franka_gripper.msg import ( StopAction, StopGoal )
 
 def _active_cb():
     rospy.loginfo("GripperInterface: '{}' request active.".format(_caller))

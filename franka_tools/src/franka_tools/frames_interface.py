@@ -38,7 +38,7 @@ DEFAULT_TRANSFORMATIONS = _FRAME_NAMES( [0.707099974155426, -0.707099974155426, 
     ) # default when the franka_ros control is launched
 
 
-class FrankaFramesInterface():
+class FrankaFramesInterface(object):
     """
         Helper class to retrieve and set EE frames
 
@@ -293,11 +293,9 @@ class FrankaFramesInterface():
 
 if __name__ == '__main__':
     # main()
-    from franka_interface import ArmInterface
-
     rospy.init_node("test")
 
-    ee_setter = FrankaFramesInterface(ArmInterface())
+    ee_setter = FrankaFramesInterface()
 
     # ee_setter.set_EE_frame([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
 
