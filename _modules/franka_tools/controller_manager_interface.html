@@ -101,7 +101,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../instructions.html">1. Setup Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">1.1. Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">1.1.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#building-franka-ros-interface">1.1.2. Building <em>franka_ros_interface</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">1.2. Usage</a><ul>
@@ -245,12 +244,9 @@
 
 <span class="kn">from</span> <span class="nn">franka_tools</span> <span class="kn">import</span> <span class="n">ControllerParamConfigClient</span>
 
-<span class="kn">from</span> <span class="nn">controller_manager_msgs.utils</span>\
-    <span class="kn">import</span> <span class="nn">ControllerLister</span><span class="o">,</span> <span class="nn">ControllerManagerLister</span><span class="o">,</span>\
-    <span class="n">get_rosparam_controller_names</span>
+<span class="kn">from</span> <span class="nn">controller_manager_msgs.utils</span> <span class="kn">import</span> <span class="p">(</span> <span class="n">ControllerLister</span><span class="p">,</span> 
+                                <span class="n">get_rosparam_controller_names</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">rospy_message_converter</span> <span class="kn">import</span> <span class="n">message_converter</span>
- 
 <span class="k">def</span> <span class="nf">_resolve_controllers_ns</span><span class="p">(</span><span class="n">cm_ns</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resolve the namespace containing controller configurations from that of</span>

@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">1. Setup Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#installation">1.1. Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="instructions.html#dependencies">1.1.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="instructions.html#building-franka-ros-interface">1.1.2. Building <em>franka_ros_interface</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#usage">1.2. Usage</a><ul>
@@ -211,6 +210,7 @@
             
   <div class="section" id="python-api-documentation">
 <h1>2. Python API Documentation<a class="headerlink" href="#python-api-documentation" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=justagist/franka_ros_interface&amp;amp;utm_campaign=Badge_Grade"><img alt="Code Quality" src="https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e" /></a></p>
 <div class="section" id="module-franka_interface">
 <span id="franka-interface"></span><h2>2.1. franka_interface<a class="headerlink" href="#module-franka_interface" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="arminterface">
@@ -2452,7 +2452,8 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 <dl class="class">
 <dt id="franka_tools.FrankaFramesInterface">
 <em class="property">class </em><code class="descclassname">franka_tools.</code><code class="descname">FrankaFramesInterface</code><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper class to retrieve and set EE frames</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Helper class to retrieve and set EE frames</p>
 <p>Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class (panda_robot package: <a class="reference external" href="https://github.com/justagist/panda_robot">https://github.com/justagist/panda_robot</a> ).</p>
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.EE_frame_already_set">

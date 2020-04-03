@@ -101,7 +101,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../instructions.html">1. Setup Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">1.1. Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">1.1.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#building-franka-ros-interface">1.1.2. Building <em>franka_ros_interface</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">1.2. Usage</a><ul>
@@ -247,7 +246,7 @@
     <span class="p">)</span> <span class="c1"># default when the franka_ros control is launched</span>
 
 
-<div class="viewcode-block" id="FrankaFramesInterface"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface">[docs]</a><span class="k">class</span> <span class="nc">FrankaFramesInterface</span><span class="p">():</span>
+<div class="viewcode-block" id="FrankaFramesInterface"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface">[docs]</a><span class="k">class</span> <span class="nc">FrankaFramesInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Helper class to retrieve and set EE frames</span>
 
@@ -502,11 +501,9 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="c1"># main()</span>
-    <span class="kn">from</span> <span class="nn">franka_interface</span> <span class="kn">import</span> <span class="n">ArmInterface</span>
-
     <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
 
-    <span class="n">ee_setter</span> <span class="o">=</span> <span class="n">FrankaFramesInterface</span><span class="p">(</span><span class="n">ArmInterface</span><span class="p">())</span>
+    <span class="n">ee_setter</span> <span class="o">=</span> <span class="n">FrankaFramesInterface</span><span class="p">()</span>
 
     <span class="c1"># ee_setter.set_EE_frame([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])</span>
 

@@ -103,7 +103,6 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">1. Setup Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">1.1. Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#dependencies">1.1.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#building-franka-ros-interface">1.1.2. Building <em>franka_ros_interface</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#usage">1.2. Usage</a><ul>
@@ -214,6 +213,8 @@
 <h1>1. Setup Instructions<a class="headerlink" href="#setup-instructions" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="installation">
 <h2>1.1. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>ROS Kinetic / Melodic: <a class="reference external" href="https://travis-ci.org/justagist/franka_ros_interface"><img alt="Build Status" src="https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master" /></a></p>
+<p><strong>NOTE:</strong> <em>Tested on Ubuntu 18.04 with ROS Melodic. Version for ROS Kinetic is not maintained anymore. The latest updates to the package may not be compatible with Kinetic.</em></p>
 <div class="section" id="dependencies">
 <h3>1.1.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -228,9 +229,6 @@ you modify the <code class="docutils literal notranslate"><span class="pre">fran
 replace all occurences of <code class="docutils literal notranslate"><span class="pre">franka_panda_description</span></code> with
 <code class="docutils literal notranslate"><span class="pre">franka_description</span></code> (two occurences).</li>
 </ul>
-</div>
-<div class="section" id="building-franka-ros-interface">
-<h3>1.1.2. Building <em>franka_ros_interface</em><a class="headerlink" href="#building-franka-ros-interface" title="Permalink to this headline">¶</a></h3>
 <p>Once the above dependencies are installed, the package can be installed
 using catkin:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd &lt;catkin_ws&gt;
@@ -257,8 +255,7 @@ $ source devel/setup.bash
 <p>This exposes a variety of ROS topics and services for communicating with
 and controlling the robot. This can be accessed and modified using ROS
 topics and services (see below too find out about some of the available
-topics and services), or using the provided Python API (see
-<em>franka_interface</em> and <em>franka_tools</em> directories).</p>
+topics and services), or using the provided <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>..</p>
 <div class="section" id="the-franka-sh-environments">
 <span id="the-frankash-environments"></span><h3>1.2.1. The <em>franka.sh</em> environments<a class="headerlink" href="#the-franka-sh-environments" title="Permalink to this headline">¶</a></h3>
 <p>Once the values are correctly modified in the <code class="docutils literal notranslate"><span class="pre">franka.sh</span></code> file, different environments can be
@@ -356,11 +353,10 @@ available.</p>
 </div>
 <div class="section" id="python-api">
 <h3>1.2.4. Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API Documentation</a>.</p>
 <p>Most of the above services and topics are wrapped using simple Python
 classes or utility functions, providing more control and simplicity.
-See <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API Documentation</a>.
-Refer induvidual Python files in <em>franka_interface</em> and <em>franka_tools</em>
-directories for more details.</p>
+Refer README files in individual subpackages.</p>
 </div>
 </div>
 <div class="section" id="related-packages">

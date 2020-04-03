@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">1. Setup Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#installation">1.1. Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="instructions.html#dependencies">1.1.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="instructions.html#building-franka-ros-interface">1.1.2. Building <em>franka_ros_interface</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#usage">1.2. Usage</a><ul>
@@ -212,26 +211,27 @@
   <div class="section" id="franka-ros-interface">
 <h1>Franka ROS Interface<a class="headerlink" href="#franka-ros-interface" title="Permalink to this headline">¶</a></h1>
 <p>(<em>Version 1.0.0</em>)</p>
-<p>A ROS API for the Franka Emika Panda robot, extending the <a class="reference external" href="https://frankaemika.github.io/docs/franka_ros.html">franka_ros</a> to expose more information about the robot, and
-additionally providing low level control of the robot using ROS and <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>.</p>
-<p>Provides controlling and managing the Franka Emika Panda robot (real and
-simulated). Contains exposed controllers for the robot (joint position,
+<p>A ROS interface library for the Franka Emika Panda robot, extending the <a class="reference external" href="https://frankaemika.github.io/docs/franka_ros.html">franka_ros</a> to expose more information about the robot, and
+providing low-level control of the robot using ROS and <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>.</p>
+<p>Provides utilites for controlling and managing the Franka Emika Panda robot (real and
+<a class="reference external" href="https://github.com/justagist/panda_simulator">simulated</a>). Contains exposed controllers for the robot (joint position,
 velocity, torque), interfaces for the gripper, controller manager,
-coordinate frames, etc, MoveIt! and Trajectory Action Client interfaces.
-Provides almost complete sim-to-real /
+coordinate frames interface, etc. Also provides utilities to control the robot using
+MoveIt! and ROS Trajectory Action &amp; ActionClient.
+This package also provides almost complete sim-to-real /
 real-to-sim transfer of code with the <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a>
 package.</p>
 <p><strong>Features</strong></p>
 <ul class="simple">
 <li>Low-level <em>controllers</em> (joint position, velocity, torque, impedance)
-available that can be controlled through ROS topics (including
+available that can be controlled through ROS topics and Python API (including
 position control for gripper).</li>
 <li>Real-time <em>robot state</em> (end-effector state, joint state, controller
-state, etc.) available through ROS topics.</li>
-<li>Python API to monitor and control the robot using any of the
-available controllers.</li>
-<li>Python API for managing controllers, coordinate frames, controlling
-and monitoring the gripper.</li>
+state, etc.) available through ROS topics and Python API.</li>
+<li>Python API for managing controllers, coordinate frames, collision behaviour,
+controlling and monitoring the gripper.</li>
+<li>Python API classes and utility functions to control the robot using
+MoveIt! and ROS Trajectory Action Service.</li>
 <li>The <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a> package (which is Gazebo-based
 simulator for the robot) can also be controlled using this package
 (ROS and Python interface), providing almost complete sim-to-real
@@ -244,7 +244,6 @@ transfer of code.</li>
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">1. Setup Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#installation">1.1. Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="instructions.html#dependencies">1.1.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="instructions.html#building-franka-ros-interface">1.1.2. Building <em>franka_ros_interface</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#usage">1.2. Usage</a><ul>
@@ -298,6 +297,8 @@ transfer of code.</li>
 <li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
 </ul>
 <p>Go to <a class="reference external" href="https://github.com/justagist/franka_ros_interface">Project Source Code</a>.</p>
+<p><strong>LICENSE:</strong></p>
+<p>Apache 2.0</p>
 </div>
 
 
