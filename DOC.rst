@@ -1,6 +1,8 @@
 Python API Documentation
 ========================
 
+|Code Quality|
+
 franka_interface
 ----------------
 .. automodule:: franka_interface
@@ -134,3 +136,6 @@ JointTrajectoryActionClient
 .. autoclass:: JointTrajectoryActionClient
    :members:
    :show-inheritance: 
+
+.. |Code Quality| image:: https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e    
+   :target: https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade

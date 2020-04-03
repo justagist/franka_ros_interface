@@ -5,6 +5,10 @@ Setup Instructions
 Installation
 ------------
 
+ROS Kinetic / Melodic: |Build Status|
+
+**NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic. Version for ROS Kinetic is not maintained anymore. The latest updates to the package may not be compatible with Kinetic.*
+
 Dependencies
 ^^^^^^^^^^^^
 
@@ -18,10 +22,6 @@ Dependencies
    you modify the ``franka_interface/launch/interface.launch`` file and
    replace all occurences of ``franka_panda_description`` with
    ``franka_description`` (two occurences).
-
-
-Building *franka_ros_interface*
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Once the above dependencies are installed, the package can be installed
 using catkin:
@@ -53,8 +53,7 @@ The 'driver' node can be started by running (can only be used if run in
 This exposes a variety of ROS topics and services for communicating with
 and controlling the robot. This can be accessed and modified using ROS
 topics and services (see below too find out about some of the available
-topics and services), or using the provided Python API (see
-*franka_interface* and *franka_tools* directories).
+topics and services), or using the provided `Python API <Python API Documentation_>`_..
 
 .. _the-frankash-environments:
 
@@ -129,11 +128,11 @@ available.
 
 Python API
 ^^^^^^^^^^
+`Python API Documentation`_.
+
 Most of the above services and topics are wrapped using simple Python
 classes or utility functions, providing more control and simplicity.
-See `Python API Documentation`_.
-Refer induvidual Python files in *franka_interface* and *franka_tools*
-directories for more details.
+Refer README files in individual subpackages.
 
 Related Packages
 ----------------
