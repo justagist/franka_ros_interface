@@ -5,14 +5,15 @@ Franka ROS Interface |Build Status| |Code Quality|
 
 (*Version 1.0.0*)
 
-A ROS API for the Franka Emika Panda robot, extending the `franka_ros`_ to expose more information about the robot, and
-providing low level control of the robot using ROS and Python API.
+A ROS interface library for the Franka Emika Panda robot, extending the `franka_ros`_ to expose more information about the robot, and
+providing low-level control of the robot using ROS and `Python API <Python API Documentation_>`_.
 
-Provides controlling and managing the Franka Emika Panda robot (real and
-simulated). Contains exposed controllers for the robot (joint position,
+Provides utilites for controlling and managing the Franka Emika Panda robot (real and
+`simulated <panda_simulator_>`_). Contains exposed controllers for the robot (joint position,
 velocity, torque), interfaces for the gripper, controller manager,
-coordinate frames, etc, MoveIt! and Trajectory Action Client interfaces. 
-Provides almost complete sim-to-real /
+coordinate frames interface, etc. Also provides utilities to control the robot using 
+MoveIt! and ROS Trajectory Action & ActionClient. 
+This package also provides almost complete sim-to-real /
 real-to-sim transfer of code with the `panda_simulator`_
 package.
 
@@ -22,27 +23,26 @@ Features
 --------
 
 -  Low-level *controllers* (joint position, velocity, torque, impedance)
-   available that can be controlled through ROS topics (including
+   available that can be controlled through ROS topics and Python API (including
    position control for gripper).
 -  Real-time *robot state* (end-effector state, joint state, controller
-   state, etc.) available through ROS topics.
--  Python API to monitor and control the robot using any of the
-   available controllers.
--  Python API for managing controllers, coordinate frames, controlling
-   and monitoring the gripper.
+   state, etc.) available through ROS topics and Python API.
+-  Python API for managing controllers, coordinate frames, collision behaviour, 
+   controlling and monitoring the gripper.
+-  Python API classes and utility functions to control the robot using 
+   MoveIt! and ROS Trajectory Action Service. 
 -  The `panda_simulator`_ package (which is Gazebo-based
    simulator for the robot) can also be controlled using this package
    (ROS and Python interface), providing almost complete sim-to-real
    transfer of code.
 
-Continuous Integration Builds
------------------------------
-
-ROS Kinetic / Melodic: |Build Status|
-
 
 Installation
 ------------
+
+ROS Kinetic / Melodic: |Build Status|
+
+**NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic. Version for ROS Kinetic is not maintained anymore. The latest updates to the package may not be compatible with Kinetic.*
 
 Dependencies
 ^^^^^^^^^^^^
@@ -88,8 +88,7 @@ The 'driver' node can be started by running (can only be used if run in
 This exposes a variety of ROS topics and services for communicating with
 and controlling the robot. This can be accessed and modified using ROS
 topics and services (see below too find out about some of the available
-topics and services), or using the provided Python API (see
-*franka_interface* and *franka_tools* directories).
+topics and services), or using the provided `Python API <Python API Documentation_>`_..
 
 .. _the-frankash-environments:
 
