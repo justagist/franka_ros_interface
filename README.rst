@@ -164,11 +164,11 @@ available.
 
 Python API
 ^^^^^^^^^^
+`Python API Documentation`_.
+
 Most of the above services and topics are wrapped using simple Python
 classes or utility functions, providing more control and simplicity.
-See `Python API Documentation`_.
-Refer induvidual Python files in *franka_interface* and *franka_tools*
-directories for more details.
+Refer README files in individual subpackages.
 
 Related Packages
 ----------------
