@@ -254,7 +254,6 @@
 <span class="kn">from</span> <span class="nn">std_msgs.msg</span> <span class="kn">import</span> <span class="n">Float64</span>
 
 <span class="kn">import</span> <span class="nn">franka_dataflow</span>
-<span class="kn">import</span> <span class="nn">franka_interface</span>
 <span class="kn">from</span> <span class="nn">robot_params</span> <span class="kn">import</span> <span class="n">RobotParams</span>
 
 <span class="kn">from</span> <span class="nn">franka_moveit</span> <span class="kn">import</span> <span class="n">PandaMoveGroupInterface</span>
@@ -492,7 +491,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode_ok</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RobotMode</span><span class="o">.</span><span class="n">ROBOT_MODE_REFLEX</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RobotMode</span><span class="o">.</span><span class="n">ROBOT_MODE_USER_STOPPED</span><span class="p">)</span>
 
-        <span class="n">jac</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_Jac_EE</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">O_Jac_EE</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="n">order</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_velocity</span> <span class="o">=</span> <span class="p">{</span>
@@ -668,7 +666,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint pose {position, orientation}.</span>
 
-<span class="sd">        :rtype: dict({str:L{Limb.Point},str:L{Limb.Quaternion}})</span>
+<span class="sd">        :rtype: dict({str:np.ndarray (shape:(3,)), str:quaternion.quaternion})</span>
 <span class="sd">        :return: position and orientation as named tuples in a dict</span>
 
 <span class="sd">          - &#39;position&#39;: np.array of x, y, z</span>
@@ -681,7 +679,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint twist {linear, angular}.</span>
 
-<span class="sd">        :rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})</span>
+<span class="sd">        :rtype: dict({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})</span>
 <span class="sd">        :return: linear and angular velocities as named tuples in a dict</span>
 
 <span class="sd">          - &#39;linear&#39;: np.array of x, y, z</span>
@@ -693,7 +691,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint wrench {force, torque}.</span>
 
-<span class="sd">        :rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})</span>
+<span class="sd">        :rtype: dict({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})</span>
 <span class="sd">        :return: force and torque at endpoint as named tuples in a dict</span>
 
 <span class="sd">          - &#39;force&#39;: Cartesian force on x,y,z axes in np.ndarray format</span>
@@ -750,7 +748,8 @@
 
 <div class="viewcode-block" id="ArmInterface.set_joint_position_speed"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_joint_position_speed">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_position_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set ratio of max joint speed to use during joint position moves (only for move_to_joint_positions).</span>
+<span class="sd">        Set ratio of max joint speed to use during joint position </span>
+<span class="sd">        moves (only for move_to_joint_positions).</span>
 
 <span class="sd">        Set the proportion of maximum controllable velocity to use</span>
 <span class="sd">        during joint position control execution. The default ratio</span>
@@ -872,10 +871,6 @@
 <span class="sd">        :type use_moveit: bool</span>
 <span class="sd">        :param use_moveit: if set to True, and movegroup interface is available, </span>
 <span class="sd">         move to the joint positions using moveit planner.</span>
-
-<span class="sd">        .. versionadded:: 1.0.0</span>
-<span class="sd">            Method is now fully supported in `simulation  &lt;http://github.com/justagist/panda_simulator&gt;`_.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">curr_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">set_motion_controller</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">joint_trajectory_controller</span><span class="p">)</span>
@@ -938,7 +933,10 @@
 
 <div class="viewcode-block" id="ArmInterface.reset_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.reset_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">reset_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Reset EE frame to default. (defined by FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) </span>
+<span class="sd">        Reset EE frame to default. (defined by </span>
+<span class="sd">        FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME </span>
+<span class="sd">        global variable defined in :py:class:`FrankaFramesInterface` </span>
+<span class="sd">        source code) </span>
 
 <span class="sd">        :rtype: [bool, str]</span>
 <span class="sd">        :return: [success status of service request, error msg if any]</span>

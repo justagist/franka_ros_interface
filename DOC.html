@@ -261,7 +261,7 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:L{Limb.Point},str:L{Limb.Point}})</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">force and torque at endpoint as named tuples in a dict<ul class="simple">
 <li>’force’: Cartesian force on x,y,z axes in np.ndarray format</li>
@@ -281,7 +281,7 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:L{Limb.Point},str:L{Limb.Quaternion}})</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:np.ndarray (shape:(3,)), str:quaternion.quaternion})</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">position and orientation as named tuples in a dict<ul class="simple">
 <li>’position’: np.array of x, y, z</li>
@@ -301,7 +301,7 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:L{Limb.Point},str:L{Limb.Point}})</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">linear and angular velocities as named tuples in a dict<ul class="simple">
 <li>’linear’: np.array of x, y, z</li>
@@ -642,9 +642,6 @@ move to the joint positions using moveit planner.</li>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.0: </span>Method is now fully supported in <a class="reference external" href="http://github.com/justagist/panda_simulator">simulation</a>.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -670,7 +667,10 @@ default= 0.15; range= [0.0-1.0]</li>
 <dl class="method">
 <dt id="franka_interface.ArmInterface.reset_EE_frame">
 <code class="descname">reset_EE_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.reset_EE_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.reset_EE_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset EE frame to default. (defined by FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above)</p>
+<dd><p>Reset EE frame to default. (defined by 
+FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME 
+global variable defined in <code class="xref py py-class docutils literal notranslate"><span class="pre">FrankaFramesInterface</span></code> 
+source code)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -763,7 +763,8 @@ Motion controllers are stopped for switching</p>
 <dl class="method">
 <dt id="franka_interface.ArmInterface.set_joint_position_speed">
 <code class="descname">set_joint_position_speed</code><span class="sig-paren">(</span><em>speed=0.3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_joint_position_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_joint_position_speed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set ratio of max joint speed to use during joint position moves (only for move_to_joint_positions).</p>
+<dd><p>Set ratio of max joint speed to use during joint position 
+moves (only for move_to_joint_positions).</p>
 <p>Set the proportion of maximum controllable velocity to use
 during joint position control execution. The default ratio
 is <cite>0.3</cite>, and can be set anywhere from [0.0-1.0] (clipped).
@@ -900,7 +901,7 @@ Command at time t is computed as:</p>
 </ul>
 <dl class="class">
 <dt id="franka_interface.GripperInterface">
-<em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">GripperInterface</code><span class="sig-paren">(</span><em>gripper_joint_names=['panda_finger_joint1', 'panda_finger_joint2'], calibrate=False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">GripperInterface</code><span class="sig-paren">(</span><em>gripper_joint_names=('panda_finger_joint1'</em>, <em>'panda_finger_joint2')</em>, <em>calibrate=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/gripper.html#GripperInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.GripperInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Interface class for the gripper on the Franka Panda robot.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1344,11 +1345,7 @@ limb from ROS parameter.</p>
 <dl class="class">
 <dt id="franka_moveit.PandaMoveGroupInterface">
 <em class="property">class </em><code class="descclassname">franka_moveit.</code><code class="descname">PandaMoveGroupInterface</code><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interface class for using MoveIt! and movegroup.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.0: </span>Method is now fully supported in <a class="reference external" href="http://github.com/justagist/panda_simulator">simulation</a>.</p>
-</div>
-<dl class="attribute">
+<dd><dl class="attribute">
 <dt id="franka_moveit.PandaMoveGroupInterface.arm_group">
 <code class="descname">arm_group</code><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.arm_group" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -1639,13 +1636,9 @@ to the world surrounding the robot</td>
 <dt id="franka_moveit.ExtendedPlanningSceneInterface">
 <em class="property">class </em><code class="descclassname">franka_moveit.</code><code class="descname">ExtendedPlanningSceneInterface</code><a class="reference internal" href="_modules/franka_moveit/extended_planning_scene_interface.html#ExtendedPlanningSceneInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.ExtendedPlanningSceneInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">moveit_commander.planning_scene_interface.PlanningSceneInterface</span></code></p>
-<p>Planning scene interface for MoveIt! constraint-aware planning.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">For other available methods for planning scene interface, refer <a class="reference external" href="http://docs.ros.org/indigo/api/moveit_ros_planning_interface/html/classmoveit_1_1planning__interface_1_1PlanningSceneInterface.html">PlanningSceneInterface</a>.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.0: </span>Method is now fully supported in <a class="reference external" href="http://github.com/justagist/panda_simulator">simulation</a>.</p>
 </div>
 <dl class="method">
 <dt id="franka_moveit.ExtendedPlanningSceneInterface.add_box">
@@ -1699,7 +1692,8 @@ to the world surrounding the robot</td>
 <dl class="class">
 <dt id="franka_tools.CollisionBehaviourInterface">
 <em class="property">class </em><code class="descclassname">franka_tools.</code><code class="descname">CollisionBehaviourInterface</code><a class="reference internal" href="_modules/franka_tools/collision_behaviour_interface.html#CollisionBehaviourInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.CollisionBehaviourInterface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper class to set collision and contact thresholds at cartesian and joint levels.
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Helper class to set collision and contact thresholds at cartesian and joint levels.
 (This class has no ‘getter’ functions to access the currently set collision behaviour valures.)</p>
 <dl class="method">
 <dt id="franka_tools.CollisionBehaviourInterface.set_collision_threshold">
@@ -2567,7 +2561,7 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.reset_K_frame">
 <code class="descname">reset_K_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.reset_K_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.reset_K_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset K frame to default. (defined by <a href="#id6"><span class="problematic" id="id7">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
+<dd><p>Reset K frame to default. (defined by <a href="#id3"><span class="problematic" id="id4">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2672,9 +2666,6 @@ Motion controllers are stopped for switching</p>
 <p>To use this class, the currently active controller for the franka robot should be
 the “joint_position_trajectory_controller”. This can be set using instance of
 <a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface" title="franka_tools.FrankaControllerManagerInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">franka_tools.FrankaControllerManagerInterface</span></code></a>.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.0: </span>Method is now fully supported in <a class="reference external" href="http://github.com/justagist/panda_simulator">simulation</a>.</p>
-</div>
 <dl class="method">
 <dt id="franka_tools.JointTrajectoryActionClient.add_point">
 <code class="descname">add_point</code><span class="sig-paren">(</span><em>positions</em>, <em>time</em>, <em>velocities=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/joint_trajectory_action_client.html#JointTrajectoryActionClient.add_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.JointTrajectoryActionClient.add_point" title="Permalink to this definition">¶</a></dt>

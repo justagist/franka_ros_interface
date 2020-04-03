@@ -245,8 +245,6 @@
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">sensor_msgs.msg</span> <span class="kn">import</span> <span class="n">JointState</span>
 
-<span class="kn">from</span> <span class="nn">actionlib_msgs.msg</span> <span class="kn">import</span> <span class="n">GoalStatus</span>
-
 <span class="kn">from</span> <span class="nn">franka_gripper.msg</span> <span class="kn">import</span> <span class="p">(</span> <span class="n">GraspAction</span><span class="p">,</span> <span class="n">GraspGoal</span><span class="p">,</span> 
                                  <span class="n">HomingAction</span><span class="p">,</span> <span class="n">HomingGoal</span><span class="p">,</span>   
                                  <span class="n">MoveAction</span><span class="p">,</span> <span class="n">MoveGoal</span><span class="p">,</span>
@@ -268,7 +266,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gripper_joint_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;panda_finger_joint1&#39;</span><span class="p">,</span> <span class="s1">&#39;panda_finger_joint2&#39;</span><span class="p">],</span> <span class="n">calibrate</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gripper_joint_names</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;panda_finger_joint1&#39;</span><span class="p">,</span> <span class="s1">&#39;panda_finger_joint2&#39;</span><span class="p">),</span> <span class="n">calibrate</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
