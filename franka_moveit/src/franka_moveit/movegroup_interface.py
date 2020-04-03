@@ -84,7 +84,7 @@ class PandaMoveGroupInterface:
             rospy.get_param("/franka_gripper/robot_ip")
             self._gripper_group = moveit_commander.MoveGroupCommander("hand")
         except KeyError:
-            rospy.loginfo(("FrankaGripper: could not detect gripper."))
+            rospy.loginfo(("PandaMoveGroupInterface: could not detect gripper."))
             self._gripper_group = None
         except (socket.error, socket.gaierror):
             print ("Failed to connect to the ROS parameter server!\n"

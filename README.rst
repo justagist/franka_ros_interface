@@ -3,13 +3,16 @@ Franka ROS Interface |Build Status| |Code Quality|
 
 |License|
 
+(*Version 1.0.0*)
+
 A ROS API for the Franka Emika Panda robot, extending the `franka_ros`_ to expose more information about the robot, and
 providing low level control of the robot using ROS and Python API.
 
 Provides controlling and managing the Franka Emika Panda robot (real and
 simulated). Contains exposed controllers for the robot (joint position,
 velocity, torque), interfaces for the gripper, controller manager,
-coordinate frames, etc. Provides almost complete sim-to-real /
+coordinate frames, etc, MoveIt! and Trajectory Action Client interfaces. 
+Provides almost complete sim-to-real /
 real-to-sim transfer of code with the `panda_simulator`_
 package.
 

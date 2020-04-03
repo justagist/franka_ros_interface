@@ -639,7 +639,7 @@ class ArmInterface(object):
          default= 0.15; range= [0.0-1.0]
         """
         self.set_joint_position_speed(speed)
-        self.move_to_joint_positions(self._neutral_pose_joints, timeout) # if not self._params._in_sim else self.set_joint_positions(self._neutral_pose_joints)
+        self.move_to_joint_positions(self._neutral_pose_joints, timeout)
 
 
     def move_to_joint_positions(self, positions, timeout=10.0,
@@ -665,11 +665,7 @@ class ArmInterface(object):
          move to the joint positions using moveit planner.
         """
 
-        # if not self._params._in_sim:
         curr_controller = self._ctrl_manager.set_motion_controller(self._ctrl_manager.joint_trajectory_controller)
-        # else:
-        #     threshold = 0.001
-
 
         if use_moveit and self._movegroup_interface:
             self._movegroup_interface.go_to_joint_positions([positions[n] for n in self._joint_names], tolerance = threshold)
