@@ -26,7 +26,6 @@
 
 import rospy
 import moveit_commander
-from std_msgs.msg import String
 
 class ExtendedPlanningSceneInterface(moveit_commander.PlanningSceneInterface):
     """

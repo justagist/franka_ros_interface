@@ -37,7 +37,7 @@ DEFAULT_VALUES =  {
             'force_upper'   : [20.0, 20.0, 20.0, 25.0, 25.0, 25.0] # NOTE: COLLISION VALUES HAVE TO BE HIGHER THAN CONTACT THRESHOLDS (I.E. 'UPPER' THRESHOLDS HAVE TO BE HIGHER THAN 'LOWER' THRESHOLDS) FOR DETECTING COLLISIONS CORRECTLY. THE ROBOT DETECTS THE HIGHER VALUE OF THE TWO AS COLLISION.
 } 
 
-class CollisionBehaviourInterface:
+class CollisionBehaviourInterface(object):
 
     """
         Helper class to set collision and contact thresholds at cartesian and joint levels.

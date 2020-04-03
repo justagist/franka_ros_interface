@@ -36,8 +36,6 @@ import franka_dataflow
 from copy import deepcopy
 from sensor_msgs.msg import JointState
 
-from actionlib_msgs.msg import GoalStatus
-
 from franka_gripper.msg import ( GraspAction, GraspGoal, 
                                  HomingAction, HomingGoal,   
                                  MoveAction, MoveGoal,
@@ -59,7 +57,7 @@ class GripperInterface(object):
 
     """
 
-    def __init__(self, gripper_joint_names = ['panda_finger_joint1', 'panda_finger_joint2'], calibrate = False, **kwargs):
+    def __init__(self, gripper_joint_names = ('panda_finger_joint1', 'panda_finger_joint2'), calibrate = False, **kwargs):
         """
         Constructor.
         """

@@ -115,15 +115,17 @@ class ControllerParamConfigClient:
         assert len(k_gains) == 7, "ControllerParamConfigClient: k_gains argument should be of length 7!"
 
         config = {}
-        for i in range(len(k_gains)):
-            config[K_GAINS_KW[i]] = k_gains[i]
+        for i, k_val in enumerate(k_gains):
+            config[K_GAINS_KW[i]] = k_val
 
         if d_gains:
             assert len(k_gains) == 7, "ControllerParamConfigClient: d_gains argument should be of length 7!"
 
-            for j in range(len(d_gains)):
-                config[D_GAINS_KW[j]] = d_gains[j]
-        print config
+            for j, d_val in enumerate(d_gains):
+                config[D_GAINS_KW[j]] = d_val
+
+        rospy.logdebug("Config: {}".format(config))
+
         self.update_config(**config)
 
 

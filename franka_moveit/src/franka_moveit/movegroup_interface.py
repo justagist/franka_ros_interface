@@ -30,7 +30,6 @@ import rospy
 import moveit_commander
 import moveit_msgs.msg
 import geometry_msgs.msg
-from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
 from extended_planning_scene_interface import ExtendedPlanningSceneInterface
 
@@ -43,15 +42,15 @@ def all_close(goal, actual, tolerance):
     :param: tolerance  A float
     :rtype: bool
     """
-    if type(goal) is list:
-        for index in range(len(goal)):
-          if abs(actual[index] - goal[index]) > tolerance:
+    if isinstance(goal, list):
+        for index, g in enumerate(goal):
+          if abs(actual[index] - g) > tolerance:
             return False
 
-    elif type(goal) is geometry_msgs.msg.PoseStamped:
+    elif isinstance(goal, geometry_msgs.msg.PoseStamped):
         return all_close(goal.pose, actual.pose, tolerance)
 
-    elif type(goal) is geometry_msgs.msg.Pose:
+    elif isinstance(goal, geometry_msgs.msg.Pose):
         return all_close(pose_to_list(goal), pose_to_list(actual), tolerance)
 
     return True

@@ -10,5 +10,4 @@ Some helper classes which interfaces moveit with the Franka Emika Panda robot.
 
 ### ExtendedPlanningSceneInterface
 
-- Easily define scene for robot motion planning (MoveIt plans will avoid defined obstacles if possible).  
-
+- Easily define scene for robot motion planning (MoveIt plans will avoid defined obstacles if possible).

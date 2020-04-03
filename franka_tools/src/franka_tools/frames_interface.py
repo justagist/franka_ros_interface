@@ -107,8 +107,7 @@ class FrankaFramesInterface():
         def body():
             try:
                 listener.lookupTransform(parent, frame_name, rospy.Time(0))
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
-                err = e
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 return False
             return True
 
@@ -229,13 +228,12 @@ class FrankaFramesInterface():
         :return: [success status of service request, error msg if any]
         """
 
-        trans = False
         listener = tf.TransformListener()
         err = "FrankaFramesInterface: Error while looking up transform from EE frame to link frame %s"%frame_name
         def body():
             try:
                 listener.lookupTransform('/panda_EE', frame_name, rospy.Time(0))
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 return False
             return True
 

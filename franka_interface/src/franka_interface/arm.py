@@ -45,7 +45,6 @@ from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
 
 import franka_dataflow
-import franka_interface
 from robot_params import RobotParams
 
 from franka_moveit import PandaMoveGroupInterface
@@ -283,7 +282,6 @@ class ArmInterface(object):
 
         self._robot_mode_ok = (self._robot_mode.value != self.RobotMode.ROBOT_MODE_REFLEX) and (self._robot_mode.value != self.RobotMode.ROBOT_MODE_USER_STOPPED)
 
-        jac = msg.O_Jac_EE
         self._jacobian = np.asarray(msg.O_Jac_EE).reshape(6,7,order = 'F')
 
         self._cartesian_velocity = {
@@ -459,7 +457,7 @@ class ArmInterface(object):
         """
         Return Cartesian endpoint pose {position, orientation}.
 
-        :rtype: dict({str:L{Limb.Point},str:L{Limb.Quaternion}})
+        :rtype: dict({str:np.ndarray (shape:(3,)), str:quaternion.quaternion})
         :return: position and orientation as named tuples in a dict
 
           - 'position': np.array of x, y, z
@@ -472,7 +470,7 @@ class ArmInterface(object):
         """
         Return Cartesian endpoint twist {linear, angular}.
 
-        :rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
+        :rtype: dict({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})
         :return: linear and angular velocities as named tuples in a dict
 
           - 'linear': np.array of x, y, z
@@ -484,7 +482,7 @@ class ArmInterface(object):
         """
         Return Cartesian endpoint wrench {force, torque}.
 
-        :rtype: dict({str:L{Limb.Point},str:L{Limb.Point}})
+        :rtype: dict({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})
         :return: force and torque at endpoint as named tuples in a dict
 
           - 'force': Cartesian force on x,y,z axes in np.ndarray format
@@ -541,7 +539,8 @@ class ArmInterface(object):
 
     def set_joint_position_speed(self, speed=0.3):
         """
-        Set ratio of max joint speed to use during joint position moves (only for move_to_joint_positions).
+        Set ratio of max joint speed to use during joint position 
+        moves (only for move_to_joint_positions).
 
         Set the proportion of maximum controllable velocity to use
         during joint position control execution. The default ratio
@@ -725,7 +724,10 @@ class ArmInterface(object):
 
     def reset_EE_frame(self):
         """
-        Reset EE frame to default. (defined by FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) 
+        Reset EE frame to default. (defined by 
+        FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME 
+        global variable defined in :py:class:`FrankaFramesInterface` 
+        source code) 
 
         :rtype: [bool, str]
         :return: [success status of service request, error msg if any]
