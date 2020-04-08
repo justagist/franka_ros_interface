@@ -1,6 +1,10 @@
 Franka ROS Interface |Build Status| |Code Quality|
 ==================================================
 
+.. image:: https://api.codacy.com/project/badge/Grade/fa7c8d9338dc4a1a8bfa3a9ca88099ce
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&utm_medium=referral&utm_content=justagist/franka_ros_interface&utm_campaign=Badge_Grade_Dashboard
+
 |License|
 
 (*Version 1.0.0*)
