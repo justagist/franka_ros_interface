@@ -57,7 +57,9 @@ Go to `Project Source Code`_.
 
 **LICENSE:**
 
-|License|
+Apache 2.0
+
+Copyright (c) 2019-2020, Saif Sidhik
 
 |doi|
 
