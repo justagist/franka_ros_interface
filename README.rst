@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjustagist%2Ffranka_ros_interface.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjustagist%2Ffranka_ros_interface?ref=badge_shield)
+
 Franka ROS Interface |release| |doi|
 ====================================
 
@@ -217,3 +219,5 @@ License
 .. |doi| image:: https://zenodo.org/badge/199485892.svg
    :target: https://zenodo.org/badge/latestdoi/199485892
 .. |release| image:: https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases   :alt: GitHub release (latest by date including pre-releases)
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjustagist%2Ffranka_ros_interface.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjustagist%2Ffranka_ros_interface?ref=badge_large)
