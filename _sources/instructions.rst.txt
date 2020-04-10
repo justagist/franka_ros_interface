@@ -5,6 +5,8 @@ Setup Instructions
 Installation
 ------------
 
+|release|
+
 ROS Kinetic / Melodic: |Build Status|
 
 **NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic. Version for ROS Kinetic is not maintained anymore. The latest updates to the package may not be compatible with Kinetic.*
@@ -176,4 +178,7 @@ Related Packages
    :target: https://opensource.org/licenses/Apache-2.0
 .. |Code Quality| image:: https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e    
    :target: https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade
+.. |doi| image:: https://zenodo.org/badge/199485892.svg
+   :target: https://zenodo.org/badge/latestdoi/199485892
+.. |release| image:: https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases   :alt: GitHub release (latest by date including pre-releases)
 
