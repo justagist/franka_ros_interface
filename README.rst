@@ -1,9 +1,7 @@
-Franka ROS Interface |Build Status| |Code Quality|
-==================================================
+Franka ROS Interface |release| |doi|
+====================================
 
-|License|
-
-(*Version 1.0.0*)
+|Code Quality| |Build Status| 
 
 A ROS interface library for the Franka Emika Panda robot, extending the `franka_ros`_ to expose more information about the robot, and
 providing low-level control of the robot using ROS and `Python API <Python API Documentation_>`_.
@@ -191,6 +189,8 @@ License
 -------
 |License|
 
+|doi|
+
 .. _panda_simulator: https://github.com/justagist/panda_simulator
 .. _panda_robot: https://github.com/justagist/panda_robot
 .. _KDL library: http://wiki.ros.org/kdl
@@ -214,4 +214,6 @@ License
    :target: https://opensource.org/licenses/Apache-2.0
 .. |Code Quality| image:: https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e    
    :target: https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade
-
+.. |doi| image:: https://zenodo.org/badge/199485892.svg
+   :target: https://zenodo.org/badge/latestdoi/199485892
+.. |release| image:: https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases   :alt: GitHub release (latest by date including pre-releases)
