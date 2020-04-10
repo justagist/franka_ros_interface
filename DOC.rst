@@ -1,7 +1,7 @@
 Python API Documentation
 ========================
 
-|Code Quality|
+|release| |Code Quality|
 
 franka_interface
 ----------------
@@ -139,3 +139,4 @@ JointTrajectoryActionClient
 
 .. |Code Quality| image:: https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e    
    :target: https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade
+.. |release| image:: https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases   :alt: GitHub release (latest by date including pre-releases)
