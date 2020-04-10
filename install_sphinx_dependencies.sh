@@ -17,7 +17,7 @@ sudo pip install sphinx_rtd_theme
 
 
 ## ----- for latexpdf
-sudo apt install latexmk texlive-xetex xindy
+sudo apt install latexmk texlive-xetex xindy imagemagick
 
 
 

@@ -1,7 +1,7 @@
 Python API Documentation
 ========================
 
-|release| |Code Quality|
+|Code Quality|
 
 franka_interface
 ----------------

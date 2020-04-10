@@ -58,9 +58,9 @@ Go to `Project Source Code`_.
 **LICENSE:**
 
 |License|
+Copyright (c) 2019-2020, Saif Sidhik
 
 |doi|
-
 
 .. _panda_simulator: https://github.com/justagist/panda_simulator
 .. _panda_robot: https://github.com/justagist/panda_robot
@@ -82,7 +82,7 @@ Go to `Project Source Code`_.
 
 .. |Build Status| image:: https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master
    :target: https://travis-ci.org/justagist/franka_ros_interface
-.. |License| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+.. |License| image:: https://img.shields.io/badge/License-Apache2.0-blue.svg
    :target: https://opensource.org/licenses/Apache-2.0
 .. |Code Quality| image:: https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e    
    :target: https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade
