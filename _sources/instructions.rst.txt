@@ -55,7 +55,10 @@ The 'driver' node can be started by running (can only be used if run in
 This exposes a variety of ROS topics and services for communicating with
 and controlling the robot. This can be accessed and modified using ROS
 topics and services (see below too find out about some of the available
-topics and services), or using the provided `Python API <Python API Documentation_>`_..
+topics and services), or using the provided `Python API <Python API Documentation_>`_.
+
+Basic usage of the API is shown in the `test_robot.py <franka_interface/tests/test_robot.py>`_ example file.
+See `documentation <Python API Documentation_>`_ for all available methods and functionalities.
 
 .. _the-frankash-environments:
 
@@ -174,7 +177,7 @@ Related Packages
 
 .. |Build Status| image:: https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master
    :target: https://travis-ci.org/justagist/franka_ros_interface
-.. |License| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+.. |License| image:: https://img.shields.io/badge/License-Apache2.0-blue.svg
    :target: https://opensource.org/licenses/Apache-2.0
 .. |Code Quality| image:: https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e    
    :target: https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade

@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   <script type="text/javascript">
@@ -23,6 +22,10 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
@@ -30,7 +33,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -43,10 +48,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="2. Python API Documentation" href="DOC.html" />
@@ -64,7 +65,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Franka ROS Interface
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Franka ROS Interface
           
 
           
@@ -91,6 +92,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -150,6 +152,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -188,7 +191,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>1. Setup Instructions</li>
     
@@ -256,7 +259,9 @@ $ source devel/setup.bash
 <p>This exposes a variety of ROS topics and services for communicating with
 and controlling the robot. This can be accessed and modified using ROS
 topics and services (see below too find out about some of the available
-topics and services), or using the provided <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>..</p>
+topics and services), or using the provided <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>.</p>
+<p>Basic usage of the API is shown in the <a class="reference external" href="franka_interface/tests/test_robot.py">test_robot.py</a> example file.
+See <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">documentation</a> for all available methods and functionalities.</p>
 <div class="section" id="the-franka-sh-environments">
 <span id="the-frankash-environments"></span><h3>1.2.1. The <em>franka.sh</em> environments<a class="headerlink" href="#the-franka-sh-environments" title="Permalink to this headline">¶</a></h3>
 <p>Once the values are correctly modified in the <code class="docutils literal notranslate"><span class="pre">franka.sh</span></code> file, different environments can be
@@ -401,11 +406,19 @@ control definitions required for the <a class="reference external" href="https:/
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Saif Sidhik
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -416,7 +429,6 @@ control definitions required for the <a class="reference external" href="https:/
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
