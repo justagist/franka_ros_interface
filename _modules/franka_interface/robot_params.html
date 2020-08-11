@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   <script type="text/javascript">
@@ -23,6 +22,10 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
@@ -30,7 +33,9 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -43,10 +48,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -62,7 +63,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> Franka ROS Interface
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> Franka ROS Interface
           
 
           
@@ -89,6 +90,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -148,6 +150,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -186,7 +189,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -282,7 +285,14 @@
 
         <span class="k">return</span> <span class="n">sim</span>
 
-    <span class="k">def</span> <span class="nf">get_neutral_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RobotParams.get_neutral_pose"><a class="viewcode-back" href="../../DOC.html#franka_interface.RobotParams.get_neutral_pose">[docs]</a>    <span class="k">def</span> <span class="nf">get_neutral_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get neutral pose joint positions from parameter server </span>
+<span class="sd">        (/robot_config/neutral_pose)</span>
+
+<span class="sd">        :return: Joint positions of the robot as defined in parameter server.</span>
+<span class="sd">        :rtype: [type]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">neutral_pose</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/neutral_pose&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -291,7 +301,7 @@
         <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
             <span class="n">_log_networking_error</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">neutral_pose</span>
+        <span class="k">return</span> <span class="n">neutral_pose</span></div>
 
 
     <span class="k">def</span> <span class="nf">get_robot_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -308,10 +318,10 @@
 
 <div class="viewcode-block" id="RobotParams.get_joint_names"><a class="viewcode-back" href="../../DOC.html#franka_interface.RobotParams.get_joint_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the names of the joints for the specified</span>
-<span class="sd">        limb from ROS parameter.</span>
+<span class="sd">        Return the names of the joints for the robot from ROS parameter</span>
+<span class="sd">        server (/robot_config/joint_names).</span>
 
-<span class="sd">        :rtype: list [str]</span>
+<span class="sd">        :rtype: [str]</span>
 <span class="sd">        :return: ordered list of joint names from proximal to distal</span>
 <span class="sd">                 (i.e. shoulder to wrist). joint names for limb</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -324,7 +334,14 @@
             <span class="n">_log_networking_error</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">joint_names</span></div>
 
-    <span class="k">def</span> <span class="nf">get_gripper_joint_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RobotParams.get_gripper_joint_names"><a class="viewcode-back" href="../../DOC.html#franka_interface.RobotParams.get_gripper_joint_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_gripper_joint_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the names of the joints for the gripper from ROS </span>
+<span class="sd">        parameter server (/gripper_config/joint_names).</span>
+
+<span class="sd">        :rtype: [str]</span>
+<span class="sd">        :return: ordered list of joint names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">joint_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
@@ -334,11 +351,12 @@
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
             <span class="n">_log_networking_error</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">joint_names</span>
+        <span class="k">return</span> <span class="n">joint_names</span></div>
 
 <div class="viewcode-block" id="RobotParams.get_robot_name"><a class="viewcode-back" href="../../DOC.html#franka_interface.RobotParams.get_robot_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_robot_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the name of class of robot from ROS parameter.</span>
+<span class="sd">        Return the name of class of robot from ROS parameter server.</span>
+<span class="sd">        (/robot_config/arm_id)</span>
 
 <span class="sd">        :rtype: str</span>
 <span class="sd">        :return: name of the robot</span>
@@ -353,7 +371,14 @@
             <span class="n">_log_networking_error</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">robot_name</span></div>
 
-    <span class="k">def</span> <span class="nf">get_joint_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RobotParams.get_joint_limits"><a class="viewcode-back" href="../../DOC.html#franka_interface.RobotParams.get_joint_limits">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get joint limits as defined in ROS parameter server </span>
+<span class="sd">        (/robot_config/joint_config/joint_velocity_limit)</span>
+
+<span class="sd">        :return: Joint limits for each joints</span>
+<span class="sd">        :rtype: franka_core_msgs.msg.JointLimits</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">lims</span> <span class="o">=</span> <span class="n">JointLimits</span><span class="p">()</span>
         <span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_joint_names</span><span class="p">()</span>
@@ -406,7 +431,7 @@
             <span class="n">lims</span><span class="o">.</span><span class="n">accel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acc_lim</span><span class="p">[</span><span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
             <span class="n">lims</span><span class="o">.</span><span class="n">effort</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eff_lim</span><span class="p">[</span><span class="n">lims</span><span class="o">.</span><span class="n">joint_names</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
 
-        <span class="k">return</span> <span class="n">lims</span></div>
+        <span class="k">return</span> <span class="n">lims</span></div></div>
 
 
 
@@ -431,11 +456,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Saif Sidhik
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -446,7 +479,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
