@@ -37,3 +37,10 @@ sudo apt install latexmk texlive-xetex xindy imagemagick
 # cd ../../../docs_src/
 
 ## ----------------------------------------------------------------------
+
+## -- instructions to run documentation codes --
+# 1. clone the docs_src branch to a folder called docs_src within the franka_ros_interface (master) folder
+# 2. after running this script, a docs_build folder should exist in franka_ros_interface directory. Clone the gh-pages 
+#    branch to docs_build/html
+# 3. run `make html` for html, and `make latexpdf` for pdf
+### --------------------------------------------
