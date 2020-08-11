@@ -86,6 +86,12 @@ class RobotEnable(object):
         self._enabled = (msg.robot_mode != 4) 
 
     def is_enabled(self):
+        """
+        Return status of robot
+
+        :return: True if enabled, False otherwise
+        :rtype: bool
+        """
         return self._enabled
     
 

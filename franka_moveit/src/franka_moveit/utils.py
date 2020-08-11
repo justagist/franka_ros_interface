@@ -11,7 +11,7 @@ def create_pose_msg(position, orientation):
         :param position: End-effector position in base frame of the robot
         :type position: [float]*3
         :param orientation: orientation quaternion of end-effector in base frame
-        :type orientation: quaternion.quaternion / [float]*4: (w,x,y,z)
+        :type orientation: quaternion.quaternion (OR) [float] size 4: (w,x,y,z)
     """
     pose = geometry_msgs.msg.Pose()
 
@@ -41,7 +41,7 @@ def create_pose_stamped_msg(position, orientation, frame = "world"):
         :param position: End-effector position in base frame of the robot
         :type position: [float]*3
         :param orientation: orientation quaternion of end-effector in base frame
-        :type orientation: quaternion.quaternion / [float]*4: (w,x,y,z)
+        :type orientation: quaternion.quaternion (OR) [float] size 4: (w,x,y,z)
         :param frame: Name of the parent frame
         :type frame: str
     """

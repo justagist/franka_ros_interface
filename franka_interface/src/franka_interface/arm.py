@@ -408,7 +408,7 @@ class ArmInterface(object):
         """
         Return all joint angles.
 
-        :rtype: [double]
+        :rtype: [float]
         :return: joint angles (rad) orded by joint_names from proximal to distal (i.e. shoulder to wrist).
         """
         return [self._joint_angle[name] for name in self._joint_names]
@@ -513,16 +513,15 @@ class ArmInterface(object):
         
     def joint_inertia_matrix(self):
         """
-        Return joint inertia matrix (7,7)
         
+        :return: joint inertia matrix (7,7)
         :rtype: np.ndarray [7x7]
         """
         return deepcopy(self._joint_inertia)
 
     def zero_jacobian(self):
         """
-        Return end-effector jacobian (6,7)
-        
+        :return: end-effector jacobian (6,7)
         :rtype: np.ndarray [6x7]
         """
         return deepcopy(self._jacobian)        
@@ -726,7 +725,7 @@ class ArmInterface(object):
         """
         Reset EE frame to default. (defined by 
         FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME 
-        global variable defined in :py:class:`FrankaFramesInterface` 
+        global variable defined in :py:class:`franka_tools.FrankaFramesInterface` 
         source code) 
 
         :rtype: [bool, str]

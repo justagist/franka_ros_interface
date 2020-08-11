@@ -123,6 +123,12 @@ class GripperInterface(object):
 
     @property
     def exists(self):
+        """
+        Check if a gripper was identified as connected to the robot.
+
+        :return: True if gripper was detected, False otherwise
+        :rtype: bool
+        """
         return self._exists
 
     def set_velocity(self, value):

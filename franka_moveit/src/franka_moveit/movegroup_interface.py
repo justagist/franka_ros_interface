@@ -190,7 +190,10 @@ class PandaMoveGroupInterface:
 
             :param poses: The cartesian poses to be achieved in sequence. 
                 (Use :func:`franka_moveit.utils.create_pose_msg` for creating pose messages easily)
-            :type poses: [geomentry_msgs.msg.Pose] 
+            :type poses: [geomentry_msgs.msg.Pose]
+
+            :return: the actual RobotTrajectory (can be used for :py:meth:`execute_plan`), a fraction of how much of the path was followed
+            :rtype: [RobotTrajectory, float (0,1)]
 
         """
         waypoints = []
@@ -218,7 +221,7 @@ class PandaMoveGroupInterface:
 
     def plan_joint_path(self, joint_position):
         """
-        :return: plan for executing joint trajectory
+        :return: RobotTrajectory plan for executing joint trajectory (can be used for :py:meth:`execute_plan`)
 
         :param joint_position: target joint positions
         :type joint_position: [float]*7
@@ -229,6 +232,9 @@ class PandaMoveGroupInterface:
     def close_gripper(self, wait = False):
         """
             Close gripper. (Using named states defined in urdf.)
+
+            :param wait: if set to True, blocks till execution is complete
+            :type wait: bool
 
             .. note:: If this named state is not found, your ros environment is
                 probably not using the right panda_moveit_config package. Ensure
@@ -242,6 +248,9 @@ class PandaMoveGroupInterface:
     def open_gripper(self, wait = False):
         """
             Open gripper. (Using named states defined in urdf)
+
+            :param wait: if set to True, blocks till execution is complete
+            :type wait: bool
 
             .. note:: If this named state is not found, your ros environment is
                 probably not using the right panda_moveit_config package. Ensure
@@ -269,7 +278,7 @@ class PandaMoveGroupInterface:
         """
             Send arm group to neutral pose defined using named state in urdf.
 
-            :param wait: If True, will wait till target is reached
+            :param wait: if set to True, blocks till execution is complete
             :type wait: bool
         """
         self._arm_group.set_named_target("ready")
@@ -284,7 +293,8 @@ class PandaMoveGroupInterface:
             :param group: The name of the move group (default "arm" for robot; use "hand" 
                 for gripper group)
             :type group: str
-            :param wait: If True, will wait till plan is executed
+            :param wait: if set to True, blocks till execution is complete
+            :type wait: bool
         """
         if group == "arm":
             self._arm_group.execute(plan, wait = wait)

@@ -75,6 +75,13 @@ class RobotParams(object):
         return sim
 
     def get_neutral_pose(self):
+        """
+        Get neutral pose joint positions from parameter server 
+        (/robot_config/neutral_pose)
+
+        :return: Joint positions of the robot as defined in parameter server.
+        :rtype: [type]
+        """
         try:
             neutral_pose = rospy.get_param("/robot_config/neutral_pose")
         except KeyError:
@@ -100,10 +107,10 @@ class RobotParams(object):
 
     def get_joint_names(self):
         """
-        Return the names of the joints for the specified
-        limb from ROS parameter.
+        Return the names of the joints for the robot from ROS parameter
+        server (/robot_config/joint_names).
 
-        :rtype: list [str]
+        :rtype: [str]
         :return: ordered list of joint names from proximal to distal
                  (i.e. shoulder to wrist). joint names for limb
         """
@@ -117,6 +124,13 @@ class RobotParams(object):
         return joint_names
 
     def get_gripper_joint_names(self):
+        """
+        Return the names of the joints for the gripper from ROS 
+        parameter server (/gripper_config/joint_names).
+
+        :rtype: [str]
+        :return: ordered list of joint names
+        """
 
         joint_names = list()
         try:
@@ -130,7 +144,8 @@ class RobotParams(object):
 
     def get_robot_name(self):
         """
-        Return the name of class of robot from ROS parameter.
+        Return the name of class of robot from ROS parameter server.
+        (/robot_config/arm_id)
 
         :rtype: str
         :return: name of the robot
@@ -146,6 +161,13 @@ class RobotParams(object):
         return robot_name
 
     def get_joint_limits(self):
+        """
+        Get joint limits as defined in ROS parameter server 
+        (/robot_config/joint_config/joint_velocity_limit)
+
+        :return: Joint limits for each joints
+        :rtype: franka_core_msgs.msg.JointLimits
+        """
 
         lims = JointLimits()
         lims.joint_names = self.get_joint_names()

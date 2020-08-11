@@ -86,7 +86,10 @@ The 'driver' node can be started by running (can only be used if run in
 This exposes a variety of ROS topics and services for communicating with
 and controlling the robot. This can be accessed and modified using ROS
 topics and services (see below too find out about some of the available
-topics and services), or using the provided `Python API <Python API Documentation_>`_..
+topics and services), or using the provided `Python API <Python API Documentation_>`_.
+
+Basic usage of the API is shown in the `test_robot.py <franka_interface/tests/test_robot.py>`_ example file.
+See `documentation <Python API Documentation_>`_ for all available methods and functionalities.
 
 .. _the-frankash-environments:
 
