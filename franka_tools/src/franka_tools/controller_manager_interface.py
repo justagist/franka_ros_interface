@@ -243,7 +243,7 @@ class FrankaControllerManagerInterface(object):
         req = SwitchControllerRequest(start_controllers=[name],
                                       stop_controllers=[],
                                       strictness=strict)
-        rospy.loginfo("FrankaControllerManagerInterface: Starting controller: %s"%name)
+        rospy.logdebug("FrankaControllerManagerInterface: Starting controller: %s"%name)
         self._switch_srv.call(req)
 
         self._assert_one_active_controller()
@@ -267,7 +267,7 @@ class FrankaControllerManagerInterface(object):
         req = SwitchControllerRequest(start_controllers=[],
                                       stop_controllers=[name],
                                       strictness=strict)
-        rospy.loginfo("FrankaControllerManagerInterface: Stopping controller: %s"%name)
+        rospy.logdebug("FrankaControllerManagerInterface: Stopping controller: %s"%name)
         self._switch_srv.call(req)
 
 
@@ -354,7 +354,7 @@ class FrankaControllerManagerInterface(object):
             active_controllers = self.list_active_controllers(only_motion_controllers = True)
             for ctrlr in active_controllers:
                 self.stop_controller(ctrlr.name)
-                rospy.loginfo("FrankaControllerManagerInterface: Stopping %s for trajectory controlling"%ctrlr.name)
+                rospy.logdebug("FrankaControllerManagerInterface: Stopping %s for trajectory controlling"%ctrlr.name)
                 rospy.sleep(0.5)
 
 
