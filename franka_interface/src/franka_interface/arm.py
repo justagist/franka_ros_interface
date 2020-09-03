@@ -210,7 +210,7 @@ class ArmInterface(object):
         self._torque_controller_publisher = rospy.Publisher("torque_target", TorqueCmd, queue_size=20)
 
         # Joint Impedance Controller Publishers
-        self._ji_publisher = rospy.Publisher("ji_position_velocity", JICmd, queue_size=20)
+        self._joint_impedance_publisher = rospy.Publisher("joint_impedance_position_velocity", JICmd, queue_size=20)
         self._joint_stiffness_publisher = rospy.Publisher("joint_impedance_stiffness", JointImpedanceStiffness, queue_size=10) 
 
         rospy.on_shutdown(self._clean_shutdown)
@@ -255,7 +255,7 @@ class ArmInterface(object):
         self._cartesian_stiffness_publisher.unregister()
         self._force_controller_publisher.unregister()
         self._torque_controller_publisher.unregister()
-        self._ji_publisher.unregister()
+        self._joint_impedance_publisher.unregister()
         self._joint_stiffness_publisher.unregister()
 
     def get_robot_params(self):
@@ -922,9 +922,10 @@ _ns
         self._cartesian_impedance_pose_publisher.publish(marker_pose)
     
     def set_joint_impedance_config(self, q, stiffness=None):
-        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.ji_controller else False
+        #Need q converted to list
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_impedance_controller else False
         if switch_ctrl:
-            self.switchToController(self._ctrl_manager.ji_controller)
+            self.switchToController(self._ctrl_manager.joint_impedance_controller)
 
         if stiffness is not None:
             stiffness_gains = JointImpedanceStiffness()
@@ -934,12 +935,14 @@ _ns
         marker_pose = JICmd()
         marker_pose.position = q
         marker_pose.velocity = [0.005]*7
-        self._ji_publisher.publish(marker_pose)
+        self._joint_impedance_publisher.publish(marker_pose)
    
     def set_torque(self, tau):
-        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.newtorque_controller else False
+        raise NotImplementedError("Still working on the bugs in this!")
+
+        switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.ntorque_controller else False
         if switch_ctrl:
-            self.switchToController(self._ctrl_manager.newtorque_controller)
+            self.switchToController(self._ctrl_manager.ntorque_controller)
 
         torque = TorqueCmd()
         torque.torque = tau

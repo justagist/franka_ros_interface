@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Franka Emika GmbH
 // Use of this source code is governed by the Apache-2.0 license, see LICENSE
-#include <franka_ros_controllers/newtorque_controller.h>
+#include <franka_ros_controllers/ntorque_controller.h>
 
 #include <cmath>
 #include <memory>
@@ -13,13 +13,13 @@
 
 namespace franka_ros_controllers {
 
-bool NewTorqueController::init(hardware_interface::RobotHW* robot_hw,
+bool NTorqueController::init(hardware_interface::RobotHW* robot_hw,
                                   ros::NodeHandle& node_handle) {
   std::vector<std::string> joint_names;
   std::string arm_id;
 
   torque_params_ = node_handle.subscribe(
-    "/torque_target", 20, &NewTorqueController::torqueParamCallback, this,
+    "/torque_target", 20, &NTorqueController::torqueParamCallback, this,
     ros::TransportHints().reliable().tcpNoDelay());
 
   ROS_WARN(
@@ -96,7 +96,7 @@ bool NewTorqueController::init(hardware_interface::RobotHW* robot_hw,
     ROS_ERROR_STREAM("TorqueController: Error getting effort joint interface from hardware");
     return false;
   }
-  ROS_WARN("TorqueController: foop");
+
   /*for (size_t i = 0; i < 7; ++i) {
     try {
       joint_handles_.push_back(effort_joint_interface->getHandle(joint_names[i]));
@@ -107,14 +107,13 @@ bool NewTorqueController::init(hardware_interface::RobotHW* robot_hw,
     }
   }*/
 
-  ROS_WARN("TorqueController: foo");
   // Initialize
   target_torque_.setZero();
   desired_torque_.setZero();
   return true;
 }
 
-void NewTorqueController::starting(const ros::Time& /*time*/) {
+void NTorqueController::starting(const ros::Time& /*time*/) {
   franka::RobotState robot_state = state_handle_->getRobotState();
   std::array<double, 7> gravity_array = model_handle_->getGravity();
   Eigen::Map<Eigen::Matrix<double, 7, 1>> tau_measured(robot_state.tau_J.data());
@@ -124,7 +123,7 @@ void NewTorqueController::starting(const ros::Time& /*time*/) {
   tau_error_.setZero();
 }
 
-void NewTorqueController::update(const ros::Time& /*time*/, const ros::Duration& period) {
+void NTorqueController::update(const ros::Time& /*time*/, const ros::Duration& period) {
   franka::RobotState robot_state = state_handle_->getRobotState();
   std::array<double, 42> jacobian_array =
       model_handle_->getZeroJacobian(franka::Frame::kEndEffector);
@@ -147,7 +146,7 @@ void NewTorqueController::update(const ros::Time& /*time*/, const ros::Duration&
   desired_torque_ = filter_gain_ * target_torque_ + (1 - filter_gain_) * desired_torque_;
 }
 
-void NewTorqueController::torqueParamCallback(
+void NTorqueController::torqueParamCallback(
      const franka_core_msgs::TorqueCmdConstPtr& msg) {
 
   if (msg->torque.size() != 7) {
@@ -165,7 +164,7 @@ void NewTorqueController::torqueParamCallback(
   }
 }
 
-bool NewTorqueController::checkTorqueLimits(std::vector<double> torques)
+bool NTorqueController::checkTorqueLimits(std::vector<double> torques)
 {
   for (size_t i = 0;  i < 7; ++i){
     if (!(abs(torques[i]) < joint_limits_.effort[i])){
@@ -176,7 +175,7 @@ bool NewTorqueController::checkTorqueLimits(std::vector<double> torques)
   return false;
 }
 
-Eigen::Matrix<double, 7, 1> NewTorqueController::saturateTorqueRate(
+Eigen::Matrix<double, 7, 1> NTorqueController::saturateTorqueRate(
     const Eigen::Matrix<double, 7, 1>& tau_d_calculated,
     const Eigen::Matrix<double, 7, 1>& tau_J_d) {  // NOLINT (readability-identifier-naming)
   Eigen::Matrix<double, 7, 1> tau_d_saturated{};
@@ -189,5 +188,5 @@ Eigen::Matrix<double, 7, 1> NewTorqueController::saturateTorqueRate(
 
 }  // namespace franka_ros_controllers
 
-PLUGINLIB_EXPORT_CLASS(franka_ros_controllers::NewTorqueController,
+PLUGINLIB_EXPORT_CLASS(franka_ros_controllers::NTorqueController,
                        controller_interface::ControllerBase)

@@ -123,8 +123,8 @@ cartesian_impedance_controller:
         - 20.0
         - 20.0
 
-ji_controller:
-    type: franka_ros_controllers/JIController
+joint_impedance_controller:
+    type: franka_ros_controllers/JointImpedanceController
     arm_id: panda
     joint_names:
         - panda_joint1
@@ -152,3 +152,16 @@ ji_controller:
         - 10.0
     publish_rate: 30.0
     coriolis_factor: 1.0 
+
+ntorque_controller:
+    type: franka_ros_controllers/NTorqueController
+    arm_id: panda
+    joint_names:
+        - panda_joint1
+        - panda_joint2
+        - panda_joint3
+        - panda_joint4
+        - panda_joint5
+        - panda_joint6
+        - panda_joint7
+

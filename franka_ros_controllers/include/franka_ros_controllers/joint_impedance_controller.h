@@ -25,7 +25,7 @@
 
 namespace franka_ros_controllers {
 
-class JIController : public controller_interface::MultiInterfaceController<
+class JointImpedanceController : public controller_interface::MultiInterfaceController<
                                             franka_hw::FrankaModelInterface,
                                             hardware_interface::EffortJointInterface,
                                             franka_hw::FrankaPoseCartesianInterface> {

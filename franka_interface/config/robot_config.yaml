@@ -89,9 +89,11 @@ gripper_config:
 controllers_config:
     position_controller: "franka_ros_interface/position_joint_position_controller"
     torque_controller: "franka_ros_interface/effort_joint_torque_controller"
-    impedance_controller: "franka_ros_interface/effort_joint_impedance_controller"
+    impedance_controller: "franka_ros_interface/effort_joint_impedane_controller"
     velocity_controller: "franka_ros_interface/velocity_joint_velocity_controller"
     force_controller: "franka_ros_interface/force_controller"
-    ji_controller: "franka_ros_interface/ji_controller"
+    ntorque_controller: "franka_ros_interface/ntorque_controller"
+    joint_impedance_controller: "franka_ros_interface/joint_impedance_controller"
+    cartesian_impedance_controller: "franka_ros_interface/cartesian_impedance_controller"
     trajectory_controller: "position_joint_trajectory_controller"
     default_controlller: "position_joint_trajectory_controller"

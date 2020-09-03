@@ -48,8 +48,15 @@
       REWRITE - Controller for commanding forces to be exerted by the Franka Arm
     </description>
   </class>
-  <class name="franka_ros_controllers/JIController"
-         type="franka_ros_controllers::JIController"
+  <class name="franka_ros_controllers/JointImpedanceController"
+         type="franka_ros_controllers::JointImpedanceController"
+         base_class_type="controller_interface::ControllerBase">
+    <description>
+      REWRITE - Controller for commanding forces to be exerted by the Franka Arm
+    </description>
+  </class>
+  <class name="franka_ros_controllers/NTorqueController"
+         type="franka_ros_controllers::NTorqueController"
          base_class_type="controller_interface::ControllerBase">
     <description>
       REWRITE - Controller for commanding forces to be exerted by the Franka Arm
