@@ -692,7 +692,7 @@ _ns
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
 
-    def execute_position_path(self, position_path, timeout=10.0,
+    def execute_position_path(self, position_path, timeout=15.0,
                                 threshold=0.00085, test=None):
         """
         (Blocking) Commands the limb to the provided positions.
@@ -709,6 +709,11 @@ _ns
         @param test: optional function returning True if motion must be aborted
         """
 
+        current_q = self.joint_angles()
+        diff_from_start = sum([abs(a-current_q[j]) for j, a in position_path[0].items()])
+        if diff_from_start > 0.1:
+            raise IOError("Robot not at start of trajectory")
+
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.joint_trajectory_controller else False
 
         if switch_ctrl:
@@ -719,7 +724,9 @@ _ns
         traj_client.clear()
 
         time_so_far = 0
-        for q in position_path: 
+        # Start at the second waypoint because robot is already at first waypoint
+        for i in xrange(1, len(position_path)): 
+            q = position_path[i]
             dur = []
             for j in range(len(self._joint_names)):
                 dur.append(max(abs(q[self._joint_names[j]] - self._joint_angle[self._joint_names[j]]) / self._joint_limits.velocity[j], min_traj_dur))
@@ -940,11 +947,17 @@ _ns
 
     def execute_cart_impedance_traj(self, poses, stiffness=None, timing=None):
         if timing is None:
-            timing = 0.5
+            timing = [0.5]*len(poses)
+        elif isinstance(timing, int) or isinstance(timing, float):
+            timing = [timing]*len(poses)
+        elif isinstance(timing, list) and len(timing) != len(poses):
+            raise IOError("Timing is not of correct length")
+        else:
+            raise IOError("Type {} is allowed for timing".format(type(timing)))
 
         for i in xrange(len(poses)):
             self.set_cart_impedance_pose(poses[i], stiffness)
-            rospy.sleep(timing)
+            rospy.sleep(timing[i])
 
     def exert_force(self, target_wrench):
         switch_ctrl = True if self._ctrl_manager.current_controller != self._ctrl_manager.force_controller else False
