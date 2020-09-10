@@ -720,6 +720,33 @@ class ArmInterface(object):
 
         rospy.loginfo("ArmInterface: Trajectory controlling complete")
 
+    def pause_controllers_and_do(self, func, *args, **kwargs):
+        """
+        Temporarily stops all active controllers and calls the provided function
+        before restarting the previously active controllers.
+
+        :param func: the function to be called
+        :type func: callable
+        """
+        assert callable(func), "ArmInterface: Invalid argument provided to ArmInterface->pause_controllers_and_do. Argument 1 should be callable."
+        active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
+
+        rospy.loginfo("ArmInterface: Stopping motion controllers temporarily...")
+        for ctrlr in active_controllers:
+            self._ctrl_manager.stop_controller(ctrlr.name)
+        rospy.sleep(1.)
+
+        retval = func(*args, **kwargs)
+
+        rospy.sleep(1.)
+        rospy.loginfo("ArmInterface: Restarting previously active motion controllers.")
+        for ctrlr in active_controllers:
+            self._ctrl_manager.start_controller(ctrlr.name)
+        rospy.sleep(1.)
+        rospy.loginfo("ArmInterface: Controllers restarted.")
+
+        return retval
+
 
     def reset_EE_frame(self):
         """
@@ -737,22 +764,7 @@ class ArmInterface(object):
                 rospy.loginfo("ArmInterface: EE Frame already reset")
                 return
 
-            active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
-
-            rospy.loginfo("ArmInterface: Stopping motion controllers for resetting EE frame")
-            for ctrlr in active_controllers:
-                self._ctrl_manager.stop_controller(ctrlr.name)
-            rospy.sleep(1.)
-
-            retval = self._frames_interface.reset_EE_frame()
-
-            rospy.sleep(1.)
-            rospy.loginfo("ArmInterface: Restarting previously active motion controllers.")
-            for ctrlr in active_controllers:
-                self._ctrl_manager.start_controller(ctrlr.name)
-            rospy.sleep(1.)
-
-            return retval
+            return self.pause_controllers_and_do(self._frames_interface.reset_EE_frame)
 
         else:
             rospy.logwarn("ArmInterface: Frames changing not available in simulated environment")
@@ -772,24 +784,11 @@ class ArmInterface(object):
         """
         if self._frames_interface:
 
-            frame = self._frames_interface._assert_frame_validity(frame)
+            if self._frames_interface.frames_are_same(self._frames_interface.get_EE_frame(as_mat=True), frame):
+                rospy.loginfo("ArmInterface: EE Frame already at the target frame.")
+                return True
 
-            active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
-            rospy.sleep(1.)
-            rospy.loginfo("ArmInterface: Stopping motion controllers for changing EE frame")
-            for ctrlr in active_controllers:
-                self._ctrl_manager.stop_controller(ctrlr.name)
-            rospy.sleep(1.)
-
-            retval = self._frames_interface.set_EE_frame(frame)
-
-            rospy.sleep(1.)
-            rospy.loginfo("ArmInterface: Restarting previously active motion controllers.")
-            for ctrlr in active_controllers:
-                self._ctrl_manager.start_controller(ctrlr.name)
-            rospy.sleep(1.)
-
-            return retval
+            return self.pause_controllers_and_do(self._frames_interface.set_EE_frame,frame)
 
         else:
             rospy.logwarn("ArmInterface: Frames changing not available in simulated environment")
@@ -807,23 +806,9 @@ class ArmInterface(object):
         if self._frames_interface:
             retval = True
             if not self._frames_interface.EE_frame_already_set(self._frames_interface.get_link_tf(frame_name)):
-                active_controllers = self._ctrl_manager.list_active_controllers(only_motion_controllers = True)
 
-                rospy.loginfo("ArmInterface: Stopping motion controllers for changing EE frame")
-                rospy.sleep(1.)
-                for ctrlr in active_controllers:
-                    self._ctrl_manager.stop_controller(ctrlr.name)
-                rospy.sleep(1.)
+                return self.pause_controllers_and_do(self._frames_interface.set_EE_frame_to_link,frame_name = frame_name, timeout = timeout)
 
-                retval = self._frames_interface.set_EE_frame_to_link(frame_name = frame_name, timeout = timeout)
-
-                rospy.sleep(1.)
-                rospy.loginfo("ArmInterface: Restarting previously active motion controllers.")
-                for ctrlr in active_controllers:
-                    self._ctrl_manager.start_controller(ctrlr.name)
-                rospy.sleep(1.)
-
-            return retval
         else:
             rospy.logwarn("ArmInterface: Frames changing not available in simulated environment")
 

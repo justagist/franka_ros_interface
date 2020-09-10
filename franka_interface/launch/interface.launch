@@ -54,8 +54,7 @@
                                            franka_ros_interface/effort_joint_torque_controller
                                            franka_ros_interface/velocity_joint_velocity_controller
                                            franka_ros_interface/position_joint_position_controller"/>
-  </group>    
-
+  </group>
 
   <node pkg="tf" type="static_transform_publisher" name="base_to_link0" args="0 0 0 0 0 0 1 base panda_link0 100" />                                                                      
   <node pkg="tf" type="static_transform_publisher" name="world_to_base" args="0 0 0 0 0 0 1 world base 100" />                                                                      
@@ -69,7 +68,7 @@
 
   <group if="$(eval arg('load_demo_planning_scene') == true)">
     <node name="demo_scene_loader" pkg="franka_moveit" type="create_demo_planning_scene.py" respawn="false" output="screen" />
-  </group>   
+  </group>
 
 </launch>
 

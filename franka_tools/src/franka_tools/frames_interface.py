@@ -33,7 +33,8 @@ import franka_dataflow
 
 from collections import namedtuple
 _FRAME_NAMES = namedtuple('Constants', ['EE_FRAME', 'K_FRAME'])
-DEFAULT_TRANSFORMATIONS = _FRAME_NAMES( [0.707099974155426, -0.707099974155426, 0.0, 0.0, 0.707099974155426, 0.707099974155426, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0], # EE_FRAME  
+DEFAULT_TRANSFORMATIONS = _FRAME_NAMES( [0.707099974155426, -0.707099974155426, 0.0, 0.0, 0.707099974155426, 
+                        0.707099974155426, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0], # EE_FRAME  
     [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.10339999943971634, 1.0]  # K_FRAME
     ) # default when the franka_ros control is launched
 

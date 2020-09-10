@@ -64,7 +64,14 @@ The 'driver' node can be started by running (can only be used if run in 'master'
     roslaunch franka_interface interface.launch # (use argument load_gripper:=false for starting without gripper)
 ```
 
-This exposes a variety of ROS topics and services for communicating with and controlling the robot. This can be accessed and modified using ROS topics and services (see below too find out about some of the available topics and services), or using the provided [Python API][fri-doc].
+Available keyword arguments for launch file:
+
+- `load_gripper`: start driver node with the Franka gripper (default: `true`).
+- `start_controllers`: load the available controllers to the controller manager (default: `true`).
+- `start_moveit`: start moveit server along with the driver node (default: `true`).
+- `load_demo_planning_scene`: loads a default planning scene for MoveIt planning with simple objects for collision avoidance (default: `true`). See [create_demo_planning_scene.py](franka_moveit/scripts/create_demo_planning_scene.py).
+
+This starts the robot controllers and drivers to expose a variety of ROS topics and services for communicating with and controlling the robot. The robot's measurements and controllers can be accessed using ROS topics and services (see below too find out about some of the available topics and services), or using the provided [Python API][fri-doc] (also see [*PandaRobot*](https://github.com/justagist/panda_robot)).
 
 ### The *franka.sh* environments
 
