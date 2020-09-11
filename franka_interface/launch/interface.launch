@@ -16,10 +16,10 @@
     <arg name="robot_ip" value="$(env FRANKA_ROBOT_IP)" />
   </include>
 
-  <!-- Start the franka_control_node for advertising controller services and starting custom controller manager-->
+  <!-- Start the custom_franka_control_node for advertising controller services and starting custom controller manager-->
   <rosparam command="load" file="$(find franka_interface)/config/robot_config.yaml"/>
-  <node name="franka_control" pkg="franka_interface" type="franka_control_node" output="screen" required="true" >
-    <!-- <rosparam command="load" file="$(find franka_control)/config/franka_control_node.yaml" /> -->
+  <node name="franka_control" pkg="franka_interface" type="custom_franka_control_node" output="screen" required="true" >
+    <!-- <rosparam command="load" file="$(find franka_control)/config/custom_franka_control_node.yaml" /> -->
     <param name="robot_ip" value="$(env FRANKA_ROBOT_IP)" />
     <param name="publish_frequency" value="$(arg rate)"/>
   </node>

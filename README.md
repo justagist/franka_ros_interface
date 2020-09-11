@@ -1,6 +1,6 @@
 # Franka ROS Interface [![Release](https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases)](https://travis-ci.org/justagist/panda_simulator) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3747459.svg)](https://doi.org/10.5281/zenodo.3747459)
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface) [![franka_ros_version](https://img.shields.io/badge/franka_ros-v0.6.0%20release-yellow.svg)](https://github.com/frankaemika/franka_ros/tree/49e5ac1055e332581b4520a1bd9ac8aaf4580fb1)
 
 A ROS interface library for the Franka Emika Panda robot, extending the [franka-ros][franka-ros] to expose more information about the robot, and
 providing low-level control of the robot using ROS and [Python API][fri-doc].
@@ -33,12 +33,12 @@ Documentation Page: https://justagist.github.io/franka_ros_interface
 
 ROS Kinetic / Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface)
 
-**NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic. Version for ROS Kinetic is not maintained anymore. The latest updates to the package may not be compatible with Kinetic.*
+**NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic with franka_ros version 0.6.0 (release). Version for ROS Kinetic is not maintained anymore. The latest updates to the package may not be compatible with Kinetic.*
 
 ### Dependencies
 
-- *libfranka* (`sudo apt install ros-$ROS_DISTRO-libfranka` or [install from source][libfranka-dock]).
-- *franka-ros* (`sudo apt install ros-$ROS_DISTRO-franka-ros` or [install from source][libfranka-dock])
+- *libfranka* (`sudo apt install ros-$ROS_DISTRO-libfranka` or [install from source][libfranka-doc]). *Make sure to use the release version if building from source.*
+- *franka-ros* (`sudo apt install ros-$ROS_DISTRO-franka-ros` or [install from source][libfranka-doc]). *Make sure to use the [release version](https://github.com/frankaemika/franka_ros/commit/49e5ac1055e332581b4520a1bd9ac8aaf4580fb1) if building from source. (`git checkout 49e5ac1` from the cloned franka_ros github repo.)*
 - (optional, but recommended) [*franka_panda_description*][fpd-repo] (See [Related Packages](#related-packages) section for information about package). **NOTE**: If you do not want to use the *franka_panda_description* package, make sure you modify the `franka_interface/launch/interface.launch` file and replace all occurences of `franka_panda_description` with
    `franka_description` (two occurences).
 
