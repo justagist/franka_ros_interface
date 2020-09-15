@@ -44,9 +44,12 @@
 #include <ros/time.h>
 #include <mutex>
 
+#include <franka_hw/franka_model_interface.h>
+
 namespace franka_ros_controllers {
 
 class EffortJointTorqueController : public controller_interface::MultiInterfaceController<
+                                            franka_hw::FrankaModelInterface,
                                             hardware_interface::EffortJointInterface> {
  public:
   bool init(hardware_interface::RobotHW* robot_hw, ros::NodeHandle& node_handle) override;
@@ -59,9 +62,11 @@ class EffortJointTorqueController : public controller_interface::MultiInterfaceC
       const std::array<double, 7>& tau_d_calculated,
       const std::array<double, 7>& prev_tau);  // NOLINT (readability-identifier-naming)
 
+  std::unique_ptr<franka_hw::FrankaModelHandle> model_handle_;
   std::vector<hardware_interface::JointHandle> joint_handles_;
 
   static constexpr double kDeltaTauMax{1.0};
+  double coriolis_factor_{1.0};
 
   std::array<double, 7> jnt_cmd_{};
   std::array<double, 7> prev_jnt_cmd_{};

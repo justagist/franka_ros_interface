@@ -48,6 +48,20 @@ bool EffortJointTorqueController::init(hardware_interface::RobotHW* robot_hw,
     return false;
   }
 
+  bool enable_coriolis;
+  if (!node_handle.getParam("/franka_ros_interface/effort_joint_torque_controller/compensate_coriolis", enable_coriolis)) {
+    ROS_ERROR("EffortJointTorqueController: Could not read parameter compensate_coriolis");
+    return false;
+  }
+
+  if (enable_coriolis==false){
+    coriolis_factor_ = 0.0;
+    ROS_INFO_STREAM("EffortJointTorqueController: Coriolis compensation disabled!");
+  }
+  else{
+    ROS_INFO_STREAM("EffortJointTorqueController: Coriolis compensation enabled!");
+  }
+
   std::map<std::string, double> torque_limit_map;
   if (!node_handle.getParam("/robot_config/joint_config/joint_effort_limit", torque_limit_map))
   {
@@ -74,6 +88,21 @@ bool EffortJointTorqueController::init(hardware_interface::RobotHW* robot_hw,
   }
   trigger_publish_ = franka_hw::TriggerRate(controller_state_publish_rate);
 
+  auto* model_interface = robot_hw->get<franka_hw::FrankaModelInterface>();
+  if (model_interface == nullptr) {
+    ROS_ERROR_STREAM(
+        "EffortJointTorqueController: Error getting model interface from hardware");
+    return false;
+  }
+  try {
+    model_handle_ = std::make_unique<franka_hw::FrankaModelHandle>(
+        model_interface->getHandle(arm_id + "_model"));
+  } catch (hardware_interface::HardwareInterfaceException& ex) {
+    ROS_ERROR_STREAM(
+        "EffortJointTorqueController: Exception getting model handle from interface: "
+        << ex.what());
+    return false;
+  }
 
   auto* effort_joint_interface = robot_hw->get<hardware_interface::EffortJointInterface>();
   if (effort_joint_interface == nullptr) {
@@ -117,16 +146,21 @@ void EffortJointTorqueController::starting(const ros::Time& /*time*/) {
 void EffortJointTorqueController::update(const ros::Time& time,
                                              const ros::Duration& period) {
   
+  std::array<double, 7> coriolis = model_handle_->getCoriolis();
 
+  std::array<double, 7> compensated_cmd{};
+  for (size_t i = 0; i < 7; ++i) {
+    compensated_cmd[i] = coriolis_factor_ * coriolis[i] + jnt_cmd_[i];
+  }
   // Maximum torque difference with a sampling rate of 1 kHz. The maximum torque rate is
   // 1000 * (1 / sampling_time).
-  std::array<double, 7> tau_d_saturated = saturateTorqueRate(jnt_cmd_, prev_jnt_cmd_);
+  std::array<double, 7> tau_d_saturated = saturateTorqueRate(compensated_cmd, prev_jnt_cmd_);
 
   if (trigger_publish_() && publisher_controller_states_.trylock()) {
       for (size_t i = 0; i < 7; ++i){
 
         publisher_controller_states_.msg_.joint_controller_states[i].set_point = jnt_cmd_[i];
-        publisher_controller_states_.msg_.joint_controller_states[i].process_value = tau_d_saturated[i];
+        publisher_controller_states_.msg_.joint_controller_states[i].process_value = compensated_cmd[i];
         publisher_controller_states_.msg_.joint_controller_states[i].time_step = period.toSec();
         publisher_controller_states_.msg_.joint_controller_states[i].command = tau_d_saturated[i];
 

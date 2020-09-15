@@ -83,6 +83,7 @@ effort_joint_position_controller:
 effort_joint_torque_controller:
     type: franka_ros_controllers/EffortJointTorqueController
     arm_id: panda
+    compensate_coriolis: false
     joint_names:
         - panda_joint1
         - panda_joint2
