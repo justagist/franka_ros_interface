@@ -513,10 +513,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dq_d</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">dq_d</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_gravity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">gravity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coriolis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">coriolis</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">message_converter</span><span class="o">.</span><span class="n">convert_ros_message_to_dictionary</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">current_errors</span><span class="p">)</span>
 
+<div class="viewcode-block" id="ArmInterface.coriolis_comp"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.coriolis_comp">[docs]</a>    <span class="k">def</span> <span class="nf">coriolis_comp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return coriolis compensation torques. Useful for compensating coriolis when</span>
+<span class="sd">        performing direct torque control of the robot.</span>
 
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        :return: 7D joint torques compensating for coriolis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coriolis</span></div>
+        
 <div class="viewcode-block" id="ArmInterface.gravity_comp"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.gravity_comp">[docs]</a>    <span class="k">def</span> <span class="nf">gravity_comp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return gravity compensation torques.</span>
@@ -931,6 +941,33 @@
 
         <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Trajectory controlling complete&quot;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="ArmInterface.pause_controllers_and_do"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.pause_controllers_and_do">[docs]</a>    <span class="k">def</span> <span class="nf">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Temporarily stops all active controllers and calls the provided function</span>
+<span class="sd">        before restarting the previously active controllers.</span>
+
+<span class="sd">        :param func: the function to be called</span>
+<span class="sd">        :type func: callable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span> <span class="s2">&quot;ArmInterface: Invalid argument provided to ArmInterface-&gt;pause_controllers_and_do. Argument 1 should be callable.&quot;</span>
+        <span class="n">active_controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Stopping motion controllers temporarily...&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+
+        <span class="n">retval</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Restarting previously active motion controllers.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">start_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Controllers restarted.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">retval</span></div>
+
 
 <div class="viewcode-block" id="ArmInterface.reset_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.reset_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">reset_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -948,22 +985,7 @@
                 <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: EE Frame already reset&quot;</span><span class="p">)</span>
                 <span class="k">return</span>
 
-            <span class="n">active_controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-
-            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Stopping motion controllers for resetting EE frame&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-
-            <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">reset_EE_frame</span><span class="p">()</span>
-
-            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Restarting previously active motion controllers.&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">start_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">retval</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">reset_EE_frame</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Frames changing not available in simulated environment&quot;</span><span class="p">)</span>
@@ -983,24 +1005,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
 
-            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">_assert_frame_validity</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">frames_are_same</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">get_EE_frame</span><span class="p">(</span><span class="n">as_mat</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">frame</span><span class="p">):</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: EE Frame already at the target frame.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
 
-            <span class="n">active_controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Stopping motion controllers for changing EE frame&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-
-            <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
-
-            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Restarting previously active motion controllers.&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">start_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">retval</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_frame</span><span class="p">,</span><span class="n">frame</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Frames changing not available in simulated environment&quot;</span><span class="p">)</span></div>
@@ -1018,23 +1027,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
             <span class="n">retval</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">EE_frame_already_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">get_link_tf</span><span class="p">(</span><span class="n">frame_name</span><span class="p">)):</span>
-                <span class="n">active_controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 
-                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Stopping motion controllers for changing EE frame&quot;</span><span class="p">)</span>
-                <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_frame_to_link</span><span class="p">,</span><span class="n">frame_name</span> <span class="o">=</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)</span>
 
-                <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_frame_to_link</span><span class="p">(</span><span class="n">frame_name</span> <span class="o">=</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)</span>
-
-                <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Restarting previously active motion controllers.&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">start_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">retval</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Frames changing not available in simulated environment&quot;</span><span class="p">)</span></div>
 
