@@ -302,10 +302,20 @@ class ArmInterface(object):
         self.dq_d = msg.dq_d
 
         self._gravity = np.asarray(msg.gravity)
+        self._coriolis = np.asarray(msg.coriolis)
 
         self._errors = message_converter.convert_ros_message_to_dictionary(msg.current_errors)
 
+    def coriolis_comp(self):
+        """
+        Return coriolis compensation torques. Useful for compensating coriolis when
+        performing direct torque control of the robot.
 
+        :rtype: np.ndarray
+        :return: 7D joint torques compensating for coriolis.
+        """
+        return self._coriolis
+        
     def gravity_comp(self):
         """
         Return gravity compensation torques.
