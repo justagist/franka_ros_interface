@@ -352,10 +352,18 @@ performing direct torque control of the robot.</p>
 <dl class="method">
 <dt id="franka_interface.ArmInterface.exit_control_mode">
 <code class="descname">exit_control_mode</code><span class="sig-paren">(</span><em>timeout=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.exit_control_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.exit_control_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clean exit from advanced control modes (joint torque or velocity).</p>
-<p>Resets control to joint position mode with current positions.</p>
-<p>&#64;type timeout: float
-&#64;param timeout: control timeout in seconds [0.2]</p>
+<dd><p>Clean exit from advanced control modes (joint torque or velocity).
+Resets control to joint position mode with current positions if the 
+advanced control commands are not send within the specified timeout
+interval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – control timeout in seconds [default: 0.2]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

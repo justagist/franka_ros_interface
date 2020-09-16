@@ -714,11 +714,12 @@
 <div class="viewcode-block" id="ArmInterface.exit_control_mode"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.exit_control_mode">[docs]</a>    <span class="k">def</span> <span class="nf">exit_control_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clean exit from advanced control modes (joint torque or velocity).</span>
+<span class="sd">        Resets control to joint position mode with current positions if the </span>
+<span class="sd">        advanced control commands are not send within the specified timeout</span>
+<span class="sd">        interval.</span>
 
-<span class="sd">        Resets control to joint position mode with current positions.</span>
-
-<span class="sd">        @type timeout: float</span>
-<span class="sd">        @param timeout: control timeout in seconds [0.2]</span>
+<span class="sd">        :type timeout: float</span>
+<span class="sd">        :param timeout: control timeout in seconds [default: 0.2]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_command_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joint_angles</span><span class="p">())</span></div>
