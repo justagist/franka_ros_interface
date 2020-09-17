@@ -503,11 +503,12 @@ class ArmInterface(object):
     def exit_control_mode(self, timeout=0.2):
         """
         Clean exit from advanced control modes (joint torque or velocity).
+        Resets control to joint position mode with current positions if the 
+        advanced control commands are not send within the specified timeout
+        interval.
 
-        Resets control to joint position mode with current positions.
-
-        @type timeout: float
-        @param timeout: control timeout in seconds [0.2]
+        :type timeout: float
+        :param timeout: control timeout in seconds [default: 0.2]
         """
         self.set_command_timeout(timeout)
         self.set_joint_positions(self.joint_angles())
