@@ -92,4 +92,5 @@ controllers_config:
     impedance_controller: "franka_ros_interface/effort_joint_impedance_controller"
     velocity_controller: "franka_ros_interface/velocity_joint_velocity_controller"
     trajectory_controller: "position_joint_trajectory_controller"
-    default_controller: "position_joint_trajectory_controller" 
+    default_controller: "position_joint_trajectory_controller" # for safety, always set a position controller as default
+    command_timeout: 0.2 # timeout to wait for consecutive torque control commands (or velocity) when using torque (or velocity) control. If timeout is violated, the controller interface will automatically switch to default controller for safety

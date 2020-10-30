@@ -64,11 +64,11 @@
       <arg name="load_gripper" value="$(arg load_gripper)" />
       <arg name="info" value="true" />
     </include>
+    <group if="$(eval arg('load_demo_planning_scene') == true)">
+      <node name="demo_scene_loader" pkg="franka_moveit" type="create_demo_planning_scene.py" respawn="false" output="screen" />
+    </group>
   </group>   
 
-  <group if="$(eval arg('load_demo_planning_scene') == true)">
-    <node name="demo_scene_loader" pkg="franka_moveit" type="create_demo_planning_scene.py" respawn="false" output="screen" />
-  </group>
 
 </launch>
 

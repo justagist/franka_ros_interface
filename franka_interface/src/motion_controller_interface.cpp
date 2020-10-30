@@ -90,7 +90,7 @@ void MotionControllerInterface::init(ros::NodeHandle& nh,
   joint_command_timeout_sub_ = nh.subscribe("/franka_ros_interface/motion_controller/arm/joint_command_timeout", 1,
                        &MotionControllerInterface::jointCommandTimeoutCallback, this);
   double command_timeout_default;
-  nh.param<double>("command_timeout", command_timeout_default, 0.2);
+  nh.param<double>("/controllers_config/command_timeout", command_timeout_default, 0.2);
   auto p_cmd_timeout_length = std::make_shared<ros::Duration>(std::min(1.0,
                                 std::max(0.0, command_timeout_default)));
   box_timeout_length_.set(p_cmd_timeout_length);
