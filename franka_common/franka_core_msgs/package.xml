@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>franka_core_msgs</name>
-  <version>0.6.0</version>
+  <version>0.7.1</version>
   <description>
     Messages and Services required for communication with the Franka robot when using 
     franka_ros_interface and panda_simulator

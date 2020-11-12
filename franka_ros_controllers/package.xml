@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>franka_ros_controllers</name>
-  <version>0.6.0</version>
+  <version>0.7.1</version>
   <description>test control</description>
   <maintainer email="sxs1412@bham.ac.uk">Saif Sidhik</maintainer>
   <license>Apache 2.0</license>

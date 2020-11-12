@@ -101,7 +101,6 @@ install:
 before_script:
   # source dependencies: install using wstool.
   - cd ~/catkin_ws/src
-  - git clone https://github.com/frankaemika/franka_ros && cd franka_ros && git checkout 49e5ac1
   - wstool init
   - if [[ -f $ROSINSTALL_FILE ]] ; then wstool merge $ROSINSTALL_FILE ; fi
   - wstool up
