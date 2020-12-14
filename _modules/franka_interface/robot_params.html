@@ -18,7 +18,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>franka_interface.robot_params &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
+  <title>franka_interface.robot_params &mdash; Franka ROS Interface 0.7.1 documentation</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.0
+                0.7.1
               </div>
             
           
@@ -309,8 +309,11 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">robot_ip</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/franka_control/robot_ip&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: robot_ip cannot detect robot ip.&quot;</span>
-                         <span class="s2">&quot; under param /robot_ip&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">robot_ip</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_config/robot_ip&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;RobotParam: robot_ip cannot detect robot ip.&quot;</span>
+                             <span class="s2">&quot; under param /robot_ip&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
             <span class="n">_log_networking_error</span><span class="p">()</span>
 

@@ -18,7 +18,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>2. Python API Documentation &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
+  <title>2. Python API Documentation &mdash; Franka ROS Interface 0.7.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.0.0
+                0.7.1
               </div>
             
           
@@ -213,6 +213,7 @@
             
   <div class="section" id="python-api-documentation">
 <h1>2. Python API Documentation<a class="headerlink" href="#python-api-documentation" title="Permalink to this headline">¶</a></h1>
+<p>A more unified interface class combining the functionalities of all separate classes of Franka ROS Interface is available at <a class="reference external" href="https://justagist.github.io/panda_robot/">Panda Robot</a>.</p>
 <p><a class="reference external" href="https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=justagist/franka_ros_interface&amp;amp;utm_campaign=Badge_Grade"><img alt="Code Quality" src="https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e" /></a></p>
 <div class="section" id="module-franka_interface">
 <span id="franka-interface"></span><h2>2.1. franka_interface<a class="headerlink" href="#module-franka_interface" title="Permalink to this headline">¶</a></h2>
@@ -224,6 +225,7 @@
 <li>Joint positions, velocities, and effort can be directly controlled and monitored using available methods</li>
 <li>Smooth interpolation of joint positions possible</li>
 <li>End-effector and Stiffness frames can be directly set (uses FrankaFramesInterface from <em>franka_ros_interface/franka_tools</em>)</li>
+<li>All functionalities of ArmInterface can also be accessed using the more unified <a class="reference external" href="https://justgist.github.io/panda_robot/DOC.html#pandaarm">PandaArm</a> class defined in the <a class="reference external" href="https://justagist.github.io/panda_robot/">Panda Robot</a> package.</li>
 </ul>
 <dl class="class">
 <dt id="franka_interface.ArmInterface">
@@ -275,15 +277,17 @@ performing direct torque control of the robot.</p>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.endpoint_effort">
-<code class="descname">endpoint_effort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.endpoint_effort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.endpoint_effort" title="Permalink to this definition">¶</a></dt>
+<code class="descname">endpoint_effort</code><span class="sig-paren">(</span><em>in_base_frame=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.endpoint_effort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.endpoint_effort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Cartesian endpoint wrench {force, torque}.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a>({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>in_base_frame</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – if True, returns end-effector effort with respect to base frame, else in stiffness frame [default: True]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">force and torque at endpoint as named tuples in a dict<ul class="simple">
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a>({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">force and torque at endpoint as named tuples in a dict in the base frame of the robot or in the stiffness frame (wrist)<ul class="simple">
 <li>’force’: Cartesian force on x,y,z axes in np.ndarray format</li>
 <li>’torque’: Torque around x,y,z axes in np.ndarray format</li>
 </ul>
@@ -2019,6 +2023,23 @@ JointCommand timing, default to Asynchronous Publishing (False).</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="franka_tools.FrankaControllerManagerInterface.default_controller">
+<code class="descname">default_controller</code><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.default_controller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the name of the default controller for Franka ROS Interface.
+(specified in robot_config.yaml). Should ideally default to the same as
+<a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface.joint_trajectory_controller" title="franka_tools.FrankaControllerManagerInterface.joint_trajectory_controller"><code class="xref py py-meth docutils literal notranslate"><span class="pre">joint_trajectory_controller()</span></code></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="franka_tools.FrankaControllerManagerInterface.effort_joint_position_controller">
 <code class="descname">effort_joint_position_controller</code><a class="headerlink" href="#franka_tools.FrankaControllerManagerInterface.effort_joint_position_controller" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -2711,7 +2732,7 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.reset_K_frame">
 <code class="descname">reset_K_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.reset_K_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.reset_K_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset K frame to default. (defined by <a href="#id3"><span class="problematic" id="id4">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
+<dd><p>Reset K frame to default. (defined by <a href="#id4"><span class="problematic" id="id5">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

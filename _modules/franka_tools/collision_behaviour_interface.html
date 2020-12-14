@@ -18,7 +18,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>franka_tools.collision_behaviour_interface &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
+  <title>franka_tools.collision_behaviour_interface &mdash; Franka ROS Interface 0.7.1 documentation</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.0
+                0.7.1
               </div>
             
           
@@ -235,7 +235,7 @@
 <span class="c1"># limitations under the License.</span>
 <span class="c1"># **************************************************************************/</span>
 <span class="kn">import</span> <span class="nn">rospy</span>
-<span class="kn">from</span> <span class="nn">franka_control.srv</span> <span class="kn">import</span> <span class="n">SetForceTorqueCollisionBehavior</span><span class="p">,</span> <span class="n">SetFullCollisionBehavior</span>
+<span class="kn">from</span> <span class="nn">franka_msgs.srv</span> <span class="kn">import</span> <span class="n">SetForceTorqueCollisionBehavior</span><span class="p">,</span> <span class="n">SetFullCollisionBehavior</span>
 
 <span class="n">DEFAULT_VALUES</span> <span class="o">=</span>  <span class="p">{</span>
             <span class="s1">&#39;torque_acc_lower&#39;</span>  <span class="p">:</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">,</span> <span class="mf">14.0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">],</span>

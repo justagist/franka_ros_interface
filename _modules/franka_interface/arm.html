@@ -18,7 +18,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>franka_interface.arm &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
+  <title>franka_interface.arm &mdash; Franka ROS Interface 0.7.1 documentation</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.0
+                0.7.1
               </div>
             
           
@@ -699,17 +699,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_velocity</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.endpoint_effort"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.endpoint_effort">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_effort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.endpoint_effort"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.endpoint_effort">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_effort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_base_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint wrench {force, torque}.</span>
 
+<span class="sd">        :param in_base_frame: if True, returns end-effector effort with respect to base frame, else in stiffness frame [default: True]</span>
+<span class="sd">        :type in_base_frame: bool</span>
 <span class="sd">        :rtype: dict({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})</span>
-<span class="sd">        :return: force and torque at endpoint as named tuples in a dict</span>
+<span class="sd">        :return: force and torque at endpoint as named tuples in a dict in the base frame of the robot or in the stiffness frame (wrist)</span>
 
 <span class="sd">          - &#39;force&#39;: Cartesian force on x,y,z axes in np.ndarray format</span>
 <span class="sd">          - &#39;torque&#39;: Torque around x,y,z axes in np.ndarray format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_effort</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_effort</span><span class="p">)</span> <span class="k">if</span> <span class="n">in_base_frame</span> <span class="k">else</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stiffness_frame_effort</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArmInterface.exit_control_mode"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.exit_control_mode">[docs]</a>    <span class="k">def</span> <span class="nf">exit_control_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
