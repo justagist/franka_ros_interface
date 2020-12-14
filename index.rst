@@ -1,15 +1,14 @@
-.. franka_ros_interface documentation master file, created by
-   sphinx-quickstart on Fri Mar 13 18:33:23 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Franka ROS Interface
 ====================
 
 |release| |doi|
 
+
 A ROS interface library for the Franka Emika Panda robot, extending the `franka_ros`_ to expose more information about the robot, and
 providing low-level control of the robot using ROS and `Python API <Python API Documentation_>`_.
+
+.. image:: https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_robot_demo.gif
+   :target: https://youtu.be/4bEVysUIvOY
 
 Provides utilites for controlling and managing the Franka Emika Panda robot (real and
 `simulated <panda_simulator_>`_). Contains exposed controllers for the robot (joint position,
@@ -19,6 +18,11 @@ MoveIt! and ROS Trajectory Action & ActionClient.
 This package also provides almost complete sim-to-real /
 real-to-sim transfer of code with the `panda_simulator`_
 package.
+
+A more unified ROS Python interface built over this package is available in the `panda_robot`_ package, which provides a more intuitive interface class that combines the different API classes in this package. Simple demo and `basic usage <https://justagist.github.io/panda_robot/#basic-usage>`_ are also shown.
+
+.. image:: https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_simulator.gif
+   :target: https://www.youtube.com/watch?v=NdSbXC0r7tU
 
 **Features**
 
@@ -36,10 +40,13 @@ package.
    (ROS and Python interface), providing almost complete sim-to-real
    transfer of code.
 
+.. image:: https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/ts_demo.gif
+   :target: https://youtu.be/a_HEmYzqEnk
+
 Go to `Project Source Code`_.
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :caption: Contents:
    :numbered:
 

@@ -1,6 +1,8 @@
 Python API Documentation
 ========================
 
+A more unified interface class combining the functionalities of all separate classes of Franka ROS Interface is available at `Panda Robot <https://justagist.github.io/panda_robot/>`_.
+
 |Code Quality|
 
 franka_interface
@@ -17,6 +19,7 @@ ArmInterface
 - Joint positions, velocities, and effort can be directly controlled and monitored using available methods
 - Smooth interpolation of joint positions possible
 - End-effector and Stiffness frames can be directly set (uses FrankaFramesInterface from *franka_ros_interface/franka_tools*)
+- All functionalities of ArmInterface can also be accessed using the more unified `PandaArm <https://justgist.github.io/panda_robot/DOC.html#pandaarm>`_ class defined in the `Panda Robot <https://justagist.github.io/panda_robot/>`_ package.
 
 .. autoclass:: ArmInterface
    :members: 

@@ -2,6 +2,8 @@
 Setup Instructions
 ==================
 
+**Note that version v0.7.1 requires franka_ros version v0.7.1. For the most updated instructions (including instructions for older versions of franka_ros), follow the README in the `source repository <Project Source Code_>`_**.
+
 Installation
 ------------
 

@@ -6,7 +6,7 @@
 sudo pip install sphinx
 
 ## ----- install sphinx-contrib googleanalytics
-hg clone https://bitbucket.org/birkenfeld/sphinx-contrib/ ../docs_build/sphinx-contrib
+git clone https://github.com/justagist/sphinx-contrib ../docs_build/sphinx-contrib
 cd ../docs_build/sphinx-contrib/googleanalytics/
 python setup.py build
 sudo python setup.py install
@@ -28,13 +28,13 @@ sudo apt install latexmk texlive-xetex xindy imagemagick
 ## To fix (exception: cannot import name ExtensionError) error, 
 ## uncomment and run the following
 
-# cd ../docs_build/sphinx-contrib/googleanalytics/
-# original="from sphinx.application import ExtensionError"
-# new="from sphinx.errors import ExtensionError"
-# sed -i -e "s/$original/$new/g" sphinxcontrib/googleanalytics.py
-# python setup.py build
-# sudo python setup.py install
-# cd ../../../docs_src/
+cd ../docs_build/sphinx-contrib/googleanalytics/
+original="from sphinx.application import ExtensionError"
+new="from sphinx.errors import ExtensionError"
+sed -i -e "s/$original/$new/g" sphinxcontrib/googleanalytics.py
+python setup.py build
+sudo python setup.py install
+cd ../../../docs_src/
 
 ## ----------------------------------------------------------------------
 
