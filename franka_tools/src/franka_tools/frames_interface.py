@@ -27,7 +27,7 @@
 import tf
 import numpy as np
 import quaternion
-from franka_control.srv import SetEEFrame, SetKFrame
+from franka_msgs.srv import SetEEFrame, SetKFrame
 import rospy
 import franka_dataflow
 

@@ -488,17 +488,19 @@ class ArmInterface(object):
         """
         return deepcopy(self._cartesian_velocity)
 
-    def endpoint_effort(self):
+    def endpoint_effort(self, in_base_frame=True):
         """
         Return Cartesian endpoint wrench {force, torque}.
 
+        :param in_base_frame: if True, returns end-effector effort with respect to base frame, else in stiffness frame [default: True]
+        :type in_base_frame: bool
         :rtype: dict({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})
-        :return: force and torque at endpoint as named tuples in a dict
+        :return: force and torque at endpoint as named tuples in a dict in the base frame of the robot or in the stiffness frame (wrist)
 
           - 'force': Cartesian force on x,y,z axes in np.ndarray format
           - 'torque': Torque around x,y,z axes in np.ndarray format
         """
-        return deepcopy(self._cartesian_effort)
+        return deepcopy(self._cartesian_effort) if in_base_frame else deepcopy(self._stiffness_frame_effort)
 
     def exit_control_mode(self, timeout=0.2):
         """

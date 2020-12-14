@@ -24,7 +24,7 @@
 # limitations under the License.
 # **************************************************************************/
 import rospy
-from franka_control.srv import SetForceTorqueCollisionBehavior, SetFullCollisionBehavior
+from franka_msgs.srv import SetForceTorqueCollisionBehavior, SetFullCollisionBehavior
 
 DEFAULT_VALUES =  {
             'torque_acc_lower'  : [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0],

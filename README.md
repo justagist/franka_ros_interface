@@ -1,16 +1,18 @@
-# Franka ROS Interface [![Release](https://img.shields.io/badge/release-v0.6.0-blue.svg)](https://github.com/justagist/franka_ros_interface/releases/tag/v0.6.0) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3747459.svg)](https://doi.org/10.5281/zenodo.3747459)
+# Franka ROS Interface [![Release](https://img.shields.io/badge/release-v0.7.1-blue.svg)](https://github.com/justagist/franka_ros_interface/releases/tag/v0.7.1) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3747412.svg)](https://doi.org/10.5281/zenodo.3747412)
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.7.1)](https://travis-ci.org/justagist/franka_ros_interface)
 
 A ROS interface library for the Franka Emika Panda robot, extending the [franka-ros][franka-ros] to expose more information about the robot, and
 providing low-level control of the robot using ROS and [Python API][fri-doc].
 
-**Requires franka_ros version 0.6.0.** [![franka_ros_version](https://img.shields.io/badge/franka_ros-v0.6.0%20release-yellow.svg)](https://github.com/frankaemika/franka_ros/tree/49e5ac1055e332581b4520a1bd9ac8aaf4580fb1) **A beta version of Franka ROS Interface that is compatible with the newer franka_ros v0.7.1 is currently in development (may be unstable), and can be found in the ['v0.7.1'](https://github.com/justagist/franka_ros_interface/tree/v0.7.1) branch.**
-
-Provides utilites for controlling and managing the Franka Emika Panda robot (real and [simulated][ps-repo]. Contains exposed controllers for the robot (joint position,
+Franka ROS Interface provides utilites for controlling and managing the Franka Emika Panda robot (real and [simulated][ps-repo]. Contains exposed controllers for the robot (joint position,
 velocity, torque), interfaces for the gripper, controller manager, coordinate frames interface, etc. Also provides utilities to control the robot using MoveIt! and ROS Trajectory Action & ActionClient. This package also provides almost complete sim-to-real / real-to-sim transfer of code with the [panda_simulator][ps-repo] package.
 
 Documentation Page: https://justagist.github.io/franka_ros_interface
+
+**This branch requires franka_ros release versions 0.7.0, 0.7.1.** [![franka_ros_version](https://img.shields.io/badge/franka_ros-v0.7.1%20release-yellow.svg)](https://github.com/frankaemika/franka_ros/tree/49e5ac1055e332581b4520a1bd9ac8aaf4580fb1)
+
+A more unified ROS Python interface built over this package is available at [PandaRobot](https://github.com/justagist/panda_robot), which provides a more intuitive interface class that combines the different API classes in this package. Simple demos are also available.
 
 ## Features
 
@@ -33,14 +35,14 @@ Documentation Page: https://justagist.github.io/franka_ros_interface
 
 ## Installation
 
-ROS Kinetic / Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface)
+ROS Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.7.1)](https://travis-ci.org/justagist/franka_ros_interface)
 
-**NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic with franka_ros version 0.6.0 (release). Version for ROS Kinetic is not maintained anymore. The latest updates to the package may not be compatible with Kinetic.*
+**NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic with franka_ros version 0.7.1 (release). Version for ROS Kinetic requires franka_ros v0.6.0; check the 'v0.6.0' branch of this repo. The latest updates to the package may not be compatible with Kinetic.*
 
 ### Dependencies
 
 - *libfranka* (`sudo apt install ros-$ROS_DISTRO-libfranka` or [install from source][libfranka-doc]). *Make sure to use the release version if building from source.*
-- *franka-ros* v0.6.0 ([install from source][libfranka-doc]). *Make sure to use the [release version](https://github.com/frankaemika/franka_ros/commit/49e5ac1055e332581b4520a1bd9ac8aaf4580fb1) if building from source. (`git checkout 49e5ac1` from the cloned franka_ros github repo.)*
+- *franka-ros* v0.7.1 (`sudo apt install ros-$ROS_DISTRO-franka-ros` or [install from source][libfranka-doc]). *Make sure to use the [release version](https://github.com/frankaemika/franka_ros/tree/902fdbba0f7c6036a84a688712a454b9e622863b) if building from source. (`git checkout 902fdbb` from the cloned franka_ros github repo.)*
 - (optional, but recommended) [*franka_panda_description*][fpd-repo] (See [Related Packages](#related-packages) section for information about package). **NOTE**: If you do not want to use the *franka_panda_description* package, make sure you modify the `franka_interface/launch/interface.launch` file and replace all occurences of `franka_panda_description` with
    `franka_description` (two occurences).
 
@@ -73,7 +75,10 @@ Available keyword arguments for launch file:
 - `start_moveit`: start moveit server along with the driver node (default: `true`).
 - `load_demo_planning_scene`: loads a default planning scene for MoveIt planning with simple objects for collision avoidance (default: `true`). See [create_demo_planning_scene.py](franka_moveit/scripts/create_demo_planning_scene.py).
 
-This starts the robot controllers and drivers to expose a variety of ROS topics and services for communicating with and controlling the robot. The robot's measurements and controllers can be accessed using ROS topics and services (see below too find out about some of the available topics and services), or using the provided [Python API][fri-doc] (also see [*PandaRobot*](https://github.com/justagist/panda_robot)).
+This starts the robot controllers and drivers to expose a variety of ROS topics and services for communicating with and controlling the robot. The robot's measurements and controllers can be accessed using ROS topics and services (see below to find out about some of the available topics and services), or using the provided [Python API][fri-doc] (also see [*PandaRobot*](https://github.com/justagist/panda_robot)).
+
+Basic usage of the API is shown in the [`test_robot.py` example file](franka_interface/tests/test_robot.py).
+See [documentation][fri-doc] for all available methods and functionalities. More usage examples can be found in the [PandaRobot](https://github.com/justagist/panda_robot).
 
 ### The *franka.sh* environments
 
@@ -81,10 +86,7 @@ Once the values are correctly modified in the `franka.sh` file, different enviro
 
 - For instance, running `./franka.sh master` would start an environment assuming that the computer is directly connected to the robot (requires Real-Time kernel set up as described in the [FCI documentation][libfranka-doc]).
 - On the other hand, `./franka.sh remote` would start an environment assuming that the robot is not connected directly to the computer, but to another computer in the network (whose IP must be specified in *franka.sh*). This way, if the 'master' is connected to the robot and running the driver node (see below), the 'remote' can control the robot (**no need for Real Time kernel!**) as long as they are in the same network.
-- Simulation environment can be started by running `./franka.sh sim` (only required when using [panda_simulator][ps-repo] package).
-
-Basic usage of the API is shown in the [`test_robot.py` example file](franka_interface/tests/test_robot.py).
-See [documentation][fri-doc] for all available methods and functionalities.
+- ~Simulation environment can be started by running `./franka.sh sim` (only required when using [panda_simulator][ps-repo] package).~
 
 #### Some useful ROS topics
 
@@ -111,6 +113,8 @@ Controller manager service can be used to switch between all available controlle
 
 Most of the above services and topics are wrapped using simple Python classes or utility functions, providing more control and simplicity. This includes direct control of the robot and gripper using the provided controllers. Refer README files in individual subpackages.
 
+[Documentation][fri-doc]
+
 ### Related Packages
 
 - [*panda_simulator*][ps-repo] : A Gazebo simulator for the Franka Emika Panda robot with ROS interface, providing exposed controllers and real-time robot state feedback similar to the real robot when using the *franka_ros_interface* package. Provides almost complete real-to-sim transfer of code.
@@ -130,4 +134,4 @@ Most of the above services and topics are wrapped using simple Python classes or
 
 Copyright (c) 2019-2020, Saif Sidhik
 
-If you use this software, please cite it using [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3747413.svg)](https://doi.org/10.5281/zenodo.3747413).
+If you use this software, please cite it using [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3747412.svg)](https://doi.org/10.5281/zenodo.3747412).
