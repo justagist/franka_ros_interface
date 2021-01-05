@@ -216,6 +216,7 @@
 <p><img alt="release" src="https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases:alt:GitHubrelease(latestbydateincludingpre-releases)" /> <a class="reference external" href="https://zenodo.org/badge/latestdoi/199485892"><img alt="doi" src="https://zenodo.org/badge/199485892.svg" /></a></p>
 <p>A ROS interface library for the Franka Emika Panda robot, extending the <a class="reference external" href="https://frankaemika.github.io/docs/franka_ros.html">franka_ros</a> to expose more information about the robot, and
 providing low-level control of the robot using ROS and <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>.</p>
+<p>Go to <a class="reference external" href="https://github.com/justagist/franka_ros_interface">Project Source Code</a>.</p>
 <a class="reference external image-reference" href="https://youtu.be/4bEVysUIvOY"><img alt="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_robot_demo.gif" src="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_robot_demo.gif" /></a>
 <p>Provides utilites for controlling and managing the Franka Emika Panda robot (real and
 <a class="reference external" href="https://github.com/justagist/panda_simulator">simulated</a>). Contains exposed controllers for the robot (joint position,
@@ -223,9 +224,9 @@ velocity, torque), interfaces for the gripper, controller manager,
 coordinate frames interface, etc. Also provides utilities to control the robot using
 MoveIt! and ROS Trajectory Action &amp; ActionClient.
 This package also provides almost complete sim-to-real /
-real-to-sim transfer of code with the <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a>
+real-to-sim transfer of code with the <a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a>
 package.</p>
-<p>A more unified ROS Python interface built over this package is available in the <a class="reference external" href="https://github.com/justagist/panda_robot">panda_robot</a> package, which provides a more intuitive interface class that combines the different API classes in this package. Simple demo and <a class="reference external" href="https://justagist.github.io/panda_robot/#basic-usage">basic usage</a> are also shown.</p>
+<p>A more unified ROS Python interface built over this package is available in the <a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a> package, which provides a more intuitive interface class that combines the different API classes in this package. Simple demo and <a class="reference external" href="https://justagist.github.io/panda_robot/#basic-usage">basic usage</a> are also shown.</p>
 <a class="reference external image-reference" href="https://www.youtube.com/watch?v=NdSbXC0r7tU"><img alt="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_simulator.gif" src="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_simulator.gif" /></a>
 <p><strong>Features</strong></p>
 <ul class="simple">
@@ -238,12 +239,31 @@ state, etc.) available through ROS topics and Python API.</li>
 controlling and monitoring the gripper.</li>
 <li>Python API classes and utility functions to control the robot using
 MoveIt! and ROS Trajectory Action Service.</li>
-<li>The <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a> package (which is Gazebo-based
+<li>The <a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a> package (which is Gazebo-based
 simulator for the robot) can also be controlled using this package
 (ROS and Python interface), providing almost complete sim-to-real
 transfer of code.</li>
 </ul>
 <a class="reference external image-reference" href="https://youtu.be/a_HEmYzqEnk"><img alt="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/ts_demo.gif" src="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/ts_demo.gif" /></a>
+<div class="section" id="related-packages">
+<h2>Related Packages<a class="headerlink" href="#related-packages" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a> : A Gazebo simulator for the Franka Emika Panda
+robot with ROS interface, providing exposed controllers and real-time
+robot state feedback similar to the real robot when using the
+<em>franka_ros_interface</em> package. Provides almost complete real-to-sim
+transfer of code.</li>
+<li><a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a> : Python interface providing higher-level control of
+the robot integrated with its gripper control, controller manager,
+coordinate frames manager, etc. with safety checks and other helper
+utilities. It also provides the kinematics and dynamics of the robot
+using the <a class="reference external" href="http://wiki.ros.org/kdl">KDL library</a>. It is built over Franka ROS Interface and
+provides a more intuitive and unified single-class interface.</li>
+<li><a class="reference external" href="https://github.com/justagist/franka_panda_description">franka_panda_description</a> : Robot description package modified from
+<a class="reference external" href="https://frankaemika.github.io/docs/franka_ros.html">franka_ros</a> package to include dynamics parameters for the robot
+arm (as estimated in <a class="reference external" href="https://hal.inria.fr/hal-02265293/document">this paper</a>). Also includes transmission and
+control definitions required for the <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a> package.</li>
+</ul>
 <p>Go to <a class="reference external" href="https://github.com/justagist/franka_ros_interface">Project Source Code</a>.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
@@ -261,6 +281,7 @@ transfer of code.</li>
 </ul>
 </li>
 </ul>
+</div>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
