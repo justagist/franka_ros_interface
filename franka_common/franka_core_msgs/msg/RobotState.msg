@@ -40,9 +40,11 @@ float64[49] mass_matrix # mass matrix of end-effector wrt base frame # Vectorize
 
 float64[42] O_Jac_EE # zero jacobian of end-effector frame. Vectorized 6x7 Jacobian, column-major
 
-# float64[16] O_T_EE # ----- in tip state # Vectorized 4x4, column-major
+# float64[16] O_T_EE # ----- moved to endpointstate msg # Vectorized 4x4, column-major
 float64[16] O_T_EE_d # Last desired end effector pose of motion generation in base frame.  # Vectorized 4x4, column-major
 float64[16] F_T_EE # End effector frame pose in flange frame # Vectorized 4x4, column-major
+float64[16] F_T_NE # Nominal End effector frame pose in flange frame (fixed in Desk) # Vectorized 4x4, column-major
+float64[16] NE_T_EE # End effector frame pose in Nominal End effector frame # Vectorized 4x4, column-major
 float64[16] EE_T_K # Stiffness frame pose in end effector frame # Vectorized 4x4, column-major
 float64 time
 
