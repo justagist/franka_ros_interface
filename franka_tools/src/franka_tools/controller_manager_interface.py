@@ -374,7 +374,7 @@ class FrankaControllerManagerInterface(object):
         """
 
         if controller_name.strip() == '':
-            rospy.logdebug("FrankaControllerManagerInterface: Empty controller name in controller switch request. Ignoring.")
+            rospy.logwarn("FrankaControllerManagerInterface: Empty controller name in controller switch request. Ignoring.")
             return self._current_controller
 
         if controller_name[0] == '/':

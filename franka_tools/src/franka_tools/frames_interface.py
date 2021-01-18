@@ -24,12 +24,12 @@
 # limitations under the License.
 # **************************************************************************/
 
-import tf
-import numpy as np
-import quaternion
-from franka_msgs.srv import SetEEFrame, SetKFrame
+import tf2_ros as tf
 import rospy
+import quaternion
+import numpy as np
 import franka_dataflow
+from franka_msgs.srv import SetEEFrame, SetKFrame
 
 from collections import namedtuple
 _FRAME_NAMES = namedtuple('Constants', ['EE_FRAME', 'K_FRAME'])
@@ -41,27 +41,28 @@ DEFAULT_TRANSFORMATIONS = _FRAME_NAMES( [0.707099974155426, -0.707099974155426, 
 
 class FrankaFramesInterface(object):
     """
-        Helper class to retrieve and set EE frames
+        Helper class to retrieve and set EE frames.
 
-        Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class (panda_robot package: https://github.com/justagist/panda_robot ).
+        The current (realtime) transformation of the end-effector frame and stiffness frame has to be updated externally each time franka states is updated. All of this is done automatically within the ArmInterface class, so use the instance of FrankaFramesInterface from the ArmInterface object using :py:meth:`ArmInterface.get_frames_interface` for ease.
 
-        .. note: All controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).
+        .. note: All controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in ArmInterface class).
+
+        .. note: It is best to provide all transformation matrices using numpy arrays. If providing as flattened 1D list, make sure it is in column major format.
 
     """
 
     def __init__(self):
-        self._current_EE_frame_transformation = None
-        self._current_K_frame_transformation = None
-        
 
+        self._current_EE_frame_transformation = None # NE_T_EE
+        self._current_K_frame_transformation = None # EE_T_K
 
     def set_EE_frame(self, frame):
         """
         Set new EE frame based on the transformation given by 'frame', which is the 
-        transformation matrix defining the new desired EE frame with respect to the flange frame.
+        transformation matrix defining the new desired EE frame with respect to the nominal end-effector frame (NE_T_EE).
 
-        :type frame: [float (16,)] / np.ndarray (4x4) 
-        :param frame: transformation matrix of new EE frame wrt flange frame (column major)
+        :type frame: [float (16,)] / np.ndarray (4x4)
+        :param frame: transformation matrix of new EE frame wrt nominal end-effector frame (if list, should be column major)
         :rtype: bool
         :return: success status of service request
         """
@@ -69,10 +70,9 @@ class FrankaFramesInterface(object):
 
         return self._request_setEE_service(frame)
 
-
     def _update_frame_data(self, EE_frame_transformation, K_frame_transformation):
         """
-            The callback function used by the PandaArm class to update the current frame transformations.
+            The callback function used by the PandaArm class to update the current frame transformations NE_T_EE and EE_T_K.
         """
         assert len(EE_frame_transformation) == 16, "FrankaFramesInterface: Current EE frame transformation could not be retrieved!"
         self._current_EE_frame_transformation = EE_frame_transformation
@@ -93,30 +93,33 @@ class FrankaFramesInterface(object):
 
         return frame
 
-    def get_link_tf(self, frame_name, timeout = 5.0, parent = '/panda_link8'):
+    def get_link_tf(self, frame_name, timeout = 5.0, parent = 'panda_NE'):
         """
         Get :math:`4\times 4` transformation matrix of a frame with respect to another.
         :return: :math:`4\times 4` transformation matrix
         :rtype: np.ndarray
         :param frame_name: Name of the child frame from the TF tree
         :type frame_name: str
-        :param parent: Name of parent frame (default: '/panda_link8')
+        :param parent: Name of parent frame (default: 'panda_NE', the default nominal end-effector frame set in Desk)
         :type parent: str
         """
-        listener = tf.TransformListener()
+        tfBuffer = tf.Buffer()
+        listener = tf.TransformListener(tfBuffer)
         err = "FrankaFramesInterface: Error while looking up transform from Flange frame to link frame %s"%frame_name
         def body():
             try:
-                listener.lookupTransform(parent, frame_name, rospy.Time(0))
+                tfBuffer.lookup_transform(parent, frame_name, rospy.Time(0))
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 return False
             return True
 
         franka_dataflow.wait_for(lambda: body(), timeout = timeout, raise_on_error = True, timeout_msg = err)
 
-        t,rot = listener.lookupTransform(parent, frame_name, rospy.Time(0))
-
-        rot = np.quaternion(rot[3],rot[0],rot[1],rot[2])
+        trans_stamped = tfBuffer.lookup_transform(parent, frame_name, rospy.Time(0))
+        t = [trans_stamped.transform.translation.x, trans_stamped.transform.translation.y, trans_stamped.transform.translation.z]
+        q = trans_stamped.transform.rotation
+        
+        rot = np.quaternion(q.w,q.x,q.y,q.z)
 
         rot = quaternion.as_rotation_matrix(rot)
 
@@ -124,7 +127,7 @@ class FrankaFramesInterface(object):
 
         trans_mat[:3,:3] = rot
         trans_mat[:3,3] = np.array(t)
-
+        
         return trans_mat
 
     def frames_are_same(self, frame1, frame2):
@@ -163,8 +166,6 @@ class FrankaFramesInterface(object):
         """
 
         return self.set_EE_frame(self.get_link_tf(frame_name, timeout))
-
-
 
     def get_EE_frame(self, as_mat = False):
         """
