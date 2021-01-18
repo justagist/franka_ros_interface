@@ -58,7 +58,7 @@ def all_close(goal, actual, tolerance):
 
 class PandaMoveGroupInterface:
 
-    def __init__(self):
+    def __init__(self, use_panda_hand_link=False):
 
         try:
             rospy.get_param("/robot_description_semantic")
@@ -90,13 +90,17 @@ class PandaMoveGroupInterface:
            "Please check to make sure your ROS networking is "
            "properly configured:\n")
             sys.exit()
+        # except:
+        #     rospy.loginfo(
+        #         ("PandaMoveGroupInterface: could not detect gripper."))
+        #     self._gripper_group = None
 
         self._display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',
                                            moveit_msgs.msg.DisplayTrajectory,
                                            queue_size=20)
 
-        self._default_ee = 'panda_hand' if self._gripper_group else 'panda_link8'
-        # self._arm_group.set_end_effector_link(self._default_ee)
+        self._default_ee = 'panda_link8' if not use_panda_hand_link else 'panda_hand' # 'panda_hand' if self._gripper_group else 'panda_link8'
+        self._arm_group.set_end_effector_link(self._default_ee)
 
         rospy.loginfo("PandaMoveGroupInterface: Setting default EE link to '{}' "
             "Use group.set_end_effector_link() method to change default EE.".format(self._default_ee))
@@ -184,9 +188,27 @@ class PandaMoveGroupInterface:
 
         return True
 
+    def go_to_cartesian_pose(self, pose, ee_link="", wait=True):
+        """
+            Plan and execute a cartesian path to reach a target by avoiding obstacles in the scene.
+            For planning through multiple points, use func:`self._arm_group.set_pose_targets`.
+
+            :param pose: The cartesian pose to be reached. 
+                (Use :func:`franka_moveit.utils.create_pose_msg` for creating pose messages easily)
+            :type pose: geomentry_msgs.msg.Pose
+            :param ee_link: name of end-effector link to be used; uses currently set value by default
+            :type ee_link: str, optional
+            :param wait: if set to True, blocks till execution is complete; defaults to True
+            :type wait: bool
+        """
+        self._arm_group.set_pose_target(pose, end_effector_link=ee_link)
+        self._arm_group.go(wait=wait)
+
+
     def plan_cartesian_path(self, poses):
         """
-            Plan cartesian path using the provided list of poses.
+            Plan cartesian path using the provided list of poses. Note: Does NOT avoid obstacles in scene.
+                Use func:`go_to_cartesian_pose` for moving to target pose and avoiding obstacles.
 
             :param poses: The cartesian poses to be achieved in sequence. 
                 (Use :func:`franka_moveit.utils.create_pose_msg` for creating pose messages easily)
@@ -233,7 +255,7 @@ class PandaMoveGroupInterface:
         """
             Close gripper. (Using named states defined in urdf.)
 
-            :param wait: if set to True, blocks till execution is complete
+            :param wait: if set to True, blocks till execution is complete; defaults to True
             :type wait: bool
 
             .. note:: If this named state is not found, your ros environment is
