@@ -99,13 +99,19 @@ class PandaMoveGroupInterface:
                                            moveit_msgs.msg.DisplayTrajectory,
                                            queue_size=20)
 
-        self._default_ee = 'panda_link8' if not use_panda_hand_link else 'panda_hand' # 'panda_hand' if self._gripper_group else 'panda_link8'
+        if use_panda_hand_link and self._gripper_group is not None:
+            self._default_ee = 'panda_hand'
+        else:
+            self._default_ee = 'panda_link8'
         self._arm_group.set_end_effector_link(self._default_ee)
+        # self._arm_group.set_goal_tolerance(0.0001,0.0001,0.001)
 
         rospy.loginfo("PandaMoveGroupInterface: Setting default EE link to '{}' "
             "Use group.set_end_effector_link() method to change default EE.".format(self._default_ee))
 
         self._arm_group.set_max_velocity_scaling_factor(0.3)
+        # self._arm_group.set_goal_position_tolerance(0.00005)
+        # self._arm_group.set_goal_orientation_tolerance(0.001)
 
 
     @property
@@ -148,7 +154,7 @@ class PandaMoveGroupInterface:
         """
         :getter: The MoveGroupCommander instance of this object. This is an interface
             to one group of joints.  In this case the group is the joints in the Panda
-            arm. This interface can be used to plan and execute motions on the Panda.
+            gripper. This interface can be used to plan and execute motions of the gripper.
         :type: moveit_commander.MoveGroupCommander
 
         .. note:: For available methods for movegroup, refer `MoveGroupCommander <http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html>`_. 
@@ -207,8 +213,7 @@ class PandaMoveGroupInterface:
 
     def plan_cartesian_path(self, poses):
         """
-            Plan cartesian path using the provided list of poses. Note: Does NOT avoid obstacles in scene.
-                Use func:`go_to_cartesian_pose` for moving to target pose and avoiding obstacles.
+            Plan cartesian path using the provided list of poses.
 
             :param poses: The cartesian poses to be achieved in sequence. 
                 (Use :func:`franka_moveit.utils.create_pose_msg` for creating pose messages easily)
@@ -217,6 +222,7 @@ class PandaMoveGroupInterface:
             :return: the actual RobotTrajectory (can be used for :py:meth:`execute_plan`), a fraction of how much of the path was followed
             :rtype: [RobotTrajectory, float (0,1)]
 
+            .. note:: This method will NOT make the robot avoid obstacles defined in scene. Use func:`go_to_cartesian_pose` for moving to target pose and avoiding obstacles.
         """
         waypoints = []
         for pose in poses:

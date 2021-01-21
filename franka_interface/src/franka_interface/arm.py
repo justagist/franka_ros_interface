@@ -225,7 +225,8 @@ class ArmInterface(object):
                                  timeout_msg=err_msg, timeout=5.0)
 
         try:
-            self._movegroup_interface = PandaMoveGroupInterface()
+            self._movegroup_interface = PandaMoveGroupInterface(
+                use_panda_hand_link=True if self._params._in_sim else False)
         except:
             rospy.loginfo("{}: MoveGroup was not found! This is okay if moveit service is not required!".format(
                 self.__class__.__name__))
@@ -751,23 +752,40 @@ class ArmInterface(object):
         rospy.loginfo("{}: Trajectory controlling complete".format(
             self.__class__.__name__))
     
-    def get_flange_pose(self, pos, ori=None):
-        F_T_EE = np.asarray(self._F_T_EE).reshape(4, 4, order="F")
+    def get_flange_pose(self, pos=None, ori=None):
+        """
+        Get the pose of flange (panda_link8) given the pose of the end-effector frame.
+
+        .. note:: In sim, this method does nothing.
+
+        :param pos: position of the end-effector frame in the robot's base frame, defaults to current end-effector position
+        :type pos: np.ndarray, optional
+        :param ori: orientation of the end-effector frame, defaults to current end-effector orientation
+        :type ori: quaternion.quaternion, optional
+        :return: corresponding flange frame pose in the robot's base frame
+        :rtype: np.ndarray, quaternion.quaternion
+        """
         if pos is None:
             pos = self._cartesian_pose['position']
         
         if ori is None:
             ori = self._cartesian_pose['orientation']
 
+        if self._params._in_sim:
+            return pos, ori
+        
+        # get corresponding flange frame pose using transformation matrix
+        F_T_EE = np.asarray(self._F_T_EE).reshape(4, 4, order="F")
         mat = quaternion.as_rotation_matrix(ori)
-        new_ori = F_T_EE[:3, :3].dot(mat)
-        new_pos = pos - new_ori.T.dot(F_T_EE[:3, 3])
+
+        new_ori = mat.dot(F_T_EE[:3,:3].T)
+        new_pos = pos - new_ori.dot(F_T_EE[:3, 3])
 
         return new_pos, quaternion.from_rotation_matrix(new_ori)
 
     def move_to_cartesian_pose(self, pos, ori=None, use_moveit=True):
         """
-        Move robot end-effector to specified cartesian pose using MoveIt!
+        Move robot end-effector to specified cartesian pose using MoveIt! (also avoids obstacles if they are defined using :py:class:`franka_moveit.ExtendedPlanningSceneInterface`)
 
         :param pos: target end-effector position
         :type pos: [float] or np.ndarray
@@ -783,7 +801,7 @@ class ArmInterface(object):
 
         if ori is None:
             ori = self._cartesian_pose['orientation']
-
+        self.get_flange_pose(pos, ori)
         curr_controller = self._ctrl_manager.set_motion_controller(
             self._ctrl_manager.joint_trajectory_controller)
 
@@ -792,7 +810,9 @@ class ArmInterface(object):
         # plan, _ = self._movegroup_interface.plan_cartesian_path(
         #     [create_pose_msg(pos, ori)])
         # self._movegroup_interface.execute_plan(plan)
+
         rospy.sleep(0.5)
+        self._ctrl_manager.set_motion_controller(curr_controller)
         rospy.loginfo("{}: Trajectory controlling complete".format(
             self.__class__.__name__))
 
