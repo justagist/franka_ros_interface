@@ -220,7 +220,7 @@
 <span class="c1"># **************************************************************************/</span>
 
 <span class="c1"># /***************************************************************************</span>
-<span class="c1"># Copyright (c) 2019-2020, Saif Sidhik</span>
+<span class="c1"># Copyright (c) 2019-2021, Saif Sidhik</span>
  
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -269,7 +269,7 @@
 
 <div class="viewcode-block" id="PandaMoveGroupInterface"><a class="viewcode-back" href="../../DOC.html#franka_moveit.PandaMoveGroupInterface">[docs]</a><span class="k">class</span> <span class="nc">PandaMoveGroupInterface</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_panda_hand_link</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;/robot_description_semantic&quot;</span><span class="p">)</span>
@@ -306,8 +306,11 @@
                                            <span class="n">moveit_msgs</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">DisplayTrajectory</span><span class="p">,</span>
                                            <span class="n">queue_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_default_ee</span> <span class="o">=</span> <span class="s1">&#39;panda_hand&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gripper_group</span> <span class="k">else</span> <span class="s1">&#39;panda_link8&#39;</span>
-        <span class="c1"># self._arm_group.set_end_effector_link(self._default_ee)</span>
+        <span class="k">if</span> <span class="n">use_panda_hand_link</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gripper_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_ee</span> <span class="o">=</span> <span class="s1">&#39;panda_hand&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_ee</span> <span class="o">=</span> <span class="s1">&#39;panda_link8&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arm_group</span><span class="o">.</span><span class="n">set_end_effector_link</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_ee</span><span class="p">)</span>
 
         <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;PandaMoveGroupInterface: Setting default EE link to &#39;</span><span class="si">{}</span><span class="s2">&#39; &quot;</span>
             <span class="s2">&quot;Use group.set_end_effector_link() method to change default EE.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_ee</span><span class="p">))</span>
@@ -355,7 +358,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :getter: The MoveGroupCommander instance of this object. This is an interface</span>
 <span class="sd">            to one group of joints.  In this case the group is the joints in the Panda</span>
-<span class="sd">            arm. This interface can be used to plan and execute motions on the Panda.</span>
+<span class="sd">            gripper. This interface can be used to plan and execute motions of the gripper.</span>
 <span class="sd">        :type: moveit_commander.MoveGroupCommander</span>
 
 <span class="sd">        .. note:: For available methods for movegroup, refer `MoveGroupCommander &lt;http://docs.ros.org/jade/api/moveit_commander/html/classmoveit__commander_1_1move__group_1_1MoveGroupCommander.html&gt;`_. </span>
@@ -395,6 +398,23 @@
 
         <span class="k">return</span> <span class="kc">True</span></div>
 
+<div class="viewcode-block" id="PandaMoveGroupInterface.go_to_cartesian_pose"><a class="viewcode-back" href="../../DOC.html#franka_moveit.PandaMoveGroupInterface.go_to_cartesian_pose">[docs]</a>    <span class="k">def</span> <span class="nf">go_to_cartesian_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pose</span><span class="p">,</span> <span class="n">ee_link</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Plan and execute a cartesian path to reach a target by avoiding obstacles in the scene.</span>
+<span class="sd">            For planning through multiple points, use func:`self._arm_group.set_pose_targets`.</span>
+
+<span class="sd">            :param pose: The cartesian pose to be reached. </span>
+<span class="sd">                (Use :func:`franka_moveit.utils.create_pose_msg` for creating pose messages easily)</span>
+<span class="sd">            :type pose: geomentry_msgs.msg.Pose</span>
+<span class="sd">            :param ee_link: name of end-effector link to be used; uses currently set value by default</span>
+<span class="sd">            :type ee_link: str, optional</span>
+<span class="sd">            :param wait: if set to True, blocks till execution is complete; defaults to True</span>
+<span class="sd">            :type wait: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arm_group</span><span class="o">.</span><span class="n">set_pose_target</span><span class="p">(</span><span class="n">pose</span><span class="p">,</span> <span class="n">end_effector_link</span><span class="o">=</span><span class="n">ee_link</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arm_group</span><span class="o">.</span><span class="n">go</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="PandaMoveGroupInterface.plan_cartesian_path"><a class="viewcode-back" href="../../DOC.html#franka_moveit.PandaMoveGroupInterface.plan_cartesian_path">[docs]</a>    <span class="k">def</span> <span class="nf">plan_cartesian_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">poses</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Plan cartesian path using the provided list of poses.</span>
@@ -406,6 +426,7 @@
 <span class="sd">            :return: the actual RobotTrajectory (can be used for :py:meth:`execute_plan`), a fraction of how much of the path was followed</span>
 <span class="sd">            :rtype: [RobotTrajectory, float (0,1)]</span>
 
+<span class="sd">            .. note:: This method will NOT make the robot avoid obstacles defined in scene. Use func:`go_to_cartesian_pose` for moving to target pose and avoiding obstacles.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">waypoints</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">pose</span> <span class="ow">in</span> <span class="n">poses</span><span class="p">:</span>
@@ -444,7 +465,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Close gripper. (Using named states defined in urdf.)</span>
 
-<span class="sd">            :param wait: if set to True, blocks till execution is complete</span>
+<span class="sd">            :param wait: if set to True, blocks till execution is complete; defaults to True</span>
 <span class="sd">            :type wait: bool</span>
 
 <span class="sd">            .. note:: If this named state is not found, your ros environment is</span>
@@ -541,7 +562,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Saif Sidhik
+        &copy; Copyright 2019-2021, Saif Sidhik
 
     </p>
   </div>

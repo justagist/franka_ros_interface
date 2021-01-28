@@ -231,7 +231,7 @@
 <dt id="franka_interface.ArmInterface">
 <em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">ArmInterface</code><span class="sig-paren">(</span><em>synchronous_pub=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Interface Class for an arm of Franka Panda robot
+<p>Interface Class for an arm of Franka Panda robot.
 Constructor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -380,6 +380,34 @@ interval.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the FrankaControllerManagerInterface instance associated with the robot.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#franka_tools.FrankaControllerManagerInterface" title="franka_tools.FrankaControllerManagerInterface">franka_tools.FrankaControllerManagerInterface</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="franka_interface.ArmInterface.get_flange_pose">
+<code class="descname">get_flange_pose</code><span class="sig-paren">(</span><em>pos=None</em>, <em>ori=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.get_flange_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.get_flange_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pose of flange (panda_link8) given the pose of the end-effector frame.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In sim, this method does nothing.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pos</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – position of the end-effector frame in the robot’s base frame, defaults to current end-effector position</li>
+<li><strong>ori</strong> (<em>quaternion.quaternion</em><em>, </em><em>optional</em>) – orientation of the end-effector frame, defaults to current end-effector orientation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">corresponding flange frame pose in the robot’s base frame</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.ndarray, quaternion.quaternion</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -651,6 +679,25 @@ Collision thresholds can be set using instance of <a class="reference internal" 
 </dd></dl>
 
 <dl class="method">
+<dt id="franka_interface.ArmInterface.move_to_cartesian_pose">
+<code class="descname">move_to_cartesian_pose</code><span class="sig-paren">(</span><em>pos</em>, <em>ori=None</em>, <em>use_moveit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.move_to_cartesian_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.move_to_cartesian_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move robot end-effector to specified cartesian pose using MoveIt! (also avoids obstacles if they are defined using <a class="reference internal" href="#franka_moveit.ExtendedPlanningSceneInterface" title="franka_moveit.ExtendedPlanningSceneInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">franka_moveit.ExtendedPlanningSceneInterface</span></code></a>)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pos</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a><em>] or </em><em>np.ndarray</em>) – target end-effector position</li>
+<li><strong>ori</strong> (<em>quaternion.quaternion</em><em> or </em><em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a><em>] </em><em>(</em><em>quaternion in w</em><em>,</em><em>x</em><em>,</em><em>y</em><em>,</em><em>z order</em><em>)</em><em>, </em><em>optional</em>) – target orientation quaternion for end-effector, defaults to current ori</li>
+<li><strong>use_moveit</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Flag for using MoveIt (redundant for now; only works if set to True), defaults to True</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="franka_interface.ArmInterface.move_to_joint_positions">
 <code class="descname">move_to_joint_positions</code><span class="sig-paren">(</span><em>positions</em>, <em>timeout=10.0</em>, <em>threshold=0.00085</em>, <em>test=None</em>, <em>use_moveit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.move_to_joint_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.move_to_joint_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>(Blocking) Commands the limb to the provided positions.
@@ -718,7 +765,8 @@ before restarting the previously active controllers.</p>
 <dd><p>Reset EE frame to default. (defined by 
 FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME 
 global variable defined in <a class="reference internal" href="#franka_tools.FrankaFramesInterface" title="franka_tools.FrankaFramesInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">franka_tools.FrankaFramesInterface</span></code></a> 
-source code)</p>
+source code). By default, this resets to align with the nominal-end effector
+frame (F_T_NE) in the flange frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -735,13 +783,14 @@ source code)</p>
 <dt id="franka_interface.ArmInterface.set_EE_frame">
 <code class="descname">set_EE_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.set_EE_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.set_EE_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set new EE frame based on the transformation given by ‘frame’, which is the 
-transformation matrix defining the new desired EE frame with respect to the flange frame.
-Motion controllers are stopped for switching</p>
+transformation matrix defining the new desired EE frame with respect to the 
+nominal end-effector frame (NE_T_EE).
+Motion controllers are stopped for switching.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a><em> (</em><em>16</em><em>,</em><em>)</em><em>] </em><em>/ np.ndarray</em><em> (</em><em>4x4</em><em>)</em>) – transformation matrix of new EE frame wrt flange frame (column major)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a><em> (</em><em>16</em><em>,</em><em>)</em><em>] </em><em>/ np.ndarray</em><em> (</em><em>4x4</em><em>)</em>) – transformation matrix of new EE frame wrt nominal end-effector frame (column major)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">[<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)">str</a>]</td>
 </tr>
@@ -1477,7 +1526,7 @@ server (/robot_config/joint_names).</p>
 </ul>
 <dl class="class">
 <dt id="franka_moveit.PandaMoveGroupInterface">
-<em class="property">class </em><code class="descclassname">franka_moveit.</code><code class="descname">PandaMoveGroupInterface</code><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">franka_moveit.</code><code class="descname">PandaMoveGroupInterface</code><span class="sig-paren">(</span><em>use_panda_hand_link=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="attribute">
 <dt id="franka_moveit.PandaMoveGroupInterface.arm_group">
 <code class="descname">arm_group</code><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.arm_group" title="Permalink to this definition">¶</a></dt>
@@ -1507,7 +1556,7 @@ arm. This interface can be used to plan and execute motions on the Panda.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – if set to True, blocks till execution is complete</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – if set to True, blocks till execution is complete; defaults to True</td>
 </tr>
 </tbody>
 </table>
@@ -1558,6 +1607,27 @@ for gripper group)</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="franka_moveit.PandaMoveGroupInterface.go_to_cartesian_pose">
+<code class="descname">go_to_cartesian_pose</code><span class="sig-paren">(</span><em>pose</em>, <em>ee_link=''</em>, <em>wait=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.go_to_cartesian_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.go_to_cartesian_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plan and execute a cartesian path to reach a target by avoiding obstacles in the scene.
+For planning through multiple points, use func:<cite>self._arm_group.set_pose_targets</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pose</strong> (<em>geomentry_msgs.msg.Pose</em>) – The cartesian pose to be reached. 
+(Use <a class="reference internal" href="#franka_moveit.utils.create_pose_msg" title="franka_moveit.utils.create_pose_msg"><code class="xref py py-func docutils literal notranslate"><span class="pre">franka_moveit.utils.create_pose_msg()</span></code></a> for creating pose messages easily)</li>
+<li><strong>ee_link</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>optional</em>) – name of end-effector link to be used; uses currently set value by default</li>
+<li><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – if set to True, blocks till execution is complete; defaults to True</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="franka_moveit.PandaMoveGroupInterface.go_to_joint_positions">
 <code class="descname">go_to_joint_positions</code><span class="sig-paren">(</span><em>positions</em>, <em>wait=True</em>, <em>tolerance=0.005</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_moveit/movegroup_interface.html#PandaMoveGroupInterface.go_to_joint_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_moveit.PandaMoveGroupInterface.go_to_joint_positions" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -1591,7 +1661,7 @@ task a success</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">The MoveGroupCommander instance of this object. This is an interface
 to one group of joints.  In this case the group is the joints in the Panda
-arm. This interface can be used to plan and execute motions on the Panda.</td>
+gripper. This interface can be used to plan and execute motions of the gripper.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">moveit_commander.MoveGroupCommander</td>
 </tr>
@@ -1655,6 +1725,10 @@ that sourced package is from this repo –&gt;
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method will NOT make the robot avoid obstacles defined in scene. Use func:<cite>go_to_cartesian_pose</cite> for moving to target pose and avoiding obstacles.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -2623,8 +2697,19 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 <dt id="franka_tools.FrankaFramesInterface">
 <em class="property">class </em><code class="descclassname">franka_tools.</code><code class="descname">FrankaFramesInterface</code><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Helper class to retrieve and set EE frames</p>
-<p>Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class (panda_robot package: <a class="reference external" href="https://github.com/justagist/panda_robot">https://github.com/justagist/panda_robot</a> ).</p>
+<p>Helper class to retrieve and set EE frames.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The current (realtime) transformation of the end-effector frame and stiffness frame has to be updated externally each time franka states is updated. All of this is done automatically within the ArmInterface class, so use the instance of FrankaFramesInterface from the ArmInterface object using <a class="reference internal" href="#franka_interface.ArmInterface.get_frames_interface" title="franka_interface.ArmInterface.get_frames_interface"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_frames_interface</span></code></a> for ease.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in ArmInterface class).</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is best to provide all transformation matrices using numpy arrays. If providing as flattened 1D list, make sure it is in column major format.</p>
+</div>
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.EE_frame_already_set">
 <code class="descname">EE_frame_already_set</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.EE_frame_already_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.EE_frame_already_set" title="Permalink to this definition">¶</a></dt>
@@ -2703,20 +2788,21 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.get_link_tf">
-<code class="descname">get_link_tf</code><span class="sig-paren">(</span><em>frame_name</em>, <em>timeout=5.0</em>, <em>parent='/panda_link8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.get_link_tf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.get_link_tf" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_link_tf</code><span class="sig-paren">(</span><em>frame_name</em>, <em>timeout=5.0</em>, <em>parent='panda_NE'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.get_link_tf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.get_link_tf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get <span class="math notranslate nohighlight">\(4    imes 4\)</span> transformation matrix of a frame with respect to another.
 :return: <span class="math notranslate nohighlight">\(4       imes 4\)</span> transformation matrix
 :rtype: np.ndarray
 :param frame_name: Name of the child frame from the TF tree
 :type frame_name: str
-:param parent: Name of parent frame (default: ‘/panda_link8’)
+:param parent: Name of parent frame (default: ‘panda_NE’, the default nominal end-effector frame set in Desk)
 :type parent: str</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.reset_EE_frame">
 <code class="descname">reset_EE_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.reset_EE_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.reset_EE_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset EE frame to default. (defined by DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above)</p>
+<dd><p>Reset EE frame to default. (defined by DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above)
+By default, this is identity aligning it with the nominal end-effector frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2732,7 +2818,8 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 <dl class="method">
 <dt id="franka_tools.FrankaFramesInterface.reset_K_frame">
 <code class="descname">reset_K_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.reset_K_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.reset_K_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset K frame to default. (defined by <a href="#id4"><span class="problematic" id="id5">DEFAULT_K_</span></a> FRAME global variable defined above)</p>
+<dd><p>Reset K frame to default. (defined by DEFAULT_K_FRAME global variable defined above)
+By default this resets to align the stiffness frame to the end-effector frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2749,12 +2836,12 @@ in config file: franka_ros_controllers/cfg/joint_controller_params.cfg</td>
 <dt id="franka_tools.FrankaFramesInterface.set_EE_frame">
 <code class="descname">set_EE_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_tools/frames_interface.html#FrankaFramesInterface.set_EE_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_tools.FrankaFramesInterface.set_EE_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set new EE frame based on the transformation given by ‘frame’, which is the 
-transformation matrix defining the new desired EE frame with respect to the flange frame.</p>
+transformation matrix defining the new desired EE frame with respect to the nominal end-effector frame (NE_T_EE).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a><em> (</em><em>16</em><em>,</em><em>)</em><em>] </em><em>/ np.ndarray</em><em> (</em><em>4x4</em><em>)</em>) – transformation matrix of new EE frame wrt flange frame (column major)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a><em> (</em><em>16</em><em>,</em><em>)</em><em>] </em><em>/ np.ndarray</em><em> (</em><em>4x4</em><em>)</em>) – transformation matrix of new EE frame wrt nominal end-effector frame (if list, should be column major)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
 </tr>
@@ -2925,7 +3012,7 @@ smooth motion.</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Saif Sidhik
+        &copy; Copyright 2019-2021, Saif Sidhik
 
     </p>
   </div>

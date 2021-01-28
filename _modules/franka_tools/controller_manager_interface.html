@@ -222,7 +222,7 @@
 <span class="c1"># **************************************************************************/</span>
 
 <span class="c1"># /***************************************************************************</span>
-<span class="c1"># Copyright (c) 2019-2020, Saif Sidhik</span>
+<span class="c1"># Copyright (c) 2019-2021, Saif Sidhik</span>
  
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -585,7 +585,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">controller_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">logdebug</span><span class="p">(</span><span class="s2">&quot;FrankaControllerManagerInterface: Empty controller name in controller switch request. Ignoring.&quot;</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;FrankaControllerManagerInterface: Empty controller name in controller switch request. Ignoring.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span>
 
         <span class="k">if</span> <span class="n">controller_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
@@ -857,7 +857,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Saif Sidhik
+        &copy; Copyright 2019-2021, Saif Sidhik
 
     </p>
   </div>
