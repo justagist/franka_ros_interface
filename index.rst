@@ -86,7 +86,7 @@ Go to `Project Source Code`_.
 **LICENSE:**
 
 |License|
-Copyright (c) 2019-2020, Saif Sidhik
+Copyright (c) 2019-2021, Saif Sidhik
 
 |doi|
 
