@@ -9,7 +9,7 @@
 # **************************************************************************/
 
 # /***************************************************************************
-# Copyright (c) 2019-2020, Saif Sidhik
+# Copyright (c) 2019-2021, Saif Sidhik
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ class TipState():
 class ArmInterface(object):
 
     """ 
-    Interface Class for an arm of Franka Panda robot
+    Interface Class for an arm of Franka Panda robot.
     Constructor.
 
     :type synchronous_pub: bool
@@ -117,9 +117,6 @@ class ArmInterface(object):
         ROBOT_MODE_AUTOMATIC_ERROR_RECOVERY = 6
 
     def __init__(self, synchronous_pub=False):
-        """
-
-        """
 
         self._params = RobotParams()
 
@@ -224,6 +221,7 @@ class ArmInterface(object):
         franka_dataflow.wait_for(lambda: self._jacobian is not None,
                                  timeout_msg=err_msg, timeout=5.0)
 
+        # start moveit server with panda_link8 (flange) as the end-effector, unless it is in simulation. However, using move_to_cartesian_pose() method compensates for this and moves the robot's defined end-effector frame (EE frame; see set_EE_frame() and set_EE_frame_to_link()) to the target pose.
         try:
             self._movegroup_interface = PandaMoveGroupInterface(
                 use_panda_hand_link=True if self._params._in_sim else False)
@@ -791,7 +789,7 @@ class ArmInterface(object):
         :type pos: [float] or np.ndarray
         :param ori: target orientation quaternion for end-effector, defaults to current ori
         :type ori: quaternion.quaternion or [float] (quaternion in w,x,y,z order), optional
-        :param use_moveit: Flag for using MoveIt (redundant for now), defaults to True
+        :param use_moveit: Flag for using MoveIt (redundant for now; only works if set to True), defaults to True
         :type use_moveit: bool, optional
         """
         if not use_moveit or self._movegroup_interface is None:
@@ -805,11 +803,18 @@ class ArmInterface(object):
         curr_controller = self._ctrl_manager.set_motion_controller(
             self._ctrl_manager.joint_trajectory_controller)
 
+        ## == Plan avoids defined scene obstacles ==
         self._movegroup_interface.go_to_cartesian_pose(
             create_pose_msg(*self.get_flange_pose(pos, ori)))
+
+        ## =========================================
+
+        ## == does not avoid scene obstacles ==
         # plan, _ = self._movegroup_interface.plan_cartesian_path(
         #     [create_pose_msg(pos, ori)])
         # self._movegroup_interface.execute_plan(plan)
+
+        ## ====================================
 
         rospy.sleep(0.5)
         self._ctrl_manager.set_motion_controller(curr_controller)
@@ -853,7 +858,8 @@ class ArmInterface(object):
         Reset EE frame to default. (defined by 
         FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME 
         global variable defined in :py:class:`franka_tools.FrankaFramesInterface` 
-        source code) 
+        source code). By default, this resets to align with the nominal-end effector
+        frame (F_T_NE) in the flange frame.
 
         :rtype: [bool, str]
         :return: [success status of service request, error msg if any]
@@ -875,11 +881,12 @@ class ArmInterface(object):
     def set_EE_frame(self, frame):
         """
         Set new EE frame based on the transformation given by 'frame', which is the 
-        transformation matrix defining the new desired EE frame with respect to the flange frame.
-        Motion controllers are stopped for switching
+        transformation matrix defining the new desired EE frame with respect to the 
+        nominal end-effector frame (NE_T_EE).
+        Motion controllers are stopped for switching.
 
         :type frame: [float (16,)] / np.ndarray (4x4) 
-        :param frame: transformation matrix of new EE frame wrt flange frame (column major)
+        :param frame: transformation matrix of new EE frame wrt nominal end-effector frame (column major)
         :rtype: [bool, str]
         :return: [success status of service request, error msg if any]
         """
@@ -907,7 +914,6 @@ class ArmInterface(object):
         :return: [success status of service request, error msg if any]
         """
         if self._frames_interface:
-            retval = True
             if not self._frames_interface.EE_frame_already_set(self._frames_interface.get_link_tf(frame_name)):
 
                 return self.pause_controllers_and_do(self._frames_interface.set_EE_frame_to_link, frame_name=frame_name, timeout=timeout)
@@ -915,6 +921,7 @@ class ArmInterface(object):
         else:
             rospy.logwarn("{}: Frames changing not available in simulated environment".format(
                 self.__class__.__name__))
+            return False
 
     def set_collision_threshold(self, cartesian_forces=None, joint_torques=None):
         """
@@ -948,9 +955,9 @@ class ArmInterface(object):
 
 
 if __name__ == '__main__':
-    rospy.init_node('test')
+    rospy.init_node('test_fri')
     r = Arm()
 
-    rate = rospy.Rate(10)
-    while not rospy.is_shutdown():
-        rate.sleep()
+    # rate = rospy.Rate(10)
+    # while not rospy.is_shutdown():
+    #     rate.sleep()

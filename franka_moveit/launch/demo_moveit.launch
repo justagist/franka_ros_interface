@@ -24,34 +24,35 @@
   <!-- Load the URDF, SRDF and other .yaml configuration files on the param server -->
   <include file="$(find panda_moveit_config)/launch/planning_context.launch">
     <!-- <arg name="load_robot_description" value="true"/> -->
+    <arg name="load_gripper" value="$(arg load_gripper)"/>
   </include>
 
   <!-- If needed, broadcast static tf for robot root -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_1" args="0 0 0 0 0 0 world panda_link0" />
 
 
-  <include file="$(find franka_interface)/launch/interface.launch">
+  <!-- <include file="$(find franka_interface)/launch/interface.launch">
     <arg name="fake_execution" value="false"/>
     <arg name="load_gripper" value="$(arg load_gripper)"/>
     <arg name="load_demo_planning_scene" value="true"/>
     <arg name="start_moveit" value="true"/>
-  </include>
+  </include> -->
 
   <!-- <node name="topic_remap" pkg="topic_tools" type="relay" args="/franka_ros_interface/franka_gripper /franka_gripper"/> -->
 
 <arg unless="$(arg debug)" name="launch_prefix" value="" />
-  <arg     if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+<arg     if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
   <!-- Run Rviz -->
-  <node name="$(anon rviz)" launch-prefix="$(arg launch_prefix)" pkg="rviz" type="rviz" respawn="false"
-    args="-d $(find franka_moveit)/config/moveit_demo.rviz" output="screen">
-    <rosparam command="load" file="$(find panda_moveit_config)/config/kinematics.yaml"/>
-  </node>
+<node name="$(anon rviz)" launch-prefix="$(arg launch_prefix)" pkg="rviz" type="rviz" respawn="false"
+  args="-d $(find franka_moveit)/config/moveit_demo.rviz" output="screen">
+  <rosparam command="load" file="$(find panda_moveit_config)/config/kinematics.yaml"/>
+</node>
 
   <!-- If database loading was enabled, start mongodb as well -->
-  <include file="$(find panda_moveit_config)/launch/default_warehouse_db.launch" if="$(arg db)">
-    <arg name="moveit_warehouse_database_path" value="$(arg db_path)"/>
-  </include>
+<include file="$(find panda_moveit_config)/launch/default_warehouse_db.launch" if="$(arg db)">
+  <arg name="moveit_warehouse_database_path" value="$(arg db_path)"/>
+</include>
 
-  <node name="demo_boxes_scene_loader" pkg="franka_moveit" type="test_scene_interface.py" respawn="false" output="screen" />
+<node name="demo_boxes_scene_loader" pkg="franka_moveit" type="test_scene_interface.py" respawn="false" output="screen" />
 
 </launch>

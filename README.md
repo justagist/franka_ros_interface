@@ -77,8 +77,10 @@ Available keyword arguments for launch file:
 
 This starts the robot controllers and drivers to expose a variety of ROS topics and services for communicating with and controlling the robot. The robot's measurements and controllers can be accessed using ROS topics and services (see below to find out about some of the available topics and services), or using the provided [Python API][fri-doc] (also see [*PandaRobot*](https://github.com/justagist/panda_robot)).
 
-Basic usage of the API is shown in the [`test_robot.py` example file](franka_interface/tests/test_robot.py).
-See [documentation][fri-doc] for all available methods and functionalities. More usage examples can be found in the [PandaRobot](https://github.com/justagist/panda_robot).
+Example of the robot working with MoveIt can be found by running `roslaunch franka_moveit demo_moveit.launch`.
+
+Basic usage of the Python API is shown in the [`test_robot.py` example file](franka_interface/tests/test_robot.py).
+See [documentation][fri-doc] for all available methods and functionalities. More usage examples can be found in the [PandaRobot](https://github.com/justagist/panda_robot) package.
 
 ### The *franka.sh* environments
 
@@ -90,7 +92,8 @@ Once the values are correctly modified in the `franka.sh` file, different enviro
 
 #### Some useful ROS topics
 
-##### Published Topics:
+##### Published Topics
+
 | ROS Topic | Data |
 | ------ | ------ |
 | */franka_ros_interface/custom_franka_state_controller/robot_state* | gravity, coriolis, jacobian, cartesian velocity, etc. |
@@ -98,7 +101,8 @@ Once the values are correctly modified in the `franka.sh` file, different enviro
 | */franka_ros_interface/joint_states* | joint positions, velocities, efforts |
 | */franka_ros_interface/franka_gripper/joint_states* | joint positions, velocities, efforts of gripper joints |
 
-##### Subscribed Topics:
+##### Subscribed Topics
+
 | ROS Topic | Data |
 | ------ | ------ |
 | */franka_ros_interface/motion_controller/arm/joint_commands* | command the robot using the currently active controller |
@@ -106,7 +110,8 @@ Once the values are correctly modified in the `franka.sh` file, different enviro
 
 Other topics for changing the controller gains (also dynamically configurable), command timeout, etc. are also available.
 
-#### ROS Services:
+#### ROS Services
+
 Controller manager service can be used to switch between all available controllers (joint position, velocity, effort). Gripper joints can be controlled using the ROS ActionClient. Other services for changing coordinate frames, adding gripper load configuration, etc. are also available.
 
 #### Python API
@@ -115,10 +120,12 @@ Most of the above services and topics are wrapped using simple Python classes or
 
 [Documentation][fri-doc]
 
+More usage examples in the [PandaRobot](https://github.com/justagist/panda_robot) package.
+
 ### Related Packages
 
 - [*panda_simulator*][ps-repo] : A Gazebo simulator for the Franka Emika Panda robot with ROS interface, providing exposed controllers and real-time robot state feedback similar to the real robot when using the *franka_ros_interface* package. Provides almost complete real-to-sim transfer of code.
-- [*PandaRobot*](https://github.com/justagist/panda_robot) : Python interface providing higher-level control of the robot integrated with its gripper control, controller manager, coordinate frames manager, etc. with safety checks and other helper utilities. It also provides the kinematics and dynamics of the robot using the [KDL library](http://wiki.ros.org/kdl).
+- [*PandaRobot*](https://github.com/justagist/panda_robot) : Python interface providing higher-level control of the robot integrated with its gripper control, controller manager, coordinate frames manager, etc. with safety checks and other helper utilities. It also provides the kinematics and dynamics of the robot using the [KDL library](http://wiki.ros.org/kdl). It is built over Franka ROS Interface and provides a more intuitive and unified single-class interface.
 - [*franka_panda_description*][fpd-repo] : Robot description package modified from [*franka_ros*][franka-ros] package to include dynamics parameters for the robot arm (as estimated in [this paper](https://hal.inria.fr/hal-02265293/document)). Also includes transmission and control definitions required for the [*panda_simulator*][ps-repo] package.
 
    [ps-repo]: <https://github.com/justagist/panda_simulator>
@@ -128,10 +135,10 @@ Most of the above services and topics are wrapped using simple Python classes or
    [libfranka-doc]: <https://frankaemika.github.io/docs/installation_linux.html#building-from-source>
    [franka-ros]: <https://frankaemika.github.io/docs/franka_ros.html>
 
-##### License
+#### License
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Copyright (c) 2019-2020, Saif Sidhik
+Copyright (c) 2019-2021, Saif Sidhik
 
 If you use this software, please cite it using [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3747412.svg)](https://doi.org/10.5281/zenodo.3747412).

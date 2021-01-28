@@ -9,7 +9,7 @@
 # **************************************************************************/
 
 # /***************************************************************************
-# Copyright (c) 2019-2020, Saif Sidhik
+# Copyright (c) 2019-2021, Saif Sidhik
  
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -90,10 +90,6 @@ class PandaMoveGroupInterface:
            "Please check to make sure your ROS networking is "
            "properly configured:\n")
             sys.exit()
-        # except:
-        #     rospy.loginfo(
-        #         ("PandaMoveGroupInterface: could not detect gripper."))
-        #     self._gripper_group = None
 
         self._display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',
                                            moveit_msgs.msg.DisplayTrajectory,
@@ -104,14 +100,11 @@ class PandaMoveGroupInterface:
         else:
             self._default_ee = 'panda_link8'
         self._arm_group.set_end_effector_link(self._default_ee)
-        # self._arm_group.set_goal_tolerance(0.0001,0.0001,0.001)
 
         rospy.loginfo("PandaMoveGroupInterface: Setting default EE link to '{}' "
             "Use group.set_end_effector_link() method to change default EE.".format(self._default_ee))
 
         self._arm_group.set_max_velocity_scaling_factor(0.3)
-        # self._arm_group.set_goal_position_tolerance(0.00005)
-        # self._arm_group.set_goal_orientation_tolerance(0.001)
 
 
     @property

@@ -9,7 +9,7 @@
 # **************************************************************************/
 
 # /***************************************************************************
-# Copyright (c) 2019-2020, Saif Sidhik
+# Copyright (c) 2019-2021, Saif Sidhik
  
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 # limitations under the License.
 # **************************************************************************/
 import rospy
-from franka_msgs.srv import SetForceTorqueCollisionBehavior, SetFullCollisionBehavior
+from franka_msgs.srv import SetForceTorqueCollisionBehavior
 
 DEFAULT_VALUES =  {
             'torque_acc_lower'  : [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0],
