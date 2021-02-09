@@ -1,15 +1,16 @@
-.. franka_ros_interface documentation master file, created by
-   sphinx-quickstart on Fri Mar 13 18:33:23 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Franka ROS Interface
 ====================
 
 |release| |doi|
 
+
 A ROS interface library for the Franka Emika Panda robot, extending the `franka_ros`_ to expose more information about the robot, and
 providing low-level control of the robot using ROS and `Python API <Python API Documentation_>`_.
+
+Go to `Project Source Code`_.
+
+.. image:: https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_robot_demo.gif
+   :target: https://youtu.be/4bEVysUIvOY
 
 Provides utilites for controlling and managing the Franka Emika Panda robot (real and
 `simulated <panda_simulator_>`_). Contains exposed controllers for the robot (joint position,
@@ -17,8 +18,13 @@ velocity, torque), interfaces for the gripper, controller manager,
 coordinate frames interface, etc. Also provides utilities to control the robot using 
 MoveIt! and ROS Trajectory Action & ActionClient. 
 This package also provides almost complete sim-to-real /
-real-to-sim transfer of code with the `panda_simulator`_
+real-to-sim transfer of code with the `Panda Simulator <panda_simulator_>`_
 package.
+
+A more unified ROS Python interface built over this package is available in the `PandaRobot <panda_robot_>`_ package, which provides a more intuitive interface class that combines the different API classes in this package. Simple demo and `basic usage <https://justagist.github.io/panda_robot/#basic-usage>`_ are also shown.
+
+.. image:: https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_simulator.gif
+   :target: https://www.youtube.com/watch?v=NdSbXC0r7tU
 
 **Features**
 
@@ -31,15 +37,37 @@ package.
    controlling and monitoring the gripper.
 -  Python API classes and utility functions to control the robot using 
    MoveIt! and ROS Trajectory Action Service. 
--  The `panda_simulator`_ package (which is Gazebo-based
+-  The `Panda Simulator <panda_simulator_>`_ package (which is Gazebo-based
    simulator for the robot) can also be controlled using this package
    (ROS and Python interface), providing almost complete sim-to-real
    transfer of code.
 
+.. image:: https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/ts_demo.gif
+   :target: https://youtu.be/a_HEmYzqEnk
+
+Related Packages
+----------------
+
+-  `Panda Simulator <panda_simulator_>`_ : A Gazebo simulator for the Franka Emika Panda
+   robot with ROS interface, providing exposed controllers and real-time
+   robot state feedback similar to the real robot when using the
+   *franka_ros_interface* package. Provides almost complete real-to-sim
+   transfer of code.
+-  `PandaRobot <panda_robot_>`_ : Python interface providing higher-level control of
+   the robot integrated with its gripper control, controller manager,
+   coordinate frames manager, etc. with safety checks and other helper
+   utilities. It also provides the kinematics and dynamics of the robot
+   using the `KDL library`_. It is built over Franka ROS Interface and 
+   provides a more intuitive and unified single-class interface.
+-  `franka_panda_description`_ : Robot description package modified from
+   `franka_ros`_ package to include dynamics parameters for the robot
+   arm (as estimated in `this paper`_). Also includes transmission and
+   control definitions required for the `panda_simulator`_ package.
+
 Go to `Project Source Code`_.
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :caption: Contents:
    :numbered:
 
@@ -58,7 +86,7 @@ Go to `Project Source Code`_.
 **LICENSE:**
 
 |License|
-Copyright (c) 2019-2020, Saif Sidhik
+Copyright (c) 2019-2021, Saif Sidhik
 
 |doi|
 

@@ -18,7 +18,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>franka_tools.controller_manager_interface &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
+  <title>franka_tools.controller_manager_interface &mdash; Franka ROS Interface 0.7.1 documentation</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.0
+                0.7.1
               </div>
             
           
@@ -222,7 +222,7 @@
 <span class="c1"># **************************************************************************/</span>
 
 <span class="c1"># /***************************************************************************</span>
-<span class="c1"># Copyright (c) 2019-2020, Saif Sidhik</span>
+<span class="c1"># Copyright (c) 2019-2021, Saif Sidhik</span>
  
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -242,7 +242,7 @@
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">controller_manager_msgs.msg</span> <span class="kn">import</span> <span class="n">ControllerState</span>
 <span class="kn">from</span> <span class="nn">controller_manager_msgs.srv</span> <span class="kn">import</span> <span class="o">*</span>
-
+<span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">from</span> <span class="nn">franka_core_msgs.msg</span> <span class="kn">import</span> <span class="n">JointControllerStates</span>
 
 <span class="kn">from</span> <span class="nn">franka_tools</span> <span class="kn">import</span> <span class="n">ControllerParamConfigClient</span>
@@ -301,7 +301,22 @@
 <span class="sd">    :rtype: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">type_param</span> <span class="o">=</span> <span class="n">_append_ns</span><span class="p">(</span><span class="n">ctrls_ns</span><span class="p">,</span> <span class="n">ctrl_name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/type&#39;</span>
-    <span class="k">return</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">type_param</span><span class="p">)</span>   
+    <span class="k">return</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">type_param</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_get_controller_name_from_rosparam_server</span><span class="p">(</span><span class="n">rosparam_name</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cname</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">rosparam_name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;FrankaControllerManagerInterface: cannot detect controller name&quot;</span>
+                        <span class="s2">&quot; under param </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rosparam_name</span><span class="p">))</span>
+        <span class="n">cname</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">):</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;Failed to connect to the ROS parameter server!</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Please check to make sure your ROS networking is &quot;</span>
+            <span class="s2">&quot;properly configured:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">cname</span>
 
 <span class="k">class</span> <span class="nc">ControllerStateInfo</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -382,6 +397,16 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_controller_lister</span> <span class="o">=</span> <span class="n">ControllerLister</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cm_ns</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controller_names_from_rosparam</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;joint_position_controller&#39;</span><span class="p">:</span> <span class="n">_get_controller_name_from_rosparam_server</span><span class="p">(</span><span class="s1">&#39;/controllers_config/position_controller&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;joint_velocity_controller&#39;</span><span class="p">:</span> <span class="n">_get_controller_name_from_rosparam_server</span><span class="p">(</span><span class="s1">&#39;/controllers_config/velocity_controller&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;joint_torque_controller&#39;</span><span class="p">:</span> <span class="n">_get_controller_name_from_rosparam_server</span><span class="p">(</span><span class="s1">&#39;/controllers_config/torque_controller&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;joint_trajectory_controller&#39;</span><span class="p">:</span> <span class="n">_get_controller_name_from_rosparam_server</span><span class="p">(</span><span class="s1">&#39;/controllers_config/trajectory_controller&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;effort_joint_position_controller&#39;</span><span class="p">:</span> <span class="n">_get_controller_name_from_rosparam_server</span><span class="p">(</span><span class="s1">&#39;/controllers_config/impedance_controller&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;default_controller&#39;</span><span class="p">:</span> <span class="n">_get_controller_name_from_rosparam_server</span><span class="p">(</span><span class="s1">&#39;/controllers_config/default_controller&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_sim</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_non_motion_controllers</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s1">&#39;/custom_franka_state_controller&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s1">&#39;/panda_gripper_controller&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s1">&#39;/effort_joint_gravity_controller&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s1">&#39;/joint_state_controller&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -417,9 +442,7 @@
 
     <span class="k">def</span> <span class="nf">_assert_one_active_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ctrlr_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="c1"># if not self._in_sim:</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ctrlr_list</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;FrankaControllerManagerInterface: More than one motion controller active!&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span> <span class="o">=</span> <span class="n">ctrlr_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ctrlr_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
 
 
@@ -531,6 +554,9 @@
                                               <span class="nb">type</span><span class="o">=</span><span class="n">type_str</span><span class="p">,</span>
                                               <span class="n">state</span><span class="o">=</span><span class="s1">&#39;uninitialized&#39;</span><span class="p">)</span>
                 <span class="n">controllers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">uninit_ctrl</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">controllers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="k">return</span> <span class="n">controllers</span></div>
 
 <div class="viewcode-block" id="FrankaControllerManagerInterface.controller_dict"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaControllerManagerInterface.controller_dict">[docs]</a>    <span class="k">def</span> <span class="nf">controller_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -558,6 +584,13 @@
 <span class="sd">        :param controller_name: name of controller to start</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="k">if</span> <span class="n">controller_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;FrankaControllerManagerInterface: Empty controller name in controller switch request. Ignoring.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span>
+
+        <span class="k">if</span> <span class="n">controller_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+            <span class="n">controller_name</span> <span class="o">=</span> <span class="n">controller_name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        
         <span class="n">curr_ctrlr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span>
         <span class="n">switch_ctrl</span> <span class="o">=</span> <span class="p">(</span><span class="n">curr_ctrlr</span> <span class="o">!=</span> <span class="n">controller_name</span><span class="p">)</span>
 
@@ -565,9 +598,7 @@
             <span class="n">active_controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                <span class="n">rospy</span><span class="o">.</span><span class="n">logdebug</span><span class="p">(</span><span class="s2">&quot;FrankaControllerManagerInterface: Stopping </span><span class="si">%s</span><span class="s2"> for trajectory controlling&quot;</span><span class="o">%</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_loaded</span><span class="p">(</span><span class="n">controller_name</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">load_controller</span><span class="p">(</span><span class="n">controller_name</span><span class="p">)</span>
@@ -721,7 +752,7 @@
 <span class="sd">            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.</span>
 <span class="sd">        :type: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/velocity_joint_velocity_controller&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller_names_from_rosparam</span><span class="p">[</span><span class="s1">&#39;joint_velocity_controller&#39;</span><span class="p">]</span> 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">joint_position_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -732,7 +763,7 @@
 <span class="sd">            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.</span>
 <span class="sd">        :type: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/position_joint_position_controller&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller_names_from_rosparam</span><span class="p">[</span><span class="s1">&#39;joint_position_controller&#39;</span><span class="p">]</span> 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">joint_torque_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -743,7 +774,7 @@
 <span class="sd">            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.</span>
 <span class="sd">        :type: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/effort_joint_torque_controller&quot;</span>    
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller_names_from_rosparam</span><span class="p">[</span><span class="s1">&#39;joint_torque_controller&#39;</span><span class="p">]</span>     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">joint_impedance_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -754,7 +785,7 @@
 <span class="sd">            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.</span>
 <span class="sd">        :type: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/effort_joint_impedance_controller&quot;</span>   
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller_names_from_rosparam</span><span class="p">[</span><span class="s1">&#39;joint_impedance_controller&#39;</span><span class="p">]</span>  
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">effort_joint_position_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -765,7 +796,7 @@
 <span class="sd">            :py:meth:`FrankaControllerManagerInterface.set_motion_controller`.</span>
 <span class="sd">        :type: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot;/effort_joint_position_controller&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller_names_from_rosparam</span><span class="p">[</span><span class="s1">&#39;effort_joint_position_controller&#39;</span><span class="p">]</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">joint_trajectory_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -779,7 +810,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_sim</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint_position_controller</span>
-        <span class="k">return</span> <span class="s2">&quot;position_joint_trajectory_controller&quot;</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller_names_from_rosparam</span><span class="p">[</span><span class="s1">&#39;joint_trajectory_controller&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">current_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -787,9 +818,21 @@
 <span class="sd">        :getter: Returns the name of currently active controller.</span>
 <span class="sd">        :type: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assert_one_active_controller</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;FrankaControllerManagerInterface: No active controller!&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_controller</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">default_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :getter: Returns the name of the default controller for Franka ROS Interface.</span>
+<span class="sd">            (specified in robot_config.yaml). Should ideally default to the same as</span>
+<span class="sd">            :py:meth:`joint_trajectory_controller`.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controller_names_from_rosparam</span><span class="p">[</span><span class="s1">&#39;default_controller&#39;</span><span class="p">]</span></div>
+
     
 
 
@@ -814,7 +857,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Saif Sidhik
+        &copy; Copyright 2019-2021, Saif Sidhik
 
     </p>
   </div>

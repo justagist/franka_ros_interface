@@ -18,7 +18,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>franka_tools.frames_interface &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
+  <title>franka_tools.frames_interface &mdash; Franka ROS Interface 0.7.1 documentation</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.0
+                0.7.1
               </div>
             
           
@@ -211,17 +211,17 @@
   <h1>Source code for franka_tools.frames_interface</h1><div class="highlight"><pre>
 <span></span><span class="c1"># /***************************************************************************</span>
 
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># @package: franka_tools</span>
 <span class="c1"># @metapackage: franka_ros_interface</span>
 <span class="c1"># @author: Saif Sidhik &lt;sxs1412@bham.ac.uk&gt;</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 
 <span class="c1"># **************************************************************************/</span>
 
 <span class="c1"># /***************************************************************************</span>
-<span class="c1"># Copyright (c) 2019-2020, Saif Sidhik</span>
- 
+<span class="c1"># Copyright (c) 2019-2021, Saif Sidhik</span>
+
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
 <span class="c1"># You may obtain a copy of the License at</span>
@@ -235,44 +235,46 @@
 <span class="c1"># limitations under the License.</span>
 <span class="c1"># **************************************************************************/</span>
 
-<span class="kn">import</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">quaternion</span>
-<span class="kn">from</span> <span class="nn">franka_control.srv</span> <span class="kn">import</span> <span class="n">SetEEFrame</span><span class="p">,</span> <span class="n">SetKFrame</span>
+<span class="kn">import</span> <span class="nn">tf2_ros</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">import</span> <span class="nn">quaternion</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">franka_dataflow</span>
+<span class="kn">from</span> <span class="nn">franka_msgs.srv</span> <span class="kn">import</span> <span class="n">SetEEFrame</span><span class="p">,</span> <span class="n">SetKFrame</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="n">_FRAME_NAMES</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Constants&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;EE_FRAME&#39;</span><span class="p">,</span> <span class="s1">&#39;K_FRAME&#39;</span><span class="p">])</span>
-<span class="n">DEFAULT_TRANSFORMATIONS</span> <span class="o">=</span> <span class="n">_FRAME_NAMES</span><span class="p">(</span> <span class="p">[</span><span class="mf">0.707099974155426</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.707099974155426</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.707099974155426</span><span class="p">,</span> 
-                        <span class="mf">0.707099974155426</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.10339999943971634</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="c1"># EE_FRAME  </span>
-    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.10339999943971634</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>  <span class="c1"># K_FRAME</span>
-    <span class="p">)</span> <span class="c1"># default when the franka_ros control is launched</span>
+<span class="n">DEFAULT_TRANSFORMATIONS</span> <span class="o">=</span> <span class="n">_FRAME_NAMES</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+                                        <span class="mi">1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>  <span class="c1"># EE_FRAME</span>
+                                       <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+                                           <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>  <span class="c1"># K_FRAME</span>
+                                       <span class="p">)</span>  <span class="c1"># identity matrices by default</span>
 
 
 <div class="viewcode-block" id="FrankaFramesInterface"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface">[docs]</a><span class="k">class</span> <span class="nc">FrankaFramesInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Helper class to retrieve and set EE frames</span>
+<span class="sd">        Helper class to retrieve and set EE frames.</span>
 
-<span class="sd">        Has to be updated externally each time franka states is updated. This is done by default within the PandaArm class (panda_robot package: https://github.com/justagist/panda_robot ).</span>
+<span class="sd">        .. note:: The current (realtime) transformation of the end-effector frame and stiffness frame has to be updated externally each time franka states is updated. All of this is done automatically within the ArmInterface class, so use the instance of FrankaFramesInterface from the ArmInterface object using :py:meth:`get_frames_interface&lt;franka_interface.ArmInterface.get_frames_interface&gt;` for ease.</span>
 
-<span class="sd">        .. note: All controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in PandaArm class).</span>
+<span class="sd">        .. note:: All controllers have to be unloaded before switching frames. This has to be done externally (also automatically handled in ArmInterface class).</span>
+
+<span class="sd">        .. note:: It is best to provide all transformation matrices using numpy arrays. If providing as flattened 1D list, make sure it is in column major format.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span> <span class="o">=</span> <span class="kc">None</span>
-        
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># NE_T_EE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># EE_T_K</span>
 
 <div class="viewcode-block" id="FrankaFramesInterface.set_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set new EE frame based on the transformation given by &#39;frame&#39;, which is the </span>
-<span class="sd">        transformation matrix defining the new desired EE frame with respect to the flange frame.</span>
+<span class="sd">        transformation matrix defining the new desired EE frame with respect to the nominal end-effector frame (NE_T_EE).</span>
 
-<span class="sd">        :type frame: [float (16,)] / np.ndarray (4x4) </span>
-<span class="sd">        :param frame: transformation matrix of new EE frame wrt flange frame (column major)</span>
+<span class="sd">        :type frame: [float (16,)] / np.ndarray (4x4)</span>
+<span class="sd">        :param frame: transformation matrix of new EE frame wrt nominal end-effector frame (if list, should be column major)</span>
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        :return: success status of service request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -280,17 +282,17 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_setEE_service</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span></div>
 
-
     <span class="k">def</span> <span class="nf">_update_frame_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EE_frame_transformation</span><span class="p">,</span> <span class="n">K_frame_transformation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            The callback function used by the PandaArm class to update the current frame transformations.</span>
+<span class="sd">            The callback function used by the PandaArm class to update the current frame transformations NE_T_EE and EE_T_K.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">EE_frame_transformation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;FrankaFramesInterface: Current EE frame transformation could not be retrieved!&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="n">EE_frame_transformation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;FrankaFramesInterface: Current EE frame transformation could not be retrieved!&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span> <span class="o">=</span> <span class="n">EE_frame_transformation</span>
 
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">K_frame_transformation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;FrankaFramesInterface: Current K frame transformation could not be retrieved!&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="n">K_frame_transformation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;FrankaFramesInterface: Current K frame transformation could not be retrieved!&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span> <span class="o">=</span> <span class="n">K_frame_transformation</span>
-
 
     <span class="k">def</span> <span class="nf">_assert_frame_validity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
 
@@ -298,43 +300,52 @@
             <span class="k">if</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
                 <span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid shape for transformation matrix numpy array&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Invalid shape for transformation matrix numpy array&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;Invalid number of elements in transformation matrix. Should have 16 elements.&quot;</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="n">frame</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;Invalid number of elements in transformation matrix. Should have 16 elements.&quot;</span>
 
         <span class="k">return</span> <span class="n">frame</span>
 
-<div class="viewcode-block" id="FrankaFramesInterface.get_link_tf"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.get_link_tf">[docs]</a>    <span class="k">def</span> <span class="nf">get_link_tf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="s1">&#39;/panda_link8&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="FrankaFramesInterface.get_link_tf"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.get_link_tf">[docs]</a>    <span class="k">def</span> <span class="nf">get_link_tf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;panda_NE&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get :math:`4\times 4` transformation matrix of a frame with respect to another.</span>
 <span class="sd">        :return: :math:`4\times 4` transformation matrix</span>
 <span class="sd">        :rtype: np.ndarray</span>
 <span class="sd">        :param frame_name: Name of the child frame from the TF tree</span>
 <span class="sd">        :type frame_name: str</span>
-<span class="sd">        :param parent: Name of parent frame (default: &#39;/panda_link8&#39;)</span>
+<span class="sd">        :param parent: Name of parent frame (default: &#39;panda_NE&#39;, the default nominal end-effector frame set in Desk)</span>
 <span class="sd">        :type parent: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">listener</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">TransformListener</span><span class="p">()</span>
-        <span class="n">err</span> <span class="o">=</span> <span class="s2">&quot;FrankaFramesInterface: Error while looking up transform from Flange frame to link frame </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">frame_name</span>
+        <span class="n">tfBuffer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Buffer</span><span class="p">()</span>
+        <span class="n">listener</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">TransformListener</span><span class="p">(</span><span class="n">tfBuffer</span><span class="p">)</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="s2">&quot;FrankaFramesInterface: Error while looking up transform from Flange frame to link frame </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">frame_name</span>
+
         <span class="k">def</span> <span class="nf">body</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">listener</span><span class="o">.</span><span class="n">lookupTransform</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                <span class="n">tfBuffer</span><span class="o">.</span><span class="n">lookup_transform</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">LookupException</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">ConnectivityException</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">ExtrapolationException</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">return</span> <span class="kc">True</span>
 
-        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">body</span><span class="p">(),</span> <span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">raise_on_error</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_msg</span> <span class="o">=</span> <span class="n">err</span><span class="p">)</span>
+        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="n">body</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout_msg</span><span class="o">=</span><span class="n">err</span><span class="p">)</span>
 
-        <span class="n">t</span><span class="p">,</span><span class="n">rot</span> <span class="o">=</span> <span class="n">listener</span><span class="o">.</span><span class="n">lookupTransform</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">trans_stamped</span> <span class="o">=</span> <span class="n">tfBuffer</span><span class="o">.</span><span class="n">lookup_transform</span><span class="p">(</span>
+            <span class="n">parent</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">trans_stamped</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+             <span class="n">trans_stamped</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">trans_stamped</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">z</span><span class="p">]</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">trans_stamped</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">rotation</span>
 
-        <span class="n">rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quaternion</span><span class="p">(</span><span class="n">rot</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">rot</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">rot</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">rot</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quaternion</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 
         <span class="n">rot</span> <span class="o">=</span> <span class="n">quaternion</span><span class="o">.</span><span class="n">as_rotation_matrix</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
 
         <span class="n">trans_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 
-        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">rot</span>
-        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">rot</span>
+        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">trans_mat</span></div>
 
@@ -361,8 +372,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames_are_same</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="FrankaFramesInterface.set_EE_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_EE_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+<div class="viewcode-block" id="FrankaFramesInterface.set_EE_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_EE_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set new EE frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
 <span class="sd">        Motion controllers are stopped for switching</span>
@@ -375,45 +385,45 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_link_tf</span><span class="p">(</span><span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span></div>
 
-
-
-<div class="viewcode-block" id="FrankaFramesInterface.get_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.get_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">get_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_mat</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="FrankaFramesInterface.get_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.get_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">get_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_mat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get current EE frame transformation matrix in flange frame</span>
-<span class="sd">        </span>
+
 <span class="sd">        :type as_mat: bool</span>
 <span class="sd">        :param as_mat: if True, return np array, else as list</span>
 <span class="sd">        :rtype: [float (16,)] / np.ndarray (4x4) </span>
 <span class="sd">        :return: transformation matrix of EE frame wrt flange frame (column major)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">as_mat</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">as_mat</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FrankaFramesInterface.reset_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.reset_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">reset_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Reset EE frame to default. (defined by DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above) </span>
+<span class="sd">        Reset EE frame to default. (defined by DEFAULT_TRANSFORMATIONS.EE_FRAME global variable defined above)</span>
+<span class="sd">        By default, this is identity aligning it with the nominal end-effector frame.</span>
 
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        :return: success status of service request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_EE_frame</span><span class="p">(</span><span class="n">frame</span> <span class="o">=</span> <span class="n">DEFAULT_TRANSFORMATIONS</span><span class="o">.</span><span class="n">EE_FRAME</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_EE_frame</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="n">DEFAULT_TRANSFORMATIONS</span><span class="o">.</span><span class="n">EE_FRAME</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">EE_frame_is_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;FrankaFramesInterface: Current EE Frame is not known.&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">DEFAULT_TRANSFORMATIONS</span><span class="o">.</span><span class="n">EE_FRAME</span><span class="p">)</span>
-        
 
     <span class="k">def</span> <span class="nf">_request_setEE_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans_mat</span><span class="p">):</span>
 
-        <span class="n">rospy</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">(</span><span class="s1">&#39;/franka_ros_interface/franka_control/set_EE_frame&#39;</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">(</span>
+            <span class="s1">&#39;/franka_ros_interface/franka_control/set_EE_frame&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">service_handle</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span><span class="s1">&#39;/franka_ros_interface/franka_control/set_EE_frame&#39;</span><span class="p">,</span> <span class="n">SetEEFrame</span><span class="p">)</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">service_handle</span><span class="p">(</span><span class="n">F_T_EE</span> <span class="o">=</span> <span class="n">trans_mat</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Set EE Frame Request Status: </span><span class="si">%s</span><span class="s2">. </span><span class="se">\n\t</span><span class="s2">Details: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="s2">&quot;Success&quot;</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span> <span class="k">else</span> <span class="s2">&quot;Failed!&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
+            <span class="n">service_handle</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span>
+                <span class="s1">&#39;/franka_ros_interface/franka_control/set_EE_frame&#39;</span><span class="p">,</span> <span class="n">SetEEFrame</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">service_handle</span><span class="p">(</span><span class="n">F_T_EE</span><span class="o">=</span><span class="n">trans_mat</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Set EE Frame Request Status: </span><span class="si">%s</span><span class="s2">. </span><span class="se">\n\t</span><span class="s2">Details: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="s2">&quot;Success&quot;</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span> <span class="k">else</span> <span class="s2">&quot;Failed!&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span>
         <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceException</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;Set EE Frame Request: Service call failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;Set EE Frame Request: Service call failed: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
-
 
 <div class="viewcode-block" id="FrankaFramesInterface.set_K_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_K_frame">[docs]</a>    <span class="k">def</span> <span class="nf">set_K_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -429,7 +439,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_setK_service</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FrankaFramesInterface.set_K_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_K_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_K_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+<div class="viewcode-block" id="FrankaFramesInterface.set_K_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_K_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_K_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set new K frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
 <span class="sd">        Motion controllers are stopped for switching</span>
@@ -441,77 +451,82 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">listener</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">TransformListener</span><span class="p">()</span>
-        <span class="n">err</span> <span class="o">=</span> <span class="s2">&quot;FrankaFramesInterface: Error while looking up transform from EE frame to link frame </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">frame_name</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="s2">&quot;FrankaFramesInterface: Error while looking up transform from EE frame to link frame </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">frame_name</span>
+
         <span class="k">def</span> <span class="nf">body</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">listener</span><span class="o">.</span><span class="n">lookupTransform</span><span class="p">(</span><span class="s1">&#39;/panda_EE&#39;</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                <span class="n">listener</span><span class="o">.</span><span class="n">lookupTransform</span><span class="p">(</span>
+                    <span class="s1">&#39;/panda_EE&#39;</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">LookupException</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">ConnectivityException</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">ExtrapolationException</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">return</span> <span class="kc">True</span>
 
-        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">body</span><span class="p">(),</span> <span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">raise_on_error</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_msg</span> <span class="o">=</span> <span class="n">err</span><span class="p">)</span>
+        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="n">body</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout_msg</span><span class="o">=</span><span class="n">err</span><span class="p">)</span>
 
-        <span class="n">t</span><span class="p">,</span><span class="n">rot</span> <span class="o">=</span> <span class="n">listener</span><span class="o">.</span><span class="n">lookupTransform</span><span class="p">(</span><span class="s1">&#39;/panda_EE&#39;</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">rot</span> <span class="o">=</span> <span class="n">listener</span><span class="o">.</span><span class="n">lookupTransform</span><span class="p">(</span>
+            <span class="s1">&#39;/panda_EE&#39;</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 
-        <span class="n">rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quaternion</span><span class="p">(</span><span class="n">rot</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">rot</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">rot</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">rot</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quaternion</span><span class="p">(</span><span class="n">rot</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">rot</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rot</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rot</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
         <span class="n">rot</span> <span class="o">=</span> <span class="n">quaternion</span><span class="o">.</span><span class="n">as_rotation_matrix</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
 
         <span class="n">trans_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 
-        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">rot</span>
-        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">rot</span>
+        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_K_frame</span><span class="p">(</span><span class="n">trans_mat</span><span class="p">)</span></div>
-        
 
-<div class="viewcode-block" id="FrankaFramesInterface.get_K_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.get_K_frame">[docs]</a>    <span class="k">def</span> <span class="nf">get_K_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_mat</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="FrankaFramesInterface.get_K_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.get_K_frame">[docs]</a>    <span class="k">def</span> <span class="nf">get_K_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_mat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get current K frame transformation matrix in EE frame</span>
-<span class="sd">        </span>
+
 <span class="sd">        :type as_mat: bool</span>
 <span class="sd">        :param as_mat: if True, return np array, else as list</span>
 <span class="sd">        :rtype: [float (16,)] / np.ndarray (4x4) </span>
 <span class="sd">        :return: transformation matrix of K frame wrt EE frame</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">as_mat</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">as_mat</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FrankaFramesInterface.reset_K_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.reset_K_frame">[docs]</a>    <span class="k">def</span> <span class="nf">reset_K_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Reset K frame to default. (defined by DEFAULT_K_ FRAME global variable defined above) </span>
+<span class="sd">        Reset K frame to default. (defined by DEFAULT_K_FRAME global variable defined above)</span>
+<span class="sd">        By default this resets to align the stiffness frame to the end-effector frame.</span>
 
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        :return: success status of service request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_K_frame</span><span class="p">(</span><span class="n">frame</span> <span class="o">=</span> <span class="n">DEFAULT_TRANSFORMATIONS</span><span class="o">.</span><span class="n">K_FRAME</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_K_frame</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="n">DEFAULT_TRANSFORMATIONS</span><span class="o">.</span><span class="n">K_FRAME</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">K_frame_is_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="nf">K_frame_is_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;FrankaFramesInterface: Current K Frame is not known.&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">DEFAULT_TRANSFORMATIONS</span><span class="o">.</span><span class="n">K_FRAME</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_request_setK_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans_mat</span><span class="p">):</span>
         <span class="nb">print</span> <span class="n">trans_mat</span>
-        <span class="n">rospy</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">(</span><span class="s1">&#39;/franka_ros_interface/franka_control/set_K_frame&#39;</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">(</span>
+            <span class="s1">&#39;/franka_ros_interface/franka_control/set_K_frame&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">service_handle</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span><span class="s1">&#39;/franka_ros_interface/franka_control/set_K_frame&#39;</span><span class="p">,</span> <span class="n">SetKFrame</span><span class="p">)</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">service_handle</span><span class="p">(</span><span class="n">EE_T_K</span> <span class="o">=</span> <span class="n">trans_mat</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Set K Frame Request Status: </span><span class="si">%s</span><span class="s2">. </span><span class="se">\n\t</span><span class="s2">Details: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="s2">&quot;Success&quot;</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span> <span class="k">else</span> <span class="s2">&quot;Failed!&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
+            <span class="n">service_handle</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span>
+                <span class="s1">&#39;/franka_ros_interface/franka_control/set_K_frame&#39;</span><span class="p">,</span> <span class="n">SetKFrame</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">service_handle</span><span class="p">(</span><span class="n">EE_T_K</span><span class="o">=</span><span class="n">trans_mat</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Set K Frame Request Status: </span><span class="si">%s</span><span class="s2">. </span><span class="se">\n\t</span><span class="s2">Details: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="s2">&quot;Success&quot;</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span> <span class="k">else</span> <span class="s2">&quot;Failed!&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span>
         <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceException</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;Set K Frame Request: Service call failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;Set K Frame Request: Service call failed: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="c1"># main()</span>
+
     <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
 
     <span class="n">ee_setter</span> <span class="o">=</span> <span class="n">FrankaFramesInterface</span><span class="p">()</span>
 
     <span class="c1"># ee_setter.set_EE_frame([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])</span>
-
-    
 </pre></div>
 
            </div>
@@ -525,7 +540,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Saif Sidhik
+        &copy; Copyright 2019-2021, Saif Sidhik
 
     </p>
   </div>

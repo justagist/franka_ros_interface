@@ -18,7 +18,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>franka_interface.arm &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
+  <title>franka_interface.arm &mdash; Franka ROS Interface 0.7.1 documentation</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.0
+                0.7.1
               </div>
             
           
@@ -211,17 +211,17 @@
   <h1>Source code for franka_interface.arm</h1><div class="highlight"><pre>
 <span></span><span class="c1"># /***************************************************************************</span>
 
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># @package: franka_interface</span>
 <span class="c1"># @metapackage: franka_ros_interface</span>
 <span class="c1"># @author: Saif Sidhik &lt;sxs1412@bham.ac.uk&gt;</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 
 <span class="c1"># **************************************************************************/</span>
 
 <span class="c1"># /***************************************************************************</span>
-<span class="c1"># Copyright (c) 2019-2020, Saif Sidhik</span>
- 
+<span class="c1"># Copyright (c) 2019-2021, Saif Sidhik</span>
+
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
 <span class="c1"># You may obtain a copy of the License at</span>
@@ -259,6 +259,7 @@
 <span class="kn">from</span> <span class="nn">robot_params</span> <span class="kn">import</span> <span class="n">RobotParams</span>
 
 <span class="kn">from</span> <span class="nn">franka_moveit</span> <span class="kn">import</span> <span class="n">PandaMoveGroupInterface</span>
+<span class="kn">from</span> <span class="nn">franka_moveit.utils</span> <span class="kn">import</span> <span class="n">create_pose_msg</span>
 <span class="kn">from</span> <span class="nn">franka_tools</span> <span class="kn">import</span> <span class="n">FrankaFramesInterface</span><span class="p">,</span> <span class="n">FrankaControllerManagerInterface</span><span class="p">,</span> <span class="n">JointTrajectoryActionClient</span><span class="p">,</span> <span class="n">CollisionBehaviourInterface</span>
 
 
@@ -274,26 +275,26 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pose</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocity</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">effort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_effort</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">effort_in_K_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_effort_in_K_frame</span>
 
-    
-    
-    
 
 <div class="viewcode-block" id="ArmInterface"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface">[docs]</a><span class="k">class</span> <span class="nc">ArmInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">    Interface Class for an arm of Franka Panda robot</span>
+<span class="sd">    Interface Class for an arm of Franka Panda robot.</span>
 <span class="sd">    Constructor.</span>
-<span class="sd">    </span>
+
 <span class="sd">    :type synchronous_pub: bool</span>
 <span class="sd">    :param synchronous_pub: designates the JointCommand Publisher</span>
 <span class="sd">        as Synchronous if True and Asynchronous if False.</span>
@@ -318,18 +319,15 @@
         <span class="c1"># ----- eg. RobotMode(0).name &amp; RobotMode(0).value</span>
         <span class="c1"># ----- or  RobotMode[&#39;ROBOT_MODE_OTHER&#39;].name &amp; RobotMode[&#39;ROBOT_MODE_OTHER&#39;].value</span>
 
-        <span class="n">ROBOT_MODE_OTHER</span>                        <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">ROBOT_MODE_IDLE</span>                         <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">ROBOT_MODE_MOVE</span>                         <span class="o">=</span> <span class="mi">2</span>
-        <span class="n">ROBOT_MODE_GUIDING</span>                      <span class="o">=</span> <span class="mi">3</span>
-        <span class="n">ROBOT_MODE_REFLEX</span>                       <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">ROBOT_MODE_USER_STOPPED</span>                 <span class="o">=</span> <span class="mi">5</span>
-        <span class="n">ROBOT_MODE_AUTOMATIC_ERROR_RECOVERY</span>     <span class="o">=</span> <span class="mi">6</span></div>
+        <span class="n">ROBOT_MODE_OTHER</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ROBOT_MODE_IDLE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ROBOT_MODE_MOVE</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">ROBOT_MODE_GUIDING</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">ROBOT_MODE_REFLEX</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">ROBOT_MODE_USER_STOPPED</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">ROBOT_MODE_AUTOMATIC_ERROR_RECOVERY</span> <span class="o">=</span> <span class="mi">6</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">synchronous_pub</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">RobotParams</span><span class="p">()</span>
 
@@ -339,10 +337,10 @@
 
         <span class="n">joint_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_limits</span><span class="o">.</span><span class="n">joint_names</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">joint_names</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;Cannot detect joint names for arm on this &quot;</span>
-                         <span class="s2">&quot;robot. Exiting Arm.init().&quot;</span><span class="p">)</span>
-                         
-            <span class="k">return</span>   
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Cannot detect joint names for arm on this &quot;</span>
+                         <span class="s2">&quot;robot. Exiting Arm.init().&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+            <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span> <span class="o">=</span> <span class="n">joint_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">get_robot_name</span><span class="p">()</span>
@@ -370,28 +368,30 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_collision_behaviour_interface</span> <span class="o">=</span> <span class="n">CollisionBehaviourInterface</span><span class="p">()</span>
         <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ROSException</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Collision Service Not found. It will not be possible to change collision behaviour of robot!&quot;</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Collision Service Not found. It will not be possible to change collision behaviour of robot!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_collision_behaviour_interface</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span> <span class="o">=</span> <span class="n">FrankaControllerManagerInterface</span><span class="p">(</span><span class="n">ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span> <span class="o">=</span> <span class="n">FrankaControllerManagerInterface</span><span class="p">(</span>
+            <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">sim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_speed_ratio</span> <span class="o">=</span> <span class="mf">0.15</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_F_T_NE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_NE_T_EE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
         <span class="n">queue_size</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">synchronous_pub</span> <span class="k">else</span> <span class="mi">1</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_joint_command_publisher</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">+</span><span class="s1">&#39;/motion_controller/arm/joint_commands&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">+</span> <span class="s1">&#39;/motion_controller/arm/joint_commands&#39;</span><span class="p">,</span>
                 <span class="n">JointCommand</span><span class="p">,</span>
                 <span class="n">tcp_nodelay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">queue_size</span><span class="o">=</span><span class="n">queue_size</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pub_joint_cmd_timeout</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">+</span><span class="s1">&#39;/motion_controller/arm/joint_command_timeout&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">+</span> <span class="s1">&#39;/motion_controller/arm/joint_command_timeout&#39;</span><span class="p">,</span>
             <span class="n">Float64</span><span class="p">,</span>
             <span class="n">latch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">queue_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-
-
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_robot_state_subscriber</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">+</span> <span class="s1">&#39;/custom_franka_state_controller/robot_state&#39;</span><span class="p">,</span>
@@ -432,10 +432,13 @@
         <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
                                  <span class="n">timeout_msg</span><span class="o">=</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
 
+        <span class="c1"># start moveit server with panda_link8 (flange) as the end-effector, unless it is in simulation. However, using move_to_cartesian_pose() method compensates for this and moves the robot&#39;s defined end-effector frame (EE frame; see set_EE_frame() and set_EE_frame_to_link()) to the target pose.</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span> <span class="o">=</span> <span class="n">PandaMoveGroupInterface</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span> <span class="o">=</span> <span class="n">PandaMoveGroupInterface</span><span class="p">(</span>
+                <span class="n">use_panda_hand_link</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;MoveGroup was not found! This is okay if moveit service is not required!&quot;</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: MoveGroup was not found! This is okay if moveit service is not required!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_joint_position_speed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed_ratio</span><span class="p">)</span>
@@ -491,23 +494,31 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RobotMode</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">robot_mode</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode_ok</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RobotMode</span><span class="o">.</span><span class="n">ROBOT_MODE_REFLEX</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RobotMode</span><span class="o">.</span><span class="n">ROBOT_MODE_USER_STOPPED</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode_ok</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RobotMode</span><span class="o">.</span><span class="n">ROBOT_MODE_REFLEX</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RobotMode</span><span class="o">.</span><span class="n">ROBOT_MODE_USER_STOPPED</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">O_Jac_EE</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="n">order</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">O_Jac_EE</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_velocity</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;linear&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">2</span><span class="p">]]),</span>
-                <span class="s1">&#39;angular&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">5</span><span class="p">]])</span> <span class="p">}</span>
+            <span class="s1">&#39;linear&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">2</span><span class="p">]]),</span>
+            <span class="s1">&#39;angular&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_dP_EE</span><span class="p">[</span><span class="mi">5</span><span class="p">]])}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_contact</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">cartesian_contact</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_collision</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">cartesian_collision</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_contact</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">joint_contact</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_collision</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">joint_collision</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">_update_frame_data</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">F_T_EE</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">EE_T_K</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_joint_inertia</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">mass_matrix</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_F_T_NE</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">F_T_NE</span> <span class="c1"># should be constant normally</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_NE_T_EE</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">NE_T_EE</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_F_T_EE</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">F_T_EE</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">_update_frame_data</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_NE_T_EE</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">EE_T_K</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joint_inertia</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">mass_matrix</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">q_d</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">q_d</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dq_d</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">dq_d</span>
@@ -515,7 +526,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_gravity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">gravity</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_coriolis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">coriolis</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">message_converter</span><span class="o">.</span><span class="n">convert_ros_message_to_dictionary</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">current_errors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">message_converter</span><span class="o">.</span><span class="n">convert_ros_message_to_dictionary</span><span class="p">(</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">current_errors</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ArmInterface.coriolis_comp"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.coriolis_comp">[docs]</a>    <span class="k">def</span> <span class="nf">coriolis_comp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -526,7 +538,7 @@
 <span class="sd">        :return: 7D joint torques compensating for coriolis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coriolis</span></div>
-        
+
 <div class="viewcode-block" id="ArmInterface.gravity_comp"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.gravity_comp">[docs]</a>    <span class="k">def</span> <span class="nf">gravity_comp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return gravity compensation torques.</span>
@@ -543,7 +555,7 @@
 <span class="sd">        :rtype: dict</span>
 <span class="sd">        :return: [&#39;robot_mode&#39; (RobotMode object), &#39;robot_status&#39; (bool), &#39;errors&#39; (dict() of errors and their truth value), &#39;error_in_curr_status&#39; (bool)]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;robot_mode&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="p">,</span> <span class="s1">&#39;robot_status&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode_ok</span><span class="p">,</span> <span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">,</span> <span class="s1">&#39;error_in_current_state&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_in_current_state</span><span class="p">()}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;robot_mode&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode</span><span class="p">,</span> <span class="s1">&#39;robot_status&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_mode_ok</span><span class="p">,</span> <span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">,</span> <span class="s1">&#39;error_in_current_state&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_in_current_state</span><span class="p">()}</span></div>
 
 <div class="viewcode-block" id="ArmInterface.in_safe_state"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.in_safe_state">[docs]</a>    <span class="k">def</span> <span class="nf">in_safe_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -572,38 +584,37 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_in_current_state</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span></div>
 
-
     <span class="k">def</span> <span class="nf">_on_endpoint_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
 
-        <span class="n">cart_pose_trans_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">O_T_EE</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+        <span class="n">cart_pose_trans_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">O_T_EE</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_pose</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">cart_pose_trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>
-            <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="n">quaternion</span><span class="o">.</span><span class="n">from_rotation_matrix</span><span class="p">(</span><span class="n">cart_pose_trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,:</span><span class="mi">3</span><span class="p">])</span> <span class="p">}</span>
+            <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">cart_pose_trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="n">quaternion</span><span class="o">.</span><span class="n">from_rotation_matrix</span><span class="p">(</span><span class="n">cart_pose_trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]),</span>
+            <span class="s1">&#39;ori_mat&#39;</span><span class="p">:</span> <span class="n">cart_pose_trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,:</span><span class="mi">3</span><span class="p">]}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_effort</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;force&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                                  <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
-                                  <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">z</span><span class="p">]),</span>
+            <span class="s1">&#39;force&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                 <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                 <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">z</span><span class="p">]),</span>
 
-            <span class="s1">&#39;torque&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span> <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                                   <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
-                                   <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">z</span><span class="p">])</span>
+            <span class="s1">&#39;torque&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                  <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                  <span class="n">msg</span><span class="o">.</span><span class="n">O_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">z</span><span class="p">])</span>
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_stiffness_frame_effort</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;force&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span> <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                                  <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
-                                  <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">z</span><span class="p">]),</span>
+            <span class="s1">&#39;force&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                 <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                 <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">force</span><span class="o">.</span><span class="n">z</span><span class="p">]),</span>
 
-            <span class="s1">&#39;torque&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span> <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                                   <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
-                                   <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">z</span><span class="p">])</span>
+            <span class="s1">&#39;torque&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                  <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                  <span class="n">msg</span><span class="o">.</span><span class="n">K_F_ext_hat_K</span><span class="o">.</span><span class="n">wrench</span><span class="o">.</span><span class="n">torque</span><span class="o">.</span><span class="n">z</span><span class="p">])</span>
         <span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tip_states</span> <span class="o">=</span> <span class="n">TipState</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">stamp</span><span class="p">,</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_pose</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_velocity</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_effort</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stiffness_frame_effort</span><span class="p">))</span>
-
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tip_states</span> <span class="o">=</span> <span class="n">TipState</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">stamp</span><span class="p">,</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_pose</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_velocity</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_effort</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stiffness_frame_effort</span><span class="p">))</span>
 
 <div class="viewcode-block" id="ArmInterface.joint_angle"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_angle">[docs]</a>    <span class="k">def</span> <span class="nf">joint_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -699,26 +710,29 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_velocity</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.endpoint_effort"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.endpoint_effort">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_effort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.endpoint_effort"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.endpoint_effort">[docs]</a>    <span class="k">def</span> <span class="nf">endpoint_effort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_base_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Cartesian endpoint wrench {force, torque}.</span>
 
+<span class="sd">        :param in_base_frame: if True, returns end-effector effort with respect to base frame, else in stiffness frame [default: True]</span>
+<span class="sd">        :type in_base_frame: bool</span>
 <span class="sd">        :rtype: dict({str:np.ndarray (shape:(3,)),str:np.ndarray (shape:(3,))})</span>
-<span class="sd">        :return: force and torque at endpoint as named tuples in a dict</span>
+<span class="sd">        :return: force and torque at endpoint as named tuples in a dict in the base frame of the robot or in the stiffness frame (wrist)</span>
 
 <span class="sd">          - &#39;force&#39;: Cartesian force on x,y,z axes in np.ndarray format</span>
 <span class="sd">          - &#39;torque&#39;: Torque around x,y,z axes in np.ndarray format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_effort</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_effort</span><span class="p">)</span> <span class="k">if</span> <span class="n">in_base_frame</span> <span class="k">else</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stiffness_frame_effort</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArmInterface.exit_control_mode"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.exit_control_mode">[docs]</a>    <span class="k">def</span> <span class="nf">exit_control_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clean exit from advanced control modes (joint torque or velocity).</span>
+<span class="sd">        Resets control to joint position mode with current positions if the </span>
+<span class="sd">        advanced control commands are not send within the specified timeout</span>
+<span class="sd">        interval.</span>
 
-<span class="sd">        Resets control to joint position mode with current positions.</span>
-
-<span class="sd">        @type timeout: float</span>
-<span class="sd">        @param timeout: control timeout in seconds [0.2]</span>
+<span class="sd">        :type timeout: float</span>
+<span class="sd">        :param timeout: control timeout in seconds [default: 0.2]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_command_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joint_angles</span><span class="p">())</span></div>
@@ -731,10 +745,10 @@
 <span class="sd">        :return: pose, velocity, effort, effort_in_K_frame</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tip_states</span><span class="p">)</span></div>
-        
+
 <div class="viewcode-block" id="ArmInterface.joint_inertia_matrix"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_inertia_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">joint_inertia_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        </span>
+
 <span class="sd">        :return: joint inertia matrix (7,7)</span>
 <span class="sd">        :rtype: np.ndarray [7x7]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -745,7 +759,7 @@
 <span class="sd">        :return: end-effector jacobian (6,7)</span>
 <span class="sd">        :rtype: np.ndarray [6x7]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span><span class="p">)</span>        </div>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArmInterface.set_command_timeout"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_command_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">set_command_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -755,7 +769,6 @@
 <span class="sd">        :param timeout: timeout in seconds</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pub_joint_cmd_timeout</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">Float64</span><span class="p">(</span><span class="n">timeout</span><span class="p">))</span></div>
-
 
 <div class="viewcode-block" id="ArmInterface.set_joint_position_speed"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_joint_position_speed">[docs]</a>    <span class="k">def</span> <span class="nf">set_joint_position_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -773,7 +786,8 @@
 <span class="sd">                      default= 0.3; range= [0.0-1.0]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">speed</span> <span class="o">&gt;</span> <span class="mf">0.3</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Setting speed above 0.3 could be risky!! Be extremely careful.&quot;</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Setting speed above 0.3 could be risky!! Be extremely careful.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span><span class="o">.</span><span class="n">set_velocity_scale</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_speed_ratio</span> <span class="o">=</span> <span class="n">speed</span></div>
@@ -837,14 +851,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_command_publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_command_msg</span><span class="p">)</span></div>
 
-
 <div class="viewcode-block" id="ArmInterface.has_collided"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.has_collided">[docs]</a>    <span class="k">def</span> <span class="nf">has_collided</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns true if either joint collision or cartesian collision is detected. </span>
 <span class="sd">        Collision thresholds can be set using instance of :py:class:`franka_tools.CollisionBehaviourInterface`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_collision</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_collision</span><span class="p">)</span></div>
-        
 
 <div class="viewcode-block" id="ArmInterface.move_to_neutral"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.move_to_neutral">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_neutral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.15</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -860,10 +872,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_joint_position_speed</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_to_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_neutral_pose_joints</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
 
-
 <div class="viewcode-block" id="ArmInterface.move_to_joint_positions"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.move_to_joint_positions">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
                                 <span class="n">threshold</span><span class="o">=</span><span class="mf">0.00085</span><span class="p">,</span>
-                                <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_moveit</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+                                <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_moveit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        (Blocking) Commands the limb to the provided positions.</span>
 <span class="sd">        Waits until the reported joint state matches that specified.</span>
@@ -884,24 +895,31 @@
 <span class="sd">         move to the joint positions using moveit planner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">curr_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">set_motion_controller</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">joint_trajectory_controller</span><span class="p">)</span>
+        <span class="n">curr_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">set_motion_controller</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">joint_trajectory_controller</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">use_moveit</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span><span class="o">.</span><span class="n">go_to_joint_positions</span><span class="p">([</span><span class="n">positions</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">],</span> <span class="n">tolerance</span> <span class="o">=</span> <span class="n">threshold</span><span class="p">)</span>
-        
+            <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span><span class="o">.</span><span class="n">go_to_joint_positions</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">positions</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">],</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">use_moveit</span><span class="p">:</span>
-                <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: MoveGroupInterface was not found! Using JointTrajectoryActionClient instead.&quot;</span><span class="p">)</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: MoveGroupInterface was not found! Using JointTrajectoryActionClient instead.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
             <span class="n">min_traj_dur</span> <span class="o">=</span> <span class="mf">0.5</span>
-            <span class="n">traj_client</span> <span class="o">=</span> <span class="n">JointTrajectoryActionClient</span><span class="p">(</span><span class="n">joint_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint_names</span><span class="p">())</span>
+            <span class="n">traj_client</span> <span class="o">=</span> <span class="n">JointTrajectoryActionClient</span><span class="p">(</span>
+                <span class="n">joint_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">joint_names</span><span class="p">())</span>
             <span class="n">traj_client</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
             <span class="n">dur</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">)):</span>
-                <span class="n">dur</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_limits</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">min_traj_dur</span><span class="p">))</span>
+                <span class="n">dur</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+                                   <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_limits</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">min_traj_dur</span><span class="p">))</span>
 
-            <span class="n">traj_client</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span><span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">],</span> <span class="n">time</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">)</span>
-            <span class="n">traj_client</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span><span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">positions</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">],</span> <span class="n">time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dur</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed_ratio</span><span class="p">)</span>
+            <span class="n">traj_client</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span>
+                <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">)</span>
+            <span class="n">traj_client</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span><span class="n">positions</span><span class="o">=</span><span class="p">[</span>
+                                  <span class="n">positions</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_names</span><span class="p">],</span> <span class="n">time</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">dur</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed_ratio</span><span class="p">)</span>
 
             <span class="k">def</span> <span class="nf">genf</span><span class="p">(</span><span class="n">joint</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
                 <span class="k">def</span> <span class="nf">joint_diff</span><span class="p">():</span>
@@ -911,26 +929,27 @@
             <span class="n">diffs</span> <span class="o">=</span> <span class="p">[</span><span class="n">genf</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">positions</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span>
                      <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">]</span>
 
-            <span class="n">fail_msg</span> <span class="o">=</span> <span class="s2">&quot;ArmInterface: </span><span class="si">{0}</span><span class="s2"> limb failed to reach commanded joint positions.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                                          <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+            <span class="n">fail_msg</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2"> limb failed to reach commanded joint positions.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+
             <span class="k">def</span> <span class="nf">test_collision</span><span class="p">():</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_collided</span><span class="p">():</span>
                     <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;Collision detected.&quot;</span><span class="p">,</span> <span class="n">fail_msg</span><span class="p">]))</span>
                     <span class="k">return</span> <span class="kc">True</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
-            <span class="n">traj_client</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="c1"># send the trajectory action request</span>
+            <span class="n">traj_client</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>  <span class="c1"># send the trajectory action request</span>
             <span class="c1"># traj_client.wait(timeout = timeout)</span>
 
             <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
-                <span class="n">test</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">test_collision</span><span class="p">()</span> <span class="ow">or</span> <span class="n">traj_client</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> \
-                             <span class="p">(</span><span class="n">callable</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="ow">and</span> <span class="n">test</span><span class="p">()</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">or</span> \
-                             <span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">diff</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">threshold</span> <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">diffs</span><span class="p">)),</span>
+                <span class="n">test</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">test_collision</span><span class="p">()</span> <span class="ow">or</span> <span class="n">traj_client</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
+                <span class="p">(</span><span class="n">callable</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="ow">and</span> <span class="n">test</span><span class="p">()</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">diff</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">threshold</span> <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">diffs</span><span class="p">)),</span>
                 <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
                 <span class="n">timeout_msg</span><span class="o">=</span><span class="n">fail_msg</span><span class="p">,</span>
                 <span class="n">rate</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                 <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">False</span>
-                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">traj_client</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">res</span><span class="o">.</span><span class="n">error_code</span><span class="p">:</span>
                 <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Trajectory Server Message: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
@@ -939,7 +958,79 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">set_motion_controller</span><span class="p">(</span><span class="n">curr_controller</span><span class="p">)</span>
 
-        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Trajectory controlling complete&quot;</span><span class="p">)</span></div>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Trajectory controlling complete&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="ArmInterface.get_flange_pose"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.get_flange_pose">[docs]</a>    <span class="k">def</span> <span class="nf">get_flange_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ori</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the pose of flange (panda_link8) given the pose of the end-effector frame.</span>
+
+<span class="sd">        .. note:: In sim, this method does nothing.</span>
+
+<span class="sd">        :param pos: position of the end-effector frame in the robot&#39;s base frame, defaults to current end-effector position</span>
+<span class="sd">        :type pos: np.ndarray, optional</span>
+<span class="sd">        :param ori: orientation of the end-effector frame, defaults to current end-effector orientation</span>
+<span class="sd">        :type ori: quaternion.quaternion, optional</span>
+<span class="sd">        :return: corresponding flange frame pose in the robot&#39;s base frame</span>
+<span class="sd">        :rtype: np.ndarray, quaternion.quaternion</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_pose</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">ori</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ori</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_pose</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ori</span>
+        
+        <span class="c1"># get corresponding flange frame pose using transformation matrix</span>
+        <span class="n">F_T_EE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_F_T_EE</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">quaternion</span><span class="o">.</span><span class="n">as_rotation_matrix</span><span class="p">(</span><span class="n">ori</span><span class="p">)</span>
+
+        <span class="n">new_ori</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">F_T_EE</span><span class="p">[:</span><span class="mi">3</span><span class="p">,:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">new_pos</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">-</span> <span class="n">new_ori</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">F_T_EE</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">new_pos</span><span class="p">,</span> <span class="n">quaternion</span><span class="o">.</span><span class="n">from_rotation_matrix</span><span class="p">(</span><span class="n">new_ori</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArmInterface.move_to_cartesian_pose"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.move_to_cartesian_pose">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_cartesian_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ori</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_moveit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move robot end-effector to specified cartesian pose using MoveIt! (also avoids obstacles if they are defined using :py:class:`franka_moveit.ExtendedPlanningSceneInterface`)</span>
+
+<span class="sd">        :param pos: target end-effector position</span>
+<span class="sd">        :type pos: [float] or np.ndarray</span>
+<span class="sd">        :param ori: target orientation quaternion for end-effector, defaults to current ori</span>
+<span class="sd">        :type ori: quaternion.quaternion or [float] (quaternion in w,x,y,z order), optional</span>
+<span class="sd">        :param use_moveit: Flag for using MoveIt (redundant for now; only works if set to True), defaults to True</span>
+<span class="sd">        :type use_moveit: bool, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">use_moveit</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: MoveGroupInterface was not found! Aborting cartesian planning.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">ori</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ori</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_pose</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_flange_pose</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">ori</span><span class="p">)</span>
+        <span class="n">curr_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">set_motion_controller</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">joint_trajectory_controller</span><span class="p">)</span>
+
+        <span class="c1">## == Plan avoids defined scene obstacles ==</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span><span class="o">.</span><span class="n">go_to_cartesian_pose</span><span class="p">(</span>
+            <span class="n">create_pose_msg</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_flange_pose</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">ori</span><span class="p">)))</span>
+
+        <span class="c1">## =========================================</span>
+
+        <span class="c1">## == does not avoid scene obstacles ==</span>
+        <span class="c1"># plan, _ = self._movegroup_interface.plan_cartesian_path(</span>
+        <span class="c1">#     [create_pose_msg(pos, ori)])</span>
+        <span class="c1"># self._movegroup_interface.execute_plan(plan)</span>
+
+        <span class="c1">## ====================================</span>
+
+        <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">set_motion_controller</span><span class="p">(</span><span class="n">curr_controller</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Trajectory controlling complete&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="ArmInterface.pause_controllers_and_do"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.pause_controllers_and_do">[docs]</a>    <span class="k">def</span> <span class="nf">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -949,10 +1040,13 @@
 <span class="sd">        :param func: the function to be called</span>
 <span class="sd">        :type func: callable</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span> <span class="s2">&quot;ArmInterface: Invalid argument provided to ArmInterface-&gt;pause_controllers_and_do. Argument 1 should be callable.&quot;</span>
-        <span class="n">active_controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span><span class="n">only_motion_controllers</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span>
+            <span class="n">func</span><span class="p">),</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Invalid argument provided to ArmInterface-&gt;pause_controllers_and_do. Argument 1 should be callable.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">active_controllers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">list_active_controllers</span><span class="p">(</span>
+            <span class="n">only_motion_controllers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Stopping motion controllers temporarily...&quot;</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Stopping motion controllers temporarily...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
@@ -960,21 +1054,23 @@
         <span class="n">retval</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Restarting previously active motion controllers.&quot;</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Restarting previously active motion controllers.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">ctrlr</span> <span class="ow">in</span> <span class="n">active_controllers</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span><span class="o">.</span><span class="n">start_controller</span><span class="p">(</span><span class="n">ctrlr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Controllers restarted.&quot;</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Controllers restarted.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">retval</span></div>
-
 
 <div class="viewcode-block" id="ArmInterface.reset_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.reset_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">reset_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset EE frame to default. (defined by </span>
 <span class="sd">        FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME </span>
 <span class="sd">        global variable defined in :py:class:`franka_tools.FrankaFramesInterface` </span>
-<span class="sd">        source code) </span>
+<span class="sd">        source code). By default, this resets to align with the nominal-end effector</span>
+<span class="sd">        frame (F_T_NE) in the flange frame.</span>
 
 <span class="sd">        :rtype: [bool, str]</span>
 <span class="sd">        :return: [success status of service request, error msg if any]</span>
@@ -982,39 +1078,43 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">EE_frame_is_reset</span><span class="p">():</span>
-                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: EE Frame already reset&quot;</span><span class="p">)</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: EE Frame already reset&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
                 <span class="k">return</span>
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">reset_EE_frame</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Frames changing not available in simulated environment&quot;</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Frames changing not available in simulated environment&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
             <span class="k">return</span> <span class="kc">False</span></div>
-
 
 <div class="viewcode-block" id="ArmInterface.set_EE_frame"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_EE_frame">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set new EE frame based on the transformation given by &#39;frame&#39;, which is the </span>
-<span class="sd">        transformation matrix defining the new desired EE frame with respect to the flange frame.</span>
-<span class="sd">        Motion controllers are stopped for switching</span>
+<span class="sd">        transformation matrix defining the new desired EE frame with respect to the </span>
+<span class="sd">        nominal end-effector frame (NE_T_EE).</span>
+<span class="sd">        Motion controllers are stopped for switching.</span>
 
 <span class="sd">        :type frame: [float (16,)] / np.ndarray (4x4) </span>
-<span class="sd">        :param frame: transformation matrix of new EE frame wrt flange frame (column major)</span>
+<span class="sd">        :param frame: transformation matrix of new EE frame wrt nominal end-effector frame (column major)</span>
 <span class="sd">        :rtype: [bool, str]</span>
 <span class="sd">        :return: [success status of service request, error msg if any]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">frames_are_same</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">get_EE_frame</span><span class="p">(</span><span class="n">as_mat</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">frame</span><span class="p">):</span>
-                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;ArmInterface: EE Frame already at the target frame.&quot;</span><span class="p">)</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: EE Frame already at the target frame.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_frame</span><span class="p">,</span><span class="n">frame</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_frame</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Frames changing not available in simulated environment&quot;</span><span class="p">)</span></div>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Frames changing not available in simulated environment&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="ArmInterface.set_EE_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_EE_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_EE_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_EE_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set new EE frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
 <span class="sd">        Motion controllers are stopped for switching</span>
@@ -1025,15 +1125,16 @@
 <span class="sd">        :return: [success status of service request, error msg if any]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
-            <span class="n">retval</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">EE_frame_already_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">get_link_tf</span><span class="p">(</span><span class="n">frame_name</span><span class="p">)):</span>
 
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_frame_to_link</span><span class="p">,</span><span class="n">frame_name</span> <span class="o">=</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_frame_to_link</span><span class="p">,</span> <span class="n">frame_name</span><span class="o">=</span><span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;ArmInterface: Frames changing not available in simulated environment&quot;</span><span class="p">)</span></div>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Frames changing not available in simulated environment&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="ArmInterface.set_collision_threshold"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_collision_threshold">[docs]</a>    <span class="k">def</span> <span class="nf">set_collision_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cartesian_forces</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">joint_torques</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_collision_threshold"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_collision_threshold">[docs]</a>    <span class="k">def</span> <span class="nf">set_collision_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cartesian_forces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">joint_torques</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set Force Torque thresholds for deciding robot has collided.</span>
 
@@ -1045,7 +1146,7 @@
 <span class="sd">        :type joint_torques: [float] size 7</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collision_behaviour_interface</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collision_behaviour_interface</span><span class="o">.</span><span class="n">set_collision_threshold</span><span class="p">(</span><span class="n">joint_torques</span> <span class="o">=</span> <span class="n">joint_torques</span><span class="p">,</span> <span class="n">cartesian_forces</span> <span class="o">=</span> <span class="n">cartesian_forces</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collision_behaviour_interface</span><span class="o">.</span><span class="n">set_collision_threshold</span><span class="p">(</span><span class="n">joint_torques</span><span class="o">=</span><span class="n">joint_torques</span><span class="p">,</span> <span class="n">cartesian_forces</span><span class="o">=</span><span class="n">cartesian_forces</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;No CollisionBehaviourInterface object found!&quot;</span><span class="p">)</span></div>
 
@@ -1056,7 +1157,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctrl_manager</span></div>
 
-
 <div class="viewcode-block" id="ArmInterface.get_frames_interface"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.get_frames_interface">[docs]</a>    <span class="k">def</span> <span class="nf">get_frames_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: the FrankaFramesInterface instance associated with the robot.</span>
@@ -1066,12 +1166,12 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+    <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;test_fri&#39;</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">Arm</span><span class="p">()</span>
 
-    <span class="n">rate</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Rate</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">rospy</span><span class="o">.</span><span class="n">is_shutdown</span><span class="p">():</span>
-        <span class="n">rate</span><span class="o">.</span><span class="n">sleep</span><span class="p">()</span>
+    <span class="c1"># rate = rospy.Rate(10)</span>
+    <span class="c1"># while not rospy.is_shutdown():</span>
+    <span class="c1">#     rate.sleep()</span>
 </pre></div>
 
            </div>
@@ -1085,7 +1185,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Saif Sidhik
+        &copy; Copyright 2019-2021, Saif Sidhik
 
     </p>
   </div>

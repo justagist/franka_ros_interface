@@ -18,7 +18,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Franka ROS Interface &mdash; Franka ROS Interface 1.0.0-beta documentation</title>
+  <title>Franka ROS Interface &mdash; Franka ROS Interface 0.7.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.0.0
+                0.7.1
               </div>
             
           
@@ -216,14 +216,18 @@
 <p><img alt="release" src="https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases:alt:GitHubrelease(latestbydateincludingpre-releases)" /> <a class="reference external" href="https://zenodo.org/badge/latestdoi/199485892"><img alt="doi" src="https://zenodo.org/badge/199485892.svg" /></a></p>
 <p>A ROS interface library for the Franka Emika Panda robot, extending the <a class="reference external" href="https://frankaemika.github.io/docs/franka_ros.html">franka_ros</a> to expose more information about the robot, and
 providing low-level control of the robot using ROS and <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>.</p>
+<p>Go to <a class="reference external" href="https://github.com/justagist/franka_ros_interface">Project Source Code</a>.</p>
+<a class="reference external image-reference" href="https://youtu.be/4bEVysUIvOY"><img alt="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_robot_demo.gif" src="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_robot_demo.gif" /></a>
 <p>Provides utilites for controlling and managing the Franka Emika Panda robot (real and
 <a class="reference external" href="https://github.com/justagist/panda_simulator">simulated</a>). Contains exposed controllers for the robot (joint position,
 velocity, torque), interfaces for the gripper, controller manager,
 coordinate frames interface, etc. Also provides utilities to control the robot using
 MoveIt! and ROS Trajectory Action &amp; ActionClient.
 This package also provides almost complete sim-to-real /
-real-to-sim transfer of code with the <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a>
+real-to-sim transfer of code with the <a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a>
 package.</p>
+<p>A more unified ROS Python interface built over this package is available in the <a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a> package, which provides a more intuitive interface class that combines the different API classes in this package. Simple demo and <a class="reference external" href="https://justagist.github.io/panda_robot/#basic-usage">basic usage</a> are also shown.</p>
+<a class="reference external image-reference" href="https://www.youtube.com/watch?v=NdSbXC0r7tU"><img alt="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_simulator.gif" src="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/panda_simulator.gif" /></a>
 <p><strong>Features</strong></p>
 <ul class="simple">
 <li>Low-level <em>controllers</em> (joint position, velocity, torque, impedance)
@@ -235,61 +239,49 @@ state, etc.) available through ROS topics and Python API.</li>
 controlling and monitoring the gripper.</li>
 <li>Python API classes and utility functions to control the robot using
 MoveIt! and ROS Trajectory Action Service.</li>
-<li>The <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a> package (which is Gazebo-based
+<li>The <a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a> package (which is Gazebo-based
 simulator for the robot) can also be controlled using this package
 (ROS and Python interface), providing almost complete sim-to-real
 transfer of code.</li>
+</ul>
+<a class="reference external image-reference" href="https://youtu.be/a_HEmYzqEnk"><img alt="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/ts_demo.gif" src="https://raw.githubusercontent.com/justagist/franka_ros_interface/master/assets/ts_demo.gif" /></a>
+<div class="section" id="related-packages">
+<h2>Related Packages<a class="headerlink" href="#related-packages" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a> : A Gazebo simulator for the Franka Emika Panda
+robot with ROS interface, providing exposed controllers and real-time
+robot state feedback similar to the real robot when using the
+<em>franka_ros_interface</em> package. Provides almost complete real-to-sim
+transfer of code.</li>
+<li><a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a> : Python interface providing higher-level control of
+the robot integrated with its gripper control, controller manager,
+coordinate frames manager, etc. with safety checks and other helper
+utilities. It also provides the kinematics and dynamics of the robot
+using the <a class="reference external" href="http://wiki.ros.org/kdl">KDL library</a>. It is built over Franka ROS Interface and
+provides a more intuitive and unified single-class interface.</li>
+<li><a class="reference external" href="https://github.com/justagist/franka_panda_description">franka_panda_description</a> : Robot description package modified from
+<a class="reference external" href="https://frankaemika.github.io/docs/franka_ros.html">franka_ros</a> package to include dynamics parameters for the robot
+arm (as estimated in <a class="reference external" href="https://hal.inria.fr/hal-02265293/document">this paper</a>). Also includes transmission and
+control definitions required for the <a class="reference external" href="https://github.com/justagist/panda_simulator">panda_simulator</a> package.</li>
 </ul>
 <p>Go to <a class="reference external" href="https://github.com/justagist/franka_ros_interface">Project Source Code</a>.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">1. Setup Instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html#installation">1.1. Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="instructions.html#dependencies">1.1.1. Dependencies</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="instructions.html#usage">1.2. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="instructions.html#the-franka-sh-environments">1.2.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="instructions.html#some-useful-ros-topics">1.2.2. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="instructions.html#published-topics">1.2.2.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="instructions.html#subscribed-topics">1.2.2.2. Subscribed Topics:</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="instructions.html#ros-services">1.2.3. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="instructions.html#python-api">1.2.4. Python API</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html#installation">1.1. Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html#usage">1.2. Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#related-packages">1.3. Related Packages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="DOC.html">2. Python API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_interface">2.1. franka_interface</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#arminterface">2.1.1. ArmInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#gripperinterface">2.1.2. GripperInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#robotenable">2.1.3. RobotEnable</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#robotparams">2.1.4. RobotParams</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_moveit">2.2. franka_moveit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#pandamovegroupinterface">2.2.1. PandaMoveGroupInterface</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="DOC.html#module-franka_moveit.utils">2.2.1.1. Helper Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#extendedplanningsceneinterface">2.2.2. ExtendedPlanningSceneInterface</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_tools">2.3. franka_tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#collisionbehaviourinterface">2.3.1. CollisionBehaviourInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#frankacontrollermanagerinterface">2.3.2. FrankaControllerManagerInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#controllerparamconfigclient">2.3.3. ControllerParamConfigClient</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#frankaframesinterface">2.3.4. FrankaFramesInterface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="DOC.html#jointtrajectoryactionclient">2.3.5. JointTrajectoryActionClient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_interface">2.1. franka_interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_moveit">2.2. franka_moveit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DOC.html#module-franka_tools">2.3. franka_tools</a></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
+</div>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
@@ -302,7 +294,7 @@ transfer of code.</li>
 <p>Go to <a class="reference external" href="https://github.com/justagist/franka_ros_interface">Project Source Code</a>.</p>
 <p><strong>LICENSE:</strong></p>
 <p><a class="reference external" href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache2.0-blue.svg" /></a>
-Copyright (c) 2019-2020, Saif Sidhik</p>
+Copyright (c) 2019-2021, Saif Sidhik</p>
 <p><a class="reference external" href="https://zenodo.org/badge/latestdoi/199485892"><img alt="doi" src="https://zenodo.org/badge/199485892.svg" /></a></p>
 </div>
 
@@ -325,7 +317,7 @@ Copyright (c) 2019-2020, Saif Sidhik</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Saif Sidhik
+        &copy; Copyright 2019-2021, Saif Sidhik
 
     </p>
   </div>
