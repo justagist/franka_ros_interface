@@ -71,7 +71,8 @@ Go to `Project Source Code`_.
    :caption: Contents:
    :numbered:
 
-   Setup Instructions<instructions>
+   self
+   instructions
    DOC
 
 Indices and tables

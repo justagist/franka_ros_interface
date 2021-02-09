@@ -101,6 +101,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Franka ROS Interface</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">1. Setup Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">1.1. Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#dependencies">1.1.1. Dependencies</a></li>
@@ -108,13 +109,15 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#usage">1.2. Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#the-franka-sh-environments">1.2.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#some-useful-ros-topics">1.2.2. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#published-topics">1.2.2.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#subscribed-topics">1.2.2.2. Subscribed Topics:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starting-the-franka-ros-interface-driver">1.2.2. Starting the Franka ROS Interface ‘Driver’</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#controlling-and-monitoring-the-robot">1.2.3. Controlling and Monitoring the Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#some-useful-ros-topics">1.2.4. Some useful ROS topics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#published-topics">1.2.4.1. Published Topics:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#subscribed-topics">1.2.4.2. Subscribed Topics:</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#ros-services">1.2.3. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#python-api">1.2.4. Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ros-services">1.2.5. ROS Services:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-api">1.2.6. Python API</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#related-packages">1.3. Related Packages</a></li>
@@ -213,7 +216,7 @@
             
   <div class="section" id="setup-instructions">
 <h1>1. Setup Instructions<a class="headerlink" href="#setup-instructions" title="Permalink to this headline">¶</a></h1>
-<p><strong>Note that version v0.7.1 requires franka_ros version v0.7.1. For the most updated instructions (including instructions for older versions of franka_ros), follow the README in the</strong> <a class="reference external" href="https://github.com/justagist/franka_ros_interface">source repository</a>.</p>
+<p><strong>Note that version v0.7.1 requires franka_ros version v0.7.1. For the most recent instructions (including instructions for older versions of franka_ros), it is better to follow instructions from the README in the</strong> <a class="reference external" href="https://github.com/justagist/franka_ros_interface">source repository</a>.</p>
 <div class="section" id="installation">
 <h2>1.1. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p><img alt="release" src="https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases:alt:GitHubrelease(latestbydateincludingpre-releases)" /></p>
@@ -251,18 +254,6 @@ $ source devel/setup.bash
 </div>
 <div class="section" id="usage">
 <h2>1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>The ‘driver’ node can be started by running (can only be used if run in
-‘master’ environment - see <a class="reference external" href="#the-frankash-environments">Environments</a> section below):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ roslaunch franka_interface interface.launch # (use argument load_gripper:=false for starting without gripper)
-</pre></div>
-</div>
-<p>This exposes a variety of ROS topics and services for communicating with
-and controlling the robot. This can be accessed and modified using ROS
-topics and services (see below too find out about some of the available
-topics and services), or using the provided <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>.</p>
-<p>Basic usage of the API is shown in the <a class="reference external" href="franka_interface/tests/test_robot.py">test_robot.py</a> example file.
-See <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">documentation</a> for all available methods and functionalities. More usage
-examples can be found in the <a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a> package.</p>
 <div class="section" id="the-franka-sh-environments">
 <span id="the-frankash-environments"></span><h3>1.2.1. The <em>franka.sh</em> environments<a class="headerlink" href="#the-franka-sh-environments" title="Permalink to this headline">¶</a></h3>
 <p>Once the values are correctly modified in the <code class="docutils literal notranslate"><span class="pre">franka.sh</span></code> file, different environments can be
@@ -283,10 +274,36 @@ same network.</li>
 (only required when using <a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a> package).</li>
 </ul>
 </div>
+<div class="section" id="starting-the-franka-ros-interface-driver">
+<h3>1.2.2. Starting the Franka ROS Interface ‘Driver’<a class="headerlink" href="#starting-the-franka-ros-interface-driver" title="Permalink to this headline">¶</a></h3>
+<p>The ‘driver’ node can be started by running (can only be used if run in
+‘master’ environment - see <a class="reference external" href="#the-frankash-environments">Environments</a> section above):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ roslaunch franka_interface interface.launch # (use argument load_gripper:=false for starting without gripper)
+</pre></div>
+</div>
+<p>Available keyword arguments for launch file:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">load_gripper</span></code>: start driver node with the Franka gripper (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>).</li>
+<li><code class="docutils literal notranslate"><span class="pre">start_controllers</span></code>: load the available controllers to the controller manager (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>).</li>
+<li><code class="docutils literal notranslate"><span class="pre">start_moveit</span></code>: start moveit server along with the driver node (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>).</li>
+<li><code class="docutils literal notranslate"><span class="pre">load_demo_planning_scene</span></code>: loads a default planning scene for MoveIt planning with simple objects for collision avoidance (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>). See <code class="docutils literal notranslate"><span class="pre">franka_moveit/scripts/create_demo_planning_scene.py</span></code>.</li>
+</ul>
+<p>This exposes a variety of ROS topics and services for communicating with
+and controlling the robot.</p>
+</div>
+<div class="section" id="controlling-and-monitoring-the-robot">
+<h3>1.2.3. Controlling and Monitoring the Robot<a class="headerlink" href="#controlling-and-monitoring-the-robot" title="Permalink to this headline">¶</a></h3>
+<p>Once the ‘driver’ is running, the robot can be controlled from another terminal by running in ‘master’ environment (if running in the same machine as ‘driver’), or ‘remote’ environment (if using a different connected computer). The robot can then be controlled and monitored using ROS
+topics and services (see below too find out about some of the available
+topics and services), or using the provided <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>.</p>
+<p>Basic usage of the API is shown in the <a class="reference external" href="franka_interface/tests/test_robot.py">test_robot.py</a> example file.
+See <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">documentation</a> for all available methods and functionalities. More usage
+examples can be found in the <a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a> package.</p>
+</div>
 <div class="section" id="some-useful-ros-topics">
-<h3>1.2.2. Some useful ROS topics<a class="headerlink" href="#some-useful-ros-topics" title="Permalink to this headline">¶</a></h3>
+<h3>1.2.4. Some useful ROS topics<a class="headerlink" href="#some-useful-ros-topics" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="published-topics">
-<h4>1.2.2.1. Published Topics:<a class="headerlink" href="#published-topics" title="Permalink to this headline">¶</a></h4>
+<h4>1.2.4.1. Published Topics:<a class="headerlink" href="#published-topics" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="57%" />
@@ -314,7 +331,7 @@ same network.</li>
 </table>
 </div>
 <div class="section" id="subscribed-topics">
-<h4>1.2.2.2. Subscribed Topics:<a class="headerlink" href="#subscribed-topics" title="Permalink to this headline">¶</a></h4>
+<h4>1.2.4.2. Subscribed Topics:<a class="headerlink" href="#subscribed-topics" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="54%" />
@@ -339,7 +356,7 @@ configurable), command timeout, etc. are also available.</p>
 </div>
 </div>
 <div class="section" id="ros-services">
-<h3>1.2.3. ROS Services:<a class="headerlink" href="#ros-services" title="Permalink to this headline">¶</a></h3>
+<h3>1.2.5. ROS Services:<a class="headerlink" href="#ros-services" title="Permalink to this headline">¶</a></h3>
 <p>Controller manager service can be used to switch between all available
 controllers (joint position, velocity, effort). Gripper joints can be
 controlled using the ROS ActionClient. Other services for changing
@@ -347,7 +364,7 @@ coordinate frames, adding gripper load configuration, etc. are also
 available.</p>
 </div>
 <div class="section" id="python-api">
-<h3>1.2.4. Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h3>
+<h3>1.2.6. Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API Documentation</a>.</p>
 <p>Most of the above services and topics are wrapped using simple Python
 classes or utility functions, providing more control and simplicity.
