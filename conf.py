@@ -20,13 +20,13 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = u'Franka ROS Interface'
-copyright = u'2020, Saif Sidhik'
+copyright = u'2019-2021, Saif Sidhik'
 author = u'Saif Sidhik'
 
 # The short X.Y version
-version = u'1.0.0'
+version = u'0.7.1'
 # The full version, including alpha/beta/rc tags
-release = u'1.0.0-beta'
+release = u'0.7.1'
 
 
 # -- General configuration ---------------------------------------------------

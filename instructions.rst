@@ -2,6 +2,8 @@
 Setup Instructions
 ==================
 
+**Note that version v0.7.1 requires franka_ros version v0.7.1. For the most updated instructions (including instructions for older versions of franka_ros), follow the README in the** `source repository <Project Source Code_>`_.
+
 Installation
 ------------
 
@@ -58,7 +60,8 @@ topics and services (see below too find out about some of the available
 topics and services), or using the provided `Python API <Python API Documentation_>`_.
 
 Basic usage of the API is shown in the `test_robot.py <franka_interface/tests/test_robot.py>`_ example file.
-See `documentation <Python API Documentation_>`_ for all available methods and functionalities.
+See `documentation <Python API Documentation_>`_ for all available methods and functionalities. More usage
+examples can be found in the `PandaRobot <panda_robot_>`_ package.
 
 .. _the-frankash-environments:
 
@@ -80,7 +83,7 @@ set for controlling the robot by sourcing this file.
    robot (**no need for Real Time kernel!**) as long as they are in the
    same network.
 -  Simulation environment can be started by running ``./franka.sh sim``
-   (only required when using `panda_simulator`_ package).
+   (only required when using `Panda Simulator <panda_simulator_>`_ package).
 
 
 Some useful ROS topics
@@ -89,35 +92,28 @@ Some useful ROS topics
 Published Topics:
 '''''''''''''''''
 
-+----------------------------------+----------------------------------+
-| ROS Topic                        | Data                             |
-+==================================+==================================+
-| */                               | gravity, coriolis, jacobian,     |
-| franka_ros_interface/custom_fran | cartesian velocity, etc.         |
-| ka_state_controller/robot_state* |                                  |
-+----------------------------------+----------------------------------+
-| */franka_ros_interface/custom_fr | end-effector pose, wrench, etc.  |
-| anka_state_controller/tip_state* |                                  |
-+----------------------------------+----------------------------------+
-| */fr                             | joint positions, velocities,     |
-| anka_ros_interface/joint_states* | efforts                          |
-+----------------------------------+----------------------------------+
-| */franka_ros_interf              | joint positions, velocities,     |
-| ace/franka_gripper/joint_states* | efforts of gripper joints        |
-+----------------------------------+----------------------------------+
++----------------------------------------------------------------------------+----------------------------------------------------------+
+| ROS Topic                                                                  | Data                                                     |
++============================================================================+==========================================================+
+| */franka\_ros\_interface/custom\_franka\_state\_controller/robot\_state*   | gravity, coriolis, jacobian, cartesian velocity, etc.    |
++----------------------------------------------------------------------------+----------------------------------------------------------+
+| */franka\_ros\_interface/custom\_franka\_state\_controller/tip\_state*     | end-effector pose, wrench, etc.                          |
++----------------------------------------------------------------------------+----------------------------------------------------------+
+| */franka\_ros\_interface/joint\_states*                                    | joint positions, velocities, efforts                     |
++----------------------------------------------------------------------------+----------------------------------------------------------+
+| */franka\_ros\_interface/franka\_gripper/joint\_states*                    | joint positions, velocities, efforts of gripper joints   |
++----------------------------------------------------------------------------+----------------------------------------------------------+
 
 Subscribed Topics:
 ''''''''''''''''''
 
-+----------------------------------+----------------------------------+
-| ROS Topic                        | Data                             |
-+==================================+==================================+
-| */franka_ros_interface/motio     | command the robot using the      |
-| n_controller/arm/joint_commands* | currently active controller      |
-+----------------------------------+----------------------------------+
-| */franka_ros_interface/franka_g  | (action msg) command the joints  |
-| ripper/[move/grasp/stop/homing]* | of the gripper                   |
-+----------------------------------+----------------------------------+
++----------------------------------------------------------------------+-----------------------------------------------------------+
+| ROS Topic                                                            | Data                                                      |
++======================================================================+===========================================================+
+| */franka\_ros\_interface/motion\_controller/arm/joint\_commands*     | command the robot using the currently active controller   |
++----------------------------------------------------------------------+-----------------------------------------------------------+
+| */franka\_ros\_interface/franka\_gripper/[move/grasp/stop/homing]*   | (action msg) command the joints of the gripper            |
++----------------------------------------------------------------------+-----------------------------------------------------------+
 
 Other topics for changing the controller gains (also dynamically
 configurable), command timeout, etc. are also available.
@@ -137,21 +133,24 @@ Python API
 
 Most of the above services and topics are wrapped using simple Python
 classes or utility functions, providing more control and simplicity.
-Refer README files in individual subpackages.
+Refer README files in individual subpackages. More usage
+examples can be found in the `PandaRobot <panda_robot_>`_ package
+(see package description below).
 
 Related Packages
 ----------------
 
--  `panda_simulator`_ : A Gazebo simulator for the Franka Emika Panda
+-  `Panda Simulator <panda_simulator_>`_ : A Gazebo simulator for the Franka Emika Panda
    robot with ROS interface, providing exposed controllers and real-time
    robot state feedback similar to the real robot when using the
    *franka_ros_interface* package. Provides almost complete real-to-sim
    transfer of code.
--  `panda_robot`_ : Python interface providing higher-level control of
+-  `PandaRobot <panda_robot_>`_ : Python interface providing higher-level control of
    the robot integrated with its gripper control, controller manager,
    coordinate frames manager, etc. with safety checks and other helper
    utilities. It also provides the kinematics and dynamics of the robot
-   using the `KDL library`_.
+   using the `KDL library`_. It is built over Franka ROS Interface and 
+   provides a more intuitive and unified single-class interface.
 -  `franka_panda_description`_ : Robot description package modified from
    `franka_ros`_ package to include dynamics parameters for the robot
    arm (as estimated in `this paper`_). Also includes transmission and
