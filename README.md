@@ -1,6 +1,6 @@
 # Franka ROS Interface [![Release](https://img.shields.io/badge/release-v0.6.0-blue.svg)](https://github.com/justagist/franka_ros_interface/releases/tag/v0.6.0) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3747459.svg)](https://doi.org/10.5281/zenodo.3747459)
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.6.0-dev)](https://travis-ci.org/justagist/franka_ros_interface)
 
 A ROS interface library for the Franka Emika Panda robot, extending the [franka-ros][franka-ros] to expose more information about the robot, and
 providing low-level control of the robot using ROS and [Python API][fri-doc].
