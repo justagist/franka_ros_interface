@@ -1,6 +1,6 @@
 # Franka ROS Interface [![Release](https://img.shields.io/badge/release-v0.7.1-blue.svg)](https://github.com/justagist/franka_ros_interface/releases/tag/v0.7.1) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3747412.svg)](https://doi.org/10.5281/zenodo.3747412)
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.7.1)](https://travis-ci.org/justagist/franka_ros_interface)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.7.1-dev)](https://travis-ci.org/justagist/franka_ros_interface)
 
 A ROS interface library for the Franka Emika Panda robot, extending the [franka-ros][franka-ros] to expose more information about the robot, and
 providing low-level control of the robot using ROS and [Python API][fri-doc].
@@ -10,7 +10,7 @@ velocity, torque), interfaces for the gripper, controller manager, coordinate fr
 
 Documentation Page: <https://justagist.github.io/franka_ros_interface>
 
-**This branch requires franka_ros release versions 0.7.0, 0.7.1.** [![franka_ros_version](https://img.shields.io/badge/franka_ros-v0.7.1%20release-yellow.svg)](https://github.com/frankaemika/franka_ros/tree/49e5ac1055e332581b4520a1bd9ac8aaf4580fb1)
+**This branch requires franka_ros release versions 0.7.0, 0.7.1.** [![franka_ros_version](https://img.shields.io/badge/franka_ros-v0.7.1%20release-yellow.svg)](https://github.com/frankaemika/franka_ros/tree/49e5ac1055e332581b4520a1bd9ac8aaf4580fb1). For older versions, try corresponding branches of this repo.
 
 A more unified ROS Python interface built over this package is available at [PandaRobot](https://github.com/justagist/panda_robot), which provides a more intuitive interface class that combines the different API classes in this package. Simple demos are also available.
 
@@ -35,9 +35,9 @@ A more unified ROS Python interface built over this package is available at [Pan
 
 ## Installation
 
-ROS Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.7.1)](https://travis-ci.org/justagist/franka_ros_interface)
+ROS Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.7.1-dev)](https://travis-ci.org/justagist/franka_ros_interface)
 
-**NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic with franka_ros version 0.7.1 (release). Version for ROS Kinetic requires franka_ros v0.6.0; check the 'v0.6.0' branch of this repo. The latest updates to the package may not be compatible with Kinetic.*
+**NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic with franka_ros version 0.7.1 (release). Version for ROS Kinetic requires franka_ros v0.6.0; check the 'v0.6.0-dev' branch of this repo. The latest updates to the package may not be compatible with Kinetic.*
 
 ### Dependencies
 
