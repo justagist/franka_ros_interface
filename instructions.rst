@@ -2,7 +2,7 @@
 Setup Instructions
 ==================
 
-**Note that version v0.7.1 requires franka_ros version v0.7.1. For the most updated instructions (including instructions for older versions of franka_ros), follow the README in the** `source repository <Project Source Code_>`_.
+**Note that version v0.7.1 requires franka_ros version v0.7.1. For the most recent instructions (including instructions for older versions of franka_ros), it is better to follow instructions from the README in the** `source repository <Project Source Code_>`_.
 
 Installation
 ------------
@@ -47,22 +47,6 @@ After building the package:
 Usage
 -----
 
-The 'driver' node can be started by running (can only be used if run in
-'master' environment - see `Environments`_ section below):
-
-::
-
-   $ roslaunch franka_interface interface.launch # (use argument load_gripper:=false for starting without gripper)
-
-This exposes a variety of ROS topics and services for communicating with
-and controlling the robot. This can be accessed and modified using ROS
-topics and services (see below too find out about some of the available
-topics and services), or using the provided `Python API <Python API Documentation_>`_.
-
-Basic usage of the API is shown in the `test_robot.py <franka_interface/tests/test_robot.py>`_ example file.
-See `documentation <Python API Documentation_>`_ for all available methods and functionalities. More usage
-examples can be found in the `PandaRobot <panda_robot_>`_ package.
-
 .. _the-frankash-environments:
 
 The *franka.sh* environments
@@ -84,6 +68,37 @@ set for controlling the robot by sourcing this file.
    same network.
 -  Simulation environment can be started by running ``./franka.sh sim``
    (only required when using `Panda Simulator <panda_simulator_>`_ package).
+
+Starting the Franka ROS Interface 'Driver'
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The 'driver' node can be started by running (can only be used if run in
+'master' environment - see `Environments`_ section above):
+
+::
+
+   $ roslaunch franka_interface interface.launch # (use argument load_gripper:=false for starting without gripper)
+
+Available keyword arguments for launch file:
+
+- ``load_gripper``: start driver node with the Franka gripper (default: ``true``).
+- ``start_controllers``: load the available controllers to the controller manager (default: ``true``).
+- ``start_moveit``: start moveit server along with the driver node (default: ``true``).
+- ``load_demo_planning_scene``: loads a default planning scene for MoveIt planning with simple objects for collision avoidance (default: ``true``). See ``franka_moveit/scripts/create_demo_planning_scene.py``.
+
+This exposes a variety of ROS topics and services for communicating with
+and controlling the robot. 
+
+Controlling and Monitoring the Robot
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Once the 'driver' is running, the robot can be controlled from another terminal by running in 'master' environment (if running in the same machine as 'driver'), or 'remote' environment (if using a different connected computer). The robot can then be controlled and monitored using ROS
+topics and services (see below too find out about some of the available
+topics and services), or using the provided `Python API <Python API Documentation_>`_.
+
+Basic usage of the API is shown in the `test_robot.py <franka_interface/tests/test_robot.py>`_ example file.
+See `documentation <Python API Documentation_>`_ for all available methods and functionalities. More usage
+examples can be found in the `PandaRobot <panda_robot_>`_ package.
 
 
 Some useful ROS topics
