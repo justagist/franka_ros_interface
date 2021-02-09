@@ -4,30 +4,36 @@
 # Copyright (c) 2013-2016, Rethink Robotics
 # All rights reserved.
 
-
-# This file is to be used in the *root* of your Catkin workspace.
-
 # This is a convenient script which will set up your ROS environment and
 # should be executed with every new instance of a shell in which you plan on
-# working with Intera.
+# working with Franka ROS Interface or PandaRobot.
+
+# This file is to be used in the *root* of your catkin workspace.
+
+# ****** IMPORTANT: Read "USAGE EXPLAINED" section below before running this script. ******
+
+
 
 # Run as './franka.sh <arg1> <arg2>'
 
 # ------ ARGUMENTS:
-# -- arg1:
-#        - 'master' / 'local' (No <arg2>): The local machine will be the ros master. Run this on the main master pc (connected to the franka controller). 
-#        - 'slave' / 'remote': If IP address is provided as <arg2>, this will make sure that this PC is connected to the ROS Master at that IP. If <arg2> provided, ROS_MASTER_IP set below will be used
-#        - 'sim': start in simulation environment (to be used with panda_simulator package only)
+# -- arg1 (required): select the environment for Franka ROS Interface. The available options are:
+#        - 'master' / 'local' (No <arg2>): This can be used only if this machine can succesfully connect to the robot using libfranka. By setting this, this machine will be assumed to be the ros master. The 'driver' node can only be run in this environment (see Usage instructions in readme).
+#        - 'slave' / 'remote': This argument should be used if the current machine cannot directly to franka controller, but is in the same network as the machine that is running the 'master' (and the 'driver' nodes). If IP address is provided as <arg2>, this will connected to a ROS Master at that IP. If <arg2> is not provided, ROS_MASTER_IP variable set below will be used.
+#        - 'sim': start in simulation environment (to be used with panda_simulator package only). [Not necessary]
 
-# -- arg2:
+# -- arg2 (optional):
 #        - <IP of ROS MASTER> (valid only if <arg1> is 'slave'/'remote'): IP address of ROS Master
 
+# eg: 
+#   ./franka.sh master
+#   (or)
+#   ./franka.sh remote [optional IP address of master]
 
 
 ## ========================================= #
-## ===== EDIT THESE VALUES AS REQUIRED ===== #
+## === EDIT FOLLOWING VALUES AS REQUIRED === #
 ## ========================================= #
-
 
 # ----- EDIT THIS TO MATCH THE IP OF THE FRANKA ROBOT CONTROLLER IN THE NETWORK
 FRANKA_ROBOT_IP="FRANKA_ROBOT_IP.local"
@@ -35,14 +41,69 @@ FRANKA_ROBOT_IP="FRANKA_ROBOT_IP.local"
 # ----- EDIT THIS TO MATCH YOUR IP IN THE NETWORK
 your_ip=""
 
-# ----- EDIT THIS TO MATCH THE IP OF THE MAIN ROS MASTER PC (CONNECTED TO THE FRANKA CONTROLLER)
+# ----- EDIT THIS TO MATCH THE IP OF THE MAIN ROS MASTER PC (CONNECTED TO THE FRANKA CONTROLLER),
+# ----- ON WHICH THE Franka ROS Interface 'driver' NODES WILL BE RUNNING (SEE "USAGE EXPLAINED" BELOW).
+# ----- THIS VALUE IS NEEDED ONLY IF YOU WILL USE THE 'remote' ENVIRONMENT ON THIS MACHINE.
 ROS_MASTER_IP=""
 
-ros_version="kinetic"
+ros_version="melodic"
+
+## ========================================= #
+## ========== USAGE EXPLAINED ============== #
+## ========================================= #
+
+# 1. If there is only one computer controlling the robot, there is no need 
+#    to fill the $ROS_MASTER_IP variable in the field above. However, this
+#    machine should have RT kernel set up correctly and should be able to 
+#    connect to the robot using libfranka. 
+#    For using Franka ROS Interface in this case:
+#       a) Move this file to the root of the catkin ws, and fill in the 
+#          values for $FRANKA_ROBOT_IP and $your_ip above.
+#       b) run `./franka.sh master`
+#       c) Start the driver node (see Usage in README)
+#       d) Once the driver node is running correctly, on a different 
+#          terminal, run `./franka master` again from the catkin_ws root to 
+#          connect to the same ROS master as the driver node.
+#       e) You should now be able to communicate with the robot using 
+#          Franka ROS Interface from this terminal session. Use ROS 
+#          topics/services etc. or Franka ROS Interface Python API or scripts 
+#          to control and monitor the robot. (test by running `rostopic list`)
+#       f) For every new terminal, make sure to run `./franka.sh master` first.
+
+# 2. If you want to use multiple machines for controlling the robot, all 
+#    machines should be in the same network as the robot controller.
+#    AT LEAST ONE MACHINE should have RT kernel set up and should be able to 
+#    properly connect to the robot using libfranka. ONE of these machines 
+#    should run the driver node as explained in steps 1.a - 1.c above. 
+#    Follow steps 1.d - 1.f if Franka ROS Interface is needed againg on this 
+#    RT machine (which is running the driver).
+#
+#    NOTE: ONLY ONE MACHINE IN THE NETWORK SHOULD BE RUNNING THE DRIVER NODE.
+#
+#    Other computers in the network need not have RT kernels, but should have 
+#    correctly installed lifranka, franka-ros, and Franka ROS Interface. For 
+#    controlling the robot from these machines:
+#       a) Move this file to the root of the catkin_ws of the remote machines, 
+#          and fill in the values for $FRANKA_ROBOT_IP, $your_ip, and 
+#          $ROS_MASTER_IP above. THE $ROS_MASTER_IP should correspond to the 
+#          IP address of the RT machine running the 'driver' node.
+#       b) Then run `./franka.sh remote`. This should connect the current 
+#          session to the ROS master running the driver node (to test if the 
+#          connection is correct, run `rostopic list` to see if the published 
+#          and subscribed topics from Franka ROS Interface driver node is 
+#          accessible from the remote computer).
+#       c) As long as the driver node is running on the RT machine, you should 
+#          now be able to communicate with the robot using Franka ROS Interface 
+#          from this terminal session. Use ROS topics/services etc. or Franka 
+#          ROS Interface Python API or scripts to control and monitor the robot.
+#       d) For every new terminal in the remote machines, make sure to run 
+#          `./franka.sh remote` first.
+
 
 ## ========================================= #
 ## ========================================= #
-## ========================================= #
+## === DO NOT EDIT BELOW THIS LINE ========= #
+
 
 if [ "${1}" == "sim" ]; then
     your_ip="127.0.0.1"

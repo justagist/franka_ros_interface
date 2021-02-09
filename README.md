@@ -51,7 +51,7 @@ Once the above dependencies are installed, the package can be installed using ca
 ```sh
    cd <catkin_ws>
    git clone https://github.com/justagist/franka_ros_interface src/franka_ros_interface
-   catkin build franka_ros_interface # or catkin_make
+   catkin build # or catkin_make
    source devel/setup.bash
 ```
 
@@ -69,6 +69,8 @@ Once the values are correctly modified in the `franka.sh` file, different enviro
 - For instance, running `./franka.sh master` would start an environment assuming that the computer is directly connected to the robot (requires Real-Time kernel set up as described in the [FCI documentation][libfranka-doc]).
 - On the other hand, `./franka.sh remote` would start an environment assuming that the robot is not connected directly to the computer, but to another computer in the network (whose IP must be specified in *franka.sh*). This way, if the 'master' is connected to the robot and running the driver node (see below), the 'remote' can control the robot (**no need for Real Time kernel!**) as long as they are in the same network.
 - ~Simulation environment can be started by running `./franka.sh sim` (only required when using [panda_simulator][ps-repo] package).~
+
+More information regarding the usage of `franka.sh` can be found within the [file](franka.sh).
 
 ### Starting the Franka ROS Interface 'Driver'
 
