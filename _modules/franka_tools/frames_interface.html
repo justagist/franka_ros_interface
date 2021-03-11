@@ -43,6 +43,7 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -374,10 +375,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames_are_same</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_EE_frame_transformation</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FrankaFramesInterface.set_EE_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_EE_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
+<div class="viewcode-block" id="FrankaFramesInterface.set_EE_at_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_EE_at_frame">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_at_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set new EE frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
-<span class="sd">        Motion controllers are stopped for switching</span>
+<span class="sd">        Set new EE frame to the same frame as the link frame given by &#39;frame_name&#39;.</span>
+<span class="sd">        Only &#39;panda_link7&#39;, &#39;panda_link8&#39;, &#39;panda_hand&#39;, &#39;panda_NE&#39;, and &#39;panda_EE&#39; </span>
+<span class="sd">        are valid frames for this operation. Other frames will not produce required</span>
+<span class="sd">        results.</span>
+<span class="sd">        Motion controllers should be stopped for switching.</span>
 
 <span class="sd">        :type frame_name: str </span>
 <span class="sd">        :param frame_name: desired tf frame name in the tf tree</span>
@@ -441,10 +445,13 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_setK_service</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FrankaFramesInterface.set_K_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_K_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_K_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
+<div class="viewcode-block" id="FrankaFramesInterface.set_K_at_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.set_K_at_frame">[docs]</a>    <span class="k">def</span> <span class="nf">set_K_at_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set new K frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
-<span class="sd">        Motion controllers are stopped for switching</span>
+<span class="sd">        Only &#39;panda_link7&#39;, &#39;panda_link8&#39;, &#39;panda_hand&#39;, &#39;panda_NE&#39;, and &#39;panda_EE&#39; </span>
+<span class="sd">        are valid frames for this operation. Other frames will not produce required</span>
+<span class="sd">        results.</span>
+<span class="sd">        Motion controllers should be stopped for switching.</span>
 
 <span class="sd">        :type frame_name: str </span>
 <span class="sd">        :param frame_name: desired tf frame name in the tf tree</span>

@@ -43,6 +43,7 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -434,7 +435,7 @@
         <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
                                  <span class="n">timeout_msg</span><span class="o">=</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
 
-        <span class="c1"># start moveit server with panda_link8 (flange) as the end-effector, unless it is in simulation. However, using move_to_cartesian_pose() method compensates for this and moves the robot&#39;s defined end-effector frame (EE frame; see set_EE_frame() and set_EE_frame_to_link()) to the target pose.</span>
+        <span class="c1"># start moveit server with panda_link8 (flange) as the end-effector, unless it is in simulation. However, using move_to_cartesian_pose() method compensates for this and moves the robot&#39;s defined end-effector frame (EE frame; see set_EE_frame() and set_EE_at_frame()) to the target pose.</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_movegroup_interface</span> <span class="o">=</span> <span class="n">PandaMoveGroupInterface</span><span class="p">(</span>
                 <span class="n">use_panda_hand_link</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)</span>
@@ -750,6 +751,7 @@
 
 <div class="viewcode-block" id="ArmInterface.joint_inertia_matrix"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.joint_inertia_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">joint_inertia_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the current joint inertia matrix given by libfranka.</span>
 
 <span class="sd">        :return: joint inertia matrix (7,7)</span>
 <span class="sd">        :rtype: np.ndarray [7x7]</span>
@@ -758,6 +760,8 @@
 
 <div class="viewcode-block" id="ArmInterface.zero_jacobian"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.zero_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">zero_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the current jacobian matrix given by libfranka.</span>
+<span class="sd">        </span>
 <span class="sd">        :return: end-effector jacobian (6,7)</span>
 <span class="sd">        :rtype: np.ndarray [6x7]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1082,7 +1086,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">EE_frame_is_reset</span><span class="p">():</span>
                 <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: EE Frame already reset&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
-                <span class="k">return</span>
+                <span class="k">return</span> <span class="kc">True</span>
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">reset_EE_frame</span><span class="p">)</span>
 
@@ -1096,7 +1100,7 @@
 <span class="sd">        Set new EE frame based on the transformation given by &#39;frame&#39;, which is the </span>
 <span class="sd">        transformation matrix defining the new desired EE frame with respect to the </span>
 <span class="sd">        nominal end-effector frame (NE_T_EE).</span>
-<span class="sd">        Motion controllers are stopped for switching.</span>
+<span class="sd">        Motion controllers are stopped and restarted for switching.</span>
 
 <span class="sd">        :type frame: [float (16,)] / np.ndarray (4x4) </span>
 <span class="sd">        :param frame: transformation matrix of new EE frame wrt nominal end-effector frame (column major)</span>
@@ -1114,12 +1118,13 @@
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Frames changing not available in simulated environment&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="ArmInterface.set_EE_frame_to_link"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_EE_frame_to_link">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_frame_to_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.set_EE_at_frame"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_EE_at_frame">[docs]</a>    <span class="k">def</span> <span class="nf">set_EE_at_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set new EE frame to the same frame as the link frame given by &#39;frame_name&#39;</span>
-<span class="sd">        Motion controllers are stopped for switching</span>
+<span class="sd">        Set new EE frame to the same frame as the link frame given by &#39;frame_name&#39;.</span>
+<span class="sd">        Motion controllers are stopped and restarted for switching</span>
 
 <span class="sd">        :type frame_name: str </span>
 <span class="sd">        :param frame_name: desired tf frame name in the tf tree</span>
@@ -1129,7 +1134,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">EE_frame_already_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">get_link_tf</span><span class="p">(</span><span class="n">frame_name</span><span class="p">)):</span>
 
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_frame_to_link</span><span class="p">,</span> <span class="n">frame_name</span><span class="o">=</span><span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause_controllers_and_do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frames_interface</span><span class="o">.</span><span class="n">set_EE_at_frame</span><span class="p">,</span> <span class="n">frame_name</span><span class="o">=</span><span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Frames changing not available in simulated environment&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
