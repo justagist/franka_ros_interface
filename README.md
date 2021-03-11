@@ -55,12 +55,14 @@ Once the above dependencies are installed, the package can be installed using ca
    source devel/setup.bash
 ```
 
-After building the package:
+After building the package (this is not required if using with simulated robot):
 
 - Copy/move the *franka.sh* file to the root of the catkin_ws `$ cp src/franka_ros_interface/franka.sh ./`
 - Change the values in the copied file (described in the file).
 
 ## Usage
+
+**NOTE: For using this package with [Panda Simulator][ps-repo], the following sections are not required; all the required "driver" nodes are started along with the simulation launch file, and the Franka ROS Interface API (as well as [PandaRobot](https://github.com/justagist/panda_robot) API) can be directly used. Follow instructions in the [demos](https://github.com/justagist/panda_simulator#demos) section in the Panda Simulator package. See their corresponding [source files](https://github.com/justagist/panda_simulator/tree/melodic-devel/panda_simulator_examples/scripts) for usage examples.**
 
 ### The *franka.sh* environments
 

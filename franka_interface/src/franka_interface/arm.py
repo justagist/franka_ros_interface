@@ -221,7 +221,7 @@ class ArmInterface(object):
         franka_dataflow.wait_for(lambda: self._jacobian is not None,
                                  timeout_msg=err_msg, timeout=5.0)
 
-        # start moveit server with panda_link8 (flange) as the end-effector, unless it is in simulation. However, using move_to_cartesian_pose() method compensates for this and moves the robot's defined end-effector frame (EE frame; see set_EE_frame() and set_EE_frame_to_link()) to the target pose.
+        # start moveit server with panda_link8 (flange) as the end-effector, unless it is in simulation. However, using move_to_cartesian_pose() method compensates for this and moves the robot's defined end-effector frame (EE frame; see set_EE_frame() and set_EE_at_frame()) to the target pose.
         try:
             self._movegroup_interface = PandaMoveGroupInterface(
                 use_panda_hand_link=True if self._params._in_sim else False)
@@ -537,6 +537,7 @@ class ArmInterface(object):
 
     def joint_inertia_matrix(self):
         """
+        Returns the current joint inertia matrix given by libfranka.
 
         :return: joint inertia matrix (7,7)
         :rtype: np.ndarray [7x7]
@@ -545,6 +546,8 @@ class ArmInterface(object):
 
     def zero_jacobian(self):
         """
+        Returns the current jacobian matrix given by libfranka.
+        
         :return: end-effector jacobian (6,7)
         :rtype: np.ndarray [6x7]
         """
@@ -869,7 +872,7 @@ class ArmInterface(object):
             if self._frames_interface.EE_frame_is_reset():
                 rospy.loginfo("{}: EE Frame already reset".format(
                     self.__class__.__name__))
-                return
+                return True
 
             return self.pause_controllers_and_do(self._frames_interface.reset_EE_frame)
 
@@ -883,7 +886,7 @@ class ArmInterface(object):
         Set new EE frame based on the transformation given by 'frame', which is the 
         transformation matrix defining the new desired EE frame with respect to the 
         nominal end-effector frame (NE_T_EE).
-        Motion controllers are stopped for switching.
+        Motion controllers are stopped and restarted for switching.
 
         :type frame: [float (16,)] / np.ndarray (4x4) 
         :param frame: transformation matrix of new EE frame wrt nominal end-effector frame (column major)
@@ -902,11 +905,12 @@ class ArmInterface(object):
         else:
             rospy.logwarn("{}: Frames changing not available in simulated environment".format(
                 self.__class__.__name__))
+            return False
 
-    def set_EE_frame_to_link(self, frame_name, timeout=5.0):
+    def set_EE_at_frame(self, frame_name, timeout=5.0):
         """
-        Set new EE frame to the same frame as the link frame given by 'frame_name'
-        Motion controllers are stopped for switching
+        Set new EE frame to the same frame as the link frame given by 'frame_name'.
+        Motion controllers are stopped and restarted for switching
 
         :type frame_name: str 
         :param frame_name: desired tf frame name in the tf tree
@@ -916,7 +920,7 @@ class ArmInterface(object):
         if self._frames_interface:
             if not self._frames_interface.EE_frame_already_set(self._frames_interface.get_link_tf(frame_name)):
 
-                return self.pause_controllers_and_do(self._frames_interface.set_EE_frame_to_link, frame_name=frame_name, timeout=timeout)
+                return self.pause_controllers_and_do(self._frames_interface.set_EE_at_frame, frame_name=frame_name, timeout=timeout)
 
         else:
             rospy.logwarn("{}: Frames changing not available in simulated environment".format(

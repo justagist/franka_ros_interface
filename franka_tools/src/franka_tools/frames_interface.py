@@ -161,10 +161,13 @@ class FrankaFramesInterface(object):
         """
         return self.frames_are_same(frame, self._current_EE_frame_transformation)
 
-    def set_EE_frame_to_link(self, frame_name, timeout=5.0):
+    def set_EE_at_frame(self, frame_name, timeout=5.0):
         """
-        Set new EE frame to the same frame as the link frame given by 'frame_name'
-        Motion controllers are stopped for switching
+        Set new EE frame to the same frame as the link frame given by 'frame_name'.
+        Only 'panda_link7', 'panda_link8', 'panda_hand', 'panda_NE', and 'panda_EE' 
+        are valid frames for this operation. Other frames will not produce required
+        results.
+        Motion controllers should be stopped for switching.
 
         :type frame_name: str 
         :param frame_name: desired tf frame name in the tf tree
@@ -228,10 +231,13 @@ class FrankaFramesInterface(object):
 
         return self._request_setK_service(frame)
 
-    def set_K_frame_to_link(self, frame_name, timeout=5.0):
+    def set_K_at_frame(self, frame_name, timeout=5.0):
         """
         Set new K frame to the same frame as the link frame given by 'frame_name'
-        Motion controllers are stopped for switching
+        Only 'panda_link7', 'panda_link8', 'panda_hand', 'panda_NE', and 'panda_EE' 
+        are valid frames for this operation. Other frames will not produce required
+        results.
+        Motion controllers should be stopped for switching.
 
         :type frame_name: str 
         :param frame_name: desired tf frame name in the tf tree

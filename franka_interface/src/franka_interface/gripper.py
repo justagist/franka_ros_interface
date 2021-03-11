@@ -372,8 +372,8 @@ class GripperInterface(object):
         """
         Grasps an object.
        
-        An object is considered grasped if the distance $d$ between the gripper fingers satisfies
-        $(\text{width} - \text{epsilon_inner}) < d < (\text{width} + \text{epsilon_outer})$.
+        An object is considered grasped if the distance :math:`d` between the gripper fingers satisfies
+        :math:`(width - epsilon\_inner) < d < (width + epsilon\_outer)`.
        
         :param width: Size of the object to grasp. [m]
         :param speed: Closing speed. [m/s]
