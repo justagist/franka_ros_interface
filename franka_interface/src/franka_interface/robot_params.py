@@ -43,7 +43,7 @@ def _log_networking_error():
 
 class RobotParams(object):
     """
-    Interface class for essential ROS parameters on Intera robot.
+    Interface class for essential ROS parameters on the Franka Emika Panda robot.
     """
 
     def __init__(self):

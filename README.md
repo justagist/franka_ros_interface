@@ -2,7 +2,7 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.7.1-dev)](https://travis-ci.org/justagist/franka_ros_interface)
 
-A ROS interface library for the Franka Emika Panda robot, extending the [franka-ros][franka-ros] to expose more information about the robot, and
+A ROS interface library for the Franka Emika Panda robot, extending the [franka-ros][franka-ros] library to expose more information about the robot, and
 providing low-level control of the robot using ROS and [Python API][fri-doc].
 
 Franka ROS Interface provides utilites for controlling and managing the Franka Emika Panda robot (real and [simulated][ps-repo]. Contains exposed controllers for the robot (joint position,
@@ -43,15 +43,14 @@ ROS Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interfa
 
 - *libfranka* (`sudo apt install ros-$ROS_DISTRO-libfranka` or [install from source][libfranka-doc]). *Make sure to use the release version if building from source.*
 - *franka-ros* v0.7.1 (`sudo apt install ros-$ROS_DISTRO-franka-ros` or [install from source][libfranka-doc]). *Make sure to use the [release version](https://github.com/frankaemika/franka_ros/tree/902fdbba0f7c6036a84a688712a454b9e622863b) if building from source. (`git checkout 902fdbb` from the cloned franka_ros github repo.)*
-- (optional, but recommended) [*franka_panda_description*][fpd-repo] (See [Related Packages](#related-packages) section for information about package). **NOTE**: If you do not want to use the *franka_panda_description* package, make sure you modify the `franka_interface/launch/interface.launch` file and replace all occurences of `franka_panda_description` with
-   `franka_description` (two occurences).
+- (optional, but strongly recommended) [*franka_panda_description*][fpd-repo] (See [Related Packages](#related-packages) section for information about package). **NOTE**: If you do not want to use the *franka_panda_description* package, make sure you modify the `franka_interface/launch/interface.launch` file and replace all occurences of `franka_panda_description` with `franka_description` (two occurences).
 
 Once the above dependencies are installed, the package can be installed using catkin:
 
 ```sh
    cd <catkin_ws>
    git clone https://github.com/justagist/franka_ros_interface src/franka_ros_interface
-   catkin build # or catkin_make
+   catkin build # or catkin_make (catkin build is recommended)
    source devel/setup.bash
 ```
 

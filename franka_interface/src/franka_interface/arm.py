@@ -513,17 +513,46 @@ class ArmInterface(object):
         """
         return deepcopy(self._cartesian_effort) if in_base_frame else deepcopy(self._stiffness_frame_effort)
 
-    def exit_control_mode(self, timeout=0.2):
+    def exit_control_mode(self, timeout=5, velocity_tolerance=1e-2):
         """
         Clean exit from advanced control modes (joint torque or velocity).
-        Resets control to joint position mode with current positions if the 
-        advanced control commands are not send within the specified timeout
-        interval.
+        Resets control to joint position mode with current positions until 
+        further advanced control commands are sent to the robot.
+
+        .. note:: In normal cases, this method is not required as the
+            interface automatically switches to position control mode if
+            advanced control commands (velocity/torque) are not sent at 
+            regular intervals. Therefore it is enough to stop sending the 
+            commands to disable advanced control modes.
+
+        .. note:: In sim, this method does nothing.
 
         :type timeout: float
-        :param timeout: control timeout in seconds [default: 0.2]
+        :param timeout: seconds to wait for robot to stop moving before giving up [default: 5]
+        :type velocity_tolerance: float
+        :param velocity_tolerance: tolerance 
         """
-        self.set_command_timeout(timeout)
+        if self._params._in_sim: return
+
+        self.set_command_timeout(0.05)
+        rospy.sleep(0.5)
+
+        def check_stop():
+            return np.allclose(np.asarray(self._joint_velocity.values()), 0., atol=velocity_tolerance)
+
+        rospy.loginfo("{}: Waiting for robot to stop moving to exit control mode...".format(
+                self.__class__.__name__))
+        franka_dataflow.wait_for(
+                test=lambda: check_stop(),
+                timeout=timeout,
+                timeout_msg="{}: FAILED to exit control mode! The robot may be still moving. Controllers might not switch correctly".format(
+                self.__class__.__name__),
+                rate=20,
+                raise_on_error=False
+            )
+
+        rospy.loginfo("{}: Done. Setting position control target to current position.".format(
+                self.__class__.__name__))
         self.set_joint_positions(self.joint_angles())
 
     def tip_states(self):
