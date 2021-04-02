@@ -4,7 +4,7 @@ Franka ROS Interface
 |release| |doi|
 
 
-A ROS interface library for the Franka Emika Panda robot, extending the `franka_ros`_ to expose more information about the robot, and
+A ROS interface library for the Franka Emika Panda robot, extending the `franka_ros`_ library to expose more information about the robot, and
 providing low-level control of the robot using ROS and `Python API <Python API Documentation_>`_.
 
 Go to `Project Source Code`_.
