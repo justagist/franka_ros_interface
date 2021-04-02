@@ -2,7 +2,7 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e)](https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.6.0-dev)](https://travis-ci.org/justagist/franka_ros_interface)
 
-A ROS interface library for the Franka Emika Panda robot, extending the [franka-ros][franka-ros] to expose more information about the robot, and
+A ROS interface library for the Franka Emika Panda robot, extending the [franka-ros][franka-ros] library to expose more information about the robot, and
 providing low-level control of the robot using ROS and [Python API][fri-doc].
 
 **Requires franka_ros version 0.6.0.** [![franka_ros_version](https://img.shields.io/badge/franka_ros-v0.6.0%20release-yellow.svg)](https://github.com/frankaemika/franka_ros/tree/49e5ac1055e332581b4520a1bd9ac8aaf4580fb1)
@@ -33,13 +33,13 @@ Documentation Page: https://justagist.github.io/franka_ros_interface
 
 ## Installation
 
-ROS Kinetic / Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master)](https://travis-ci.org/justagist/franka_ros_interface)
+ROS Kinetic / Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interface.svg?branch=v0.6.0-dev)](https://travis-ci.org/justagist/franka_ros_interface)
 
 **NOTE:** *Tested on Ubuntu 18.04 with ROS Melodic with franka_ros version 0.6.0 (release). Version for ROS Kinetic is not maintained anymore. The latest updates to the package may not be compatible with Kinetic.*
 
 ### Dependencies
 
-- *libfranka* (`sudo apt install ros-$ROS_DISTRO-libfranka` or [install from source][libfranka-doc]). *Make sure to use the release version if building from source.*
+- *libfranka* ([install from source][libfranka-doc]). *Make sure to use the a release version that is compatible with franka-ros v0.6.0.*
 - *franka-ros* v0.6.0 ([install from source][libfranka-doc]). *Make sure to use the [release version](https://github.com/frankaemika/franka_ros/commit/49e5ac1055e332581b4520a1bd9ac8aaf4580fb1) if building from source. (`git checkout 49e5ac1` from the cloned franka_ros github repo.)*
 - (optional, but recommended) [*franka_panda_description*][fpd-repo] (See [Related Packages](#related-packages) section for information about package). **NOTE**: If you do not want to use the *franka_panda_description* package, make sure you modify the `franka_interface/launch/interface.launch` file and replace all occurences of `franka_panda_description` with
    `franka_description` (two occurences).
@@ -53,14 +53,28 @@ Once the above dependencies are installed, the package can be installed using ca
    source devel/setup.bash
 ```
 
-After building the package:
+After building the package (this is not required if using with simulated robot):
 
 - Copy/move the *franka.sh* file to the root of the catkin_ws `$ cp src/franka_ros_interface/franka.sh ./`
 - Change the values in the copied file (described in the file).
 
 ## Usage
 
-The 'driver' node can be started by running (can only be used if run in 'master' environment - see [Environments](#the-frankash-environments) section below):
+**NOTE: For using this package with [Panda Simulator][ps-repo], the following sections are not required; all the required "driver" nodes are started along with the simulation launch file, and the Franka ROS Interface API (as well as [PandaRobot](https://github.com/justagist/panda_robot) API) can be directly used. Follow instructions in the [demos](https://github.com/justagist/panda_simulator/tree/04dd906f1923aa286fc5a1593b04bd35bfba78ee#demos) section in the Panda Simulator package. See their corresponding [source files](https://github.com/justagist/panda_simulator/tree/04dd906f1923aa286fc5a1593b04bd35bfba78ee/panda_simulator_examples/scripts) for usage examples.**
+
+### The *franka.sh* environments
+
+Once the values are correctly modified in the `franka.sh` file, different environments can be set for controlling the robot by sourcing this file.
+
+- For instance, running `./franka.sh master` would start an environment assuming that the computer is directly connected to the robot (requires Real-Time kernel set up as described in the [FCI documentation][libfranka-doc]).
+- On the other hand, `./franka.sh remote` would start an environment assuming that the robot is not connected directly to the computer, but to another computer in the network (whose IP must be specified in *franka.sh*). This way, if the 'master' is connected to the robot and running the driver node (see below), the 'remote' can control the robot (**no need for Real Time kernel!**) as long as they are in the same network.
+- ~Simulation environment can be started by running `./franka.sh sim` (only required when using [panda_simulator][ps-repo] package).~
+
+More information regarding the usage of `franka.sh` can be found within the [file](franka.sh).
+
+### Starting the Franka ROS Interface 'Driver'
+
+The 'driver' node can be started by running (can only be used if run in 'master' environment - see [Environments](#the-frankash-environments) section above):
 
 ```sh
     roslaunch franka_interface interface.launch # (use argument load_gripper:=false for starting without gripper)
@@ -73,22 +87,21 @@ Available keyword arguments for launch file:
 - `start_moveit`: start moveit server along with the driver node (default: `true`).
 - `load_demo_planning_scene`: loads a default planning scene for MoveIt planning with simple objects for collision avoidance (default: `true`). See [create_demo_planning_scene.py](franka_moveit/scripts/create_demo_planning_scene.py).
 
-This starts the robot controllers and drivers to expose a variety of ROS topics and services for communicating with and controlling the robot. The robot's measurements and controllers can be accessed using ROS topics and services (see below too find out about some of the available topics and services), or using the provided [Python API][fri-doc] (also see [*PandaRobot*](https://github.com/justagist/panda_robot)).
+This starts the robot controllers and drivers to expose a variety of ROS topics and services for communicating with and controlling the robot.
 
-### The *franka.sh* environments
+### Controlling and Monitoring the Robot
 
-Once the values are correctly modified in the `franka.sh` file, different environments can be set for controlling the robot by sourcing this file.
+Once the 'driver' is running, the robot can be controlled from another terminal by running in 'master' environment (if running in the same machine as 'driver'), or 'remote' environment (if using a different connected computer). The robot can then be controlled and monitored using ROS topics and services (see below to find out about some of the available topics and services), or using the provided [Python API][fri-doc] (also see [*PandaRobot*](https://github.com/justagist/panda_robot)).
 
-- For instance, running `./franka.sh master` would start an environment assuming that the computer is directly connected to the robot (requires Real-Time kernel set up as described in the [FCI documentation][libfranka-doc]).
-- On the other hand, `./franka.sh remote` would start an environment assuming that the robot is not connected directly to the computer, but to another computer in the network (whose IP must be specified in *franka.sh*). This way, if the 'master' is connected to the robot and running the driver node (see below), the 'remote' can control the robot (**no need for Real Time kernel!**) as long as they are in the same network.
-- Simulation environment can be started by running `./franka.sh sim` (only required when using [panda_simulator][ps-repo] package).
+Example of the robot working with MoveIt can be found by running `roslaunch franka_moveit demo_moveit.launch`.
 
-Basic usage of the API is shown in the [`test_robot.py` example file](franka_interface/tests/test_robot.py).
-See [documentation][fri-doc] for all available methods and functionalities.
+Basic usage of the Python API is shown in the [`test_robot.py` example file](franka_interface/tests/test_robot.py).
+See [documentation][fri-doc] for all available methods and functionalities. More usage examples can be found in the [PandaRobot](https://github.com/justagist/panda_robot) package.
 
 #### Some useful ROS topics
 
-##### Published Topics:
+##### Published Topics
+
 | ROS Topic | Data |
 | ------ | ------ |
 | */franka_ros_interface/custom_franka_state_controller/robot_state* | gravity, coriolis, jacobian, cartesian velocity, etc. |
@@ -96,7 +109,8 @@ See [documentation][fri-doc] for all available methods and functionalities.
 | */franka_ros_interface/joint_states* | joint positions, velocities, efforts |
 | */franka_ros_interface/franka_gripper/joint_states* | joint positions, velocities, efforts of gripper joints |
 
-##### Subscribed Topics:
+##### Subscribed Topics
+
 | ROS Topic | Data |
 | ------ | ------ |
 | */franka_ros_interface/motion_controller/arm/joint_commands* | command the robot using the currently active controller |
@@ -104,12 +118,17 @@ See [documentation][fri-doc] for all available methods and functionalities.
 
 Other topics for changing the controller gains (also dynamically configurable), command timeout, etc. are also available.
 
-#### ROS Services:
+#### ROS Services
+
 Controller manager service can be used to switch between all available controllers (joint position, velocity, effort). Gripper joints can be controlled using the ROS ActionClient. Other services for changing coordinate frames, adding gripper load configuration, etc. are also available.
 
 #### Python API
 
 Most of the above services and topics are wrapped using simple Python classes or utility functions, providing more control and simplicity. This includes direct control of the robot and gripper using the provided controllers. Refer README files in individual subpackages.
+
+[Documentation][fri-doc]
+
+More usage examples in the [PandaRobot](https://github.com/justagist/panda_robot) package.
 
 ### Related Packages
 
