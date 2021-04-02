@@ -43,6 +43,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -216,7 +217,7 @@
             
   <div class="section" id="setup-instructions">
 <h1>1. Setup Instructions<a class="headerlink" href="#setup-instructions" title="Permalink to this headline">¶</a></h1>
-<p><strong>Note that version v0.7.1 requires franka_ros version v0.7.1. For the most recent instructions (including instructions for older versions of franka_ros), it is better to follow instructions from the README in the</strong> <a class="reference external" href="https://github.com/justagist/franka_ros_interface">source repository</a>.</p>
+<p><strong>Note that version v0.7.1 requires franka_ros version v0.7.1. For the most recent instructions (including instructions for older versions of franka_ros), it is better to follow instructions from the</strong> <a class="reference external" href="https://github.com/justagist/franka_ros_interface">README in the source repository</a> <strong>which is more regularly updated.</strong></p>
 <div class="section" id="installation">
 <h2>1.1. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p><img alt="release" src="https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases:alt:GitHubrelease(latestbydateincludingpre-releases)" /></p>
@@ -256,6 +257,10 @@ $ source devel/setup.bash
 <h2>1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="the-franka-sh-environments">
 <span id="the-frankash-environments"></span><h3>1.2.1. The <em>franka.sh</em> environments<a class="headerlink" href="#the-franka-sh-environments" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This section is NOT required when using PandaSimulator (see <a class="reference external" href="https://github.com/justagist/franka_ros_interface">README in the source repository</a>).</p>
+</div>
 <p>Once the values are correctly modified in the <code class="docutils literal notranslate"><span class="pre">franka.sh</span></code> file, different environments can be
 set for controlling the robot by sourcing this file.</p>
 <ul class="simple">
@@ -276,6 +281,10 @@ same network.</li>
 </div>
 <div class="section" id="starting-the-franka-ros-interface-driver">
 <h3>1.2.2. Starting the Franka ROS Interface ‘Driver’<a class="headerlink" href="#starting-the-franka-ros-interface-driver" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This section is NOT required when using PandaSimulator (see <a class="reference external" href="https://github.com/justagist/franka_ros_interface">README in the source repository</a>).</p>
+</div>
 <p>The ‘driver’ node can be started by running (can only be used if run in
 ‘master’ environment - see <a class="reference external" href="#the-frankash-environments">Environments</a> section above):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ roslaunch franka_interface interface.launch # (use argument load_gripper:=false for starting without gripper)

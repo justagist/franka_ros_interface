@@ -727,17 +727,46 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_effort</span><span class="p">)</span> <span class="k">if</span> <span class="n">in_base_frame</span> <span class="k">else</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stiffness_frame_effort</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArmInterface.exit_control_mode"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.exit_control_mode">[docs]</a>    <span class="k">def</span> <span class="nf">exit_control_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+<div class="viewcode-block" id="ArmInterface.exit_control_mode"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.exit_control_mode">[docs]</a>    <span class="k">def</span> <span class="nf">exit_control_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">velocity_tolerance</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clean exit from advanced control modes (joint torque or velocity).</span>
-<span class="sd">        Resets control to joint position mode with current positions if the </span>
-<span class="sd">        advanced control commands are not send within the specified timeout</span>
-<span class="sd">        interval.</span>
+<span class="sd">        Resets control to joint position mode with current positions until </span>
+<span class="sd">        further advanced control commands are sent to the robot.</span>
+
+<span class="sd">        .. note:: In normal cases, this method is not required as the</span>
+<span class="sd">            interface automatically switches to position control mode if</span>
+<span class="sd">            advanced control commands (velocity/torque) are not sent at </span>
+<span class="sd">            regular intervals. Therefore it is enough to stop sending the </span>
+<span class="sd">            commands to disable advanced control modes.</span>
+
+<span class="sd">        .. note:: In sim, this method does nothing.</span>
 
 <span class="sd">        :type timeout: float</span>
-<span class="sd">        :param timeout: control timeout in seconds [default: 0.2]</span>
+<span class="sd">        :param timeout: seconds to wait for robot to stop moving before giving up [default: 5]</span>
+<span class="sd">        :type velocity_tolerance: float</span>
+<span class="sd">        :param velocity_tolerance: tolerance </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_command_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_in_sim</span><span class="p">:</span> <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_command_timeout</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">check_stop</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">velocity_tolerance</span><span class="p">)</span>
+
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Waiting for robot to stop moving to exit control mode...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
+                <span class="n">test</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">check_stop</span><span class="p">(),</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                <span class="n">timeout_msg</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: FAILED to exit control mode! The robot may be still moving. Controllers might not switch correctly&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span>
+                <span class="n">rate</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Done. Setting position control target to current position.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_joint_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joint_angles</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="ArmInterface.tip_states"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.tip_states">[docs]</a>    <span class="k">def</span> <span class="nf">tip_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

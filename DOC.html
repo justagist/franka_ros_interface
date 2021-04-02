@@ -216,6 +216,10 @@
             
   <div class="section" id="python-api-documentation">
 <h1>2. Python API Documentation<a class="headerlink" href="#python-api-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is the documentation for the latest version (master branch) of Franka ROS Interface. For proper documentation of methods in other versions, see documentations (docstring) in the source code files of the corresponding version.</p>
+</div>
 <p>A more unified interface class combining the functionalities of all separate classes of Franka ROS Interface is available at <a class="reference external" href="https://justagist.github.io/panda_robot/">Panda Robot</a>.</p>
 <p><a class="reference external" href="https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=justagist/franka_ros_interface&amp;amp;utm_campaign=Badge_Grade"><img alt="Code Quality" src="https://api.codacy.com/project/badge/Grade/ec16a09639d341358b73cb8cdaa57d2e" /></a></p>
 <div class="section" id="module-franka_interface">
@@ -358,16 +362,31 @@ performing direct torque control of the robot.</p>
 
 <dl class="method">
 <dt id="franka_interface.ArmInterface.exit_control_mode">
-<code class="descname">exit_control_mode</code><span class="sig-paren">(</span><em>timeout=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.exit_control_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.exit_control_mode" title="Permalink to this definition">¶</a></dt>
+<code class="descname">exit_control_mode</code><span class="sig-paren">(</span><em>timeout=5</em>, <em>velocity_tolerance=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/arm.html#ArmInterface.exit_control_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.ArmInterface.exit_control_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean exit from advanced control modes (joint torque or velocity).
-Resets control to joint position mode with current positions if the 
-advanced control commands are not send within the specified timeout
-interval.</p>
+Resets control to joint position mode with current positions until 
+further advanced control commands are sent to the robot.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In normal cases, this method is not required as the
+interface automatically switches to position control mode if
+advanced control commands (velocity/torque) are not sent at 
+regular intervals. Therefore it is enough to stop sending the 
+commands to disable advanced control modes.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In sim, this method does nothing.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – control timeout in seconds [default: 0.2]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – seconds to wait for robot to stop moving before giving up [default: 5]</li>
+<li><strong>velocity_tolerance</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – tolerance</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1429,7 +1448,7 @@ stop()    - stop the robot, similar to hitting the e-stop button</p>
 <dt id="franka_interface.RobotParams">
 <em class="property">class </em><code class="descclassname">franka_interface.</code><code class="descname">RobotParams</code><a class="reference internal" href="_modules/franka_interface/robot_params.html#RobotParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.RobotParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Interface class for essential ROS parameters on Intera robot.</p>
+<p>Interface class for essential ROS parameters on the Franka Emika Panda robot.</p>
 <dl class="method">
 <dt id="franka_interface.RobotParams.get_gripper_joint_names">
 <code class="descname">get_gripper_joint_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/franka_interface/robot_params.html#RobotParams.get_gripper_joint_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#franka_interface.RobotParams.get_gripper_joint_names" title="Permalink to this definition">¶</a></dt>

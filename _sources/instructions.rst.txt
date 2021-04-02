@@ -2,7 +2,7 @@
 Setup Instructions
 ==================
 
-**Note that version v0.7.1 requires franka_ros version v0.7.1. For the most recent instructions (including instructions for older versions of franka_ros), it is better to follow instructions from the README in the** `source repository <Project Source Code_>`_.
+**Note that version v0.7.1 requires franka_ros version v0.7.1. For the most recent instructions (including instructions for older versions of franka_ros), it is better to follow instructions from the** `README in the source repository <Project Source Code_>`_ **which is more regularly updated.**
 
 Installation
 ------------
@@ -52,6 +52,8 @@ Usage
 The *franka.sh* environments
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. note:: This section is NOT required when using PandaSimulator (see `README in the source repository <Project Source Code_>`_).
+
 Once the values are correctly modified in the ``franka.sh`` file, different environments can be
 set for controlling the robot by sourcing this file.
 
@@ -71,6 +73,8 @@ set for controlling the robot by sourcing this file.
 
 Starting the Franka ROS Interface 'Driver'
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. note:: This section is NOT required when using PandaSimulator (see `README in the source repository <Project Source Code_>`_).
 
 The 'driver' node can be started by running (can only be used if run in
 'master' environment - see `Environments`_ section above):
