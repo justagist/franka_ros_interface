@@ -164,8 +164,6 @@ class ArmInterface(object):
             ns=self._ns, sim=self._params._in_sim)
 
         self._speed_ratio = 0.15
-        self._F_T_NE = np.eye(1).flatten().tolist()
-        self._NE_T_EE = np.eye(1).flatten().tolist()
 
         queue_size = None if synchronous_pub else 1
         with warnings.catch_warnings():
@@ -221,10 +219,8 @@ class ArmInterface(object):
         franka_dataflow.wait_for(lambda: self._jacobian is not None,
                                  timeout_msg=err_msg, timeout=5.0)
 
-        # start moveit server with panda_link8 (flange) as the end-effector, unless it is in simulation. However, using move_to_cartesian_pose() method compensates for this and moves the robot's defined end-effector frame (EE frame; see set_EE_frame() and set_EE_at_frame()) to the target pose.
         try:
-            self._movegroup_interface = PandaMoveGroupInterface(
-                use_panda_hand_link=True if self._params._in_sim else False)
+            self._movegroup_interface = PandaMoveGroupInterface()
         except:
             rospy.loginfo("{}: MoveGroup was not found! This is okay if moveit service is not required!".format(
                 self.__class__.__name__))
@@ -297,14 +293,10 @@ class ArmInterface(object):
 
         self._joint_contact = msg.joint_contact
         self._joint_collision = msg.joint_collision
-
-        if not self._params._in_sim:
-            self._F_T_NE = msg.F_T_NE # should be constant normally
-            self._NE_T_EE = msg.NE_T_EE
-            self._F_T_EE = msg.F_T_EE
-            if self._frames_interface:
-                self._frames_interface._update_frame_data(
-                    self._NE_T_EE, msg.EE_T_K)
+    
+        if self._frames_interface:
+            self._frames_interface._update_frame_data(
+                self._NE_T_EE, msg.EE_T_K)
 
         self._joint_inertia = np.asarray(
             msg.mass_matrix).reshape(7, 7, order='F')
@@ -781,37 +773,6 @@ class ArmInterface(object):
 
         rospy.loginfo("{}: Trajectory controlling complete".format(
             self.__class__.__name__))
-    
-    def get_flange_pose(self, pos=None, ori=None):
-        """
-        Get the pose of flange (panda_link8) given the pose of the end-effector frame.
-
-        .. note:: In sim, this method does nothing.
-
-        :param pos: position of the end-effector frame in the robot's base frame, defaults to current end-effector position
-        :type pos: np.ndarray, optional
-        :param ori: orientation of the end-effector frame, defaults to current end-effector orientation
-        :type ori: quaternion.quaternion, optional
-        :return: corresponding flange frame pose in the robot's base frame
-        :rtype: np.ndarray, quaternion.quaternion
-        """
-        if pos is None:
-            pos = self._cartesian_pose['position']
-        
-        if ori is None:
-            ori = self._cartesian_pose['orientation']
-
-        if self._params._in_sim:
-            return pos, ori
-        
-        # get corresponding flange frame pose using transformation matrix
-        F_T_EE = np.asarray(self._F_T_EE).reshape(4, 4, order="F")
-        mat = quaternion.as_rotation_matrix(ori)
-
-        new_ori = mat.dot(F_T_EE[:3,:3].T)
-        new_pos = pos - new_ori.dot(F_T_EE[:3, 3])
-
-        return new_pos, quaternion.from_rotation_matrix(new_ori)
 
     def move_to_cartesian_pose(self, pos, ori=None, use_moveit=True):
         """
@@ -831,13 +792,13 @@ class ArmInterface(object):
 
         if ori is None:
             ori = self._cartesian_pose['orientation']
-        self.get_flange_pose(pos, ori)
+
         curr_controller = self._ctrl_manager.set_motion_controller(
             self._ctrl_manager.joint_trajectory_controller)
 
         ## == Plan avoids defined scene obstacles ==
         self._movegroup_interface.go_to_cartesian_pose(
-            create_pose_msg(*self.get_flange_pose(pos, ori)))
+            create_pose_msg(pos, ori))
 
         ## =========================================
 
@@ -890,8 +851,7 @@ class ArmInterface(object):
         Reset EE frame to default. (defined by 
         FrankaFramesInterface.DEFAULT_TRANSFORMATIONS.EE_FRAME 
         global variable defined in :py:class:`franka_tools.FrankaFramesInterface` 
-        source code). By default, this resets to align with the nominal-end effector
-        frame (F_T_NE) in the flange frame.
+        source code).
 
         :rtype: [bool, str]
         :return: [success status of service request, error msg if any]
@@ -914,11 +874,11 @@ class ArmInterface(object):
         """
         Set new EE frame based on the transformation given by 'frame', which is the 
         transformation matrix defining the new desired EE frame with respect to the 
-        nominal end-effector frame (NE_T_EE).
+        flange frame.
         Motion controllers are stopped and restarted for switching.
 
         :type frame: [float (16,)] / np.ndarray (4x4) 
-        :param frame: transformation matrix of new EE frame wrt nominal end-effector frame (column major)
+        :param frame: transformation matrix of new EE frame wrt flange frame (column major)
         :rtype: [bool, str]
         :return: [success status of service request, error msg if any]
         """
@@ -936,7 +896,7 @@ class ArmInterface(object):
                 self.__class__.__name__))
             return False
 
-    def set_EE_at_frame(self, frame_name, timeout=5.0):
+    def set_EE_frame_to_link(self, frame_name, timeout=5.0):
         """
         Set new EE frame to the same frame as the link frame given by 'frame_name'.
         Motion controllers are stopped and restarted for switching
@@ -949,7 +909,7 @@ class ArmInterface(object):
         if self._frames_interface:
             if not self._frames_interface.EE_frame_already_set(self._frames_interface.get_link_tf(frame_name)):
 
-                return self.pause_controllers_and_do(self._frames_interface.set_EE_at_frame, frame_name=frame_name, timeout=timeout)
+                return self.pause_controllers_and_do(self._frames_interface.set_EE_frame_to_link, frame_name=frame_name, timeout=timeout)
 
         else:
             rospy.logwarn("{}: Frames changing not available in simulated environment".format(

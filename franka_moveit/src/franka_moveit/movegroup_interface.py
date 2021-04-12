@@ -9,7 +9,7 @@
 # **************************************************************************/
 
 # /***************************************************************************
-# Copyright (c) 2019-2020, Saif Sidhik
+# Copyright (c) 2019-2021, Saif Sidhik
  
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -184,17 +184,34 @@ class PandaMoveGroupInterface:
 
         return True
 
+    def go_to_cartesian_pose(self, pose, ee_link="", wait=True):
+        """
+            Plan and execute a cartesian path to reach a target by avoiding obstacles in the scene.
+            For planning through multiple points, use func:`self._arm_group.set_pose_targets`.
+            
+            :param pose: The cartesian pose to be reached. 
+                (Use :func:`franka_moveit.utils.create_pose_msg` for creating pose messages easily)
+            :type pose: geomentry_msgs.msg.Pose
+            :param ee_link: name of end-effector link to be used; uses currently set value by default
+            :type ee_link: str, optional
+            :param wait: if set to True, blocks till execution is complete; defaults to True
+            :type wait: bool
+        """
+        self._arm_group.set_pose_target(pose, end_effector_link=ee_link)
+        self._arm_group.go(wait=wait)
+
     def plan_cartesian_path(self, poses):
         """
             Plan cartesian path using the provided list of poses.
-
+            
             :param poses: The cartesian poses to be achieved in sequence. 
                 (Use :func:`franka_moveit.utils.create_pose_msg` for creating pose messages easily)
             :type poses: [geomentry_msgs.msg.Pose]
-
+            
             :return: the actual RobotTrajectory (can be used for :py:meth:`execute_plan`), a fraction of how much of the path was followed
             :rtype: [RobotTrajectory, float (0,1)]
-
+           
+            .. note:: This method will NOT make the robot avoid obstacles defined in scene. Use func:`go_to_cartesian_pose` for moving to target pose and avoiding obstacles.
         """
         waypoints = []
         for pose in poses:

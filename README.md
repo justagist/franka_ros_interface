@@ -147,6 +147,6 @@ More usage examples in the [PandaRobot](https://github.com/justagist/panda_robot
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Copyright (c) 2019-2020, Saif Sidhik
+Copyright (c) 2019-2021, Saif Sidhik
 
 If you use this software, please cite it using [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3747413.svg)](https://doi.org/10.5281/zenodo.3747413).
