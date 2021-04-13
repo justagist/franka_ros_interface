@@ -296,7 +296,7 @@ class ArmInterface(object):
     
         if self._frames_interface:
             self._frames_interface._update_frame_data(
-                self._NE_T_EE, msg.EE_T_K)
+                msg.F_T_EE, msg.EE_T_K)
 
         self._joint_inertia = np.asarray(
             msg.mass_matrix).reshape(7, 7, order='F')
