@@ -96,7 +96,7 @@ class PandaMoveGroupInterface:
                                            queue_size=20)
 
         self._default_ee = 'panda_hand' if self._gripper_group else 'panda_link8'
-        # self._arm_group.set_end_effector_link(self._default_ee)
+        self._arm_group.set_end_effector_link(self._default_ee)
 
         rospy.loginfo("PandaMoveGroupInterface: Setting default EE link to '{}' "
             "Use group.set_end_effector_link() method to change default EE.".format(self._default_ee))

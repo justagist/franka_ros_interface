@@ -48,8 +48,8 @@ Once the above dependencies are installed, the package can be installed using ca
 
 ```sh
    cd <catkin_ws>
-   git clone https://github.com/justagist/franka_ros_interface src/franka_ros_interface
-   catkin build franka_ros_interface # or catkin_make
+   git clone -b v0.6.0-dev https://github.com/justagist/franka_ros_interface src/franka_ros_interface
+   catkin build # or catkin_make
    source devel/setup.bash
 ```
 
