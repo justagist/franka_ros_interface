@@ -213,7 +213,7 @@ class FrankaFramesInterface(object):
             rospy.loginfo("Set EE Frame Request Status: %s. \n\tDetails: %s" % (
                 "Success" if response.success else "Failed!", response.error))
             return response.success
-        except rospy.ServiceException, e:
+        except rospy.ServiceException as e:
             rospy.logwarn("Set EE Frame Request: Service call failed: %s" % e)
             return False
 
@@ -300,7 +300,7 @@ class FrankaFramesInterface(object):
         return list(self._current_K_frame_transformation) == list(DEFAULT_TRANSFORMATIONS.K_FRAME)
 
     def _request_setK_service(self, trans_mat):
-        print trans_mat
+        print(trans_mat)
         rospy.wait_for_service(
             '/franka_ros_interface/franka_control/set_K_frame')
         try:
@@ -310,7 +310,7 @@ class FrankaFramesInterface(object):
             rospy.loginfo("Set K Frame Request Status: %s. \n\tDetails: %s" % (
                 "Success" if response.success else "Failed!", response.error))
             return response.success
-        except rospy.ServiceException, e:
+        except rospy.ServiceException as e:
             rospy.logwarn("Set K Frame Request: Service call failed: %s" % e)
             return False
 
