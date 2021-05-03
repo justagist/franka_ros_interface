@@ -23,7 +23,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # **************************************************************************/
-
 import rospy
 import moveit_commander
 
@@ -62,7 +61,7 @@ class ExtendedPlanningSceneInterface(moveit_commander.PlanningSceneInterface):
         while (rospy.get_time() - start < timeout) and not rospy.is_shutdown():
 
             attached_objects = self.get_attached_objects([object_name])
-            is_attached = len(attached_objects.keys()) > 0
+            is_attached = len(list(attached_objects.keys())) > 0
 
             is_known = object_name in self.get_known_object_names()
 

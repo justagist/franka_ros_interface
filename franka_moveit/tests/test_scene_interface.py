@@ -3,6 +3,7 @@
 import sys
 import rospy
 import moveit_commander
+from builtins import input
 
 from franka_moveit import ExtendedPlanningSceneInterface
 from franka_moveit.utils import create_pose_stamped_msg
@@ -36,17 +37,17 @@ def main():
   print("============ Starting test ...")
   rospy.sleep(5.)
   try:
-    print("============ Press `Enter` to begin the tutorial by setting up the scene_interface (press ctrl-d to exit) ...")
-    raw_input()
+    input("============ Press `Enter` to begin the tutorial by setting up the scene_interface (press ctrl-d to exit) ...")
+    
     scene = ExtendedPlanningSceneInterface()
 
-    print("============ Press `Enter` to add objects to the planning scene ...")
-    raw_input()
+    input("============ Press `Enter` to add objects to the planning scene ...")
+    
     for config in objects:
         scene.add_box(**config)
 
-    print("============ Press `Enter` to remove the boxes from the planning scene ...")
-    raw_input()
+    input("============ Press `Enter` to remove the boxes from the planning scene ...")
+    
     for config in objects:
         scene.remove_box(config['name'])
 

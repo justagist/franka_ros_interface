@@ -41,7 +41,7 @@ ROS Melodic: [![Build Status](https://travis-ci.org/justagist/franka_ros_interfa
 
 ### Dependencies
 
-- *libfranka* (`sudo apt install ros-$ROS_DISTRO-libfranka` or [install from source][libfranka-doc]). *Make sure to use the release version if building from source.*
+- *libfranka (required version >= 0.8.0)* (`sudo apt install ros-$ROS_DISTRO-libfranka` or [install from source][libfranka-doc]). *Make sure to use the release version if building from source.*
 - *franka-ros* v0.7.1 (`sudo apt install ros-$ROS_DISTRO-franka-ros` or [install from source][libfranka-doc]). *Make sure to use the [release version](https://github.com/frankaemika/franka_ros/tree/902fdbba0f7c6036a84a688712a454b9e622863b) if building from source. (`git checkout 902fdbb` from the cloned franka_ros github repo.)*
 - (optional, but strongly recommended) [*franka_panda_description*][fpd-repo] (See [Related Packages](#related-packages) section for information about package). **NOTE**: If you do not want to use the *franka_panda_description* package, make sure you modify the `franka_interface/launch/interface.launch` file and replace all occurences of `franka_panda_description` with `franka_description` (two occurences).
 
@@ -53,6 +53,8 @@ Once the above dependencies are installed, the package can be installed using ca
    catkin build # or catkin_make (catkin build is recommended)
    source devel/setup.bash
 ```
+
+*Note: This package is written to be compatible with both Python 2 and 3, so make sure you have the Python `future` module installed (`pip install future`).*
 
 After building the package (this is not required if using with simulated robot):
 

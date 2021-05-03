@@ -1,6 +1,7 @@
 import rospy
 from franka_interface import ArmInterface
 import numpy as np
+from builtins import input
 # import matplotlib.pyplot as plt
 # from std_msgs.msg import Float64
 from copy import deepcopy
@@ -22,7 +23,7 @@ if __name__ == '__main__':
 
     initial_pose = deepcopy(r.joint_ordered_angles())
 
-    raw_input("Hit Enter to Start")
+    input("Hit Enter to Start")
     print("commanding")
     vals = deepcopy(initial_pose)
     count = 0
@@ -40,7 +41,7 @@ if __name__ == '__main__':
             else:
                 vals[j] = initial_pose[j] + delta
 
-        if count % 500 == 0:
+        if count%500 == 0:
             print(vals, delta)
             print("\n ----  \n")
             print(" ")

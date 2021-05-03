@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # **************************************************************************/
-
-from .movegroup_interface import PandaMoveGroupInterface
 from .extended_planning_scene_interface import ExtendedPlanningSceneInterface
-from .utils import *
+from .movegroup_interface import PandaMoveGroupInterface
+from . import utils

@@ -29,6 +29,7 @@
    Inteface Class for Franka gripper.
 
 """
+from builtins import dict # for python2&3 efficient compatibility
 
 import rospy
 import actionlib
@@ -88,8 +89,8 @@ class GripperInterface(object):
             sys.exit()
 
         # ----- Wait for the gripper device status to be true
-        if not franka_dataflow.wait_for(lambda: len(self._joint_positions.keys()) > 0, timeout=2.0, timeout_msg=("FrankaGripper: Failed to get gripper joint positions. Assuming no gripper attached to robot."), raise_on_error = False ):
-            return 
+        if not franka_dataflow.wait_for(lambda: len(list(self._joint_positions.keys())) > 0, timeout=2.0, timeout_msg=("FrankaGripper: Failed to get gripper joint positions. Assuming no gripper attached to robot."), raise_on_error = False ):
+            return
         self._exists = True
 
         self._gripper_speed = 0.05

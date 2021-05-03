@@ -27,8 +27,8 @@
 # limitations under the License.
 # **************************************************************************/
 
-
 import rospy
+from future.utils import viewitems # for python2&3 efficient compatibility
 
 from franka_interface import ArmInterface, GripperInterface
 from franka_dataflow.getch import getch
@@ -106,7 +106,7 @@ def map_keyboard():
                 print("key bindings: ")
                 print("  Esc: Quit")
                 print("  ?: Help")
-                for key, val in sorted(bindings.items(),
+                for key, val in sorted(viewitems(bindings),
                                        key=lambda x: x[1][2]):
                     print("  %s: %s" % (key, val[2]))
 

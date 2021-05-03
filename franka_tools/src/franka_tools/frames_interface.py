@@ -300,7 +300,6 @@ class FrankaFramesInterface(object):
         return list(self._current_K_frame_transformation) == list(DEFAULT_TRANSFORMATIONS.K_FRAME)
 
     def _request_setK_service(self, trans_mat):
-        print(trans_mat)
         rospy.wait_for_service(
             '/franka_ros_interface/franka_control/set_K_frame')
         try:

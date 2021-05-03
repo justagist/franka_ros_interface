@@ -30,6 +30,8 @@
 
 """
 
+from builtins import dict # for python2&3 efficient compatibility
+from future.utils import iteritems # for python2&3 efficient compatibility
 
 import enum
 import rospy
@@ -208,12 +210,12 @@ class ArmInterface(object):
 
         err_msg = ("%s arm init failed to get current joint_states "
                    "from %s") % (self.name.capitalize(), joint_state_topic)
-        franka_dataflow.wait_for(lambda: len(self._joint_angle.keys()) > 0,
+        franka_dataflow.wait_for(lambda: len(list(self._joint_angle.keys())) > 0,
                                  timeout_msg=err_msg, timeout=5.0)
 
         err_msg = ("%s arm, init failed to get current tip_state "
                    "from %s") % (self.name.capitalize(), self._ns + 'tip_state')
-        franka_dataflow.wait_for(lambda: len(self._cartesian_pose.keys()) > 0,
+        franka_dataflow.wait_for(lambda: len(list(self._cartesian_pose.keys())) > 0,
                                  timeout_msg=err_msg, timeout=5.0)
 
         err_msg = ("%s arm, init failed to get current robot_state "
@@ -362,7 +364,7 @@ class ArmInterface(object):
         :rtype: bool
         :return: True if the arm has error, False otherwise.
         """
-        return not all([e == False for e in self._errors.values()])
+        return not all([e == False for e in list(self._errors.values())])
 
     def what_errors(self):
         """
@@ -538,7 +540,7 @@ class ArmInterface(object):
         rospy.sleep(0.5)
 
         def check_stop():
-            return np.allclose(np.asarray(self._joint_velocity.values()), 0., atol=velocity_tolerance)
+            return np.allclose(np.asarray(list(self._joint_velocity.values())), 0., atol=velocity_tolerance)
 
         rospy.loginfo("{}: Waiting for robot to stop moving to exit control mode...".format(
                 self.__class__.__name__))
@@ -584,7 +586,10 @@ class ArmInterface(object):
 
     def set_command_timeout(self, timeout):
         """
-        Set the timeout in seconds for the joint controller
+        Set the timeout in seconds for the joint controller. Advanced
+        control commands (vel, torque) should be sent within this
+        time, or else the controller will switch back to default
+        control mode.
 
         :type timeout: float
         :param timeout: timeout in seconds
@@ -747,7 +752,7 @@ class ArmInterface(object):
                     return abs(angle - self._joint_angle[joint])
                 return joint_diff
 
-            diffs = [genf(j, a) for j, a in positions.items() if
+            diffs = [genf(j, a) for j, a in list(iteritems(positions)) if
                      j in self._joint_angle]
 
             fail_msg = "{}: {} limb failed to reach commanded joint positions.".format(
