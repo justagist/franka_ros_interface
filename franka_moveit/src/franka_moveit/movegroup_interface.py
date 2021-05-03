@@ -31,7 +31,7 @@ import moveit_commander
 import moveit_msgs.msg
 import geometry_msgs.msg
 from moveit_commander.conversions import pose_to_list
-from extended_planning_scene_interface import ExtendedPlanningSceneInterface
+from .extended_planning_scene_interface import ExtendedPlanningSceneInterface
 
 
 def all_close(goal, actual, tolerance):

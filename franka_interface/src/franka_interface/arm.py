@@ -45,7 +45,7 @@ from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
 
 import franka_dataflow
-from robot_params import RobotParams
+from .robot_params import RobotParams
 
 from franka_moveit import PandaMoveGroupInterface
 from franka_moveit.utils import create_pose_msg

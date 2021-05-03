@@ -77,7 +77,7 @@ def main():
     try:
         for act in args.actions:
             if act == 'state':
-                print rs.state()
+                print(rs.state())
             elif act == 'enable':
                 rs.enable()
             elif act == 'disable':
@@ -86,7 +86,7 @@ def main():
                 rs.reset()
             elif act == 'stop':
                 rs.stop()
-    except Exception, e:
+    except Exception as e:
         rospy.logerr(e)
 
     return 0
