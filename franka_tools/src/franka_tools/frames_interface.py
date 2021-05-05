@@ -244,35 +244,8 @@ class FrankaFramesInterface(object):
         :rtype: [bool, str]
         :return: [success status of service request, error msg if any]
         """
-
-        listener = tf.TransformListener()
-        err = "FrankaFramesInterface: Error while looking up transform from EE frame to link frame %s" % frame_name
-
-        def body():
-            try:
-                listener.lookupTransform(
-                    '/panda_EE', frame_name, rospy.Time(0))
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                return False
-            return True
-
-        franka_dataflow.wait_for(
-            lambda: body(), timeout=timeout, raise_on_error=True, timeout_msg=err)
-
-        t, rot = listener.lookupTransform(
-            '/panda_EE', frame_name, rospy.Time(0))
-
-        rot = np.quaternion(rot[3], rot[0], rot[1], rot[2])
-
-        rot = quaternion.as_rotation_matrix(rot)
-
-        trans_mat = np.eye(4)
-
-        trans_mat[:3, :3] = rot
-        trans_mat[:3, 3] = np.array(t)
-
-        return self.set_K_frame(trans_mat)
-
+        return self.set_K_frame(self.get_link_tf(frame_name, timeout, parent="panda_EE"))
+        
     def get_K_frame(self, as_mat=False):
         """
         Get current K frame transformation matrix in EE frame
