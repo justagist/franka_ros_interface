@@ -36,16 +36,16 @@ fi
 
 """
 
- @info: 
-   Utility script for enabling, disabling and checking status of robot.
-     Usage:
-         enable_robot.py <arg>
+:info: 
+    Utility script for enabling, disabling and checking status of robot.
+    Usage:
+        enable_robot.py <arg>
 
-     @Args:
-         <arg> :  -s (--state) / -e (--enable) / -d (--disable) / -r (--reset) / -S (--stop) 
+    :Args:
+        <arg> :  -s (--state) / -e (--enable) / -d (--disable) / -r (--reset) / -S (--stop) 
 
-     Not implemented: Disabling robot.
-     Todo: Change reset request to service request instead of publishing message to topic.
+    Not implemented: Disabling robot.
+    Todo: Change reset request to service request instead of publishing message to topic.
 
 """
 

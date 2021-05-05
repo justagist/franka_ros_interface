@@ -25,8 +25,8 @@
 # **************************************************************************/
 
 """
- @info: 
-       Interface class for collecting and storing necessary parameters from ROS parameter server.
+:info: 
+    Interface class for collecting and storing necessary parameters from ROS parameter server.
 
 """
 

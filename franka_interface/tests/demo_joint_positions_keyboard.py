@@ -40,6 +40,27 @@ from future.utils import viewitems # for python2&3 efficient compatibility
 from franka_interface import ArmInterface, GripperInterface
 from franka_dataflow.getch import getch
 
+"""
+Franka ROS Interface Joint Position Example: Keyboard Control
+
+Use your dev machine's keyboard to control joint positions.
+
+Each key corresponds to increasing or decreasing the angle
+of a joint on the robot arm. The increasing and descreasing
+are represented by number key and letter key next to the number.
+
+:info:
+    Demo showing low-level position control using Franka ROS Interface.
+    Run the demo and press '?' on keyboard for command instructions.
+
+    Disclaimer: This code is only for demonstration purpose, and does not
+        show the ideal way to use the interface code.
+
+    Warning: The robot will move according to the keyboard press. Also,
+        note that the motion will be slightly jerky (small noise from the
+        robot joints). This is because of the non-smooth commands sent to
+        the robot.
+"""
 
 def map_keyboard():
     """
@@ -59,6 +80,7 @@ def map_keyboard():
         joint_command = limb.joint_angles()
         joint_command[joint_name] += delta
         limb.set_joint_positions(joint_command)
+        # limb.set_joint_positions_velocities([joint_command[j] for j in joints], [0.00001]*7) # impedance control when using this example might fail because commands are sent too quickly for the robot to respond
 
     def set_g(action):
         if has_gripper:
@@ -92,7 +114,7 @@ def map_keyboard():
         '9': (set_g, "calibrate", "calibrate gripper")
         })
     done = False
-    print("Controlling joints. Press ? for help, Esc to quit.")
+    rospy.logwarn("Controlling joints. Press ? for help, Esc to quit.\n\nWARNING: The motion will be slightly jerky!!\n")
     while not done and not rospy.is_shutdown():
         c = getch()
         if c:
@@ -116,16 +138,9 @@ def map_keyboard():
                 for key, val in sorted(viewitems(bindings),
                                        key=lambda x: x[1][2]):
                     print("  %s: %s" % (key, val[2]))
+        # rospy.sleep(0.005)
 
 def main():
-    """Franka ROS Interface Joint Position Example: Keyboard Control
-
-    Use your dev machine's keyboard to control joint positions.
-
-    Each key corresponds to increasing or decreasing the angle
-    of a joint on the robot arm. The increasing and descreasing
-    are represented by number key and letter key next to the number.
-    """
 
     print("Initializing node... ")
     rospy.init_node("fri_example_joint_position_keyboard")

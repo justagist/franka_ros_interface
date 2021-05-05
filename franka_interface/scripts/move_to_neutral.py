@@ -35,7 +35,7 @@ fi
 
 
 """
- @info: 
+:info: 
    commands robot to move to neutral pose
 
 """

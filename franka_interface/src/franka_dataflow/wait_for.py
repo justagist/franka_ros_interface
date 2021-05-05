@@ -36,12 +36,12 @@ def wait_for(test, timeout=1.0, raise_on_error=True, rate=100,
     """
     Waits until some condition evaluates to true.
 
-    @param test: zero param function to be evaluated
-    @param timeout: max amount of time to wait. negative/inf for indefinitely
-    @param raise_on_error: raise or just return False
-    @param rate: the rate at which to check
-    @param timout_msg: message to supply to the timeout exception
-    @param body: optional function to execute while waiting
+    :param test: zero param function to be evaluated
+    :param timeout: max amount of time to wait. negative/inf for indefinitely
+    :param raise_on_error: raise or just return False
+    :param rate: the rate at which to check
+    :param timout_msg: message to supply to the timeout exception
+    :param body: optional function to execute while waiting
     """
     end_time = rospy.get_time() + timeout
     rate = rospy.Rate(rate)

@@ -101,7 +101,7 @@ class PandaMoveGroupInterface:
             self._default_ee = 'panda_link8'
         self._arm_group.set_end_effector_link(self._default_ee)
 
-        rospy.loginfo("PandaMoveGroupInterface: Setting default EE link to '{}' "
+        rospy.logdebug("PandaMoveGroupInterface: Setting default EE link to '{}' "
             "Use group.set_end_effector_link() method to change default EE.".format(self._default_ee))
 
         self._arm_group.set_max_velocity_scaling_factor(0.3)

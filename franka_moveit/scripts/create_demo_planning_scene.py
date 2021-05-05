@@ -41,7 +41,8 @@ from franka_moveit import ExtendedPlanningSceneInterface
 from franka_moveit.utils import create_pose_stamped_msg
 
 """
-A script for creating a simple environment as a PlanningScene
+A script for creating a simple environment as a PlanningScene. This script runs 
+by default when interface.launch is started, but can be disabled using argument.
 """
 
 IRLab_workspace = [

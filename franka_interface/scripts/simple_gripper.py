@@ -35,12 +35,12 @@ fi
 
 
 """
- @info: 
+:info: 
    NOTE: Running this script without any arguments will stop the current command being 
          sent to the gripper. Use this to stop any dangerous action being run
    Utility script for simple gripper motion.
      Usage:
-         simple_gripper.py <arg>
+        python simple_gripper.py <arg>
 
      @Args:
          <No arg>          : Stop current gripper action
@@ -87,12 +87,9 @@ if __name__ == '__main__':
         action='store_true', default=False, help="close gripper")
     args = parser.parse_args(rospy.myargv()[1:])
 
-    if args.open or args.close:
-
+    if args.open:
         gi = GripperInterface()
-
-        if args.open:
-            gi.open()
-        else:
-            gi.close()
-
+        gi.open()
+    else:
+        gi = GripperInterface()
+        gi.close()

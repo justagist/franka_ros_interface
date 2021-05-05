@@ -25,8 +25,8 @@
 # **************************************************************************/
 
 """
- @info: 
-       Wrapper class for enabling and resetting robot state.
+:info: 
+    Wrapper class for enabling and resetting robot state.
 
 """
 

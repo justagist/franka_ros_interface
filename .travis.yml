@@ -122,6 +122,7 @@ before_script:
 script:
   - source /opt/ros/$ROS_DISTRO/setup.bash
   - cd ~/catkin_ws
+  # seems to need separate builds for succeeding when using franka_ros from source
   - if [[ $ROS_DISTRO == "noetic" ]]; then catkin build franka_msgs; source devel/setup.bash; catkin build franka_ros; fi;
   
   - source devel/setup.bash
