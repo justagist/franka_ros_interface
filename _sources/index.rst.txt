@@ -1,10 +1,9 @@
 Franka ROS Interface
 ====================
 
-|release| |doi|
+|Release| |ROS Version| |Python 2.7+, 3.6+|
 
-
-A ROS interface library for the Franka Emika Panda robot, extending the `franka_ros`_ library to expose more information about the robot, and
+A ROS interface library for the Franka Emika Panda robot (real and `simulated <panda_simulator_>`_), extending the `franka_ros`_ to expose more information about the robot, and
 providing low-level control of the robot using ROS and `Python API <Python API Documentation_>`_.
 
 Go to `Project Source Code`_.
@@ -67,12 +66,11 @@ Related Packages
 Go to `Project Source Code`_.
 
 .. toctree::
-   :maxdepth: 2
    :caption: Contents:
-   :numbered:
+   :hidden:
 
    self
-   instructions
+   Setup Instructions<instructions>
    DOC
 
 Indices and tables
@@ -87,9 +85,10 @@ Go to `Project Source Code`_.
 **LICENSE:**
 
 |License|
+
 Copyright (c) 2019-2021, Saif Sidhik
 
-|doi|
+If you use this software for research, please considering citing using |doi|.
 
 .. _panda_simulator: https://github.com/justagist/panda_simulator
 .. _panda_robot: https://github.com/justagist/panda_robot
@@ -117,5 +116,10 @@ Copyright (c) 2019-2021, Saif Sidhik
    :target: https://www.codacy.com/manual/justagist/franka_ros_interface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=justagist/franka_ros_interface&amp;utm_campaign=Badge_Grade
 .. |doi| image:: https://zenodo.org/badge/199485892.svg
    :target: https://zenodo.org/badge/latestdoi/199485892
-.. |release| image:: https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases   :alt: GitHub release (latest by date including pre-releases)
+.. |Release| image:: https://img.shields.io/badge/release-v0.7.1-blue.svg
+   :target: https://github.com/justagist/franka_ros_interface/tree/v0.7.1-dev
+.. |ROS Version| image:: https://img.shields.io/badge/ROS-Melodic,%20Noetic-brightgreen.svg?logo=ros
+   :target: https://ros.org/
+.. |Python 2.7+, 3.6+| image:: https://img.shields.io/badge/python-2.7+,%203.6+-blue.svg?logo=python
+   :target: https://www.python.org/downloads/release/python-360/
 

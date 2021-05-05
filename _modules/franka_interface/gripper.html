@@ -43,7 +43,6 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -101,25 +100,25 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Franka ROS Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">1. Setup Instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">1.1. Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">1.1.1. Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">Setup Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">1.2. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">1.2.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#starting-the-franka-ros-interface-driver">1.2.2. Starting the Franka ROS Interface ‘Driver’</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#controlling-and-monitoring-the-robot">1.2.3. Controlling and Monitoring the Robot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">1.2.4. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">1.2.4.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">1.2.4.2. Subscribed Topics:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">The <em>franka.sh</em> environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#starting-the-franka-ros-interface-driver">Starting the Franka ROS Interface ‘Driver’</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#controlling-and-monitoring-the-robot">Controlling and Monitoring the Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">Some useful ROS topics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">Published Topics:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">Subscribed Topics:</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">1.2.5. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">1.2.6. Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">ROS Services:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">Python API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">1.3. Related Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">Related Packages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../DOC.html">2. Python API Documentation</a><ul>
@@ -239,10 +238,11 @@
 <span class="c1"># **************************************************************************/</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd"> @info: </span>
+<span class="sd">:info: </span>
 <span class="sd">   Inteface Class for Franka gripper.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">dict</span> <span class="c1"># for python2&amp;3 efficient compatibility</span>
 
 <span class="kn">import</span> <span class="nn">rospy</span>
 <span class="kn">import</span> <span class="nn">actionlib</span>
@@ -302,8 +302,8 @@
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
         <span class="c1"># ----- Wait for the gripper device status to be true</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_positions</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">timeout_msg</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;FrankaGripper: Failed to get gripper joint positions. Assuming no gripper attached to robot.&quot;</span><span class="p">),</span> <span class="n">raise_on_error</span> <span class="o">=</span> <span class="kc">False</span> <span class="p">):</span>
-            <span class="k">return</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_positions</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">timeout_msg</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;FrankaGripper: Failed to get gripper joint positions. Assuming no gripper attached to robot.&quot;</span><span class="p">),</span> <span class="n">raise_on_error</span> <span class="o">=</span> <span class="kc">False</span> <span class="p">):</span>
+            <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exists</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_gripper_speed</span> <span class="o">=</span> <span class="mf">0.05</span>

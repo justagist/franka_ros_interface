@@ -43,7 +43,6 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -101,25 +100,25 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Franka ROS Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">1. Setup Instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">1.1. Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">1.1.1. Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">Setup Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">1.2. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">1.2.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#starting-the-franka-ros-interface-driver">1.2.2. Starting the Franka ROS Interface ‘Driver’</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#controlling-and-monitoring-the-robot">1.2.3. Controlling and Monitoring the Robot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">1.2.4. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">1.2.4.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">1.2.4.2. Subscribed Topics:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">The <em>franka.sh</em> environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#starting-the-franka-ros-interface-driver">Starting the Franka ROS Interface ‘Driver’</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#controlling-and-monitoring-the-robot">Controlling and Monitoring the Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">Some useful ROS topics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">Published Topics:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">Subscribed Topics:</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">1.2.5. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">1.2.6. Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">ROS Services:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">Python API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">1.3. Related Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">Related Packages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../DOC.html">2. Python API Documentation</a><ul>
@@ -239,8 +238,8 @@
 <span class="c1"># **************************************************************************/</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd"> @info: </span>
-<span class="sd">       Wrapper class for enabling and resetting robot state.</span>
+<span class="sd">:info: </span>
+<span class="sd">    Wrapper class for enabling and resetting robot state.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -252,7 +251,7 @@
 <span class="kn">from</span> <span class="nn">franka_core_msgs.msg</span> <span class="kn">import</span> <span class="n">RobotState</span>
 
 <span class="kn">import</span> <span class="nn">franka_dataflow</span>
-<span class="kn">from</span> <span class="nn">robot_params</span> <span class="kn">import</span> <span class="n">RobotParams</span>
+<span class="kn">from</span> <span class="nn">.robot_params</span> <span class="kn">import</span> <span class="n">RobotParams</span>
 
 <div class="viewcode-block" id="RobotEnable"><a class="viewcode-back" href="../../DOC.html#franka_interface.RobotEnable">[docs]</a><span class="k">class</span> <span class="nc">RobotEnable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

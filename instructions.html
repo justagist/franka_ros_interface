@@ -18,7 +18,7 @@
     </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1. Setup Instructions &mdash; Franka ROS Interface 0.7.1 documentation</title>
+  <title>Setup Instructions &mdash; Franka ROS Interface 0.7.1 documentation</title>
   
 
   
@@ -43,7 +43,6 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -103,25 +102,25 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Franka ROS Interface</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Setup Instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation">1.1. Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#dependencies">1.1.1. Dependencies</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">1.2. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#the-franka-sh-environments">1.2.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#starting-the-franka-ros-interface-driver">1.2.2. Starting the Franka ROS Interface ‘Driver’</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#controlling-and-monitoring-the-robot">1.2.3. Controlling and Monitoring the Robot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#some-useful-ros-topics">1.2.4. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#published-topics">1.2.4.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#subscribed-topics">1.2.4.2. Subscribed Topics:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-franka-sh-environments">The <em>franka.sh</em> environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starting-the-franka-ros-interface-driver">Starting the Franka ROS Interface ‘Driver’</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#controlling-and-monitoring-the-robot">Controlling and Monitoring the Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#some-useful-ros-topics">Some useful ROS topics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#published-topics">Published Topics:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#subscribed-topics">Subscribed Topics:</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#ros-services">1.2.5. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#python-api">1.2.6. Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ros-services">ROS Services:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-api">Python API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#related-packages">1.3. Related Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-packages">Related Packages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="DOC.html">2. Python API Documentation</a><ul>
@@ -196,7 +195,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>1. Setup Instructions</li>
+      <li>Setup Instructions</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -216,31 +215,63 @@
            <div itemprop="articleBody">
             
   <div class="section" id="setup-instructions">
-<h1>1. Setup Instructions<a class="headerlink" href="#setup-instructions" title="Permalink to this headline">¶</a></h1>
-<p><strong>Note that version v0.7.1 requires franka_ros version v0.7.1. For the most recent instructions (including instructions for older versions of franka_ros), it is better to follow instructions from the</strong> <a class="reference external" href="https://github.com/justagist/franka_ros_interface">README in the source repository</a> <strong>which is more regularly updated.</strong></p>
+<h1>Setup Instructions<a class="headerlink" href="#setup-instructions" title="Permalink to this headline">¶</a></h1>
+<p>This branch works with ROS Melodic and ROS Noetic. <a class="reference external" href="https://travis-ci.com/justagist/franka_ros_interface"><img alt="Build Status" src="https://img.shields.io/travis/com/justagist/franka_ros_interface/v0.7.1-dev?logo=travis-ci" /></a></p>
+<p><strong>NOTE:</strong> Tested on:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="33%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ROS Version</th>
+<th class="head">Python Version</th>
+<th class="head">Franka ROS Branch</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Melodic</td>
+<td>2.7+</td>
+<td><a class="reference external" href="https://github.com/frankaemika/franka_ros/tree/melodic-devel">melodic-devel</a></td>
+</tr>
+<tr class="row-odd"><td>Noetic</td>
+<td>3.6+</td>
+<td><a class="reference external" href="https://github.com/frankaemika/franka_ros/tree/noetic-devel">noetic-devel</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note that version v0.7.1 requires franka_ros version v0.7.1. For the most updated instructions (including instructions for older versions of franka_ros), follow the README in the</strong> <a class="reference external" href="https://github.com/justagist/franka_ros_interface">source repository</a>.</p>
 <div class="section" id="installation">
-<h2>1.1. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p><img alt="release" src="https://img.shields.io/github/v/release/justagist/franka_ros_interface?include_prereleases:alt:GitHubrelease(latestbydateincludingpre-releases)" /></p>
-<p>ROS Kinetic / Melodic: <a class="reference external" href="https://travis-ci.org/justagist/franka_ros_interface"><img alt="Build Status" src="https://travis-ci.org/justagist/franka_ros_interface.svg?branch=master" /></a></p>
-<p><strong>NOTE:</strong> <em>Tested on Ubuntu 18.04 with ROS Melodic. Version for ROS Kinetic is not maintained anymore. The latest updates to the package may not be compatible with Kinetic.</em></p>
 <div class="section" id="dependencies">
-<h3>1.1.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<h3>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><em>libfranka</em> (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">ros-$ROS_DISTRO-libfranka</span></code> or
-<a class="reference external" href="https://frankaemika.github.io/docs/installation_linux.html#building-from-source">install from source</a>).</li>
-<li><em>franka-ros</em> (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">ros-$ROS_DISTRO-franka-ros</span></code> or
-<a class="reference external" href="https://frankaemika.github.io/docs/installation_linux.html#building-from-source">install from source</a>)</li>
-<li>(optional, but recommended) <a class="reference external" href="https://github.com/justagist/franka_panda_description">franka_panda_description</a> (See <a class="reference external" href="#related-packages">Related
-Packages</a> section for information about package). <strong>NOTE</strong>: If you
-do not want to use the <em>franka_panda_description</em> package, make sure
-you modify the <code class="docutils literal notranslate"><span class="pre">franka_interface/launch/interface.launch</span></code> file and
-replace all occurences of <code class="docutils literal notranslate"><span class="pre">franka_panda_description</span></code> with
+<li>ROS Melodic / Noetic (preferably the ‘desktop-full’ version)</li>
+<li><em>libfranka (required version &gt;= 0.8.0)</em>
+(<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">ros-$ROS_DISTRO-libfranka</span></code> or <a class="reference external" href="https://frankaemika.github.io/docs/installation_linux.html#building-from-source">install from source</a>). <em>Use the release version if building from
+source for reliable build.</em></li>
+<li><em>franka-ros</em> v0.7.1 (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">ros-$ROS_DISTRO-franka-ros</span></code>
+or <a class="reference external" href="https://frankaemika.github.io/docs/installation_linux.html#building-from-source">install from source</a>). <em>Make sure to use the
+appropriate branch of franka_ros (``melodic-devel`` or
+``noetic-devel``) depending on your ROS version.</em></li>
+<li><em>panda_moveit_config</em>
+(<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">ros-$ROS_DISTRO-panda-moveit-config</span></code> or install
+from <a class="reference external" href="https://github.com/ros-planning/panda_moveit_config">source</a> (the ‘melodic-devel’ branch also works for ROS Noetic))</li>
+<li><a class="reference external" href="https://github.com/justagist/franka_panda_description">franka_panda_description</a> (Clone this repository to the
+<code class="docutils literal notranslate"><span class="pre">src</span></code> folder of your workspace. See <a class="reference external" href="#related-packages">Related Packages</a> section for
+information about package). <strong>NOTE</strong>: Installing this package is
+optional, but recommended. If you do not want to use the
+<em>franka_panda_description</em> package, make sure you modify the
+<code class="docutils literal notranslate"><span class="pre">franka_interface/launch/interface.launch</span></code> file and replace all
+occurences of <code class="docutils literal notranslate"><span class="pre">franka_panda_description</span></code> with
 <code class="docutils literal notranslate"><span class="pre">franka_description</span></code> (two occurences).</li>
 </ul>
 <p>Once the above dependencies are installed, the package can be installed
 using catkin:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd &lt;catkin_ws&gt;
-$ git clone https://github.com/justagist/franka_ros_interface src/franka_ros_interface
+$ git clone -b v0.7.1 https://github.com/justagist/franka_ros_interface src/franka_ros_interface
 $ catkin build franka_ros_interface # or catkin_make
 $ source devel/setup.bash
 </pre></div>
@@ -251,18 +282,28 @@ $ source devel/setup.bash
 <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">cp</span> <span class="pre">src/franka_ros_interface/franka.sh</span> <span class="pre">./</span></code></li>
 <li>Change the values in the copied file (described in the file).</li>
 </ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Python code in this package is written to be compatible with both
+Python 2 and 3, so make sure you have the Python <code class="docutils literal notranslate"><span class="pre">future</span></code> module
+installed (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">future</span></code> (or <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">future</span></code>)).</p>
+</div>
 </div>
 </div>
 <div class="section" id="usage">
-<h2>1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p><strong>NOTE: For using this package with `Panda Simulator &lt;panda_simulator_&gt;`_, the
+following sections are not required; all the required “driver” nodes are
+started along with the simulation launch file, and the Franka ROS
+Interface API (as well as</strong> <a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a> <strong>API) can be directly used.
+Follow instructions in the</strong> <a class="reference external" href="https://github.com/justagist/panda_simulator#demos">demos</a> <strong>section in the Panda Simulator
+package. See their corresponding</strong> <a class="reference external" href="https://github.com/justagist/panda_simulator/tree/melodic-devel/panda_simulator_examples/scripts">source files</a> <strong>for usage
+examples.</strong></p>
 <div class="section" id="the-franka-sh-environments">
-<span id="the-frankash-environments"></span><h3>1.2.1. The <em>franka.sh</em> environments<a class="headerlink" href="#the-franka-sh-environments" title="Permalink to this headline">¶</a></h3>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This section is NOT required when using PandaSimulator (see <a class="reference external" href="https://github.com/justagist/franka_ros_interface">README in the source repository</a>).</p>
-</div>
-<p>Once the values are correctly modified in the <code class="docutils literal notranslate"><span class="pre">franka.sh</span></code> file, different environments can be
-set for controlling the robot by sourcing this file.</p>
+<span id="the-frankash-environments"></span><h3>The <em>franka.sh</em> environments<a class="headerlink" href="#the-franka-sh-environments" title="Permalink to this headline">¶</a></h3>
+<p>Once the values are correctly modified in the <code class="docutils literal notranslate"><span class="pre">franka.sh</span></code> file,
+different environments can be set for controlling the robot by sourcing
+this file.</p>
 <ul class="simple">
 <li>For instance, running <code class="docutils literal notranslate"><span class="pre">./franka.sh</span> <span class="pre">master</span></code> would start an
 environment assuming that the computer is directly connected to the
@@ -275,44 +316,62 @@ but to another computer in the network (whose IP must be specified in
 running the driver node (see below), the ‘slave’ can control the
 robot (<strong>no need for Real Time kernel!</strong>) as long as they are in the
 same network.</li>
-<li>Simulation environment can be started by running <code class="docutils literal notranslate"><span class="pre">./franka.sh</span> <span class="pre">sim</span></code>
-(only required when using <a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a> package).</li>
+<li>~Simulation environment can be started by running <code class="docutils literal notranslate"><span class="pre">./franka.sh</span> <span class="pre">sim</span></code>
+(only required when using <a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a> package).~ <em>Not
+required anymore</em></li>
 </ul>
+<p>More information regarding the usage of <code class="docutils literal notranslate"><span class="pre">franka.sh</span></code> can be found
+within the <code class="docutils literal notranslate"><span class="pre">franka.sh</span> <span class="pre">file</span></code>.</p>
 </div>
 <div class="section" id="starting-the-franka-ros-interface-driver">
-<h3>1.2.2. Starting the Franka ROS Interface ‘Driver’<a class="headerlink" href="#starting-the-franka-ros-interface-driver" title="Permalink to this headline">¶</a></h3>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This section is NOT required when using PandaSimulator (see <a class="reference external" href="https://github.com/justagist/franka_ros_interface">README in the source repository</a>).</p>
-</div>
+<h3>Starting the Franka ROS Interface ‘Driver’<a class="headerlink" href="#starting-the-franka-ros-interface-driver" title="Permalink to this headline">¶</a></h3>
 <p>The ‘driver’ node can be started by running (can only be used if run in
 ‘master’ environment - see <a class="reference external" href="#the-frankash-environments">Environments</a> section above):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ roslaunch franka_interface interface.launch # (use argument load_gripper:=false for starting without gripper)
+<div class="code sh highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">roslaunch</span> <span class="n">franka_interface</span> <span class="n">interface</span><span class="o">.</span><span class="n">launch</span> <span class="c1"># (use argument load_gripper:=false for starting without gripper)</span>
 </pre></div>
 </div>
 <p>Available keyword arguments for launch file:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">load_gripper</span></code>: start driver node with the Franka gripper (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">start_controllers</span></code>: load the available controllers to the controller manager (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">start_moveit</span></code>: start moveit server along with the driver node (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>).</li>
-<li><code class="docutils literal notranslate"><span class="pre">load_demo_planning_scene</span></code>: loads a default planning scene for MoveIt planning with simple objects for collision avoidance (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>). See <code class="docutils literal notranslate"><span class="pre">franka_moveit/scripts/create_demo_planning_scene.py</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">load_gripper</span></code>: start driver node with the Franka gripper (default:
+<code class="docutils literal notranslate"><span class="pre">true</span></code>).</li>
+<li><code class="docutils literal notranslate"><span class="pre">start_controllers</span></code>: load the available controllers to the
+controller manager (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>).</li>
+<li><code class="docutils literal notranslate"><span class="pre">start_moveit</span></code>: start moveit server along with the driver node
+(default: <code class="docutils literal notranslate"><span class="pre">true</span></code>).</li>
+<li><code class="docutils literal notranslate"><span class="pre">load_demo_planning_scene</span></code>: loads a default planning scene for
+MoveIt planning with simple objects for collision avoidance (default:
+<code class="docutils literal notranslate"><span class="pre">true</span></code>). See <code class="docutils literal notranslate"><span class="pre">create_demo_planning_scene.py</span></code>.</li>
 </ul>
-<p>This exposes a variety of ROS topics and services for communicating with
-and controlling the robot.</p>
+<p>This starts the robot controllers and drivers to expose a variety of ROS
+topics and services for communicating with and controlling the robot.</p>
 </div>
 <div class="section" id="controlling-and-monitoring-the-robot">
-<h3>1.2.3. Controlling and Monitoring the Robot<a class="headerlink" href="#controlling-and-monitoring-the-robot" title="Permalink to this headline">¶</a></h3>
-<p>Once the ‘driver’ is running, the robot can be controlled from another terminal by running in ‘master’ environment (if running in the same machine as ‘driver’), or ‘remote’ environment (if using a different connected computer). The robot can then be controlled and monitored using ROS
-topics and services (see below too find out about some of the available
-topics and services), or using the provided <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API</a>.</p>
-<p>Basic usage of the API is shown in the <a class="reference external" href="franka_interface/tests/test_robot.py">test_robot.py</a> example file.
-See <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">documentation</a> for all available methods and functionalities. More usage
-examples can be found in the <a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a> package.</p>
+<h3>Controlling and Monitoring the Robot<a class="headerlink" href="#controlling-and-monitoring-the-robot" title="Permalink to this headline">¶</a></h3>
+<p>Once the ‘driver’ is running, the robot can be controlled from another
+terminal by running in ‘master’ environment (if running in the same
+machine as ‘driver’), or ‘remote’ environment (if using a different
+connected computer). The robot can then be controlled and monitored
+using ROS topics and services (see below to find out about some of the
+available topics and services), or using the provided [Python
+API][fri-doc] (also see <a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a>).</p>
+<p>Example of the robot working with MoveIt can be found by running
+<code class="docutils literal notranslate"><span class="pre">roslaunch</span> <span class="pre">franka_moveit</span> <span class="pre">demo_moveit.launch</span></code>.</p>
+<p>Basic usage of the Python API is shown in the <a class="reference external" href="franka_interface/tests/demo_interface.py">demo_interface.py
+example file</a>. An example of controlling the robot joints with keyboard
+using direct position control is shown in
+<a class="reference external" href="https://github.com/justagist/franka_ros_interface/blob/master/franka_interface/tests/demo_joint_positions_keyboard.py">demo_joint_positions_keyboard.py</a> (read the notes in the file
+before running the demo. start this demo by running
+<code class="docutils literal notranslate"><span class="pre">rosrun</span> <span class="pre">franka_interface</span> <span class="pre">joint_position_keyboard.py</span></code>).</p>
+<p>See <a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Documentation</a> for all available methods and
+functionalities.</p>
+<p>See the <a class="reference external" href="https://github.com/justagist/franka_ros_interface/tree/master/franka_interface/tests">tests</a> and <a class="reference external" href="https://github.com/justagist/franka_ros_interface/tree/master/franka_interface/scripts">scripts</a> directories in <code class="docutils literal notranslate"><span class="pre">franka_interface</span></code> for
+few more usage examples.</p>
+<p><strong>More usage examples can be found in the</strong> <a class="reference external" href="https://github.com/justagist/panda_robot">PandaRobot</a> <strong>package.</strong></p>
 </div>
 <div class="section" id="some-useful-ros-topics">
-<h3>1.2.4. Some useful ROS topics<a class="headerlink" href="#some-useful-ros-topics" title="Permalink to this headline">¶</a></h3>
+<h3>Some useful ROS topics<a class="headerlink" href="#some-useful-ros-topics" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="published-topics">
-<h4>1.2.4.1. Published Topics:<a class="headerlink" href="#published-topics" title="Permalink to this headline">¶</a></h4>
+<h4>Published Topics:<a class="headerlink" href="#published-topics" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="57%" />
@@ -340,7 +399,7 @@ examples can be found in the <a class="reference external" href="https://github.
 </table>
 </div>
 <div class="section" id="subscribed-topics">
-<h4>1.2.4.2. Subscribed Topics:<a class="headerlink" href="#subscribed-topics" title="Permalink to this headline">¶</a></h4>
+<h4>Subscribed Topics:<a class="headerlink" href="#subscribed-topics" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="54%" />
@@ -365,7 +424,7 @@ configurable), command timeout, etc. are also available.</p>
 </div>
 </div>
 <div class="section" id="ros-services">
-<h3>1.2.5. ROS Services:<a class="headerlink" href="#ros-services" title="Permalink to this headline">¶</a></h3>
+<h3>ROS Services:<a class="headerlink" href="#ros-services" title="Permalink to this headline">¶</a></h3>
 <p>Controller manager service can be used to switch between all available
 controllers (joint position, velocity, effort). Gripper joints can be
 controlled using the ROS ActionClient. Other services for changing
@@ -373,7 +432,7 @@ coordinate frames, adding gripper load configuration, etc. are also
 available.</p>
 </div>
 <div class="section" id="python-api">
-<h3>1.2.6. Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h3>
+<h3>Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://justagist.github.io/franka_ros_interface/DOC.html">Python API Documentation</a>.</p>
 <p>Most of the above services and topics are wrapped using simple Python
 classes or utility functions, providing more control and simplicity.
@@ -383,7 +442,7 @@ examples can be found in the <a class="reference external" href="https://github.
 </div>
 </div>
 <div class="section" id="related-packages">
-<h2>1.3. Related Packages<a class="headerlink" href="#related-packages" title="Permalink to this headline">¶</a></h2>
+<h2>Related Packages<a class="headerlink" href="#related-packages" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/justagist/panda_simulator">Panda Simulator</a> : A Gazebo simulator for the Franka Emika Panda
 robot with ROS interface, providing exposed controllers and real-time

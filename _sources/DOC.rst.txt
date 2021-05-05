@@ -1,8 +1,6 @@
 Python API Documentation
 ========================
 
-.. note:: This is the documentation for the latest version (master branch) of Franka ROS Interface. For proper documentation of methods in other versions, see documentations (docstring) in the source code files of the corresponding version.
-
 A more unified interface class combining the functionalities of all separate classes of Franka ROS Interface is available at `Panda Robot <https://justagist.github.io/panda_robot/>`_.
 
 |Code Quality|

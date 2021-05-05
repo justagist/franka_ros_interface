@@ -43,7 +43,6 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -101,25 +100,25 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Franka ROS Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">1. Setup Instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">1.1. Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">1.1.1. Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">Setup Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">1.2. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">1.2.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#starting-the-franka-ros-interface-driver">1.2.2. Starting the Franka ROS Interface ‘Driver’</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#controlling-and-monitoring-the-robot">1.2.3. Controlling and Monitoring the Robot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">1.2.4. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">1.2.4.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">1.2.4.2. Subscribed Topics:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">The <em>franka.sh</em> environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#starting-the-franka-ros-interface-driver">Starting the Franka ROS Interface ‘Driver’</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#controlling-and-monitoring-the-robot">Controlling and Monitoring the Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">Some useful ROS topics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">Published Topics:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">Subscribed Topics:</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">1.2.5. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">1.2.6. Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">ROS Services:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">Python API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">1.3. Related Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">Related Packages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../DOC.html">2. Python API Documentation</a><ul>
@@ -239,11 +238,13 @@
 <span class="c1"># **************************************************************************/</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd"> @info: </span>
+<span class="sd">:info: </span>
 <span class="sd">   Inteface Class for Franka robot arm.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">dict</span> <span class="c1"># for python2&amp;3 efficient compatibility</span>
+<span class="kn">from</span> <span class="nn">future.utils</span> <span class="kn">import</span> <span class="n">iteritems</span> <span class="c1"># for python2&amp;3 efficient compatibility</span>
 
 <span class="kn">import</span> <span class="nn">enum</span>
 <span class="kn">import</span> <span class="nn">rospy</span>
@@ -259,7 +260,7 @@
 <span class="kn">from</span> <span class="nn">std_msgs.msg</span> <span class="kn">import</span> <span class="n">Float64</span>
 
 <span class="kn">import</span> <span class="nn">franka_dataflow</span>
-<span class="kn">from</span> <span class="nn">robot_params</span> <span class="kn">import</span> <span class="n">RobotParams</span>
+<span class="kn">from</span> <span class="nn">.robot_params</span> <span class="kn">import</span> <span class="n">RobotParams</span>
 
 <span class="kn">from</span> <span class="nn">franka_moveit</span> <span class="kn">import</span> <span class="n">PandaMoveGroupInterface</span>
 <span class="kn">from</span> <span class="nn">franka_moveit.utils</span> <span class="kn">import</span> <span class="n">create_pose_msg</span>
@@ -422,12 +423,12 @@
 
         <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> arm init failed to get current joint_states &quot;</span>
                    <span class="s2">&quot;from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="n">joint_state_topic</span><span class="p">)</span>
-        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
                                  <span class="n">timeout_msg</span><span class="o">=</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
 
         <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> arm, init failed to get current tip_state &quot;</span>
                    <span class="s2">&quot;from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">+</span> <span class="s1">&#39;tip_state&#39;</span><span class="p">)</span>
-        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_pose</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cartesian_pose</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
                                  <span class="n">timeout_msg</span><span class="o">=</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
 
         <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> arm, init failed to get current robot_state &quot;</span>
@@ -576,7 +577,7 @@
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        :return: True if the arm has error, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">e</span> <span class="o">==</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span></div>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">e</span> <span class="o">==</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">values</span><span class="p">())])</span></div>
 
 <div class="viewcode-block" id="ArmInterface.what_errors"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.what_errors">[docs]</a>    <span class="k">def</span> <span class="nf">what_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -752,7 +753,7 @@
         <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">check_stop</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">velocity_tolerance</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint_velocity</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">velocity_tolerance</span><span class="p">)</span>
 
         <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Waiting for robot to stop moving to exit control mode...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
@@ -798,7 +799,10 @@
 
 <div class="viewcode-block" id="ArmInterface.set_command_timeout"><a class="viewcode-back" href="../../DOC.html#franka_interface.ArmInterface.set_command_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">set_command_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the timeout in seconds for the joint controller</span>
+<span class="sd">        Set the timeout in seconds for the joint controller. Advanced</span>
+<span class="sd">        control commands (vel, torque) should be sent within this</span>
+<span class="sd">        time, or else the controller will switch back to default</span>
+<span class="sd">        control mode.</span>
 
 <span class="sd">        :type timeout: float</span>
 <span class="sd">        :param timeout: timeout in seconds</span>
@@ -961,7 +965,7 @@
                     <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">angle</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">[</span><span class="n">joint</span><span class="p">])</span>
                 <span class="k">return</span> <span class="n">joint_diff</span>
 
-            <span class="n">diffs</span> <span class="o">=</span> <span class="p">[</span><span class="n">genf</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">positions</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span>
+            <span class="n">diffs</span> <span class="o">=</span> <span class="p">[</span><span class="n">genf</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">iteritems</span><span class="p">(</span><span class="n">positions</span><span class="p">))</span> <span class="k">if</span>
                      <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_angle</span><span class="p">]</span>
 
             <span class="n">fail_msg</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2"> limb failed to reach commanded joint positions.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>

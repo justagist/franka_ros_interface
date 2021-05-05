@@ -43,7 +43,6 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -101,25 +100,25 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Franka ROS Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">1. Setup Instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">1.1. Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">1.1.1. Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instructions.html">Setup Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#dependencies">Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">1.2. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">1.2.1. The <em>franka.sh</em> environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#starting-the-franka-ros-interface-driver">1.2.2. Starting the Franka ROS Interface ‘Driver’</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#controlling-and-monitoring-the-robot">1.2.3. Controlling and Monitoring the Robot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">1.2.4. Some useful ROS topics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">1.2.4.1. Published Topics:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">1.2.4.2. Subscribed Topics:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#the-franka-sh-environments">The <em>franka.sh</em> environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#starting-the-franka-ros-interface-driver">Starting the Franka ROS Interface ‘Driver’</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#controlling-and-monitoring-the-robot">Controlling and Monitoring the Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#some-useful-ros-topics">Some useful ROS topics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#published-topics">Published Topics:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../instructions.html#subscribed-topics">Subscribed Topics:</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">1.2.5. ROS Services:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">1.2.6. Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#ros-services">ROS Services:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../instructions.html#python-api">Python API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">1.3. Related Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instructions.html#related-packages">Related Packages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../DOC.html">2. Python API Documentation</a><ul>
@@ -427,7 +426,7 @@
             <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Set EE Frame Request Status: </span><span class="si">%s</span><span class="s2">. </span><span class="se">\n\t</span><span class="s2">Details: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="s2">&quot;Success&quot;</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span> <span class="k">else</span> <span class="s2">&quot;Failed!&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span>
-        <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceException</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;Set EE Frame Request: Service call failed: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -458,35 +457,8 @@
 <span class="sd">        :rtype: [bool, str]</span>
 <span class="sd">        :return: [success status of service request, error msg if any]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">listener</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">TransformListener</span><span class="p">()</span>
-        <span class="n">err</span> <span class="o">=</span> <span class="s2">&quot;FrankaFramesInterface: Error while looking up transform from EE frame to link frame </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">frame_name</span>
-
-        <span class="k">def</span> <span class="nf">body</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">listener</span><span class="o">.</span><span class="n">lookupTransform</span><span class="p">(</span>
-                    <span class="s1">&#39;/panda_EE&#39;</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-            <span class="k">except</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">LookupException</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">ConnectivityException</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">ExtrapolationException</span><span class="p">):</span>
-                <span class="k">return</span> <span class="kc">False</span>
-            <span class="k">return</span> <span class="kc">True</span>
-
-        <span class="n">franka_dataflow</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
-            <span class="k">lambda</span><span class="p">:</span> <span class="n">body</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout_msg</span><span class="o">=</span><span class="n">err</span><span class="p">)</span>
-
-        <span class="n">t</span><span class="p">,</span> <span class="n">rot</span> <span class="o">=</span> <span class="n">listener</span><span class="o">.</span><span class="n">lookupTransform</span><span class="p">(</span>
-            <span class="s1">&#39;/panda_EE&#39;</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">,</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-
-        <span class="n">rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quaternion</span><span class="p">(</span><span class="n">rot</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">rot</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rot</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rot</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-
-        <span class="n">rot</span> <span class="o">=</span> <span class="n">quaternion</span><span class="o">.</span><span class="n">as_rotation_matrix</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
-
-        <span class="n">trans_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-
-        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">rot</span>
-        <span class="n">trans_mat</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_K_frame</span><span class="p">(</span><span class="n">trans_mat</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_K_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_link_tf</span><span class="p">(</span><span class="n">frame_name</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s2">&quot;panda_EE&quot;</span><span class="p">))</span></div>
+        
 <div class="viewcode-block" id="FrankaFramesInterface.get_K_frame"><a class="viewcode-back" href="../../DOC.html#franka_tools.FrankaFramesInterface.get_K_frame">[docs]</a>    <span class="k">def</span> <span class="nf">get_K_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_mat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get current K frame transformation matrix in EE frame</span>
@@ -514,7 +486,6 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_K_frame_transformation</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">DEFAULT_TRANSFORMATIONS</span><span class="o">.</span><span class="n">K_FRAME</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_request_setK_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans_mat</span><span class="p">):</span>
-        <span class="nb">print</span> <span class="n">trans_mat</span>
         <span class="n">rospy</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">(</span>
             <span class="s1">&#39;/franka_ros_interface/franka_control/set_K_frame&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -524,7 +495,7 @@
             <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Set K Frame Request Status: </span><span class="si">%s</span><span class="s2">. </span><span class="se">\n\t</span><span class="s2">Details: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="s2">&quot;Success&quot;</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span> <span class="k">else</span> <span class="s2">&quot;Failed!&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">success</span>
-        <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceException</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;Set K Frame Request: Service call failed: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span></div>
 
