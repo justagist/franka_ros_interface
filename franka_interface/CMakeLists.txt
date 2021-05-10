@@ -125,6 +125,11 @@ endif()
 
 
 catkin_python_setup()
+catkin_install_python(PROGRAMS scripts/enable_robot.py 
+                               scripts/move_to_neutral.py
+                               scripts/simple_gripper.py
+                               tests/demo_joint_positions_keyboard.py
+                      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 # ## Tools
 # include(${CMAKE_CURRENT_LIST_DIR}/../cmake/ClangTools.cmake OPTIONAL
 #   RESULT_VARIABLE CLANG_TOOLS

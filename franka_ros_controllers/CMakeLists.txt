@@ -27,7 +27,6 @@ generate_dynamic_reconfigure_options(
   cfg/joint_controller_params.cfg
 )
 
-
 catkin_package(
   LIBRARIES franka_ros_controllers
   CATKIN_DEPENDS
