@@ -302,11 +302,17 @@ class GripperInterface(object):
     def close(self):
         """
         close gripper to till collision is detected.
-        Note: This is not exactly doing what it should. The behaviour is 
-        faked by catching the error thrown when trying to grasp a very small
-        object with a very small force. Since the gripper will actually hit the
-        object before it reaches the commanded width, we catch the feedback 
-        and send the gripper stop command to stop it where it is.
+
+        .. note:: This method is known to have a bug where it sometimes opens
+            the gripper when it is already closed. Use :py:meth:`close` with
+            argument 0 (zero) if you want to close it, or use :py:meth:`grasp`
+            wherever possible.
+        
+        .. note:: This is not exactly doing what it should. The behaviour is 
+            faked by catching the error thrown when trying to grasp a very small
+            object with a very small force. Since the gripper will actually hit the
+            object before it reaches the commanded width, we catch the feedback 
+            and send the gripper stop command to stop it where it is.
 
         :return: True if command was successful, False otherwise.
         :rtype: bool
@@ -315,7 +321,7 @@ class GripperInterface(object):
             if not result.success:
                 self.stop_action()
         self._caller = "close gripper"
-        return self.grasp(0.001, 0.1, cb = cb)
+        return self.grasp(0.0, 0.1, cb = cb)
 
     def calibrate(self):
         return self.home_joints(wait_for_result = True)

@@ -106,7 +106,6 @@ Once the 'driver' is running, the robot can be controlled from another terminal 
 
 Example of the robot working with MoveIt can be found by running `roslaunch franka_moveit demo_moveit.launch`.
 
-
 Basic usage of the Python API is shown in the [`demo_interface.py` example file](franka_interface/tests/demo_interface.py). An example of controlling the robot joints with keyboard using direct position control is shown in [`demo_joint_positions_keyboard.py`](https://github.com/justagist/franka_ros_interface/blob/master/franka_interface/tests/demo_joint_positions_keyboard.py) (read the notes in the file before running the demo. start this demo by running `rosrun franka_interface joint_position_keyboard.py`).
 
 See [documentation][fri-doc] for all available methods and functionalities.
