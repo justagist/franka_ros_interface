@@ -14,11 +14,11 @@
   <author>Saif Sidhik</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>franka_interface</build_depend>
-  <build_depend>franka_moveit</build_depend>
-  <build_depend>franka_msgs</build_depend>
-  <build_depend>franka_ros_controllers</build_depend>
-  <build_depend>franka_tools</build_depend>
+  <run_depend>franka_interface</run_depend>
+  <run_depend>franka_moveit</run_depend>
+  <run_depend>franka_msgs</run_depend>
+  <run_depend>franka_ros_controllers</run_depend>
+  <run_depend>franka_tools</run_depend>
   
   <export>
     <metapackage/>
