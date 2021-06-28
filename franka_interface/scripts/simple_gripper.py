@@ -64,7 +64,7 @@ if __name__ == '__main__':
     rospy.init_node("gripper_stop_node")
 
     _caller = "stop_gripper"
-    stop_action_client = actionlib.SimpleActionClient("/franka_ros_interface/franka_gripper/stop", StopAction)
+    stop_action_client = actionlib.SimpleActionClient("/franka_gripper/stop", StopAction)
     stop_action_client.wait_for_server()
 
     stop_action_client.send_goal(StopGoal(), done_cb =_done_cb, active_cb = _active_cb, feedback_cb = _feedback_cb)
